@@ -32,3 +32,6 @@ mcp==1.0.0
 
 # Visual Replay
 opencv-python-headless==4.9.0.80
+
+# LLM
+anthropic==0.18.1
