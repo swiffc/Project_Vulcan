@@ -16,11 +16,10 @@ Resources:
 - vulcan://screen (Current screen state/metadata)
 """
 
-import sys
 import logging
 import asyncio
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional
 
 # Try to import FastMCP, handling potential version differences
 try:
@@ -32,6 +31,9 @@ except ImportError:
 
 import pyautogui
 import socket
+
+# Import recorder
+from controllers.recorder import recorder
 
 # Setup Logging
 logging.basicConfig(level=logging.INFO)
@@ -133,6 +135,23 @@ def get_screen_info() -> dict:
     width, height = pyautogui.size()
     x, y = pyautogui.position()
     return {"width": width, "height": height, "mouse_x": x, "mouse_y": y}
+
+
+@mcp.tool()
+def start_recording(duration: int = 0) -> str:
+    """Start recording screen video. Duration in seconds (0 = until stopped)."""
+    if check_kill_switch():
+        return "Error: Kill Switch Active."
+
+    log_action("start_recording", {"duration": duration})
+    return recorder.start(duration=duration)
+
+
+@mcp.tool()
+def stop_recording() -> str:
+    """Stop current screen recording."""
+    log_action("stop_recording", {})
+    return recorder.stop()
 
 
 # --- Resources ---

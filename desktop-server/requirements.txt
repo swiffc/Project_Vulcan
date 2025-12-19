@@ -29,3 +29,6 @@ sentence-transformers==2.2.2
 
 # MCP
 mcp==1.0.0
+
+# Visual Replay
+opencv-python-headless==4.9.0.80
