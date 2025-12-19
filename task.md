@@ -40,8 +40,8 @@
 
 ### Phase 4: Advanced Intelligence [ ]
 
-- [ ] **Daily/Weekly Briefings**
-  - [ ] Create proactive bot that pushes reports to the user.
+- [x] **Daily/Weekly Briefings** [x]
+  - [x] Create proactive bot that pushes reports to the user.
 - [ ] **Multi-Modal Input**
   - [ ] Photo-to-CAD: Allow uploading a sketch -> Generate SolidWorks part.
 - [ ] **Global RAG Search**

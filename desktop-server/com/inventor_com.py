@@ -41,6 +41,13 @@ class ExtrudeRequest(BaseModel):
 class RevolveRequest(BaseModel):
     angle: float = 360.0  # Degrees
 
+class PatternRequest(BaseModel):
+    count: int
+    spacing: float  # cm
+
+class FilletRequest(BaseModel):
+    radius: float  # cm
+
 class SaveRequest(BaseModel):
     filepath: str
 
