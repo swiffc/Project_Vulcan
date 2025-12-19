@@ -13,6 +13,7 @@ from pathlib import Path
 from collections import defaultdict
 
 import sys
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 from core.memory import VulcanMemory
@@ -48,7 +49,7 @@ class WeeklyReviewAgent:
                 "period": f"{week_start} to {week_end}",
                 "statistics": {"total_trades": 0},
                 "patterns": [],
-                "recommendations": ["No trades found for this period."]
+                "recommendations": ["No trades found for this period."],
             }
 
         stats = self._calculate_stats(trades)
@@ -60,7 +61,7 @@ class WeeklyReviewAgent:
             "statistics": stats,
             "patterns": patterns,
             "recommendations": recommendations,
-            "generated_at": datetime.now().isoformat()
+            "generated_at": datetime.now().isoformat(),
         }
 
     def _get_trades_for_period(self, start: str, end: str) -> List[Dict]:
@@ -125,7 +126,7 @@ class WeeklyReviewAgent:
             "worst_r": min(r_multiples) if r_multiples else 0,
             "by_setup": dict(by_setup),
             "by_day": dict(by_day),
-            "by_session": dict(by_session)
+            "by_session": dict(by_session),
         }
 
     def _identify_patterns(self, trades: List[Dict]) -> List[Dict[str, Any]]:
@@ -149,12 +150,14 @@ class WeeklyReviewAgent:
                     best_setup = setup
 
         if best_setup and best_setup_wr > 0.6:
-            patterns.append({
-                "type": "strong_setup",
-                "description": f"{best_setup} has {best_setup_wr*100:.0f}% win rate",
-                "confidence": "high" if best_setup_wr > 0.7 else "medium",
-                "action": f"Continue focusing on {best_setup} setups"
-            })
+            patterns.append(
+                {
+                    "type": "strong_setup",
+                    "description": f"{best_setup} has {best_setup_wr*100:.0f}% win rate",
+                    "confidence": "high" if best_setup_wr > 0.7 else "medium",
+                    "action": f"Continue focusing on {best_setup} setups",
+                }
+            )
 
         # Worst performing setup
         for setup, data in stats["by_setup"].items():
@@ -162,12 +165,14 @@ class WeeklyReviewAgent:
             if total >= 2:
                 wr = data["wins"] / total
                 if wr < 0.4:
-                    patterns.append({
-                        "type": "weak_setup",
-                        "description": f"{setup} has only {wr*100:.0f}% win rate",
-                        "confidence": "high" if wr < 0.3 else "medium",
-                        "action": f"Review {setup} criteria or reduce position size"
-                    })
+                    patterns.append(
+                        {
+                            "type": "weak_setup",
+                            "description": f"{setup} has only {wr*100:.0f}% win rate",
+                            "confidence": "high" if wr < 0.3 else "medium",
+                            "action": f"Review {setup} criteria or reduce position size",
+                        }
+                    )
 
         # Best performing day
         for day, data in stats["by_day"].items():
@@ -175,19 +180,23 @@ class WeeklyReviewAgent:
             if total >= 2:
                 wr = data["wins"] / total
                 if wr > 0.7:
-                    patterns.append({
-                        "type": "strong_day",
-                        "description": f"{day} has {wr*100:.0f}% win rate",
-                        "confidence": "medium",
-                        "action": f"Consider increasing size on {day}"
-                    })
+                    patterns.append(
+                        {
+                            "type": "strong_day",
+                            "description": f"{day} has {wr*100:.0f}% win rate",
+                            "confidence": "medium",
+                            "action": f"Consider increasing size on {day}",
+                        }
+                    )
                 elif wr < 0.3:
-                    patterns.append({
-                        "type": "weak_day",
-                        "description": f"{day} has only {wr*100:.0f}% win rate",
-                        "confidence": "medium",
-                        "action": f"Avoid trading or reduce size on {day}"
-                    })
+                    patterns.append(
+                        {
+                            "type": "weak_day",
+                            "description": f"{day} has only {wr*100:.0f}% win rate",
+                            "confidence": "medium",
+                            "action": f"Avoid trading or reduce size on {day}",
+                        }
+                    )
 
         # Session performance
         for session, data in stats["by_session"].items():
@@ -195,19 +204,19 @@ class WeeklyReviewAgent:
             if total >= 2:
                 wr = data["wins"] / total
                 if wr > 0.7:
-                    patterns.append({
-                        "type": "strong_session",
-                        "description": f"{session} session has {wr*100:.0f}% win rate",
-                        "confidence": "medium",
-                        "action": f"Focus on {session} session"
-                    })
+                    patterns.append(
+                        {
+                            "type": "strong_session",
+                            "description": f"{session} session has {wr*100:.0f}% win rate",
+                            "confidence": "medium",
+                            "action": f"Focus on {session} session",
+                        }
+                    )
 
         return patterns
 
     def _generate_recommendations(
-        self,
-        stats: Dict[str, Any],
-        patterns: List[Dict]
+        self, stats: Dict[str, Any], patterns: List[Dict]
     ) -> List[str]:
         """Generate actionable recommendations.
 
@@ -236,8 +245,7 @@ class WeeklyReviewAgent:
             )
         else:
             recommendations.append(
-                f"Negative week: {stats['total_r']}R total. "
-                "Review risk management."
+                f"Negative week: {stats['total_r']}R total. " "Review risk management."
             )
 
         # Pattern-based recommendations
@@ -294,9 +302,7 @@ class WeeklyReviewAgent:
         return md
 
     def update_strategy_json(
-        self,
-        recommendations: List[str],
-        require_approval: bool = True
+        self, recommendations: List[str], require_approval: bool = True
     ) -> Dict[str, Any]:
         """Update strategy.json based on recommendations.
 
@@ -320,19 +326,19 @@ class WeeklyReviewAgent:
                 "last_updated": None,
                 "setups": {},
                 "risk_rules": {},
-                "session_preferences": {}
+                "session_preferences": {},
             }
 
         # Generate proposed updates based on recommendations
         proposed_updates = {
             "last_updated": datetime.now().isoformat(),
-            "last_review_recommendations": recommendations
+            "last_review_recommendations": recommendations,
         }
 
         result = {
             "current_strategy": current_strategy,
             "proposed_updates": proposed_updates,
-            "require_approval": require_approval
+            "require_approval": require_approval,
         }
 
         if not require_approval:
@@ -352,7 +358,42 @@ def get_last_week_dates() -> tuple:
     days_since_monday = today.weekday()
     last_monday = today - timedelta(days=days_since_monday + 7)
     last_sunday = last_monday + timedelta(days=6)
-    return (
-        last_monday.strftime("%Y-%m-%d"),
-        last_sunday.strftime("%Y-%m-%d")
-    )
+    return (last_monday.strftime("%Y-%m-%d"), last_sunday.strftime("%Y-%m-%d"))
+
+
+if __name__ == "__main__":
+    import os
+
+    # Ensure storage directory exists
+    review_dir = Path("storage/reviews")
+    review_dir.mkdir(parents=True, exist_ok=True)
+
+    try:
+        print("Initializing Vulcan Memory...")
+        memory = VulcanMemory()
+
+        agent = WeeklyReviewAgent(memory)
+
+        start_date, end_date = get_last_week_dates()
+        print(f"Generating review for period: {start_date} to {end_date}")
+
+        review = agent.generate_review(start_date, end_date)
+
+        # Save JSON
+        json_path = review_dir / f"review_{end_date}.json"
+        with open(json_path, "w") as f:
+            json.dump(review, f, indent=2)
+
+        # Save Markdown
+        md_content = agent.format_as_markdown(review)
+        md_path = review_dir / f"Weekly_Review_{end_date}.md"
+        with open(md_path, "w") as f:
+            f.write(md_content)
+
+        print(f"Review generated successfully!")
+        print(f"Markdown: {md_path}")
+        print(f"JSON: {json_path}")
+
+    except Exception as e:
+        print(f"Error generating review: {e}")
+        sys.exit(1)

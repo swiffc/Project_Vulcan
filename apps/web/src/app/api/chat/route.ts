@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { orchestrate } from "@/lib/orchestrator";
+import { orchestrate, augmentSystemPrompt } from "@/lib/orchestrator";
 import { streamChat, ChatMessage } from "@/lib/claude-client";
 
 export const runtime = "nodejs";
@@ -31,6 +31,9 @@ export async function POST(request: NextRequest) {
     );
 
     console.log(`[Orchestrator] Routing to ${agent.name}`);
+    
+    // Augment with RAG Context
+    const augmentedPrompt = await augmentSystemPrompt(systemPrompt, lastUserMessage.content);
 
     // Create SSE stream
     const encoder = new TextEncoder();
@@ -43,7 +46,7 @@ export async function POST(request: NextRequest) {
           )
         );
 
-        await streamChat(messages, systemPrompt, {
+        await streamChat(messages, augmentedPrompt, {
           onToken: (token) => {
             controller.enqueue(
               encoder.encode(`data: ${JSON.stringify({ content: token })}\n\n`)

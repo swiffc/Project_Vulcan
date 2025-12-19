@@ -71,11 +71,11 @@
   - [x] Implement pattern identification
   - [x] Implement strategy JSON update (with HITL)
 
-- [ ] **Integration** (Next Phase)
-  - [ ] Integrate memory with Trading Agent
-  - [ ] Add trade logging to memory after each trade
-  - [ ] Add RAG to orchestrator query pipeline
-  - [ ] Schedule weekly review (cron or Task Scheduler)
+- [x] **Integration** (Next Phase) [x]
+  - [x] Integrate memory with Trading Agent (`journal.ts`)
+  - [x] Add trade logging to memory after each trade (`logTrade`)
+  - [x] Add RAG to orchestrator query pipeline (`augmentSystemPrompt` in `orchestrator.ts`)
+  - [x] Schedule weekly review (Created `schedule_review.bat`)
 
 ## Phase 1.7: UX Elite & Quick Wins [x]
 
