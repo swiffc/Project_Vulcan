@@ -1,0 +1,54 @@
+# Memory & RAG Configuration
+# Project Vulcan - Semantic Memory System
+
+memory:
+  provider: chroma
+  persist_dir: ./storage/chroma
+
+  collections:
+    trades:
+      embedding_model: all-MiniLM-L6-v2
+      max_results: 10
+      description: "Trade journal entries with setup type, rationale, lessons"
+
+    lessons:
+      embedding_model: all-MiniLM-L6-v2
+      max_results: 5
+      description: "Extracted lessons learned from trading"
+
+    analyses:
+      embedding_model: all-MiniLM-L6-v2
+      max_results: 5
+      description: "Daily/weekly market analyses"
+
+    cad_jobs:
+      embedding_model: all-MiniLM-L6-v2
+      max_results: 5
+      description: "CAD work logs with commands and outcomes"
+
+  rag:
+    # Number of similar documents to retrieve
+    context_window: 3
+
+    # Include metadata in augmented prompts
+    include_metadata: true
+
+    # Similarity threshold (0.0 - 1.0, lower = more similar)
+    similarity_threshold: 0.7
+
+  review:
+    # Cron schedule for weekly review (Friday 6 PM)
+    schedule: "0 18 * * 5"
+
+    # Require user approval before updating strategy.json
+    auto_update_strategy: false
+
+  backup:
+    # Enable daily backups
+    enabled: true
+
+    # Backup directory
+    backup_dir: ./storage/backups/chroma
+
+    # Number of backups to keep
+    retention_count: 7

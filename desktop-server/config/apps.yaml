@@ -1,0 +1,62 @@
+# Project Vulcan - Application Whitelist
+# Only these applications can be controlled by the Desktop Control Server
+
+# Whitelisted applications (window title patterns)
+whitelisted_apps:
+  # CAD Software
+  - "SOLIDWORKS"
+  - "SolidWorks"
+  - "Autodesk Inventor"
+  - "AutoCAD"
+  - "Bentley"
+  - "MicroStation"
+
+  # Trading
+  - "TradingView"
+  - "tradingview.com"
+  - "Google Chrome"  # For TradingView web
+  - "Microsoft Edge"
+  - "Firefox"
+
+  # Life/Productivity
+  - "Outlook"
+  - "Calendar"
+  - "Notepad"
+  - "Visual Studio Code"
+
+  # System
+  - "File Explorer"
+  - "Windows Explorer"
+
+# Blocked applications (never control these)
+blocked_apps:
+  - "Password"
+  - "Credential"
+  - "Bank"
+  - "LastPass"
+  - "1Password"
+  - "Bitwarden"
+
+# Security settings
+security:
+  # Kill switch corner size (pixels from corner)
+  kill_switch_margin: 10
+
+  # Maximum actions per minute (rate limiting)
+  max_actions_per_minute: 120
+
+  # Log retention (days)
+  log_retention_days: 30
+
+  # Require confirmation for destructive actions
+  confirm_destructive: true
+
+# Session settings
+sessions:
+  # Trading session times (UTC)
+  london_open: "07:00"
+  london_close: "16:00"
+  ny_open: "12:00"
+  ny_close: "21:00"
+  asian_open: "23:00"
+  asian_close: "08:00"

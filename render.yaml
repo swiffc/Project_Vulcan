@@ -1,0 +1,32 @@
+services:
+  # Next.js Frontend
+  - type: web
+    name: vulcan-web
+    runtime: node
+    region: ohio
+    plan: free
+    rootDir: apps/web
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NEXT_PUBLIC_ORCHESTRATOR_URL
+        fromService:
+          type: web
+          name: vulcan-orchestrator
+          property: host
+
+  # Python Orchestrator / API
+  - type: web
+    name: vulcan-orchestrator
+    runtime: python
+    region: ohio
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn agents.core.api:app # Adjust to actual entry point
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: DESKTOP_SERVER_URL
+        sync: false # Set manually to Tailscale IP of local PC
+      - key: DATABASE_URL
+        generateValue: true

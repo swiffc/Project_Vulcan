@@ -1,0 +1,32 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "AMDX",
+    "asweigart",
+    "codestack",
+    "cspell",
+    "deloarts",
+    "dtmq",
+    "Glassmorphism",
+    "Journaling",
+    "mnwato",
+    "Oriani",
+    "pyautogui",
+    "pysInventor",
+    "pyswx",
+    "pywin32",
+    "SolidWrap",
+    "solidworks",
+    "SldWorks",
+    "SSOT",
+    "prds",
+    "TradingView",
+    "xarial"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "venv",
+    ".git"
+  ]
+}
