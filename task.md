@@ -105,7 +105,7 @@
 - [x] **Enforce No-Duplication / Update-Only Policy** (Rule 13)
 - [x] **Implement Monorepo Structure** (apps/, agents/, desktop-server/)
 - [x] **Establish Configuration-over-Code for Strategies**
-- [x] **Creation of .ai/CONTEXT.md for مساعدات الذكاء الاصطناعي**
+- [x] **Creation of .ai/CONTEXT.md for AI Assistants**
 - [x] **Setup Pruning Ritual & Dependency Pinning Rules**
 
 ## Phase 3: Scaling & Optimization [ ]

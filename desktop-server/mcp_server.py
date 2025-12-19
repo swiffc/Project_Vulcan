@@ -35,6 +35,9 @@ import socket
 # Import recorder
 from controllers.recorder import recorder
 
+# Import verifier
+from controllers.verifier import verifier
+
 # Setup Logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("vulcan-mcp")
@@ -152,6 +155,20 @@ def stop_recording() -> str:
     """Stop current screen recording."""
     log_action("stop_recording", {})
     return recorder.stop()
+
+
+@mcp.tool()
+def verify_visual_state(reference_path: str, threshold: float = 0.95) -> str:
+    """
+    Compare current screen to a reference image.
+    Returns: JSON string with pass/fail and score.
+    """
+    if check_kill_switch():
+        return "Error: Kill Switch Active."
+
+    log_action("verify_visual_state", {"reference": reference_path})
+    result = verifier.capture_and_compare(reference_path, threshold)
+    return str(result)
 
 
 # --- Resources ---
