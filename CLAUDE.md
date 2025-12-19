@@ -13,8 +13,8 @@ This file contains specific behavioral instructions for AI assistants (Claude, C
 
 ## 🤖 AI-Specific Optimal Processes
 
-- **Context First**: Read `.ai/CONTEXT.md` before every new task.
-- **Lazy Imports**: When writing Python, prefer inner-function imports for heavy libraries (e.g., `win32com`).
+- **Context First**: Read `.ai/CONTEXT.md` (if available) and `RULES.md` before every new task.
+- **Lazy Imports**: When writing Python, prefer inner-function imports for heavy libraries (e.g., `win32com`, `cv2`, `pyautogui`) to keep startup fast.
 - **File Limit**: If a file you are editing hits 300 lines, propose a split immediately.
 - **Config Over Code**: Propose JSON or Markdown for new strategies instead of hard-coding values.
 
@@ -26,16 +26,17 @@ This file contains specific behavioral instructions for AI assistants (Claude, C
 
 ## 🛡️ Safety & Reliability
 
-- **HITL Check**: If an action involves physical desktop movement or external data mutation, ASK for approval first by listing exactly what you will do.
+- **HITL Check (Rule 8/11)**: If an action involves physical desktop movement or external data mutation, ASK for approval first by listing exactly what you will do.
 - **Error Recovery**: If a tool call fails, analyze the error, report it, and suggest a correction rather than retrying blindly.
 - **Least Privilege**: Only request files and tools necessary for the immediate task.
 
-## 📡 Memory & Context
+## 📡 Memory & Context Pattern
 
-- **REFERENCES.md**: Consult this file to see existing packages and external repos before suggesting new libraries.
-- **RULES.md**: Always adhere to the architectural rules in `RULES.md`.
+- **Log Decision**: Use `BlackBoxLogger` (`agents/core/logging.py`) for critical logic flow.
+- **Visual Verify**: Use `VisualVerifier` (`desktop-server/controllers/verifier.py`) for CAD output validation.
+- **MCP First**: Interact with the desktop via `mcp_server.py` tools rather than raw `pyautogui` where possible.
 
 ---
 
 > [!TIP]
-> Use the "Taskmaster" pattern: Plan the work, work the plan, and verify the output.
+> Use the "Taskmaster" pattern: Plan the work, work the plan, and verify the output (Observability + Verification).

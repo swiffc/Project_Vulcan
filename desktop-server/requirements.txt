@@ -35,3 +35,6 @@ opencv-python-headless==4.9.0.80
 
 # LLM
 anthropic==0.18.1
+
+# Monitoring
+psutil==5.9.8

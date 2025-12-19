@@ -1,0 +1,29 @@
+# Project Vulcan - Cloud Orchestrator Dependencies
+# For Render deployment
+# Install: pip install -r requirements.txt
+
+# Web Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+gunicorn==21.2.0
+
+# HTTP Client (for desktop server proxy)
+httpx==0.26.0
+
+# LLM
+anthropic==0.18.1
+
+# Vector Memory & RAG
+chromadb==0.4.22
+sentence-transformers==2.2.2
+
+# Configuration
+pyyaml==6.0.1
+python-dotenv==1.0.0
+
+# Validation
+pydantic==2.5.3
+
+# Testing
+pytest==7.4.4
+pytest-asyncio==0.23.3

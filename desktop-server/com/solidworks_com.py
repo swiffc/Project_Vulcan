@@ -45,6 +45,18 @@ class PatternRequest(BaseModel):
     count: int
     spacing: float  # Radians for circular, meters for linear
 
+class LinearPatternRequest(BaseModel):
+    count_x: int = 1
+    count_y: int = 1
+    spacing_x: float = 0.01  # meters
+    spacing_y: float = 0.01  # meters
+
+class FilletRequest(BaseModel):
+    radius: float  # meters
+
+class DimensionRequest(BaseModel):
+    value: float  # meters
+
 class SaveRequest(BaseModel):
     filepath: str
 
@@ -217,23 +229,56 @@ async def pattern_circular(req: PatternRequest):
     logger.info(f"Circular pattern: count={req.count}, spacing={req.spacing}")
     app = get_app()
     model = _sw_model or app.ActiveDoc
-
     if not model:
         raise HTTPException(status_code=400, detail="No active document")
-
-    import math
-
-    # Create circular pattern
-    # This is simplified - would need proper feature selection
-    feature = model.FeatureManager.FeatureCircularPattern4(
-        req.count,  # Number of instances
-        req.spacing,  # Spacing angle in radians
-        True,  # Equal spacing
-        "Y Axis",  # Axis
-        False, False  # Geometry pattern, propagate
+    model.FeatureManager.FeatureCircularPattern4(
+        req.count, req.spacing, True, "Y Axis", False, False
     )
-
     return {"status": "ok", "count": req.count}
+
+
+@router.post("/pattern_linear")
+async def pattern_linear(req: LinearPatternRequest):
+    """Create a linear pattern of the last feature."""
+    logger.info(f"Linear pattern: {req.count_x}x{req.count_y}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+    model.FeatureManager.FeatureLinearPattern4(
+        req.count_x, req.spacing_x, req.count_y, req.spacing_y,
+        True, True, "X Axis", "Y Axis", False, False
+    )
+    return {"status": "ok", "count_x": req.count_x, "count_y": req.count_y}
+
+
+@router.post("/fillet")
+async def fillet(req: FilletRequest):
+    """Apply fillet to selected edges."""
+    logger.info(f"Fillet radius={req.radius}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+    model.FeatureManager.FeatureFillet3(
+        195, req.radius, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    )
+    return {"status": "ok", "radius": req.radius}
+
+
+@router.post("/add_dimension")
+async def add_dimension(req: DimensionRequest):
+    """Add a dimension to selected sketch entity."""
+    logger.info(f"Adding dimension: {req.value}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+    model.AddDimension2(0, 0, 0)
+    dim = model.IGetLastFeature()
+    if dim:
+        dim.SystemValue = req.value
+    return {"status": "ok", "value": req.value}
 
 
 @router.post("/save")

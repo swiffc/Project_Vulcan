@@ -4,12 +4,30 @@
 
 ## What This Is
 
-One chat interface that controls your entire digital life:
-- **Trading Agent** - Controls TradingView, analyzes charts, executes paper trades
+One chat interface that controls your entire digital life, powered by LLM-driven orchestration:
+- **Trading Agent** - Controls TradingView, analyzes charts, executes paper trades (+ RAG Memory)
 - **CAD Agent** - Controls SolidWorks, Inventor, AutoCAD, Bentley
-- **Life Agent** - Fitness, calendar, notes, general tasks
+- **General Assistant** - Route actions, general help
 
-All agents share a **Desktop Control Server** that physically operates your Windows PC.
+All agents share a **Desktop Control Server** (Mcp Server) that physically operates your Windows PC.
+
+## Current Capabilities
+
+### ✅ Core & Connectivity
+- **Unified Chat Interface** (Next.js) accessible from anywhere via **Tailscale**.
+- **Orchestrator** intelligent routing of user intent to specialized agents.
+- **MCP Server** (`desktop-server`) exposing standard tools for Mouse, Keyboard, Screen, and Logs.
+
+### ✅ Advanced Intelligence (Phase 1 & 2)
+- **RAG Memory**: Integrated memory system stores trades and lessons for future context (`journal.ts`).
+- **Weekly Review**: Automated performance analysis agent (`agents/review-agent`).
+- **Trade Logging**: Structured logging of every trade setup and result.
+
+### ✅ Observability & Verification (Phase 3)
+- **Black Box Logging**: JSONL audit trails for every decision (`agents/core/logging.py`).
+- **Visual Replay**: On-demand screen recording tool (`controllers/recorder.py`).
+- **Visual Verification**: CAD "Visual Diffing" to compare screen state against reference images (`controllers/verifier.py`).
+- **LLM-as-a-Judge**: Automated auditor that critiques agent decisions (`agents/review-agent/src/judge.py`).
 
 ## Architecture
 
@@ -22,8 +40,9 @@ All agents share a **Desktop Control Server** that physically operates your Wind
 │  └─────────────────────────┬───────────────────────────┘   │
 │                            │                                │
 │  ┌─────────────────────────▼───────────────────────────┐   │
-│  │    ORCHESTRATOR + AGENTS (Trading, CAD, Life)       │   │
+│  │    ORCHESTRATOR + AGENTS (Trading, CAD, General)    │   │
 │  └─────────────────────────┬───────────────────────────┘   │
+│                            │                                │
 └────────────────────────────┼────────────────────────────────┘
                              │
                        TAILSCALE VPN
@@ -31,107 +50,64 @@ All agents share a **Desktop Control Server** that physically operates your Wind
  ┌───────────────────────────▼────────────────────────────────┐
  │                   YOUR WINDOWS PC                           │
  │  ┌─────────────────────────────────────────────────────┐   │
- │  │           DESKTOP CONTROL SERVER                     │   │
- │  │  🖱️ Mouse  ⌨️ Keyboard  📸 Screenshot  🪟 Window     │   │
+ │  │           DESKTOP CONTROL SERVER (MCP)              │   │
+ │  │  🖱️ Mouse  ⌨️ Keyboard  📸 Screenshot  📹 Replay    │   │
+ │  │  ⚖️ Verifier  🧠 Vector Memory                        │   │
  │  └─────────────────────────┬───────────────────────────┘   │
  │                            │                                │
  │      ┌─────────────────────┼─────────────────────┐         │
  │      ▼                     ▼                     ▼         │
- │  TradingView          SolidWorks            Calendar       │
+ │  TradingView          SolidWorks            System         │
  └─────────────────────────────────────────────────────────────┘
 ```
 
 ## Quick Start
 
 ### 1. Start Desktop Control Server
+The standardized MCP server handles all desktop interactions.
 
 ```bash
 cd desktop-server
-run.bat
+START_MCP.bat
 ```
 
 This will:
-- Create a Python virtual environment
-- Install dependencies
-- Start the FastAPI server on your Tailscale IP (or localhost)
+- Set up the Python virtual environment
+- Install dependencies (including `mcp`, `opencv`, `anthropic`)
+- Start the `mcp_server.py`
 
-### 2. Test the API
+### 2. Available Agents & Scripts
 
-```bash
-# Health check
-curl http://localhost:8000/health
+*   **Weekly Review Agent**: 
+    *   Run Manually: `agents/review-agent/run_review.bat`
+    *   Schedule: `agents/review-agent/SCHEDULE_REVIEW.bat` (Fridays @ 5PM)
 
-# Take a screenshot
-curl -X POST http://localhost:8000/screen/screenshot
-
-# List windows
-curl http://localhost:8000/window/list
-```
-
-### 3. Connect via Tailscale
-
-1. Install Tailscale: https://tailscale.com
-2. Run `tailscale up`
-3. Server will automatically bind to your Tailscale IP
-
-## Safety Features
-
-- **Kill Switch**: Move mouse to top-left corner to stop all automation
-- **App Whitelist**: Only approved apps can be controlled
-- **Action Logging**: Every action is logged with timestamp
-- **No Public Ports**: All traffic over Tailscale VPN
+*   **Judge Agent**:
+    *   Run Audit: `agents/review-agent/run_judge.bat`
 
 ## Project Structure
 
 ```text
 Project_Vulcan/
-├── desktop-server/          # Python server on Windows PC
-│   ├── server.py           # FastAPI main server
-│   ├── controllers/        # Mouse, keyboard, screen, window
-│   ├── com/               # CAD COM automation
-│   └── config/            # Whitelists and settings
-├── apps/web/              # Next.js chat interface
-├── agents/                # Trading, CAD, Life agents
-│   ├── trading-agent/
-│   ├── cad-agent/
-│   └── life-agent/
-├── storage/               # Output files and journals
-├── REFERENCES.md          # External dependencies
-└── RULES.md              # Build rules
+├── desktop-server/          # MCP Server & Controllers
+│   ├── mcp_server.py       # Main MCP Interface
+│   ├── controllers/        # recorder, verifier, mouse, etc.
+│   └── requirements.txt    # Python dependencies
+├── apps/web/              # Next.js Chat Interface & Orchestrator
+├── agents/                # Specialized Agents
+│   ├── trading-agent/      # Journaling & logic
+│   ├── review-agent/       # Weekly Review & Judge
+│   └── core/              # Shared libs (logging, llm)
+├── core/                  # Shared Root Libs (memory, llm)
+├── storage/               # Logs, Recordings, Judgments
+└── task.md               # Master Todo List
 ```
 
-## API Endpoints
+## Documentation
 
-### Mouse Control
-- `POST /mouse/move` - Move cursor
-- `POST /mouse/click` - Click at position
-- `POST /mouse/drag` - Drag operation
-- `POST /mouse/scroll` - Scroll wheel
-
-### Keyboard Control
-- `POST /keyboard/type` - Type text
-- `POST /keyboard/press` - Press key
-- `POST /keyboard/hotkey` - Key combination
-
-### Screen Control
-- `POST /screen/screenshot` - Full screenshot
-- `POST /screen/region` - Region screenshot
-- `POST /screen/ocr` - OCR text extraction
-
-### Window Control
-- `GET /window/list` - List windows
-- `POST /window/focus` - Focus window
-- `POST /window/minimize` - Minimize
-- `POST /window/maximize` - Maximize
-
-### System
-- `GET /health` - Health check
-- `POST /kill` - Emergency stop
-- `POST /resume` - Resume after kill
-
-## Development
-
-See [RULES.md](RULES.md) for build rules and architecture guidelines.
+- **[CLAUDE.md](CLAUDE.md)**: AI Assistant instructions and patterns.
+- **[RULES.md](RULES.md)**: Comprehensive engineering rules and architectural guidelines.
+- **[task.md](task.md)**: Current roadmap and outstanding items.
 
 ## License
 

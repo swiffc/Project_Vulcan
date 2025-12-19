@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Message, MessageRole } from "@/lib/types";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
+
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000;
 
 export function Chat() {
   const [messages, setMessages] = useState<Message[]>([
@@ -32,6 +35,99 @@ export function Chat() {
     scrollToBottom();
   }, [messages]);
 
+  const streamWithRetry = useCallback(
+    async (
+      messagePayload: { role: string; content: string }[],
+      assistantMessageId: string,
+      retryCount = 0
+    ): Promise<boolean> => {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: messagePayload }),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+        let fullContent = "";
+
+        if (reader) {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split("\n");
+
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const data = line.slice(6);
+                if (data === "[DONE]") continue;
+
+                try {
+                  const parsed = JSON.parse(data);
+                  if (parsed.content) {
+                    fullContent += parsed.content;
+                    setMessages((prev) =>
+                      prev.map((m) =>
+                        m.id === assistantMessageId
+                          ? { ...m, content: fullContent }
+                          : m
+                      )
+                    );
+                  }
+                  if (parsed.screenshot) {
+                    setMessages((prev) =>
+                      prev.map((m) =>
+                        m.id === assistantMessageId
+                          ? { ...m, screenshot: parsed.screenshot }
+                          : m
+                      )
+                    );
+                  }
+                } catch {
+                  // Skip invalid JSON
+                }
+              }
+            }
+          }
+        }
+
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantMessageId ? { ...m, status: "complete" } : m
+          )
+        );
+        return true;
+      } catch (error) {
+        console.error(`Stream attempt ${retryCount + 1} failed:`, error);
+
+        if (retryCount < MAX_RETRIES) {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantMessageId
+                ? { ...m, content: `Reconnecting... (attempt ${retryCount + 2}/${MAX_RETRIES + 1})` }
+                : m
+            )
+          );
+          await new Promise((r) => setTimeout(r, RETRY_DELAY * (retryCount + 1)));
+          return streamWithRetry(messagePayload, assistantMessageId, retryCount + 1);
+        }
+        return false;
+      }
+    },
+    []
+  );
+
   const handleSendMessage = async (content: string) => {
     const userMessage: Message = {
       id: `user-${Date.now()}`,
@@ -55,87 +151,28 @@ export function Chat() {
 
     setMessages((prev) => [...prev, assistantMessage]);
 
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: [...messages, userMessage].map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
-        }),
-      });
+    const messagePayload = [...messages, userMessage].map((m) => ({
+      role: m.role,
+      content: m.content,
+    }));
 
-      if (!response.ok) throw new Error("Failed to get response");
+    const success = await streamWithRetry(messagePayload, assistantMessageId);
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let fullContent = "";
-
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split("\n");
-
-          for (const line of lines) {
-            if (line.startsWith("data: ")) {
-              const data = line.slice(6);
-              if (data === "[DONE]") continue;
-
-              try {
-                const parsed = JSON.parse(data);
-                if (parsed.content) {
-                  fullContent += parsed.content;
-                  setMessages((prev) =>
-                    prev.map((m) =>
-                      m.id === assistantMessageId
-                        ? { ...m, content: fullContent }
-                        : m
-                    )
-                  );
-                }
-                if (parsed.screenshot) {
-                  setMessages((prev) =>
-                    prev.map((m) =>
-                      m.id === assistantMessageId
-                        ? { ...m, screenshot: parsed.screenshot }
-                        : m
-                    )
-                  );
-                }
-              } catch {
-                // Skip invalid JSON
-              }
-            }
-          }
-        }
-      }
-
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === assistantMessageId ? { ...m, status: "complete" } : m
-        )
-      );
-    } catch (error) {
-      console.error("Chat error:", error);
+    if (!success) {
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantMessageId
             ? {
                 ...m,
-                content: "Sorry, I encountered an error. Please try again.",
+                content: "Connection failed after multiple attempts. Please check your network and try again.",
                 status: "error",
               }
             : m
         )
       );
-    } finally {
-      setIsStreaming(false);
     }
+
+    setIsStreaming(false);
   };
 
   return (
