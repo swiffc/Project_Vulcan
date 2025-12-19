@@ -28,11 +28,11 @@
   - [x] Orchestrator for agent routing (Trading/CAD)
   - [x] Claude API client with Ollama fallback
   - [x] Desktop server proxy client
-- [ ] **Connectivity & Security** [/]
-  - [ ] Configure Tailscale and Security Protocols.
+- [x] **Connectivity & Security** [x]
+  - [x] Configure Tailscale and Security Protocols. (Logic in `server.py` and `run.bat`)
   - [x] Create `render.yaml` Blueprint for Cloud Infrastructure.
   - [x] Draft PRD-002: Cloud Infrastructure & Deployment.
-  - [ ] Setup Docker/Render deployment hooks.
+  - [x] Setup Docker/Render deployment hooks. (Implemented in `render.yaml` and `Dockerfile`)
 
 ## Phase 1.5: Elite Patterns Implementation [x]
 
@@ -44,9 +44,9 @@
   - [x] Implement error counting and auto-reset logic.
 - [x] **The Digital Twin** (Strategies)
   - [x] Create `strategies/schema.py` for lightweight validations.
-- [ ] **MCP Standardization** (Desktop Server)
-  - [ ] Research `fastmcp` or `mcp-python-sdk` for SSE support.
-  - [ ] Refactor `server.py` endpoints to match MCP tool definitions.
+- [x] **MCP Standardization** (Desktop Server)
+  - [x] Research `fastmcp` or `mcp-python-sdk` for SSE support.
+  - [x] Refactor `server.py` endpoints to match MCP tool definitions (Implemented `mcp_server.py`).
 
 ## Phase 1.6: Memory & RAG System (PRD-001) [x]
 
