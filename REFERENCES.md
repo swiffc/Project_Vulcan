@@ -15,8 +15,23 @@ This document maintains all external dependencies and architectural references f
 | pillow | 10.2.0 | Image processing | `pip install pillow` |
 | mss | 9.0.1 | Fast screenshots | `pip install mss` |
 | pytesseract | 0.3.10 | OCR text recognition | `pip install pytesseract` |
+| pdf2image | 1.16.3 | PDF to image conversion | `pip install pdf2image` |
 | pyyaml | 6.0.1 | Config file parsing | `pip install pyyaml` |
-| python-multipart | 0.0.6 | Form data parsing | `pip install python-multipart` |
+
+### System Manager (Python)
+
+| Package | Version | Purpose | Install Command |
+|---------|---------|---------|-----------------|
+| APScheduler | 3.10.4 | Job scheduling | `pip install APScheduler` |
+| psutil | 5.9.7 | System metrics | `pip install psutil` |
+| aiohttp | 3.9.1 | Async HTTP for health checks | `pip install aiohttp` |
+
+### Google Drive Integration (Python)
+
+| Package | Version | Purpose | Install Command |
+|---------|---------|---------|-----------------|
+| google-api-python-client | 2.111.0 | Drive API | `pip install google-api-python-client` |
+| google-auth | 2.25.2 | Authentication | `pip install google-auth` |
 
 ### Memory & RAG (Python)
 
@@ -36,6 +51,17 @@ This document maintains all external dependencies and architectural references f
 
 ---
 
+## MCP Servers (Reference Only - Not Cloned)
+
+| Server | Purpose | Reference | Our Adapter |
+|--------|---------|-----------|-------------|
+| desktop-control | Windows PC control | Built-in | `desktop-server/mcp_server.py` |
+| memory-vec | Vector RAG | chromadb | `controllers/memory.py` |
+| mcp-gdrive | Google Drive | [wong2/mcp-gdrive-adapter](https://github.com/wong2/mcp-gdrive-adapter) | `agents/cad-agent/adapters/gdrive_bridge.py` |
+| CAD-MCP | SolidWorks/Inventor | [daobataotie/CAD-MCP](https://github.com/daobataotie/CAD-MCP) | `desktop-server/com/*.py` |
+
+---
+
 ## External Services
 
 | Service | Purpose | Documentation |
@@ -45,6 +71,37 @@ This document maintains all external dependencies and architectural references f
 | Tailscale | Secure VPN connection | [tailscale.com](https://tailscale.com/kb) |
 | Render.com | Cloud hosting for web UI | [render.com](https://render.com/docs) |
 | TradingView | Chart platform (automated via UI) | [tradingview.com](https://www.tradingview.com) |
+| Google Drive | File backup & sync | [developers.google.com/drive](https://developers.google.com/drive) |
+
+---
+
+## Adapter & Bridge Pattern
+
+### What is an Adapter?
+```python
+# 50-100 lines that wraps an external package
+class SchedulerAdapter:
+    def __init__(self):
+        from apscheduler.schedulers.asyncio import AsyncIOScheduler  # Lazy import
+        self._scheduler = AsyncIOScheduler()
+```
+
+### What is a Bridge?
+```python
+# Connects to MCP server OR falls back to direct API
+class GDriveBridge:
+    async def upload(self, path):
+        if self.mcp:  # Use MCP if available
+            return await self.mcp.call_tool("drive_upload", {...})
+        else:  # Direct API fallback
+            return self._direct_upload(path)
+```
+
+### Key Rules
+1. **Never clone repos** - `pip install` + adapter
+2. **Lazy imports** - Only load heavy packages when needed
+3. **Max 100 lines** - If longer, split into multiple adapters
+4. **Document here** - Every external dependency in this file
 
 ---
 
@@ -56,57 +113,34 @@ This document maintains all external dependencies and architectural references f
 |-------------|---------|
 | OS | Windows 10/11 |
 | Python | 3.10+ |
-| Tesseract OCR | Required for OCR features |
+| Tesseract OCR | Required for PDF OCR |
+| Poppler | Required for pdf2image |
 | Tailscale | For remote access |
 | SolidWorks | For CAD automation (licensed) |
 | Inventor | For CAD automation (licensed) |
 
 ### Tesseract OCR Installation
-
 ```bash
 # Download from: https://github.com/UB-Mannheim/tesseract/wiki
 # Add to PATH: C:\Program Files\Tesseract-OCR
+```
+
+### Poppler Installation (for pdf2image)
+```bash
+# Download from: https://github.com/oschwartz10612/poppler-windows/releases
+# Add to PATH: C:\poppler\bin
 ```
 
 ---
 
 ## GitHub Repos (REFERENCE ONLY - Not Cloned)
 
-These are reference repositories for learning patterns. We do NOT clone them.
-
-| Repo | Stars | Purpose | Key Patterns |
-|------|-------|---------|--------------|
-| [pyautogui](https://github.com/asweigart/pyautogui) | 9k+ | Desktop automation | Mouse/keyboard control |
-| [mss](https://github.com/BoboTiG/python-mss) | 1k+ | Fast screenshots | Cross-platform capture |
-| [claude-task-master](https://github.com/eyaltoledano/claude-task-master) | N/A | AI Task Management | PRD-led workflow and rules |
-
----
-
-## CAD COM References
-
-### SolidWorks COM API
-
-```python
-# ProgID: "SldWorks.Application"
-# Documentation: SolidWorks API Help (installed with SW)
-# Key interfaces:
-#   - ISldWorks (main application)
-#   - IModelDoc2 (part/assembly document)
-#   - ISketchManager (sketch operations)
-#   - IFeatureManager (features like extrude)
-```
-
-### Inventor COM API
-
-```python
-# ProgID: "Inventor.Application"
-# Documentation: Inventor API Help (installed with Inventor)
-# Key interfaces:
-#   - Application (main application)
-#   - PartDocument (part documents)
-#   - Sketch (sketch operations)
-#   - PartFeatures (features like extrude)
-```
+| Repo | Purpose | Key Files We Reference |
+|------|---------|------------------------|
+| [pyautogui](https://github.com/asweigart/pyautogui) | Desktop automation | API patterns |
+| [APScheduler](https://github.com/agronholm/apscheduler) | Job scheduling | AsyncIOScheduler usage |
+| [CAD-MCP](https://github.com/daobataotie/CAD-MCP) | CAD control patterns | Tool definitions |
+| [mcp-gdrive](https://github.com/wong2/mcp-gdrive-adapter) | Drive MCP | Server patterns |
 
 ---
 
@@ -121,16 +155,6 @@ These are reference repositories for learning patterns. We do NOT clone them.
 
 ---
 
-## Memory & RAG References
-
-| Resource | Type | Purpose |
-|----------|------|---------|
-| [Chroma Docs](https://docs.trychroma.com/) | Documentation | Vector DB setup and queries |
-| [Sentence Transformers](https://www.sbert.net/) | Documentation | Embedding model selection |
-| [all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) | Model | Default embedding model (22MB, fast) |
-
----
-
 ## Architecture Principles
 
 Based on RULES.md:
@@ -142,3 +166,5 @@ Based on RULES.md:
 5. **Desktop Server is Sacred** - All physical control through one server
 6. **RAG Pipeline** - Augment queries with relevant past context
 7. **HITL for Updates** - Strategy changes require user approval
+8. **Lazy Imports** - Only load heavy packages when needed
+9. **MCP First** - Use MCP servers when available, direct API as fallback

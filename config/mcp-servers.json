@@ -1,0 +1,37 @@
+{
+  "_comment": "MCP Server Registry - Reference config for Vulcan MCP servers",
+  "servers": {
+    "desktop-control": {
+      "description": "Physical Windows PC control",
+      "location": "desktop-server/mcp_server.py",
+      "transport": "stdio",
+      "tools": ["mouse_move", "mouse_click", "type_text", "press_key", "get_screen_info", "start_recording", "stop_recording", "verify_visual_state"],
+      "resources": ["vulcan://logs", "vulcan://status"]
+    },
+    "memory-vec": {
+      "description": "Vector memory for RAG",
+      "package": "chromadb",
+      "install": "pip install chromadb",
+      "port": 8770,
+      "tools": ["memory_store", "memory_search", "memory_query"]
+    },
+    "google-drive": {
+      "description": "Google Drive file sync",
+      "reference": "https://github.com/wong2/mcp-gdrive-adapter",
+      "package": "google-api-python-client",
+      "install": "pip install google-api-python-client google-auth",
+      "tools": ["drive_upload", "drive_download", "drive_list", "drive_sync"]
+    },
+    "cad-mcp": {
+      "description": "CAD software control",
+      "reference": "https://github.com/daobataotie/CAD-MCP",
+      "note": "Reference only - we use thin adapters in desktop-server/com/",
+      "tools": ["create_part", "modify_part", "export_step"]
+    }
+  },
+  "patterns": {
+    "adapter": "50-100 lines wrapping external package",
+    "bridge": "Connects to MCP server or falls back to direct API",
+    "no_cloning": "Never clone external repos - pip install + adapter"
+  }
+}

@@ -9,6 +9,7 @@ gunicorn==21.2.0
 
 # HTTP Client (for desktop server proxy)
 httpx==0.26.0
+aiohttp==3.9.1
 
 # LLM
 anthropic==0.18.1
@@ -23,6 +24,19 @@ python-dotenv==1.0.0
 
 # Validation
 pydantic==2.5.3
+
+# System Manager (scheduler + metrics)
+APScheduler==3.10.4
+psutil==5.9.7
+
+# PDF Processing (for CAD Agent)
+pdf2image==1.16.3
+pytesseract==0.3.10
+Pillow==10.2.0
+
+# Google Drive Integration
+google-api-python-client==2.111.0
+google-auth==2.25.2
 
 # Testing
 pytest==7.4.4
