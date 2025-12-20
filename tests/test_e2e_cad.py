@@ -118,7 +118,7 @@ class TestCADE2EFlow:
     @pytest.mark.asyncio
     async def test_solidworks_com_control(self):
         """Test SolidWorks COM automation."""
-        from desktop_server.com import SolidWorksCOM
+        from desktop_server.com.solidworks_com import SolidWorksCOM
 
         mock_win32 = MagicMock()
 
@@ -226,7 +226,7 @@ class TestCADErrorHandling:
     @pytest.mark.asyncio
     async def test_cad_software_unavailable(self):
         """Test graceful handling when CAD software not running."""
-        from desktop_server.com import SolidWorksCOM
+        from desktop_server.com.solidworks_com import SolidWorksCOM
 
         with patch("win32com.client.Dispatch", side_effect=Exception("COM error")):
             sw = SolidWorksCOM()
