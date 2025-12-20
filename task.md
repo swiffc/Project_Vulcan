@@ -44,12 +44,15 @@
 
 ---
 
-## 📋 Backlog
+## ✅ Phase 5: Integration - Complete
 
-### Phase 5: Integration
-- [ ] CrewAI orchestrator adapter
-- [ ] End-to-end workflow tests
-- [ ] Health dashboard UI
+- [x] CrewAI orchestrator adapter (`agents/core/orchestrator_adapter.py` ~200 lines)
+- [x] End-to-end workflow tests (`tests/test_workflows.py` ~235 lines)
+- [x] Health dashboard API (`agents/core/health_dashboard.py` ~200 lines)
+
+---
+
+## 📋 Backlog
 
 ### Phase 6: Polish
 - [ ] Voice command adapter (Whisper)
@@ -73,6 +76,8 @@
 | `agents/inspector-bot/adapters/report_bridge.py` | Bridge | reportlab/markdown | ~200 |
 | `desktop-server/com/solidworks_com.py` | Adapter | pywin32 COM | ~200 |
 | `desktop-server/com/inventor_com.py` | Adapter | pywin32 COM | ~160 |
+| `agents/core/orchestrator_adapter.py` | Adapter | CrewAI routing | ~200 |
+| `agents/core/health_dashboard.py` | Bridge | httpx, health checks | ~200 |
 
 ---
 
