@@ -148,44 +148,42 @@ class TestCADE2EFlow:
         """Test ECN adapter for revision tracking."""
         from agents.cad_agent.adapters import ECNAdapter
 
-        mock_db = MagicMock()
+        mock_memory = AsyncMock()
+        mock_memory.store = AsyncMock(return_value={"id": "ecn-001"})
 
-        ecn = ECNAdapter(db_client=mock_db)
+        ecn = ECNAdapter(memory_client=mock_memory)
 
-        # Log a revision
-        revision = await ecn.log_revision({
-            "part": "Flange_01",
-            "rev": "B",
-            "changes": "Updated bore diameter per ECN-2025-001",
-            "author": "CAD Agent"
-        })
+        # Create an ECN
+        ecn_record = await ecn.create(
+            title="Updated bore diameter",
+            description="Per customer request",
+            affected_parts=["Flange_01"],
+            changes=[{"type": "dimension", "from": 0.5, "to": 0.52}]
+        )
 
-        assert revision is not None
-
-        # Get revision history
-        history = await ecn.get_history("Flange_01")
-        assert isinstance(history, list)
+        assert ecn_record is not None
+        assert ecn_record.ecn_number.startswith("ECN-")
 
     @pytest.mark.asyncio
     async def test_drive_export(self):
         """Test Google Drive export integration."""
         from agents.cad_agent.adapters import GDriveBridge
 
-        mock_drive = AsyncMock()
-        mock_drive.upload = AsyncMock(return_value={
+        mock_mcp = AsyncMock()
+        mock_mcp.call_tool = AsyncMock(return_value={
             "id": "drive-file-123",
-            "webViewLink": "https://drive.google.com/file/d/..."
+            "link": "https://drive.google.com/file/d/..."
         })
 
-        bridge = GDriveBridge(drive_client=mock_drive)
+        bridge = GDriveBridge(mcp_client=mock_mcp)
 
-        result = await bridge.upload_file(
+        result = await bridge.upload(
             "/exports/Flange_01.STEP",
-            folder_id="vulcan-exports"
+            drive_folder="vulcan-exports"
         )
 
         assert result["id"] is not None
-        mock_drive.upload.assert_called_once()
+        mock_mcp.call_tool.assert_called_once()
 
 
 class TestCADErrorHandling:
@@ -204,13 +202,12 @@ class TestCADErrorHandling:
     @pytest.mark.asyncio
     async def test_cad_software_unavailable(self):
         """Test graceful handling when CAD software not running."""
-        from desktop_server.com.solidworks_com import SolidWorksCOM
+        from desktop_server.com import solidworks_com
 
+        # When COM fails, get_app should raise HTTPException
         with patch("win32com.client.Dispatch", side_effect=Exception("COM error")):
-            sw = SolidWorksCOM()
-
             with pytest.raises(Exception):
-                await sw.new_part("TestPart")
+                solidworks_com.get_app()
 
     @pytest.mark.asyncio
     async def test_dimension_extraction_fallback(self):
