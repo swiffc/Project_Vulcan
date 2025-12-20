@@ -8,7 +8,8 @@
       "Bash(git commit:*)",
       "Bash(git pull:*)",
       "Bash(python -m pytest tests/test_workflows.py -v --tb=short)",
-      "Bash(python -m pytest:*)"
+      "Bash(python -m pytest:*)",
+      "Bash(docker --version:*)"
     ]
   }
 }
