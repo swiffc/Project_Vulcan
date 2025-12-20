@@ -132,12 +132,10 @@ class TestLoadPerformance:
     @pytest.mark.asyncio
     async def test_circuit_breaker_under_load(self):
         """Test circuit breaker protects under failure storm."""
-        from agents.core.circuit_breaker import CircuitBreaker
+        from agents.core.circuit_breaker import CircuitBreakerAdapter, CircuitConfig
 
-        breaker = CircuitBreaker(
-            failure_threshold=5,
-            recovery_timeout=1.0
-        )
+        config = CircuitConfig(failure_threshold=5, timeout_seconds=1)
+        breaker = CircuitBreakerAdapter(config=config)
 
         # Simulate failures
         for _ in range(10):
