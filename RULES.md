@@ -426,9 +426,9 @@ Project_Vulcan/
 │   └── web/                   # Next.js chatbot interface
 ├── agents/
 │   ├── core/                  # Shared business logic
-│   ├── trading-agent/         # Trading analysis & execution
-│   ├── cad-agent/             # SolidWorks & AutoCAD integration
-├── desktop-server/            # Python - Physical control API
+│   ├── trading_agent/         # Trading analysis & execution
+│   ├── cad_agent/             # SolidWorks & AutoCAD integration
+├── desktop_server/            # Python - Physical control API
 │   ├── venv/                  # Pinned dependencies (ignored)
 │   ├── controllers/           # Mouse, Keyboard, Screen
 │   └── com/                   # CAD COM adapters (Lazy loaded)

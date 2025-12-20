@@ -93,7 +93,7 @@ Project_Vulcan/
 │       ├── rag_engine.py        # RAG pipeline (~100 lines)
 │       └── ingest.py            # Data ingestion (~80 lines)
 ├── agents/
-│   └── review-agent/
+│   └── review_agent/
 │       ├── src/
 │       │   └── weekly_review.py # Weekly performance review (~150 lines)
 │       └── templates/
@@ -104,7 +104,7 @@ Project_Vulcan/
 
 ### 4.2 Dependencies
 
-Add to `desktop-server/requirements.txt`:
+Add to `desktop_server/requirements.txt`:
 
 ```txt
 # Vector Memory & RAG
@@ -195,7 +195,7 @@ class RAGEngine:
 ### 4.5 Weekly Review Agent
 
 ```python
-# agents/review-agent/src/weekly_review.py
+# agents/review_agent/src/weekly_review.py
 
 class WeeklyReviewAgent:
     """Automated weekly performance review."""
@@ -286,7 +286,7 @@ memory:
 After each trade is logged:
 
 ```python
-# In trading-agent after trade completion
+# In trading_agent after trade completion
 memory.add_trade(
     trade_id=f"trade_{timestamp}",
     content=f"{setup_type} on {pair}: {rationale}. Result: {result}. Lesson: {lesson}",

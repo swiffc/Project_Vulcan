@@ -73,7 +73,7 @@ This rebuilt PRD incorporates the latest specifications for Project_Vulcan as yo
 
 ## 6. AI-Friendly Engineering Standards
 
-- **Monorepo & Boundaries**: Maintain clear separation between `apps/`, `agents/`, and `desktop-server/`.
+- **Monorepo & Boundaries**: Maintain clear separation between `apps/`, `agents/`, and `desktop_server/`.
 - **Configuration Over Code**: Changeable logic (CAD strategies, trade plans) must reside in external JSON/Markdown files.
 - **Single Responsibility**: Maintain a strictly modular architecture; files must stay under 300 lines.
 - **Lazy Execution**: Use on-demand imports for heavy physical-control libraries (`pywin32`, `pyautogui`).

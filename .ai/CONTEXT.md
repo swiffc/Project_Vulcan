@@ -6,7 +6,7 @@ This is a personal AI Operating System designed for professional CAD automation 
 
 1. **NO CLONING**: Do not clone external repos. Use "Thin Adapters" and remote references.
 2. **SSOT**: The root `task.md` is the single source of truth for progress.
-3. **Monorepo**: Keep everything in this repo with strict boundaries (`apps/`, `agents/`, `desktop-server/`).
+3. **Monorepo**: Keep everything in this repo with strict boundaries (`apps/`, `agents/`, `desktop_server/`).
 4. **Config-Over-Code**: Business logic (strategies) lives in JSON/Markdown, not Python/Node logic.
 5. **Human-in-the-Loop**: High-stake physical actions (trades/deletes) require explicit user approval.
 
