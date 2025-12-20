@@ -167,7 +167,7 @@ export function Performance() {
                     borderRadius: "8px",
                     color: "white",
                   }}
-                  formatter={(value: number) => [`${value > 0 ? "+" : ""}${value.toFixed(1)}R`, "Return"]}
+                  formatter={(value) => { const v = value as number ?? 0; return [`${v > 0 ? "+" : ""}${v.toFixed(1)}R`, "Return"]; }}
                 />
                 <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                   {weeklyReturns.map((entry, index) => (
