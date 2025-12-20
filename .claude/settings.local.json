@@ -12,7 +12,8 @@
       "Bash(docker --version:*)",
       "Bash(timeout:*)",
       "Bash(ping:*)",
-      "Bash(node node_modules/next/dist/bin/next dev:*)"
+      "Bash(node node_modules/next/dist/bin/next dev:*)",
+      "Bash(find:*)"
     ]
   }
 }
