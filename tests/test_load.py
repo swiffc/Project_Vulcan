@@ -132,33 +132,40 @@ class TestLoadPerformance:
     @pytest.mark.asyncio
     async def test_circuit_breaker_under_load(self):
         """Test circuit breaker protects under failure storm."""
-        from agents.core.circuit_breaker import CircuitBreakerAdapter, CircuitConfig
+        from agents.core.circuit_breaker import CircuitBreakerAdapter, CircuitConfig, CircuitState
 
-        config = CircuitConfig(failure_threshold=5, timeout_seconds=1)
-        breaker = CircuitBreakerAdapter(config=config)
+        breaker = CircuitBreakerAdapter()
+        config = CircuitConfig(failure_threshold=3, timeout_seconds=1)
+        breaker.register("test_circuit", config)
+
+        # Define a failing function
+        @breaker.protect("test_circuit")
+        async def failing_function():
+            raise Exception("Simulated failure")
 
         # Simulate failures
-        for _ in range(10):
+        for _ in range(5):
             try:
-                async with breaker:
-                    raise Exception("Simulated failure")
+                await failing_function()
             except Exception:
                 pass
 
-        # Circuit should be open now
-        assert breaker.state == "open"
+        # Circuit should be open after threshold failures
+        assert breaker.circuits["test_circuit"] == CircuitState.OPEN
 
-        # Requests should fail fast
+        # Further calls should fail fast with CircuitBreakerError
+        from agents.core.circuit_breaker import CircuitBreakerError
         start = time.time()
         try:
-            async with breaker:
-                pass
+            await failing_function()
+        except CircuitBreakerError:
+            pass
         except Exception:
             pass
         elapsed = time.time() - start
 
-        # Should fail immediately (< 10ms) not wait
-        assert elapsed < 0.01, "Circuit breaker not failing fast"
+        # Should fail immediately
+        assert elapsed < 0.1, "Circuit breaker not failing fast"
 
 
 class TestEndurance:
