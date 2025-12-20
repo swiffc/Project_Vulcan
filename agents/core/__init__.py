@@ -1,9 +1,14 @@
 """
 Agents Core Module
-Provides shared utilities, orchestrator, health monitoring, auth, and alerts.
+Provides shared utilities, orchestrator, health monitoring, auth, alerts,
+and ULTIMATE cost optimization stack.
 """
 
 from .logging import BlackBoxLogger, get_logger
+from .redis_adapter import RedisCacheAdapter, get_cache
+from .model_router import ModelRouter, ModelTier, RoutingDecision, get_model_router
+from .token_optimizer import TokenOptimizer, get_token_optimizer
+from .token_optimizer_v2 import TokenOptimizerV2, get_token_optimizer_v2
 from .orchestrator_adapter import (
     OrchestratorAdapter,
     AgentType,
@@ -56,6 +61,17 @@ __all__ = [
     # Logging
     "BlackBoxLogger",
     "get_logger",
+    # Cost Optimization Stack
+    "RedisCacheAdapter",
+    "get_cache",
+    "ModelRouter",
+    "ModelTier",
+    "RoutingDecision",
+    "get_model_router",
+    "TokenOptimizer",
+    "get_token_optimizer",
+    "TokenOptimizerV2",
+    "get_token_optimizer_v2",
     # Orchestrator
     "OrchestratorAdapter",
     "AgentType",
