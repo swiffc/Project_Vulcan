@@ -4,7 +4,9 @@
       "Bash(dir \"C:\\Users\\DCornealius\\Documents\\GitHub\\Project_Vulcan\")",
       "WebSearch",
       "Bash(npm install)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\ndocs: Add strategic update plan and refresh documentation\n\n- Updated CLAUDE.md with comprehensive AI instructions\n- Updated README.md with full architecture diagram\n- Updated task.md with 7-week implementation roadmap\n- Added VULCAN_STRATEGIC_UPDATE_PLAN.md to docs/prds/\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n)\")"
     ]
   }
 }
