@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, CardHeader, CardContent } from "../ui/Card";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../ui/Table";
+import { TableHeader, TableBody, TableRow, TableHead, TableCell } from "../ui/Table";
 import { formatDistanceToNow } from "date-fns";
 
 interface Trade {
