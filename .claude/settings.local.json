@@ -21,7 +21,8 @@
       "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_OwningProcess -Force -ErrorAction SilentlyContinue }\")",
       "Bash(powershell -Command \"Set-Location -LiteralPath ''C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web''; if (Test-Path ''.next'') { Remove-Item -Recurse -Force ''.next'' }; npm run dev\")",
       "Bash(powershell -Command \"cmd /c ''for %I in (\"\"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\"\") do @echo %~sI''\")",
-      "Bash(cmd //c \"C:\\Users\\D^&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\\start-dev.bat\")"
+      "Bash(cmd //c \"C:\\Users\\D^&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\\start-dev.bat\")",
+      "Bash(powershell:*)"
     ]
   }
 }
