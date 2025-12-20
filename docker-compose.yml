@@ -32,8 +32,22 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - DESKTOP_SERVER_URL=http://desktop:8000
       - CHROMA_HOST=chromadb
+      - REDIS_URL=redis://redis:6379
     depends_on:
       - chromadb
+      - redis
+    restart: unless-stopped
+    networks:
+      - vulcan-net
+
+  # Redis Cache (Cost Optimization)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 100mb --maxmemory-policy allkeys-lru
     restart: unless-stopped
     networks:
       - vulcan-net
@@ -57,8 +71,11 @@ services:
     environment:
       - BACKUP_ENABLED=true
       - HEALTH_CHECK_INTERVAL=3600
+      - REDIS_URL=redis://redis:6379
     volumes:
       - vulcan-storage:/app/storage
+    depends_on:
+      - redis
     restart: unless-stopped
     networks:
       - vulcan-net
@@ -73,3 +90,4 @@ networks:
 volumes:
   chroma-data:
   vulcan-storage:
+  redis-data:

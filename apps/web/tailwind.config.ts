@@ -10,12 +10,14 @@ const config: Config = {
     extend: {
       colors: {
         vulcan: {
-          dark: "#0a0a0f",
-          darker: "#050508",
-          accent: "#6366f1",
-          success: "#22c55e",
-          warning: "#eab308",
-          error: "#ef4444",
+          dark: "#1e1b4b",
+          darker: "#312e81",
+          light: "#4338ca",
+          accent: "#818cf8",
+          success: "#34d399",
+          warning: "#fbbf24",
+          error: "#f87171",
+          surface: "rgba(255, 255, 255, 0.1)",
         },
       },
       backgroundImage: {

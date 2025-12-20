@@ -22,11 +22,21 @@ services:
     region: ohio
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn agents.core.api:app # Adjust to actual entry point
+    startCommand: gunicorn agents.core.api:app -w 2 -k uvicorn.workers.UvicornWorker
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.0
       - key: DESKTOP_SERVER_URL
         sync: false # Set manually to Tailscale IP of local PC
-      - key: DATABASE_URL
-        generateValue: true
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: vulcan-redis
+          property: connectionString
+
+  # Redis Cache (Cost Optimization)
+  - type: redis
+    name: vulcan-redis
+    region: ohio
+    plan: free
+    maxmemoryPolicy: allkeys-lru
