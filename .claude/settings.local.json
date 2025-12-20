@@ -14,7 +14,8 @@
       "Bash(ping:*)",
       "Bash(node node_modules/next/dist/bin/next dev:*)",
       "Bash(find:*)",
-      "Bash(tree /F /L 3 \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\\src\")"
+      "Bash(tree /F /L 3 \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\\src\")",
+      "Bash(powershell -Command \"cd ''C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web''; Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force node_modules\\.cache -ErrorAction SilentlyContinue; npm run dev\")"
     ]
   }
 }
