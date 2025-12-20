@@ -179,7 +179,7 @@ export function TradeJournal() {
           }
         />
         <CardContent className="-mx-4 -mb-4">
-          <Table>
+          <table className="w-full">
             <TableHeader>
               <TableRow>
                 <TableHead>Pair</TableHead>
