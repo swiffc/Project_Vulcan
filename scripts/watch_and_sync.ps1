@@ -37,7 +37,7 @@ function Sync-ToGitHub {
         $msg = "Auto-sync: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
         git commit -m $msg 2>$null
         
-        $result = git push origin main 2>&1
+        $result = git push origin master:main 2>&1
         if ($LASTEXITCODE -eq 0) {
             Write-Host "[$now] ✅ Pushed to GitHub" -ForegroundColor Green
         } else {
