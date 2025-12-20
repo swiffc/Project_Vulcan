@@ -14,7 +14,7 @@ import logging
 from datetime import datetime
 from typing import Callable, Dict, Optional
 
-logger = logging.getLogger("system-manager")
+logger = logging.getLogger("system_manager")
 
 
 class SchedulerAdapter:

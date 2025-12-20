@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import List, Dict, Optional
 from dataclasses import dataclass, asdict
 
-logger = logging.getLogger("cad-agent.ecn")
+logger = logging.getLogger("cad_agent.ecn")
 
 
 @dataclass

@@ -46,7 +46,7 @@ class StrategyAdapter:
     Reads rules from knowledge/ markdown files.
     """
     
-    def __init__(self, knowledge_dir: str = "agents/trading-agent/knowledge"):
+    def __init__(self, knowledge_dir: str = "agents/trading_agent/knowledge"):
         self.knowledge_dir = Path(knowledge_dir)
         self._strategies = ["ict", "btmm", "quarterly", "stacey-burke"]
         

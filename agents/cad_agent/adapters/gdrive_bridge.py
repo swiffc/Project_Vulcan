@@ -15,7 +15,7 @@ import logging
 from typing import List, Dict, Optional
 from pathlib import Path
 
-logger = logging.getLogger("cad-agent.gdrive")
+logger = logging.getLogger("cad_agent.gdrive")
 
 
 class GDriveBridge:

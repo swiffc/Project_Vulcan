@@ -14,7 +14,7 @@ from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
 
-logger = logging.getLogger("cad-agent.digital-twin")
+logger = logging.getLogger("cad_agent.digital-twin")
 
 
 @dataclass
@@ -192,7 +192,7 @@ class DigitalTwinAdapter:
     def to_cad_commands(self, twin: DigitalTwin) -> List[Dict]:
         """
         Convert twin to CAD execution commands.
-        These commands are sent to desktop-server for actual building.
+        These commands are sent to desktop_server for actual building.
         """
         commands = [
             {"action": "new_part", "params": {"name": twin.name}}

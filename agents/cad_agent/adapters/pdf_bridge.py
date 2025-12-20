@@ -16,7 +16,7 @@ import logging
 from typing import List, Dict, Optional
 from dataclasses import dataclass
 
-logger = logging.getLogger("cad-agent.pdf-bridge")
+logger = logging.getLogger("cad_agent.pdf-bridge")
 
 
 @dataclass
