@@ -1,0 +1,62 @@
+{
+  "server_name": "vulcan-gdrive-bridge",
+  "port": 8771,
+  "credentials_path": "./secrets/gdrive-credentials.json",
+  "default_folder": "Vulcan_Exports",
+  "folders": {
+    "trades": "Vulcan_Exports/Trading",
+    "cad": "Vulcan_Exports/CAD",
+    "reports": "Vulcan_Exports/Reports",
+    "backups": "Vulcan_Backups"
+  },
+  "tools": [
+    {
+      "name": "drive_upload",
+      "description": "Upload a file to Google Drive",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "local_path": { "type": "string", "description": "Path to local file" },
+          "remote_folder": { "type": "string", "description": "Drive folder name" },
+          "filename": { "type": "string", "description": "Optional remote filename" }
+        },
+        "required": ["local_path"]
+      }
+    },
+    {
+      "name": "drive_download",
+      "description": "Download a file from Google Drive",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "file_id": { "type": "string", "description": "Drive file ID" },
+          "local_path": { "type": "string", "description": "Where to save locally" }
+        },
+        "required": ["file_id", "local_path"]
+      }
+    },
+    {
+      "name": "drive_list",
+      "description": "List files in a Drive folder",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "folder": { "type": "string", "description": "Folder to list" },
+          "limit": { "type": "integer", "default": 50 }
+        }
+      }
+    },
+    {
+      "name": "drive_sync",
+      "description": "Sync local directory to Drive folder",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "local_dir": { "type": "string", "description": "Local directory path" },
+          "remote_folder": { "type": "string", "description": "Drive folder" }
+        },
+        "required": ["local_dir", "remote_folder"]
+      }
+    }
+  ]
+}

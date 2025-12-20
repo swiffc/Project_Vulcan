@@ -1,0 +1,99 @@
+{
+  "server_name": "vulcan-cad-mcp",
+  "description": "CAD-MCP bridge for SolidWorks and Inventor",
+  "upstream": {
+    "repository": "https://github.com/daobataotie/CAD-MCP",
+    "docs": "https://github.com/daobataotie/CAD-MCP#readme"
+  },
+  "supported_applications": [
+    {
+      "name": "solidworks",
+      "display_name": "SolidWorks",
+      "com_object": "SldWorks.Application",
+      "extensions": [".sldprt", ".sldasm", ".slddrw"]
+    },
+    {
+      "name": "inventor",
+      "display_name": "Autodesk Inventor",
+      "com_object": "Inventor.Application",
+      "extensions": [".ipt", ".iam", ".idw"]
+    },
+    {
+      "name": "autocad",
+      "display_name": "AutoCAD",
+      "com_object": "AutoCAD.Application",
+      "extensions": [".dwg", ".dxf"]
+    }
+  ],
+  "tools": [
+    {
+      "name": "cad.create_part",
+      "description": "Create a new CAD part",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "application": { "type": "string", "enum": ["solidworks", "inventor"] },
+          "name": { "type": "string" },
+          "features": { "type": "array", "items": { "type": "object" } }
+        },
+        "required": ["application", "name"]
+      }
+    },
+    {
+      "name": "cad.create_assembly",
+      "description": "Create an assembly from parts",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "application": { "type": "string" },
+          "name": { "type": "string" },
+          "parts": { "type": "array", "items": { "type": "string" } },
+          "mates": { "type": "array", "items": { "type": "object" } }
+        },
+        "required": ["application", "name", "parts"]
+      }
+    },
+    {
+      "name": "cad.modify_part",
+      "description": "Modify an existing part",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "part_path": { "type": "string" },
+          "changes": { "type": "array", "items": { "type": "object" } },
+          "ecn_number": { "type": "string" }
+        },
+        "required": ["part_path", "changes"]
+      }
+    },
+    {
+      "name": "cad.export",
+      "description": "Export to STEP, PDF, or other formats",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "source_path": { "type": "string" },
+          "format": { "type": "string", "enum": ["step", "pdf", "iges", "stl"] },
+          "output_path": { "type": "string" }
+        },
+        "required": ["source_path", "format"]
+      }
+    },
+    {
+      "name": "cad.get_mass_properties",
+      "description": "Get mass properties of a part/assembly",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string" }
+        },
+        "required": ["path"]
+      }
+    }
+  ],
+  "notes": [
+    "This server runs locally on Windows with CAD applications installed",
+    "Requires COM automation access to CAD applications",
+    "See CAD-MCP repository for installation instructions"
+  ]
+}
