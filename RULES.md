@@ -305,10 +305,20 @@ Document ALL external dependencies in one place:
 
 Always check if a professional package already exists before writing custom automation logic.
 
-- **Total Project**: Maximum 50 core files.
-- **Adapters**: 50-100 lines.
-- **Agents**: 100-300 lines.
-- **If ANY file exceeds 300 lines → split it immediately.**
+### File Size Limits (Researched Best Practices)
+
+Based on industry standards (PEP 8, maintainability research):
+
+| File Type | Recommended | Max Before Split |
+|-----------|-------------|------------------|
+| **Adapters** | 100-200 lines | 250 lines |
+| **Agents** | 200-400 lines | 500 lines |
+| **Controllers** | 100-250 lines | 400 lines |
+| **Config/Utils** | 50-150 lines | 200 lines |
+
+- **Split at 500 lines** - Not 300. Industry standard is 500-800 for maintainability.
+- **Fewer files > many tiny files** - Don't over-fragment. Group related logic.
+- **Total Project**: Aim for ~50-80 core files, not a hard limit.
 
 ## Rule 14: Configuration Over Code
 
