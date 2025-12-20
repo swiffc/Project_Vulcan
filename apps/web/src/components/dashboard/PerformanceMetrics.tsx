@@ -130,7 +130,7 @@ export function PerformanceMetrics() {
                   borderRadius: "8px",
                   color: "white",
                 }}
-                formatter={(value: number) => [`${value}ms`, "Latency"]}
+                formatter={(value) => [`${value ?? 0}ms`, "Latency"]}
               />
               <Area
                 type="monotone"
