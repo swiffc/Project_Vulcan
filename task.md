@@ -183,3 +183,20 @@ system=[{
 - `CLAUDE.md` - AI instructions
 - `docker-compose.yml` - Deployment config
 - [Anthropic Prompt Caching Docs](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
+
+---
+
+## 📁 Files That Need to Sync
+
+### New Files
+- `agents/core/redis_adapter.py`
+- `agents/core/model_router.py`
+- `agents/core/token_optimizer.py`
+- `agents/core/token_optimizer_v2.py`
+- `task.md`
+
+### Updated Files
+- `core/llm.py`
+- `docker-compose.yml`
+- `render.yaml`
+- `requirements.txt`
