@@ -5,34 +5,18 @@
       "WebSearch",
       "Bash(npm install)",
       "Bash(npm run dev:*)",
-<<<<<<< HEAD
       "Bash(git commit:*)",
       "Bash(git pull:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)",
       "Bash(python -m pytest tests/test_workflows.py -v --tb=short)",
       "Bash(python -m pytest:*)",
       "Bash(docker --version:*)",
       "Bash(timeout:*)",
       "Bash(ping:*)",
-      "Bash(node node_modules/next/dist/bin/next dev:*)",
-      "Bash(find:*)",
-      "Bash(tree /F /L 3 \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\\src\")",
-      "Bash(powershell -Command \"cd ''C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web''; Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force node_modules\\.cache -ErrorAction SilentlyContinue; npm run dev\")",
-      "Bash(powershell -Command \"Set-Location ''C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web''; if (Test-Path .next) { Remove-Item -Recurse -Force .next }; npx next dev -p 3000\")",
       "Bash(node:*)",
-      "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_OwningProcess -Force -ErrorAction SilentlyContinue }\")",
-      "Bash(powershell -Command \"Set-Location -LiteralPath ''C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web''; if (Test-Path ''.next'') { Remove-Item -Recurse -Force ''.next'' }; npm run dev\")",
-      "Bash(powershell -Command \"cmd /c ''for %I in (\"\"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\"\") do @echo %~sI''\")",
-      "Bash(cmd //c \"C:\\Users\\D^&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\\start-dev.bat\")",
       "Bash(powershell:*)",
-      "Bash(cmd /c mklink /J C:vulcan-web \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\")",
-      "Bash(dir \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\")",
-      "Bash(dir /s \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\\src\")"
-=======
-      "Bash(git add:*)",
-      "Bash(git commit -m \"$(cat <<''EOF''\ndocs: Add strategic update plan and refresh documentation\n\n- Updated CLAUDE.md with comprehensive AI instructions\n- Updated README.md with full architecture diagram\n- Updated task.md with 7-week implementation roadmap\n- Added VULCAN_STRATEGIC_UPDATE_PLAN.md to docs/prds/\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n)\")",
-      "Bash(git push:*)",
-      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Phase 1 - Infrastructure Foundation\n\n## Repository Restructure\n- Renamed agents/trading-agent → agents/trading-bot\n- Renamed agents/cad-agent → agents/cad-agent-ai\n- Renamed agents/review-agent → agents/inspector-bot\n\n## New: System Manager Agent (David''s Worker)\n- agents/system-manager/src/scheduler.py - Job scheduling\n- agents/system-manager/src/backup.py - Google Drive backups\n- agents/system-manager/src/health_monitor.py - Service health checks\n- agents/system-manager/src/metrics_collector.py - System metrics\n- agents/system-manager/src/main.py - Daemon entry point\n\n## New: MCP Server Configurations\n- mcp-servers/memory-vec/ - Memory Brain RAG server\n- mcp-servers/google-drive/ - Drive sync bridge\n- mcp-servers/cad-mcp/ - CAD automation config\n\n## Updated: Render Deployment\n- Multi-service deployment (web, orchestrator, system-manager, memory)\n- Environment variable groups for secrets\n- Health check endpoints\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n)\")"
->>>>>>> 3bb774a741d326374e3176484ea79e8601906724
+      "Bash(find:*)"
     ]
   }
 }
