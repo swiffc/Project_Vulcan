@@ -9,7 +9,10 @@
       "Bash(git pull:*)",
       "Bash(python -m pytest tests/test_workflows.py -v --tb=short)",
       "Bash(python -m pytest:*)",
-      "Bash(docker --version:*)"
+      "Bash(docker --version:*)",
+      "Bash(timeout:*)",
+      "Bash(ping:*)",
+      "Bash(node node_modules/next/dist/bin/next dev:*)"
     ]
   }
 }
