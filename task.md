@@ -53,19 +53,18 @@
 
 ---
 
-## 🚀 Active Sprint: Phase 8 - Deployment
+## ✅ Phase 8: Deployment - Complete
 
-### Docker & CI/CD
-- [x] docker-compose.yml (multi-service)
-- [x] Dockerfile.orchestrator
-- [x] Dockerfile.system-manager
-- [ ] GitHub Actions CI/CD pipeline
-- [ ] Kubernetes manifests (optional)
+### Render Deployment (per PRD-002)
+- [x] render.yaml with all services (web, orchestrator, system-manager, memory)
+- [x] GitHub Actions CI/CD pipeline (`.github/workflows/ci.yml`)
+- [x] Docker Compose for local dev
+- [x] Dockerfiles for containerized testing
 
-### Integration Testing
+### Next: Integration Testing (PRD Section 9)
 - [ ] E2E test: Trading flow (analyze → journal → audit)
 - [ ] E2E test: CAD flow (PDF → twin → build → verify)
-- [ ] Load testing (100 concurrent requests)
+- [ ] Load testing (< 2% failure at 100 runs)
 
 ---
 
