@@ -24,7 +24,8 @@
       "Bash(cmd //c \"C:\\Users\\D^&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\\start-dev.bat\")",
       "Bash(powershell:*)",
       "Bash(cmd /c mklink /J C:vulcan-web \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\")",
-      "Bash(dir \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\")"
+      "Bash(dir \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\")",
+      "Bash(dir /s \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\\src\")"
     ]
   }
 }
