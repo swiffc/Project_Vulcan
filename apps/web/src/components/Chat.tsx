@@ -55,7 +55,7 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
         const response = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: messagePayload }),
+          body: JSON.stringify({ messages: messagePayload, agentContext }),
           signal: controller.signal,
         });
 
