@@ -239,7 +239,7 @@ export function TradeJournal() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+          </table>
         </CardContent>
       </Card>
     </div>
