@@ -196,8 +196,9 @@ class TestCADErrorHandling:
 
         bridge = PDFBridge()
 
+        # extract_from_pdf should raise when given invalid path
         with pytest.raises(Exception):
-            await bridge.extract_dimensions("/fake/corrupt.pdf")
+            bridge.extract_from_pdf("/fake/corrupt.pdf")
 
     @pytest.mark.asyncio
     async def test_cad_software_unavailable(self):
@@ -211,19 +212,15 @@ class TestCADErrorHandling:
 
     @pytest.mark.asyncio
     async def test_dimension_extraction_fallback(self):
-        """Test fallback when OCR fails."""
+        """Test fallback when PDF processing fails."""
         from agents.cad_agent.adapters import PDFBridge
 
         bridge = PDFBridge()
 
-        with patch("pytesseract.image_to_string", side_effect=Exception("OCR failed")):
-            with patch.object(bridge, "_pdf_to_images", return_value=["page1.png"]):
-                # Should return empty or raise gracefully
-                try:
-                    result = await bridge.extract_dimensions("/fake/drawing.pdf")
-                    assert result is None or result == []
-                except Exception:
-                    pass  # Expected
+        # When pdf2image fails, extract_from_pdf should raise
+        with patch("pdf2image.convert_from_path", side_effect=Exception("PDF conversion failed")):
+            with pytest.raises(Exception):
+                bridge.extract_from_pdf("/fake/drawing.pdf")
 
 
 class TestCADAccuracy:
