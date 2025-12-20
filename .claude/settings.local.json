@@ -17,7 +17,8 @@
       "Bash(tree /F /L 3 \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\\src\")",
       "Bash(powershell -Command \"cd ''C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web''; Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue; Remove-Item -Recurse -Force node_modules\\.cache -ErrorAction SilentlyContinue; npm run dev\")",
       "Bash(powershell -Command \"Set-Location ''C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web''; if (Test-Path .next) { Remove-Item -Recurse -Force .next }; npx next dev -p 3000\")",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_OwningProcess -Force -ErrorAction SilentlyContinue }\")"
     ]
   }
 }
