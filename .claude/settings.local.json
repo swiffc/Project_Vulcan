@@ -13,7 +13,8 @@
       "Bash(timeout:*)",
       "Bash(ping:*)",
       "Bash(node node_modules/next/dist/bin/next dev:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(tree /F /L 3 \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\\src\")"
     ]
   }
 }
