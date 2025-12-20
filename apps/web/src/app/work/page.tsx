@@ -44,6 +44,45 @@ interface EmailData {
   importantUnread: number;
 }
 
+interface TeamsChat {
+  id: string;
+  topic: string;
+  type: "group" | "oneOnOne";
+  lastMessage: { content: string; from: string; timestamp: string };
+  unreadCount: number;
+}
+
+interface TeamsMention {
+  chatId: string;
+  messageId: string;
+  mentionedBy: string;
+  preview: string;
+  timestamp: string;
+}
+
+interface TeamsData {
+  chats: TeamsChat[];
+  mentions: TeamsMention[];
+  totalUnread: number;
+  mentionCount: number;
+}
+
+interface DriveFile {
+  id: string;
+  name: string;
+  path: string;
+  webUrl: string;
+  lastModified: string;
+  modifiedBy: string;
+  size: number;
+  mimeType: string;
+}
+
+interface FilesData {
+  files: DriveFile[];
+  source: string;
+}
+
 export default function WorkPage() {
   const [workStatus, setWorkStatus] = useState<WorkHealthResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -54,9 +93,11 @@ export default function WorkPage() {
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
 
-  // Email Data State
+  // Data States
   const [emailData, setEmailData] = useState<EmailData | null>(null);
-  const [emailLoading, setEmailLoading] = useState(false);
+  const [teamsData, setTeamsData] = useState<TeamsData | null>(null);
+  const [filesData, setFilesData] = useState<FilesData | null>(null);
+  const [dataLoading, setDataLoading] = useState(false);
 
   const checkWorkHealth = useCallback(async () => {
     try {
@@ -73,21 +114,25 @@ export default function WorkPage() {
     }
   }, []);
 
-  // Fetch emails when authenticated
-  const fetchEmails = useCallback(async () => {
+  // Fetch all Microsoft data when authenticated
+  const fetchAllData = useCallback(async () => {
     if (!workStatus?.services.microsoft.authenticated) return;
 
-    setEmailLoading(true);
+    setDataLoading(true);
     try {
-      const res = await fetch("/api/work/microsoft/mail");
-      if (res.ok) {
-        const data = await res.json();
-        setEmailData(data);
-      }
+      const [emailRes, teamsRes, filesRes] = await Promise.all([
+        fetch("/api/work/microsoft/mail"),
+        fetch("/api/work/microsoft/teams"),
+        fetch("/api/work/microsoft/files"),
+      ]);
+
+      if (emailRes.ok) setEmailData(await emailRes.json());
+      if (teamsRes.ok) setTeamsData(await teamsRes.json());
+      if (filesRes.ok) setFilesData(await filesRes.json());
     } catch (error) {
-      console.error("Failed to fetch emails:", error);
+      console.error("Failed to fetch data:", error);
     } finally {
-      setEmailLoading(false);
+      setDataLoading(false);
     }
   }, [workStatus?.services.microsoft.authenticated]);
 
@@ -98,12 +143,12 @@ export default function WorkPage() {
     return () => clearInterval(interval);
   }, [checkWorkHealth]);
 
-  // Fetch emails when authenticated
+  // Fetch data when authenticated
   useEffect(() => {
     if (workStatus?.services.microsoft.authenticated) {
-      fetchEmails();
+      fetchAllData();
     }
-  }, [workStatus?.services.microsoft.authenticated, fetchEmails]);
+  }, [workStatus?.services.microsoft.authenticated, fetchAllData]);
 
   // Poll for device code status
   useEffect(() => {
@@ -159,6 +204,8 @@ export default function WorkPage() {
     try {
       await fetch("/api/work/microsoft/auth/signout", { method: "POST" });
       setEmailData(null);
+      setTeamsData(null);
+      setFilesData(null);
       checkWorkHealth();
     } catch (error) {
       console.error("Sign out error:", error);
@@ -180,6 +227,21 @@ export default function WorkPage() {
     return date.toLocaleDateString();
   };
 
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  const getFileIcon = (mimeType: string) => {
+    if (mimeType.includes("pdf")) return "text-red-400";
+    if (mimeType.includes("word") || mimeType.includes("document")) return "text-blue-400";
+    if (mimeType.includes("sheet") || mimeType.includes("excel")) return "text-green-400";
+    if (mimeType.includes("presentation") || mimeType.includes("powerpoint")) return "text-orange-400";
+    if (mimeType.includes("image")) return "text-purple-400";
+    return "text-white/40";
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       {/* Header */}
@@ -189,7 +251,6 @@ export default function WorkPage() {
           <p className="text-white/50">All your work info in one place</p>
         </div>
         <div className="flex items-center gap-4">
-          {/* Connection Status */}
           <div className="flex items-center gap-2">
             <StatusDot
               status={
@@ -207,20 +268,17 @@ export default function WorkPage() {
             </span>
           </div>
 
-          {/* Sign Out Button (when connected) */}
           {workStatus?.services.microsoft.authenticated && (
             <Button variant="ghost" size="sm" onClick={signOut}>
               Sign Out
             </Button>
           )}
 
-          {/* Last Refresh */}
           <span className="text-xs text-white/30">
             {lastRefresh ? `Updated ${lastRefresh.toLocaleTimeString()}` : "Loading..."}
           </span>
 
-          {/* Refresh Button */}
-          <Button variant="secondary" size="sm" onClick={() => { checkWorkHealth(); fetchEmails(); }}>
+          <Button variant="secondary" size="sm" onClick={() => { checkWorkHealth(); fetchAllData(); }}>
             <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
@@ -233,10 +291,7 @@ export default function WorkPage() {
       {deviceCode && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
           <Card className="max-w-md w-full mx-4">
-            <CardHeader
-              title="Sign in to Microsoft"
-              subtitle="Complete authentication in your browser"
-            />
+            <CardHeader title="Sign in to Microsoft" subtitle="Complete authentication in your browser" />
             <CardContent>
               <div className="text-center space-y-4">
                 <div className="bg-vulcan-accent/20 rounded-xl p-4">
@@ -245,42 +300,23 @@ export default function WorkPage() {
                     {deviceCode.userCode}
                   </p>
                 </div>
-
                 <div className="space-y-2">
                   <p className="text-white/60 text-sm">
                     1. Go to{" "}
-                    <a
-                      href={deviceCode.verificationUri}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-vulcan-accent hover:underline"
-                    >
+                    <a href={deviceCode.verificationUri} target="_blank" rel="noopener noreferrer" className="text-vulcan-accent hover:underline">
                       {deviceCode.verificationUri}
                     </a>
                   </p>
                   <p className="text-white/60 text-sm">2. Enter the code above</p>
                   <p className="text-white/60 text-sm">3. Sign in with your Microsoft account</p>
                 </div>
-
-                <Button
-                  variant="primary"
-                  onClick={() => window.open(deviceCode.verificationUri, "_blank")}
-                  className="w-full"
-                >
+                <Button variant="primary" onClick={() => window.open(deviceCode.verificationUri, "_blank")} className="w-full">
                   Open Microsoft Login
                 </Button>
-
                 <p className="text-white/30 text-xs">
                   Waiting for authentication... (expires in {Math.floor(deviceCode.expiresIn / 60)} minutes)
                 </p>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setDeviceCode(null)}
-                >
-                  Cancel
-                </Button>
+                <Button variant="ghost" size="sm" onClick={() => setDeviceCode(null)}>Cancel</Button>
               </div>
             </CardContent>
           </Card>
@@ -309,34 +345,14 @@ export default function WorkPage() {
                   </svg>
                 </div>
                 <p className="text-white/50 mb-4">Connect your Microsoft account to view emails</p>
-                {authError && (
-                  <p className="text-red-400 text-sm mb-4">{authError}</p>
-                )}
+                {authError && <p className="text-red-400 text-sm mb-4">{authError}</p>}
                 <Button variant="primary" onClick={startMicrosoftAuth} disabled={authLoading}>
-                  {authLoading ? (
-                    <span className="flex items-center gap-2">
-                      <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                      </svg>
-                      Connecting...
-                    </span>
-                  ) : (
-                    <>
-                      <svg className="w-4 h-4 mr-2" viewBox="0 0 21 21" fill="currentColor">
-                        <path d="M0 0h10v10H0V0zm11 0h10v10H11V0zM0 11h10v10H0V11zm11 0h10v10H11V11z"/>
-                      </svg>
-                      Connect Microsoft
-                    </>
-                  )}
+                  {authLoading ? "Connecting..." : "Connect Microsoft"}
                 </Button>
               </div>
-            ) : emailLoading ? (
+            ) : dataLoading ? (
               <div className="flex items-center justify-center py-8">
-                <svg className="w-8 h-8 animate-spin text-vulcan-accent" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
+                <div className="w-8 h-8 border-2 border-vulcan-accent border-t-transparent rounded-full animate-spin" />
               </div>
             ) : emailData ? (
               <div className="space-y-3">
@@ -348,13 +364,10 @@ export default function WorkPage() {
                   <span className="text-white/50">Important</span>
                   <Badge variant="warning">{emailData.importantUnread}</Badge>
                 </div>
-                <div className="border-t border-white/10 pt-3 mt-3 space-y-2 max-h-64 overflow-y-auto">
+                <div className="border-t border-white/10 pt-3 mt-3 space-y-2 max-h-48 overflow-y-auto">
                   {emailData.emails.length > 0 ? (
                     emailData.emails.slice(0, 5).map((email) => (
-                      <div
-                        key={email.id}
-                        className={`p-2 rounded-lg ${email.isRead ? "bg-white/5" : "bg-vulcan-accent/10"}`}
-                      >
+                      <div key={email.id} className={`p-2 rounded-lg ${email.isRead ? "bg-white/5" : "bg-vulcan-accent/10"}`}>
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0 flex-1">
                             <p className={`text-sm truncate ${email.isRead ? "text-white/60" : "text-white font-medium"}`}>
@@ -362,9 +375,7 @@ export default function WorkPage() {
                             </p>
                             <p className="text-xs text-white/40 truncate">{email.from.name}</p>
                           </div>
-                          <span className="text-xs text-white/30 whitespace-nowrap">
-                            {formatTime(email.receivedAt)}
-                          </span>
+                          <span className="text-xs text-white/30 whitespace-nowrap">{formatTime(email.receivedAt)}</span>
                         </div>
                       </div>
                     ))
@@ -374,9 +385,7 @@ export default function WorkPage() {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-4">
-                <p className="text-white/30 text-sm">No email data available</p>
-              </div>
+              <p className="text-white/30 text-sm text-center py-4">No email data available</p>
             )}
           </CardContent>
         </Card>
@@ -403,20 +412,40 @@ export default function WorkPage() {
                 <p className="text-white/50 mb-4">Connect Microsoft to view Teams messages</p>
                 <Button variant="ghost" disabled>Uses same Microsoft connection</Button>
               </div>
-            ) : (
+            ) : dataLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="w-8 h-8 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : teamsData ? (
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-white/50">Mentions</span>
-                  <Badge variant="error">0</Badge>
+                  <Badge variant="error">{teamsData.mentionCount}</Badge>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-white/50">Unread Chats</span>
-                  <Badge variant="info">0</Badge>
+                  <Badge variant="info">{teamsData.totalUnread}</Badge>
                 </div>
-                <div className="border-t border-white/10 pt-3 mt-3">
-                  <p className="text-white/30 text-sm text-center">Teams integration coming soon</p>
+                <div className="border-t border-white/10 pt-3 mt-3 space-y-2 max-h-48 overflow-y-auto">
+                  {teamsData.chats.length > 0 ? (
+                    teamsData.chats.slice(0, 4).map((chat) => (
+                      <div key={chat.id} className="p-2 rounded-lg bg-white/5">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm text-white truncate">{chat.topic || "Chat"}</p>
+                            <p className="text-xs text-white/40 truncate">{chat.lastMessage.from}: {chat.lastMessage.content}</p>
+                          </div>
+                          <span className="text-xs text-white/30">{formatTime(chat.lastMessage.timestamp)}</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-white/30 text-sm text-center">No chats to display</p>
+                  )}
                 </div>
               </div>
+            ) : (
+              <p className="text-white/30 text-sm text-center py-4">No Teams data available</p>
             )}
           </CardContent>
         </Card>
@@ -443,10 +472,38 @@ export default function WorkPage() {
                 <p className="text-white/50 mb-4">Connect Microsoft to browse files</p>
                 <Button variant="ghost" disabled>Uses same Microsoft connection</Button>
               </div>
-            ) : (
-              <div className="space-y-2">
-                <p className="text-white/30 text-sm text-center py-4">Files integration coming soon</p>
+            ) : dataLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="w-8 h-8 border-2 border-green-400 border-t-transparent rounded-full animate-spin" />
               </div>
+            ) : filesData ? (
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {filesData.files.length > 0 ? (
+                  filesData.files.slice(0, 6).map((file) => (
+                    <a
+                      key={file.id}
+                      href={file.webUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <svg className={`w-5 h-5 ${getFileIcon(file.mimeType)}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm text-white truncate">{file.name}</p>
+                          <p className="text-xs text-white/40">{formatFileSize(file.size)} - {formatTime(file.lastModified)}</p>
+                        </div>
+                      </div>
+                    </a>
+                  ))
+                ) : (
+                  <p className="text-white/30 text-sm text-center py-4">No recent files</p>
+                )}
+              </div>
+            ) : (
+              <p className="text-white/30 text-sm text-center py-4">No files data available</p>
             )}
           </CardContent>
         </Card>
@@ -516,9 +573,7 @@ export default function WorkPage() {
                   This takes about 5 minutes and doesn't require admin approval.
                 </p>
                 <Link href="/work/setup">
-                  <Button variant="secondary" size="sm">
-                    View Setup Guide
-                  </Button>
+                  <Button variant="secondary" size="sm">View Setup Guide</Button>
                 </Link>
                 <div className="mt-4">
                   <p className="text-white/40 text-xs">After setup, add to .env.local:</p>
