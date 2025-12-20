@@ -85,7 +85,7 @@ export function PerformanceMetrics() {
                   borderRadius: "8px",
                   color: "white",
                 }}
-                formatter={(value: number) => [`$${value.toFixed(2)}`, "Cost"]}
+                formatter={(value) => [`$${(value as number)?.toFixed(2) ?? '0.00'}`, "Cost"]}
               />
               <Area
                 type="monotone"
