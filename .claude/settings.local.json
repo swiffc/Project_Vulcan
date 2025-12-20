@@ -5,7 +5,8 @@
       "WebSearch",
       "Bash(npm install)",
       "Bash(npm run dev:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git pull:*)"
     ]
   }
 }

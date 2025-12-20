@@ -2,7 +2,7 @@
 # Runs in background and pushes changes to GitHub automatically
 # This lets Claude Chat see what Claude CLI is building
 
-$folder = "C:\Users\DCornealius\Documents\GitHub\Project_Vulcan"
+$folder = "C:\Users\D&E Cornealius\Documents\GitHub\Project_Vulcan"
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan

@@ -1,7 +1,7 @@
 # Project Vulcan: Master Task List
 
-**Status**: PRD Alignment In-Progress  
-**Goal**: Unified AI Operating System (Trading, CAD, General)  
+**Status**: Phase 6 Complete - Ready for Production
+**Goal**: Unified AI Operating System (Trading, CAD, General)
 **Pattern**: Adapter + Bridge (lightweight, no cloning)
 
 ---
@@ -52,12 +52,20 @@
 
 ---
 
+## ✅ Phase 6: Polish - Complete
+
+- [x] Voice command adapter (`agents/core/voice_adapter.py` ~190 lines)
+- [x] Mobile PWA wrapper (`apps/web/public/manifest.json`, `sw.js`, layout updates)
+- [x] Metrics visualization (`agents/core/metrics_viz.py` ~200 lines)
+
+---
+
 ## 📋 Backlog
 
-### Phase 6: Polish
-- [ ] Voice command adapter (Whisper)
-- [ ] Mobile PWA wrapper
-- [ ] Metrics visualization
+### Phase 7: Production Hardening
+- [ ] Rate limiting middleware
+- [ ] Auth adapter (JWT/OAuth)
+- [ ] Monitoring alerts (PagerDuty/Slack)
 
 ---
 
@@ -78,6 +86,8 @@
 | `desktop-server/com/inventor_com.py` | Adapter | pywin32 COM | ~160 |
 | `agents/core/orchestrator_adapter.py` | Adapter | CrewAI routing | ~200 |
 | `agents/core/health_dashboard.py` | Bridge | httpx, health checks | ~200 |
+| `agents/core/voice_adapter.py` | Adapter | Whisper (local/API) | ~190 |
+| `agents/core/metrics_viz.py` | Bridge | Dashboard charts | ~200 |
 
 ---
 

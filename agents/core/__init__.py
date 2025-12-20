@@ -1,6 +1,6 @@
 """
 Agents Core Module
-Provides shared utilities, orchestrator, and health monitoring.
+Provides shared utilities, orchestrator, health monitoring, and input adapters.
 """
 
 from .logging import BlackBoxLogger, get_logger
@@ -17,6 +17,17 @@ from .health_dashboard import (
     DashboardData,
     get_dashboard
 )
+from .voice_adapter import (
+    VoiceAdapter,
+    TranscriptionResult,
+    get_voice_adapter
+)
+from .metrics_viz import (
+    MetricsViz,
+    ChartData,
+    TimeSeriesPoint,
+    get_metrics_viz
+)
 
 __all__ = [
     "BlackBoxLogger",
@@ -30,4 +41,11 @@ __all__ = [
     "ServiceStatus",
     "DashboardData",
     "get_dashboard",
+    "VoiceAdapter",
+    "TranscriptionResult",
+    "get_voice_adapter",
+    "MetricsViz",
+    "ChartData",
+    "TimeSeriesPoint",
+    "get_metrics_viz",
 ]
