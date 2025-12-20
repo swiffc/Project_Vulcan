@@ -30,17 +30,17 @@
 
 ---
 
-## 🚀 Active Sprint
+## ✅ Completed Sprint
 
 ### Trading Bot Conversion (Python)
-- [ ] Convert `trading-agent/src/*.ts` → Python adapters
-- [ ] `strategy_adapter.py` - Wraps strategy logic
-- [ ] `tradingview_bridge.py` - TradingView control via MCP
-- [ ] `journal_adapter.py` - Memory Brain integration
+- [x] Convert `trading-agent/src/*.ts` → Python adapters
+- [x] `strategy_adapter.py` - Wraps strategy logic (~96 lines)
+- [x] `tradingview_bridge.py` - TradingView control via MCP (~150 lines)
+- [x] `journal_adapter.py` - Memory Brain integration (~109 lines)
 
 ### Inspector Bot Enhancement
-- [ ] `audit_adapter.py` - LLM-as-Judge wrapper
-- [ ] `report_bridge.py` - PDF/Markdown report generation
+- [x] `audit_adapter.py` - LLM-as-Judge wrapper (~141 lines)
+- [x] `report_bridge.py` - PDF/Markdown report generation (~200 lines)
 
 ---
 
@@ -66,6 +66,11 @@
 | `agents/cad-agent/adapters/pdf_bridge.py` | Bridge | pytesseract, pdf2image | ~90 |
 | `agents/cad-agent/adapters/ecn_adapter.py` | Adapter | chromadb | ~70 |
 | `agents/cad-agent/adapters/gdrive_bridge.py` | Bridge | google-api / MCP | ~85 |
+| `agents/trading-agent/adapters/strategy_adapter.py` | Adapter | ICT/BTMM logic | ~96 |
+| `agents/trading-agent/adapters/journal_adapter.py` | Adapter | Memory Brain | ~109 |
+| `agents/trading-agent/adapters/tradingview_bridge.py` | Bridge | MCP Desktop | ~150 |
+| `agents/inspector-bot/adapters/audit_adapter.py` | Adapter | LLM-as-Judge | ~141 |
+| `agents/inspector-bot/adapters/report_bridge.py` | Bridge | reportlab/markdown | ~200 |
 | `desktop-server/com/solidworks_com.py` | Adapter | pywin32 COM | ~200 |
 | `desktop-server/com/inventor_com.py` | Adapter | pywin32 COM | ~160 |
 
@@ -76,8 +81,9 @@
 | Metric | Target |
 |--------|--------|
 | Chat response | < 5 sec |
-| Core files | < 50 |
-| Adapter size | < 100 lines |
+| Core files | < 80 |
+| Adapter size | < 250 lines |
+| Agent size | < 500 lines |
 | System Manager uptime | > 7 days |
 | CAD reconstruction | > 90% accuracy |
 

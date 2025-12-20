@@ -4,7 +4,8 @@
       "Bash(dir \"C:\\Users\\DCornealius\\Documents\\GitHub\\Project_Vulcan\")",
       "WebSearch",
       "Bash(npm install)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
