@@ -512,15 +512,20 @@ export default function WorkPage() {
               <div>
                 <h3 className="text-white font-medium mb-2">Microsoft 365</h3>
                 <p className="text-white/50 text-sm mb-3">
-                  Connect once to access Outlook, Teams, and SharePoint. Uses Device Code Flow -
-                  no admin approval needed.
+                  First, you need to create a free Azure AD app registration.
+                  This takes about 5 minutes and doesn't require admin approval.
                 </p>
-                <ol className="text-sm text-white/40 space-y-1 list-decimal list-inside">
-                  <li>Click Connect Microsoft</li>
-                  <li>Copy the code shown</li>
-                  <li>Visit microsoft.com/devicelogin</li>
-                  <li>Enter the code and sign in</li>
-                </ol>
+                <Link href="/work/setup">
+                  <Button variant="secondary" size="sm">
+                    View Setup Guide
+                  </Button>
+                </Link>
+                <div className="mt-4">
+                  <p className="text-white/40 text-xs">After setup, add to .env.local:</p>
+                  <code className="text-xs text-green-400 bg-white/5 px-2 py-1 rounded block mt-1">
+                    MICROSOFT_CLIENT_ID=your-id
+                  </code>
+                </div>
               </div>
               <div>
                 <h3 className="text-white font-medium mb-2">J2 Tracker</h3>
