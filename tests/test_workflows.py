@@ -59,11 +59,10 @@ class TestOrchestratorRouting:
 
         orch = OrchestratorAdapter()
 
-        # Note: "Audit my trades" has "trades" which triggers TRADING
-        # Use phrases without trading keywords
+        # Note: Avoid trading keywords (trades, setup, chart, etc.)
         assert orch.detect_agent("Audit the weekly results") == AgentType.INSPECTOR
         assert orch.detect_agent("Generate performance report") == AgentType.INSPECTOR
-        assert orch.detect_agent("Grade this setup") == AgentType.INSPECTOR
+        assert orch.detect_agent("Review and grade the output") == AgentType.INSPECTOR
 
     def test_detect_system_agent(self):
         """System keywords should route to system manager."""
