@@ -61,10 +61,10 @@
 - [x] Docker Compose for local dev
 - [x] Dockerfiles for containerized testing
 
-### Next: Integration Testing (PRD Section 9)
-- [ ] E2E test: Trading flow (analyze → journal → audit)
-- [ ] E2E test: CAD flow (PDF → twin → build → verify)
-- [ ] Load testing (< 2% failure at 100 runs)
+### Integration Testing (PRD Section 9) - Complete
+- [x] E2E test: Trading flow (`tests/test_e2e_trading.py`)
+- [x] E2E test: CAD flow (`tests/test_e2e_cad.py`)
+- [x] Load testing (`tests/test_load.py`) - 100 concurrent, <2% failure
 
 ---
 
