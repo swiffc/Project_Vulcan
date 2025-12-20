@@ -74,7 +74,7 @@ export function MarketAnalysis() {
             </div>
             <p className="text-white/50 mb-2">TradingView Chart Widget</p>
             <p className="text-xs text-white/30">Connect your TradingView account to display live charts</p>
-            <Button variant="outline" size="sm" className="mt-4">
+            <Button variant="secondary" size="sm" className="mt-4">
               Connect TradingView
             </Button>
           </div>
@@ -171,7 +171,7 @@ export function MarketAnalysis() {
                       </div>
                       <div className="pt-4 space-y-2">
                         <Button variant="primary" className="w-full">Log Trade Entry</Button>
-                        <Button variant="outline" className="w-full">Add to Watchlist</Button>
+                        <Button variant="secondary" className="w-full">Add to Watchlist</Button>
                       </div>
                     </>
                   );

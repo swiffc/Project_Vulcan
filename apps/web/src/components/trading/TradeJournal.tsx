@@ -150,7 +150,7 @@ export function TradeJournal() {
                 />
               </div>
               <div className="col-span-2 md:col-span-4 flex justify-end gap-2">
-                <Button variant="outline" type="button" onClick={() => setShowForm(false)}>
+                <Button variant="secondary" type="button" onClick={() => setShowForm(false)}>
                   Cancel
                 </Button>
                 <Button variant="primary" type="submit">
