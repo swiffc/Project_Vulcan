@@ -124,6 +124,7 @@ class TestTradingWorkflow:
         )
         journal_module = import_from_hyphenated(journal_path, "journal_adapter")
         JournalAdapter = journal_module.JournalAdapter
+        TradeRecord = journal_module.TradeRecord
 
         # Mock memory client
         mock_memory = AsyncMock()
@@ -131,13 +132,20 @@ class TestTradingWorkflow:
 
         journal = JournalAdapter(memory_client=mock_memory)
 
-        trade = {
-            "pair": "EURUSD",
-            "bias": "short",
-            "result": "win",
-            "r_multiple": 2.0,
-            "lesson": "Waited for displacement"
-        }
+        # Create proper TradeRecord dataclass
+        trade = TradeRecord(
+            id="test-001",
+            pair="EURUSD",
+            session="London",
+            bias="short",
+            setup_type="Order Block",
+            entry=1.0850,
+            stop_loss=1.0900,
+            take_profit=1.0750,
+            result="win",
+            r_multiple=2.0,
+            lesson="Waited for displacement"
+        )
 
         result = await journal.log_trade(trade)
         assert result is not None
