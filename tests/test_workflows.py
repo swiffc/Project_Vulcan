@@ -13,18 +13,9 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 import sys
 import os
-import importlib.util
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-
-def import_from_hyphenated(module_path, module_name):
-    """Import module from folder with hyphens."""
-    spec = importlib.util.spec_from_file_location(module_name, module_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 class TestOrchestratorRouting:

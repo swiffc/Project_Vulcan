@@ -77,21 +77,26 @@ class TestTradingE2EFlow:
     async def test_trading_journal_integration(self):
         """Test trade logging to Memory Brain."""
         from agents.trading_agent.adapters import JournalAdapter
+        from agents.trading_agent.adapters.journal_adapter import TradeRecord
 
         mock_memory = AsyncMock()
         mock_memory.store = AsyncMock(return_value={"id": "trade-001"})
 
         journal = JournalAdapter(memory_client=mock_memory)
 
-        trade = {
-            "pair": "GBPUSD",
-            "session": "London",
-            "bias": "long",
-            "entry": 1.2650,
-            "result": "win",
-            "r_multiple": 1.5,
-            "lesson": "Patience on retracement paid off"
-        }
+        trade = TradeRecord(
+            id="trade-001",
+            pair="GBPUSD",
+            session="London",
+            bias="long",
+            setup_type="Order Block",
+            entry=1.2650,
+            stop_loss=1.2600,
+            take_profit=1.2750,
+            result="win",
+            r_multiple=1.5,
+            lesson="Patience on retracement paid off"
+        )
 
         result = await journal.log_trade(trade)
 
