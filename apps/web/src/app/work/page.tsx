@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge, StatusDot } from "@/components/ui/Badge";
@@ -20,12 +20,44 @@ interface WorkHealthResponse {
   lastTokenUpdate: string;
 }
 
+interface DeviceCodeInfo {
+  userCode: string;
+  verificationUri: string;
+  requestId: string;
+  expiresIn: number;
+}
+
+interface Email {
+  id: string;
+  subject: string;
+  from: { name: string; email: string };
+  receivedAt: string;
+  isRead: boolean;
+  importance: "low" | "normal" | "high";
+  preview: string;
+}
+
+interface EmailData {
+  emails: Email[];
+  unreadCount: number;
+  importantUnread: number;
+}
+
 export default function WorkPage() {
   const [workStatus, setWorkStatus] = useState<WorkHealthResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
 
-  const checkWorkHealth = async () => {
+  // Device Code Flow State
+  const [deviceCode, setDeviceCode] = useState<DeviceCodeInfo | null>(null);
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  // Email Data State
+  const [emailData, setEmailData] = useState<EmailData | null>(null);
+  const [emailLoading, setEmailLoading] = useState(false);
+
+  const checkWorkHealth = useCallback(async () => {
     try {
       const res = await fetch("/api/work/health");
       if (res.ok) {
@@ -38,16 +70,113 @@ export default function WorkPage() {
       setLoading(false);
       setLastRefresh(new Date());
     }
-  };
+  }, []);
 
+  // Fetch emails when authenticated
+  const fetchEmails = useCallback(async () => {
+    if (!workStatus?.services.microsoft.authenticated) return;
+
+    setEmailLoading(true);
+    try {
+      const res = await fetch("/api/work/microsoft/mail");
+      if (res.ok) {
+        const data = await res.json();
+        setEmailData(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch emails:", error);
+    } finally {
+      setEmailLoading(false);
+    }
+  }, [workStatus?.services.microsoft.authenticated]);
+
+  // Initial load
   useEffect(() => {
     checkWorkHealth();
-    const interval = setInterval(checkWorkHealth, 60000); // Check every minute
+    const interval = setInterval(checkWorkHealth, 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [checkWorkHealth]);
+
+  // Fetch emails when authenticated
+  useEffect(() => {
+    if (workStatus?.services.microsoft.authenticated) {
+      fetchEmails();
+    }
+  }, [workStatus?.services.microsoft.authenticated, fetchEmails]);
+
+  // Poll for device code status
+  useEffect(() => {
+    if (!deviceCode) return;
+
+    const pollInterval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/work/microsoft/auth/device-code?requestId=${deviceCode.requestId}`);
+        const data = await res.json();
+
+        if (data.status === "authorized") {
+          setDeviceCode(null);
+          setAuthError(null);
+          checkWorkHealth();
+        } else if (data.status === "expired" || data.status === "error") {
+          setDeviceCode(null);
+          setAuthError(data.message || "Authentication failed");
+        }
+      } catch (error) {
+        console.error("Poll error:", error);
+      }
+    }, 3000);
+
+    return () => clearInterval(pollInterval);
+  }, [deviceCode, checkWorkHealth]);
+
+  const startMicrosoftAuth = async () => {
+    setAuthLoading(true);
+    setAuthError(null);
+
+    try {
+      const res = await fetch("/api/work/microsoft/auth/device-code", { method: "POST" });
+      const data = await res.json();
+
+      if (data.success) {
+        setDeviceCode({
+          userCode: data.userCode,
+          verificationUri: data.verificationUri,
+          requestId: data.requestId,
+          expiresIn: data.expiresIn,
+        });
+      } else {
+        setAuthError(data.error || "Failed to start authentication");
+      }
+    } catch (error) {
+      setAuthError("Failed to connect to authentication service");
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      await fetch("/api/work/microsoft/auth/signout", { method: "POST" });
+      setEmailData(null);
+      checkWorkHealth();
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
+  };
 
   const isServiceConnected = (service: ServiceStatus | undefined) => {
     return service?.configured && service?.authenticated;
+  };
+
+  const formatTime = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+
+    if (diff < 60000) return "Just now";
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+    return date.toLocaleDateString();
   };
 
   return (
@@ -77,13 +206,20 @@ export default function WorkPage() {
             </span>
           </div>
 
+          {/* Sign Out Button (when connected) */}
+          {workStatus?.services.microsoft.authenticated && (
+            <Button variant="ghost" size="sm" onClick={signOut}>
+              Sign Out
+            </Button>
+          )}
+
           {/* Last Refresh */}
           <span className="text-xs text-white/30">
             {lastRefresh ? `Updated ${lastRefresh.toLocaleTimeString()}` : "Loading..."}
           </span>
 
           {/* Refresh Button */}
-          <Button variant="secondary" size="sm" onClick={checkWorkHealth}>
+          <Button variant="secondary" size="sm" onClick={() => { checkWorkHealth(); fetchEmails(); }}>
             <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
@@ -91,6 +227,64 @@ export default function WorkPage() {
           </Button>
         </div>
       </div>
+
+      {/* Device Code Modal */}
+      {deviceCode && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <Card className="max-w-md w-full mx-4">
+            <CardHeader
+              title="Sign in to Microsoft"
+              subtitle="Complete authentication in your browser"
+            />
+            <CardContent>
+              <div className="text-center space-y-4">
+                <div className="bg-vulcan-accent/20 rounded-xl p-4">
+                  <p className="text-sm text-white/60 mb-2">Your code:</p>
+                  <p className="text-3xl font-mono font-bold text-vulcan-accent tracking-wider">
+                    {deviceCode.userCode}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-white/60 text-sm">
+                    1. Go to{" "}
+                    <a
+                      href={deviceCode.verificationUri}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-vulcan-accent hover:underline"
+                    >
+                      {deviceCode.verificationUri}
+                    </a>
+                  </p>
+                  <p className="text-white/60 text-sm">2. Enter the code above</p>
+                  <p className="text-white/60 text-sm">3. Sign in with your Microsoft account</p>
+                </div>
+
+                <Button
+                  variant="primary"
+                  onClick={() => window.open(deviceCode.verificationUri, "_blank")}
+                  className="w-full"
+                >
+                  Open Microsoft Login
+                </Button>
+
+                <p className="text-white/30 text-xs">
+                  Waiting for authentication... (expires in {Math.floor(deviceCode.expiresIn / 60)} minutes)
+                </p>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setDeviceCode(null)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -114,26 +308,73 @@ export default function WorkPage() {
                   </svg>
                 </div>
                 <p className="text-white/50 mb-4">Connect your Microsoft account to view emails</p>
-                <Button variant="primary">
-                  <svg className="w-4 h-4 mr-2" viewBox="0 0 21 21" fill="currentColor">
-                    <path d="M0 0h10v10H0V0zm11 0h10v10H11V0zM0 11h10v10H0V11zm11 0h10v10H11V11z"/>
-                  </svg>
-                  Connect Microsoft
+                {authError && (
+                  <p className="text-red-400 text-sm mb-4">{authError}</p>
+                )}
+                <Button variant="primary" onClick={startMicrosoftAuth} disabled={authLoading}>
+                  {authLoading ? (
+                    <span className="flex items-center gap-2">
+                      <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Connecting...
+                    </span>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4 mr-2" viewBox="0 0 21 21" fill="currentColor">
+                        <path d="M0 0h10v10H0V0zm11 0h10v10H11V0zM0 11h10v10H0V11zm11 0h10v10H11V11z"/>
+                      </svg>
+                      Connect Microsoft
+                    </>
+                  )}
                 </Button>
               </div>
-            ) : (
+            ) : emailLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <svg className="w-8 h-8 animate-spin text-vulcan-accent" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              </div>
+            ) : emailData ? (
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-white/50">Unread</span>
-                  <Badge variant="info">0</Badge>
+                  <Badge variant="info">{emailData.unreadCount}</Badge>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-white/50">Important</span>
-                  <Badge variant="warning">0</Badge>
+                  <Badge variant="warning">{emailData.importantUnread}</Badge>
                 </div>
-                <div className="border-t border-white/10 pt-3 mt-3">
-                  <p className="text-white/30 text-sm text-center">No emails to display</p>
+                <div className="border-t border-white/10 pt-3 mt-3 space-y-2 max-h-64 overflow-y-auto">
+                  {emailData.emails.length > 0 ? (
+                    emailData.emails.slice(0, 5).map((email) => (
+                      <div
+                        key={email.id}
+                        className={`p-2 rounded-lg ${email.isRead ? "bg-white/5" : "bg-vulcan-accent/10"}`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <p className={`text-sm truncate ${email.isRead ? "text-white/60" : "text-white font-medium"}`}>
+                              {email.subject}
+                            </p>
+                            <p className="text-xs text-white/40 truncate">{email.from.name}</p>
+                          </div>
+                          <span className="text-xs text-white/30 whitespace-nowrap">
+                            {formatTime(email.receivedAt)}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-white/30 text-sm text-center">No emails to display</p>
+                  )}
                 </div>
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-white/30 text-sm">No email data available</p>
               </div>
             )}
           </CardContent>
@@ -172,7 +413,7 @@ export default function WorkPage() {
                   <Badge variant="info">0</Badge>
                 </div>
                 <div className="border-t border-white/10 pt-3 mt-3">
-                  <p className="text-white/30 text-sm text-center">No messages to display</p>
+                  <p className="text-white/30 text-sm text-center">Teams integration coming soon</p>
                 </div>
               </div>
             )}
@@ -203,7 +444,7 @@ export default function WorkPage() {
               </div>
             ) : (
               <div className="space-y-2">
-                <p className="text-white/30 text-sm text-center py-4">No recent files</p>
+                <p className="text-white/30 text-sm text-center py-4">Files integration coming soon</p>
               </div>
             )}
           </CardContent>
@@ -228,12 +469,12 @@ export default function WorkPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                   </svg>
                 </div>
-                <p className="text-white/50 mb-4">Connect J2 Tracker to view jobs</p>
-                <Button variant="primary">
+                <p className="text-white/50 mb-4">J2 Tracker requires Desktop Server</p>
+                <Button variant="primary" disabled>
                   <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                   </svg>
-                  Connect J2 Tracker
+                  Coming Soon
                 </Button>
               </div>
             ) : (
@@ -283,12 +524,13 @@ export default function WorkPage() {
               <div>
                 <h3 className="text-white font-medium mb-2">J2 Tracker</h3>
                 <p className="text-white/50 text-sm mb-3">
-                  Opens a browser window for SSO login. Session is saved automatically.
+                  Requires Desktop Server with browser automation. Coming in Phase 4.
                 </p>
                 <ol className="text-sm text-white/40 space-y-1 list-decimal list-inside">
+                  <li>Start Desktop Server locally</li>
                   <li>Click Connect J2 Tracker</li>
                   <li>Complete SSO in the browser</li>
-                  <li>Window closes when done</li>
+                  <li>Session saves automatically</li>
                 </ol>
               </div>
             </div>
