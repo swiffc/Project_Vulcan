@@ -6,7 +6,8 @@
       "Bash(npm install)",
       "Bash(npm run dev:*)",
       "Bash(git commit:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(python -m pytest tests/test_workflows.py -v --tb=short)"
     ]
   }
 }
