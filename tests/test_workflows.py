@@ -117,14 +117,8 @@ class TestTradingWorkflow:
     @pytest.mark.asyncio
     async def test_trading_journal_flow(self):
         """Test: User logs trade → Journal adapter stores."""
-        # Import from hyphenated folder
-        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        journal_path = os.path.join(
-            project_root, "agents", "trading-agent", "adapters", "journal_adapter.py"
-        )
-        journal_module = import_from_hyphenated(journal_path, "journal_adapter")
-        JournalAdapter = journal_module.JournalAdapter
-        TradeRecord = journal_module.TradeRecord
+        from agents.trading_agent.adapters import JournalAdapter
+        from agents.trading_agent.adapters.journal_adapter import TradeRecord
 
         # Mock memory client
         mock_memory = AsyncMock()
