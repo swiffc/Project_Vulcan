@@ -50,9 +50,9 @@ export function ExportDrive() {
         <Card>
           <CardHeader title="Quick Export" subtitle="Export current file" />
           <CardContent className="space-y-3">
-            <Button variant="outline" className="w-full justify-start">Export as STEP</Button>
-            <Button variant="outline" className="w-full justify-start">Export as PDF Drawing</Button>
-            <Button variant="outline" className="w-full justify-start">Export as DXF</Button>
+            <Button variant="secondary" className="w-full justify-start">Export as STEP</Button>
+            <Button variant="secondary" className="w-full justify-start">Export as PDF Drawing</Button>
+            <Button variant="secondary" className="w-full justify-start">Export as DXF</Button>
             <Button variant="primary" className="w-full">Upload to Google Drive</Button>
           </CardContent>
         </Card>
