@@ -1,6 +1,6 @@
 # Project Vulcan: Master Task List
 
-**Status**: Phase 7 Complete - Production Ready
+**Status**: Phase 8 In-Progress - Deployment & Scaling
 **Goal**: Unified AI Operating System (Trading, CAD, General)
 **Pattern**: Adapter + Bridge (lightweight, no cloning)
 
@@ -28,52 +28,54 @@
 - [x] Updated REFERENCES.md
 - [x] Updated requirements.txt
 
----
+### Phase 5: Integration - Complete
+- [x] CrewAI orchestrator adapter
+- [x] End-to-end workflow tests
+- [x] Health dashboard API
 
-## ✅ Completed Sprint
+### Phase 6: Polish - Complete
+- [x] Voice command adapter (Whisper)
+- [x] Mobile PWA wrapper
+- [x] Metrics visualization
 
-### Trading Bot Conversion (Python)
-- [x] Convert `trading-agent/src/*.ts` → Python adapters
-- [x] `strategy_adapter.py` - Wraps strategy logic (~96 lines)
-- [x] `tradingview_bridge.py` - TradingView control via MCP (~150 lines)
-- [x] `journal_adapter.py` - Memory Brain integration (~109 lines)
+### Phase 7: Production Hardening - Complete
+- [x] Rate limiting middleware
+- [x] Auth adapter JWT/OAuth
+- [x] Monitoring alerts
 
-### Inspector Bot Enhancement
-- [x] `audit_adapter.py` - LLM-as-Judge wrapper (~141 lines)
-- [x] `report_bridge.py` - PDF/Markdown report generation (~200 lines)
-
----
-
-## ✅ Phase 5: Integration - Complete
-
-- [x] CrewAI orchestrator adapter (`agents/core/orchestrator_adapter.py` ~200 lines)
-- [x] End-to-end workflow tests (`tests/test_workflows.py` ~235 lines)
-- [x] Health dashboard API (`agents/core/health_dashboard.py` ~200 lines)
-
----
-
-## ✅ Phase 6: Polish - Complete
-
-- [x] Voice command adapter (`agents/core/voice_adapter.py` ~190 lines)
-- [x] Mobile PWA wrapper (`apps/web/public/manifest.json`, `sw.js`, layout updates)
-- [x] Metrics visualization (`agents/core/metrics_viz.py` ~200 lines)
+### Phase 7.5: Elite Engineering Patterns - Complete
+- [x] Circuit Breaker (`agents/core/circuit_breaker.py`) - Emergency Brake
+- [x] Queue Adapter (`agents/core/queue_adapter.py`) - Waiting Room
+- [x] Digital Twin (`agents/cad-agent/adapters/digital_twin.py`) - Shadow Copy
+- [x] Docker Compose setup
+- [x] Orchestrator Dockerfile
+- [x] System Manager Dockerfile
 
 ---
 
-## ✅ Phase 7: Production Hardening - Complete
+## 🚀 Active Sprint: Phase 8 - Deployment
 
-- [x] Rate limiting middleware (`agents/core/rate_limiter.py` ~175 lines)
-- [x] Auth adapter JWT/OAuth (`agents/core/auth_adapter.py` ~230 lines)
-- [x] Monitoring alerts (`agents/core/alerts_adapter.py` ~240 lines)
+### Docker & CI/CD
+- [x] docker-compose.yml (multi-service)
+- [x] Dockerfile.orchestrator
+- [x] Dockerfile.system-manager
+- [ ] GitHub Actions CI/CD pipeline
+- [ ] Kubernetes manifests (optional)
+
+### Integration Testing
+- [ ] E2E test: Trading flow (analyze → journal → audit)
+- [ ] E2E test: CAD flow (PDF → twin → build → verify)
+- [ ] Load testing (100 concurrent requests)
 
 ---
 
 ## 📋 Backlog
 
-### Phase 8: Deployment & Scaling
-- [ ] Docker compose setup
-- [ ] Kubernetes manifests
-- [ ] CI/CD pipeline (GitHub Actions)
+### Phase 9: Advanced Features
+- [ ] Multi-user support
+- [ ] Custom strategy upload
+- [ ] Real broker integration (paper trading first)
+- [ ] AR/VR CAD preview
 
 ---
 
@@ -85,6 +87,7 @@
 | `agents/cad-agent/adapters/pdf_bridge.py` | Bridge | pytesseract, pdf2image | ~90 |
 | `agents/cad-agent/adapters/ecn_adapter.py` | Adapter | chromadb | ~70 |
 | `agents/cad-agent/adapters/gdrive_bridge.py` | Bridge | google-api / MCP | ~85 |
+| `agents/cad-agent/adapters/digital_twin.py` | Adapter | Pure Python (Shadow Copy) | ~220 |
 | `agents/trading-agent/adapters/strategy_adapter.py` | Adapter | ICT/BTMM logic | ~96 |
 | `agents/trading-agent/adapters/journal_adapter.py` | Adapter | Memory Brain | ~109 |
 | `agents/trading-agent/adapters/tradingview_bridge.py` | Bridge | MCP Desktop | ~150 |
@@ -99,19 +102,23 @@
 | `agents/core/rate_limiter.py` | Adapter | Token bucket | ~175 |
 | `agents/core/auth_adapter.py` | Adapter | JWT/OAuth | ~230 |
 | `agents/core/alerts_adapter.py` | Bridge | Slack/PagerDuty | ~240 |
+| `agents/core/circuit_breaker.py` | Adapter | Emergency Brake | ~180 |
+| `agents/core/queue_adapter.py` | Adapter | Waiting Room | ~200 |
 
 ---
 
 ## 🎯 Success Criteria
 
-| Metric | Target |
-|--------|--------|
-| Chat response | < 5 sec |
-| Core files | < 80 |
-| Adapter size | < 250 lines |
-| Agent size | < 500 lines |
-| System Manager uptime | > 7 days |
-| CAD reconstruction | > 90% accuracy |
+| Metric | Target | Status |
+|--------|--------|--------|
+| Chat response | < 5 sec | ✅ |
+| Core files | < 80 | ✅ (~75) |
+| Adapter size | < 250 lines | ✅ |
+| Agent size | < 500 lines | ✅ |
+| System Manager uptime | > 7 days | 🟡 Testing |
+| CAD reconstruction | > 90% accuracy | 🟡 Testing |
+| Docker deployment | Working | ✅ |
+| Circuit breaker | Protecting | ✅ |
 
 ---
 
@@ -119,5 +126,6 @@
 
 - `REFERENCES.md` - All external packages
 - `config/mcp-servers.json` - MCP registry
-- `RULES.md` - Architecture rules
+- `RULES.md` - Architecture rules (Section 6 = Elite Patterns)
 - `CLAUDE.md` - AI instructions
+- `docker-compose.yml` - Deployment config
