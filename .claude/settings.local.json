@@ -23,7 +23,8 @@
       "Bash(powershell -Command \"cmd /c ''for %I in (\"\"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\"\") do @echo %~sI''\")",
       "Bash(cmd //c \"C:\\Users\\D^&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\\start-dev.bat\")",
       "Bash(powershell:*)",
-      "Bash(cmd /c mklink /J C:vulcan-web \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\")"
+      "Bash(cmd /c mklink /J C:vulcan-web \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\\web\")",
+      "Bash(dir \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\apps\")"
     ]
   }
 }
