@@ -1,5 +1,9 @@
 services:
-  # Next.js Frontend
+  # ============================================
+  # WEB SERVICES
+  # ============================================
+
+  # Next.js Frontend - Vulcan Chat Interface
   - type: web
     name: vulcan-web
     runtime: node
@@ -8,25 +12,38 @@ services:
     rootDir: apps/web
     buildCommand: npm install && npm run build
     startCommand: npm run start
+    healthCheckPath: /api/health
     envVars:
+      - key: NODE_ENV
+        value: production
       - key: NEXT_PUBLIC_ORCHESTRATOR_URL
         fromService:
           type: web
           name: vulcan-orchestrator
           property: host
+      - key: ANTHROPIC_API_KEY
+        sync: false
 
-  # Python Orchestrator / API
+  # Python Orchestrator / API - Task Router
   - type: web
     name: vulcan-orchestrator
     runtime: python
     region: ohio
     plan: free
     buildCommand: pip install -r requirements.txt
+<<<<<<< HEAD
     startCommand: gunicorn agents.core.api:app -w 2 -k uvicorn.workers.UvicornWorker
+=======
+    startCommand: gunicorn core.api:app --bind 0.0.0.0:$PORT
+    healthCheckPath: /health
+>>>>>>> 3bb774a741d326374e3176484ea79e8601906724
     envVars:
       - key: PYTHON_VERSION
-        value: 3.10.0
+        value: "3.11"
+      - key: ANTHROPIC_API_KEY
+        sync: false
       - key: DESKTOP_SERVER_URL
+<<<<<<< HEAD
         sync: false # Set manually to Tailscale IP of local PC
       - key: REDIS_URL
         fromService:
@@ -40,3 +57,88 @@ services:
     region: ohio
     plan: free
     maxmemoryPolicy: allkeys-lru
+=======
+        sync: false  # Set to Tailscale IP of local Windows PC
+      - key: MEMORY_SERVER_URL
+        fromService:
+          type: worker
+          name: vulcan-memory
+          property: host
+      - key: TAILSCALE_IP
+        sync: false
+
+  # ============================================
+  # WORKER SERVICES
+  # ============================================
+
+  # System Manager - David's Worker (Background Daemon)
+  - type: worker
+    name: vulcan-system-manager
+    runtime: python
+    region: ohio
+    plan: free
+    rootDir: agents/system-manager
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m src.main
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: GOOGLE_DRIVE_CREDENTIALS
+        sync: false
+      - key: MEMORY_SERVER_URL
+        fromService:
+          type: worker
+          name: vulcan-memory
+          property: host
+      - key: WEB_URL
+        fromService:
+          type: web
+          name: vulcan-web
+          property: host
+      - key: ORCHESTRATOR_URL
+        fromService:
+          type: web
+          name: vulcan-orchestrator
+          property: host
+
+  # Memory Brain - RAG Vector Store
+  - type: worker
+    name: vulcan-memory
+    runtime: python
+    region: ohio
+    plan: free
+    rootDir: mcp-servers/memory-vec
+    buildCommand: pip install chromadb httpx mcp anthropic
+    startCommand: python -m mcp_memory_server --port 8770
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: MEMORY_STORAGE_PATH
+        value: /data/vulcan-memory
+
+  # ============================================
+  # DATABASES (Future)
+  # ============================================
+
+  # Uncomment when needed:
+  # databases:
+  #   - name: vulcan-db
+  #     plan: free
+  #     databaseName: vulcan
+  #     user: vulcan
+
+# ============================================
+# ENVIRONMENT GROUPS
+# ============================================
+envVarGroups:
+  - name: vulcan-secrets
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: GOOGLE_DRIVE_CREDENTIALS
+        sync: false
+      - key: TAILSCALE_IP
+        sync: false
+>>>>>>> 3bb774a741d326374e3176484ea79e8601906724

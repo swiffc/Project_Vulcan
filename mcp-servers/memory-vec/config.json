@@ -1,0 +1,70 @@
+{
+  "server_name": "vulcan-memory-brain",
+  "port": 8770,
+  "storage": {
+    "type": "chromadb",
+    "path": "./data/vulcan-memory",
+    "collection": "vulcan_knowledge"
+  },
+  "embedding": {
+    "model": "text-embedding-3-small",
+    "dimensions": 1536
+  },
+  "tools": [
+    {
+      "name": "memory_store",
+      "description": "Store a memory with semantic embedding",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "key": { "type": "string", "description": "Unique identifier for the memory" },
+          "content": { "type": "string", "description": "Content to embed and store" },
+          "metadata": { "type": "object", "description": "Additional metadata" }
+        },
+        "required": ["key", "content"]
+      }
+    },
+    {
+      "name": "memory_search",
+      "description": "Semantic search over stored memories",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Search query" },
+          "limit": { "type": "integer", "description": "Max results", "default": 5 }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "memory_query",
+      "description": "Structured query with filters",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "filter": { "type": "object", "description": "Filter criteria" },
+          "limit": { "type": "integer", "description": "Max results", "default": 10 }
+        },
+        "required": ["filter"]
+      }
+    },
+    {
+      "name": "memory_delete",
+      "description": "Delete a memory by key",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "key": { "type": "string", "description": "Key of memory to delete" }
+        },
+        "required": ["key"]
+      }
+    }
+  ],
+  "resources": [
+    {
+      "uri": "vulcan://memory/stats",
+      "name": "Memory Statistics",
+      "description": "Current memory usage and stats"
+    }
+  ]
+}
