@@ -129,7 +129,7 @@ export function Performance() {
                     borderRadius: "8px",
                     color: "white",
                   }}
-                  formatter={(value: number) => [`$${value.toLocaleString()}`, "Equity"]}
+                  formatter={(value) => [`$${(value as number)?.toLocaleString() ?? '0'}`, "Equity"]}
                 />
                 <Area
                   type="monotone"
