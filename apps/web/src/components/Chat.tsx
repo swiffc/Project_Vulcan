@@ -8,18 +8,25 @@ import { ChatInput } from "./ChatInput";
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000;
 
-export function Chat() {
+const DEFAULT_WELCOME =
+  "Welcome to **Project Vulcan**. I'm your AI operating system for CAD automation and paper trading.\n\n" +
+  "**Quick commands:**\n" +
+  "- `Build flange` - Create CAD parts via SolidWorks/Inventor\n" +
+  "- `Scan GBP/USD` - Analyze trading setups\n" +
+  "- `Weekly review` - Generate performance summary\n\n" +
+  "How can I help you today?";
+
+interface ChatProps {
+  agentContext?: "trading" | "cad" | "general";
+  welcomeMessage?: string;
+}
+
+export function Chat({ agentContext, welcomeMessage }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
       role: "assistant",
-      content:
-        "Welcome to **Project Vulcan**. I'm your AI operating system for CAD automation and paper trading.\n\n" +
-        "**Quick commands:**\n" +
-        "- `Build flange` - Create CAD parts via SolidWorks/Inventor\n" +
-        "- `Scan GBP/USD` - Analyze trading setups\n" +
-        "- `Weekly review` - Generate performance summary\n\n" +
-        "How can I help you today?",
+      content: welcomeMessage || DEFAULT_WELCOME,
       timestamp: new Date(),
       status: "complete",
     },
