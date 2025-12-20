@@ -59,7 +59,7 @@ export function Performance() {
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         <Card>
           <CardContent className="text-center py-4">
-            <CircularProgress value={stats.winRate} variant="success" size="sm" />
+            <CircularProgress value={stats.winRate} variant="success" size={60} />
             <p className="text-xs text-white/50 mt-2">Win Rate</p>
           </CardContent>
         </Card>
