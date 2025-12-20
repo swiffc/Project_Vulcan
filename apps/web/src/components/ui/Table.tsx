@@ -112,3 +112,48 @@ export function DataList<T>({
     </div>
   );
 }
+
+// Primitive table components for custom table layouts
+interface TablePrimitiveProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export function TableHeader({ children, className = "" }: TablePrimitiveProps) {
+  return <thead className={className}>{children}</thead>;
+}
+
+export function TableBody({ children, className = "" }: TablePrimitiveProps) {
+  return <tbody className={className}>{children}</tbody>;
+}
+
+interface TableRowProps extends TablePrimitiveProps {
+  onClick?: () => void;
+}
+
+export function TableRow({ children, className = "", onClick }: TableRowProps) {
+  return (
+    <tr
+      onClick={onClick}
+      className={`border-b border-white/5 ${onClick ? "cursor-pointer hover:bg-white/5" : ""} ${className}`}
+    >
+      {children}
+    </tr>
+  );
+}
+
+export function TableHead({ children, className = "" }: TablePrimitiveProps) {
+  return (
+    <th className={`px-4 py-3 text-left text-xs font-semibold text-white/50 uppercase tracking-wider ${className}`}>
+      {children}
+    </th>
+  );
+}
+
+export function TableCell({ children, className = "" }: TablePrimitiveProps) {
+  return (
+    <td className={`px-4 py-3 text-sm text-white/80 ${className}`}>
+      {children}
+    </td>
+  );
+}
