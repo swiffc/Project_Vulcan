@@ -18,6 +18,9 @@ anthropic==0.18.1
 chromadb==0.4.22
 sentence-transformers==2.2.2
 
+# Cache (Cost Optimization)
+redis==5.0.1
+
 # Configuration
 pyyaml==6.0.1
 python-dotenv==1.0.0
