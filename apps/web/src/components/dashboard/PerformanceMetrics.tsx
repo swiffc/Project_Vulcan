@@ -47,7 +47,7 @@ export function PerformanceMetrics() {
             <CircularProgress value={uptime} variant="success" label="Uptime" />
           </div>
           <div className="text-center">
-            <CircularProgress value={cacheHitRate} variant="info" label="Cache Hit" />
+            <CircularProgress value={cacheHitRate} variant="default" label="Cache Hit" />
           </div>
         </CardContent>
       </Card>
