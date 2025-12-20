@@ -1630,6 +1630,81 @@ GPUtil==1.4.0  # GPU monitoring
 
 ---
 
+### 9. Flatter Files Adapter (NEW)
+**File**: `agents/cad_agent/adapters/flatter_files_adapter.py`  
+**Lines**: ~350
+
+**SEE**: `NEXT_TASK_FLATTER_FILES.md` for full implementation
+
+Capabilities:
+- Search drawings by part number/description
+- Get PDF/STEP/DXF download URLs
+- Get assembly BOM structure
+- Get revision history
+- Get markup annotations
+- Check uploader status
+
+---
+
+## 📋 REQUIREMENTS UPDATE
+
+Add to `requirements.txt`:
+```
+GPUtil==1.4.0  # GPU monitoring
+requests>=2.28.0  # For Flatter Files API
+```
+
+---
+
+## 📋 ENVIRONMENT VARIABLES
+
+Add to `.env`:
+```
+FLATTER_FILES_API_KEY=your-api-key-here
+```
+
+---
+
+## ✅ ACCEPTANCE CRITERIA
+
+1. **PDM Integration**
+   - [ ] Can check file availability
+   - [ ] Can batch checkout/checkin
+   - [ ] Handles locked files gracefully
+   - [ ] Tracks versions via PDM
+
+2. **Job Queue**
+   - [ ] Creates batch jobs
+   - [ ] Resumes interrupted jobs
+   - [ ] Tracks progress
+   - [ ] Restarts SW every N files
+
+3. **Performance Manager**
+   - [ ] Monitors RAM/GPU/CPU
+   - [ ] Auto-adjusts SW settings
+   - [ ] Triggers restart when critical
+   - [ ] Background monitoring thread
+
+4. **Notifications**
+   - [ ] Stores notifications for Web UI
+   - [ ] Shows progress updates
+   - [ ] Shows errors/warnings
+   - [ ] Marks as read
+
+5. **Audit Trail**
+   - [ ] Logs all actions
+   - [ ] Saves to file
+   - [ ] Includes timestamps and details
+
+6. **Flatter Files Integration (NEW)**
+   - [ ] Search drawings by part number
+   - [ ] Get PDF/STEP/DXF URLs
+   - [ ] Get assembly BOM
+   - [ ] Get revision history
+   - [ ] Get markups
+
+---
+
 ## 🗑️ DELETE THIS FILE AFTER COMPLETING
 
 ---
