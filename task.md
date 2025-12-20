@@ -46,7 +46,7 @@
 ### Phase 7.5: Elite Engineering Patterns - Complete
 - [x] Circuit Breaker (`agents/core/circuit_breaker.py`) - Emergency Brake
 - [x] Queue Adapter (`agents/core/queue_adapter.py`) - Waiting Room
-- [x] Digital Twin (`agents/cad-agent/adapters/digital_twin.py`) - Shadow Copy
+- [x] Digital Twin (`agents/cad_agent/adapters/digital_twin.py`) - Shadow Copy
 - [x] Docker Compose setup
 - [x] Orchestrator Dockerfile
 - [x] System Manager Dockerfile
@@ -56,7 +56,7 @@
 ## ✅ Phase 8: Deployment - Complete
 
 ### Render Deployment (per PRD-002)
-- [x] render.yaml with all services (web, orchestrator, system-manager, memory)
+- [x] render.yaml with all services (web, orchestrator, system_manager, memory)
 - [x] GitHub Actions CI/CD pipeline (`.github/workflows/ci.yml`)
 - [x] Docker Compose for local dev
 - [x] Dockerfiles for containerized testing
@@ -82,18 +82,18 @@
 
 | File | Type | Wraps | Lines |
 |------|------|-------|-------|
-| `agents/system-manager/adapter.py` | Adapter | APScheduler, psutil | ~80 |
-| `agents/cad-agent/adapters/pdf_bridge.py` | Bridge | pytesseract, pdf2image | ~90 |
-| `agents/cad-agent/adapters/ecn_adapter.py` | Adapter | chromadb | ~70 |
-| `agents/cad-agent/adapters/gdrive_bridge.py` | Bridge | google-api / MCP | ~85 |
-| `agents/cad-agent/adapters/digital_twin.py` | Adapter | Pure Python (Shadow Copy) | ~220 |
-| `agents/trading-agent/adapters/strategy_adapter.py` | Adapter | ICT/BTMM logic | ~96 |
-| `agents/trading-agent/adapters/journal_adapter.py` | Adapter | Memory Brain | ~109 |
-| `agents/trading-agent/adapters/tradingview_bridge.py` | Bridge | MCP Desktop | ~150 |
-| `agents/inspector-bot/adapters/audit_adapter.py` | Adapter | LLM-as-Judge | ~141 |
-| `agents/inspector-bot/adapters/report_bridge.py` | Bridge | reportlab/markdown | ~200 |
-| `desktop-server/com/solidworks_com.py` | Adapter | pywin32 COM | ~200 |
-| `desktop-server/com/inventor_com.py` | Adapter | pywin32 COM | ~160 |
+| `agents/system_manager/adapter.py` | Adapter | APScheduler, psutil | ~80 |
+| `agents/cad_agent/adapters/pdf_bridge.py` | Bridge | pytesseract, pdf2image | ~90 |
+| `agents/cad_agent/adapters/ecn_adapter.py` | Adapter | chromadb | ~70 |
+| `agents/cad_agent/adapters/gdrive_bridge.py` | Bridge | google-api / MCP | ~85 |
+| `agents/cad_agent/adapters/digital_twin.py` | Adapter | Pure Python (Shadow Copy) | ~220 |
+| `agents/trading_agent/adapters/strategy_adapter.py` | Adapter | ICT/BTMM logic | ~96 |
+| `agents/trading_agent/adapters/journal_adapter.py` | Adapter | Memory Brain | ~109 |
+| `agents/trading_agent/adapters/tradingview_bridge.py` | Bridge | MCP Desktop | ~150 |
+| `agents/inspector_bot/adapters/audit_adapter.py` | Adapter | LLM-as-Judge | ~141 |
+| `agents/inspector_bot/adapters/report_bridge.py` | Bridge | reportlab/markdown | ~200 |
+| `desktop_server/com/solidworks_com.py` | Adapter | pywin32 COM | ~200 |
+| `desktop_server/com/inventor_com.py` | Adapter | pywin32 COM | ~160 |
 | `agents/core/orchestrator_adapter.py` | Adapter | CrewAI routing | ~200 |
 | `agents/core/health_dashboard.py` | Bridge | httpx, health checks | ~200 |
 | `agents/core/voice_adapter.py` | Adapter | Whisper (local/API) | ~190 |

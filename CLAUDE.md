@@ -33,7 +33,7 @@ This file contains specific behavioral instructions for AI assistants (Claude, C
 ## 📡 Memory & Context Pattern
 
 - **Log Decision**: Use `BlackBoxLogger` (`agents/core/logging.py`) for critical logic flow.
-- **Visual Verify**: Use `VisualVerifier` (`desktop-server/controllers/verifier.py`) for CAD output validation.
+- **Visual Verify**: Use `VisualVerifier` (`desktop_server/controllers/verifier.py`) for CAD output validation.
 - **MCP First**: Interact with the desktop via `mcp_server.py` tools rather than raw `pyautogui` where possible.
 
 ---

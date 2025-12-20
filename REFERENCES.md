@@ -55,10 +55,10 @@ This document maintains all external dependencies and architectural references f
 
 | Server | Purpose | Reference | Our Adapter |
 |--------|---------|-----------|-------------|
-| desktop-control | Windows PC control | Built-in | `desktop-server/mcp_server.py` |
+| desktop-control | Windows PC control | Built-in | `desktop_server/mcp_server.py` |
 | memory-vec | Vector RAG | chromadb | `controllers/memory.py` |
-| mcp-gdrive | Google Drive | [wong2/mcp-gdrive-adapter](https://github.com/wong2/mcp-gdrive-adapter) | `agents/cad-agent/adapters/gdrive_bridge.py` |
-| CAD-MCP | SolidWorks/Inventor | [daobataotie/CAD-MCP](https://github.com/daobataotie/CAD-MCP) | `desktop-server/com/*.py` |
+| mcp-gdrive | Google Drive | [wong2/mcp-gdrive-adapter](https://github.com/wong2/mcp-gdrive-adapter) | `agents/cad_agent/adapters/gdrive_bridge.py` |
+| CAD-MCP | SolidWorks/Inventor | [daobataotie/CAD-MCP](https://github.com/daobataotie/CAD-MCP) | `desktop_server/com/*.py` |
 
 ---
 
