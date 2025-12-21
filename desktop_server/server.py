@@ -277,6 +277,15 @@ if TRADINGVIEW_AVAILABLE:
     app.include_router(tradingview_router)
     logger.info("TradingView browser controller loaded")
 
+# Include browser and J2 Tracker routers if available
+if BROWSER_AVAILABLE:
+    app.include_router(browser_router)
+    logger.info("Browser automation controller loaded")
+
+if J2_AVAILABLE:
+    app.include_router(j2_tracker_router)
+    logger.info("J2 Tracker controller loaded")
+
 
 @app.get("/")
 async def root():
