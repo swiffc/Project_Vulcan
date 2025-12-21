@@ -227,8 +227,9 @@ async def launch_tradingview(request: NavigateRequest = None):
     logger.info(f"Navigating to: {url}")
 
     try:
-        await page.goto(url, wait_until="networkidle", timeout=30000)
-        await asyncio.sleep(2)  # Wait for chart to render
+        # Use "load" instead of "networkidle" - TradingView streams data continuously
+        await page.goto(url, wait_until="load", timeout=60000)
+        await asyncio.sleep(5)  # Wait for chart to fully render
 
         # Save state for future sessions
         await save_storage_state()
@@ -263,8 +264,8 @@ async def navigate_to_symbol(request: NavigateRequest):
     logger.info(f"Navigating to: {url}")
 
     try:
-        await _page.goto(url, wait_until="networkidle", timeout=30000)
-        await asyncio.sleep(1)
+        await _page.goto(url, wait_until="load", timeout=60000)
+        await asyncio.sleep(3)
         return {"status": "navigated", "symbol": request.symbol, "interval": request.interval}
     except Exception as e:
         logger.error(f"Navigation failed: {e}")
