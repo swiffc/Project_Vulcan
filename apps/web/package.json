@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/claude-code": "^2.0.75",
     "@anthropic-ai/sdk": "^0.30.0",
     "@azure/msal-node": "^3.8.4",
     "@mathieuc/tradingview": "^3.5.2",
