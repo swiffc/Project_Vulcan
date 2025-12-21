@@ -35,6 +35,22 @@
       "env_required": ["MICROSOFT_MCP_CLIENT_ID"],
       "tools": ["get_emails", "send_email", "get_calendar", "create_event", "get_files", "search_files"],
       "note": "Requires Azure App registration - see apps/web/src/app/work/setup/page.tsx"
+    },
+    "tradingview-api": {
+      "description": "TradingView realtime data, backtesting, alerts",
+      "reference": "https://github.com/Mathieu2301/TradingView-API",
+      "install": "npm install @mathieuc/tradingview",
+      "language": "javascript",
+      "tools": ["get_realtime_data", "backtest_strategy", "get_technical_analysis", "replay_mode"],
+      "note": "Unofficial API - supports invite-only indicators"
+    },
+    "tradingview-webhooks": {
+      "description": "TradingView webhook receiver for alerts",
+      "reference": "https://github.com/robswc/tradingview-webhooks-bot",
+      "install": "pip install flask",
+      "language": "python",
+      "tools": ["receive_alert", "execute_trade", "log_signal"],
+      "note": "Framework for building trading logic from TV alerts"
     }
   },
   "patterns": {
