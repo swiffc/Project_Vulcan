@@ -149,6 +149,14 @@ class GDriveBridge:
 | [pySW](https://github.com/kalyanpi4/pySW) | SW dimension extraction | Drawing parser |
 | [swtoolkit](https://github.com/Glutenberg/swtoolkit) | SW automation scripts | Batch operations |
 | [pySolidWorks](https://github.com/mklanac/pySolidWorks) | SW FEA/DXF export | Full API wrapper |
+| [SolidWrap](https://github.com/SeanYeatts/SolidWrap) | SW + PDM unified | 🏆 Best choice |
+| [PyInventor](https://github.com/AndrewOriani/PyInventor) | Inventor API wrapper | Parametric automation |
+| [InventorTools](https://github.com/mickp/InventorTools) | Inventor COM scripts | Batch operations |
+| [playwright-python](https://github.com/microsoft/playwright-python) | Browser automation | J2 Tracker scraping |
+| [crawlee-python](https://github.com/apify/crawlee-python) | Web scraping for AI | RAG extraction |
+| [github-mcp-server](https://github.com/github/github-mcp-server) | Official GitHub MCP | Issues, PRs, Actions |
+| [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) | n8n workflow builder | 545 automation nodes |
+| [claude-context](https://github.com/zilliztech/claude-context) | Semantic code search | Codebase RAG |
 
 ---
 
