@@ -263,6 +263,11 @@ if MEMORY_AVAILABLE:
     app.include_router(memory_router)
     logger.info("Memory/RAG module loaded")
 
+# Include TradingView router if available
+if TRADINGVIEW_AVAILABLE:
+    app.include_router(tradingview_router)
+    logger.info("TradingView browser controller loaded")
+
 
 @app.get("/")
 async def root():

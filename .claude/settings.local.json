@@ -21,7 +21,8 @@
       "Bash(where:*)",
       "Bash(npx next dev:*)",
       "Bash(pip install:*)",
-      "Bash(playwright install:*)"
+      "Bash(playwright install:*)",
+      "WebFetch(domain:www.flatterfiles.com)"
     ]
   }
 }
