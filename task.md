@@ -194,6 +194,10 @@ system=[{
 | `agents/cad_agent/adapters/job_queue.py` | Adapter | Batch processing + resume | ~250 |
 | `agents/cad_agent/adapters/notification_store.py` | Adapter | Web UI notifications | ~200 |
 | `agents/cad_agent/adapters/flatter_files_adapter.py` | Adapter | Flatter Files REST API | ~320 |
+| `apps/web/src/lib/cad-tools.ts` | Tools | Claude tool definitions | ~280 |
+| `apps/web/src/lib/cad-recipes.ts` | Recipes | Part building strategies | ~300 |
+| `apps/web/src/app/api/chat/cad/route.ts` | API | Tool-calling chat endpoint | ~180 |
+| `desktop_server/com/solidworks_assembly.py` | Adapter | Assembly COM operations | ~180 |
 
 ---
 
@@ -281,16 +285,56 @@ system=[{
 
 ---
 
+## ✅ Phase 13: CAD Chatbot Tool Calling - Complete (Dec 2025)
+
+### Claude → SolidWorks Direct Execution
+**Uses**: Anthropic tool_use, FastAPI COM
+
+**The Big Unlock**: Chatbot can now EXECUTE SolidWorks commands, not just give instructions!
+
+- [x] `apps/web/src/lib/cad-tools.ts` - 24 Claude tool definitions (~280 lines)
+- [x] `apps/web/src/app/api/chat/cad/route.ts` - New chat endpoint with tool calling
+- [x] `apps/web/src/lib/cad-recipes.ts` - Strategy recipes for common parts (~300 lines)
+- [x] `desktop_server/com/solidworks_assembly.py` - Assembly endpoints (~180 lines)
+- [x] Updated `solidworks_com.py` with: draw_line, extrude_cut, chamfer, select_face, select_edge, clear_selection, zoom_fit, set_view
+
+**Available Tools** (24 total):
+| Category | Tools |
+|----------|-------|
+| Connection | sw_connect, sw_status |
+| Documents | sw_new_part, sw_new_assembly, sw_save |
+| Sketching | sw_create_sketch, sw_close_sketch, sw_draw_circle, sw_draw_rectangle, sw_draw_line |
+| Features | sw_extrude, sw_extrude_cut, sw_revolve, sw_fillet, sw_chamfer |
+| Patterns | sw_pattern_circular, sw_pattern_linear |
+| Selection | sw_select_face, sw_select_edge, sw_clear_selection |
+| Assembly | sw_insert_component, sw_add_mate |
+| View | sw_screenshot, sw_zoom_fit, sw_set_view |
+
+**Part Recipes** (7):
+- cylinder, rectangular_block, flange, shaft, l_bracket, washer, tube, plate_with_holes
+
+**Feature Recipes** (5):
+- add_center_hole, add_bolt_pattern, add_keyway, add_chamfer_edges, add_fillet_edges
+
+**Chatbot Examples**:
+- "Build me a 50mm diameter, 100mm tall cylinder" → Actually builds it!
+- "Create a flange with 150mm OD, 50mm center hole, 6 bolt holes" → Builds complete flange
+- "Add a keyway to the shaft" → Adds feature to existing part
+
+---
+
 ## 📋 Backlog
 
 ---
 
-### Phase 13: Advanced Features
+### Phase 14: Advanced Features
 - [ ] Multi-user support
 - [ ] Custom strategy upload
 - [ ] Real broker integration (paper trading first)
 - [ ] AR/VR CAD preview
 - [ ] Chatbot context for work data (emails, jobs)
+- [ ] Drawing creation endpoints
+- [ ] PDM integration
 
 ---
 
