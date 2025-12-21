@@ -341,3 +341,154 @@ async def status():
         }
     except Exception as e:
         return {"connected": False, "error": str(e)}
+
+
+@router.post("/draw_line")
+async def draw_line(req: LineRequest):
+    """Draw a line in the active sketch."""
+    logger.info(f"Drawing line from ({req.x1}, {req.y1}) to ({req.x2}, {req.y2})")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    model.SketchManager.CreateLine(req.x1, req.y1, 0, req.x2, req.y2, 0)
+    return {"status": "ok"}
+
+
+@router.post("/extrude_cut")
+async def extrude_cut(req: ExtrudeCutRequest):
+    """Extrude cut to remove material."""
+    logger.info(f"Extrude cut depth={req.depth}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # End condition: 0=Blind, 1=Through All
+    end_cond = 1 if req.depth >= 999 else 0
+    actual_depth = 0 if end_cond == 1 else req.depth
+
+    feature = model.FeatureManager.FeatureCut3(
+        True, False, False,  # Sd, Flip, Dir
+        end_cond, 0,  # T1, T2
+        actual_depth, 0,  # D1, D2
+        False, False, False, False,  # Draft options
+        0, 0,  # Draft angles
+        False, False, False, False,  # Offset options
+        False, True, True,  # NormalCut, UseFeatScope, UseAutoSelect
+        False, 0, 0, False  # AssemblyFeatureScope options
+    )
+
+    return {"status": "ok", "depth": req.depth, "through_all": end_cond == 1}
+
+
+@router.post("/chamfer")
+async def chamfer(req: ChamferRequest):
+    """Apply chamfer to selected edges."""
+    logger.info(f"Chamfer distance={req.distance}, angle={req.angle}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    import math
+    angle_rad = math.radians(req.angle)
+
+    model.FeatureManager.InsertFeatureChamfer(
+        4,  # Type: Distance-Angle
+        1,  # Options
+        req.distance,
+        angle_rad,
+        0, 0, 0, 0  # Other parameters
+    )
+
+    return {"status": "ok", "distance": req.distance, "angle": req.angle}
+
+
+@router.post("/select_face")
+async def select_face(req: SelectRequest):
+    """Select a face at the given coordinates."""
+    logger.info(f"Selecting face at ({req.x}, {req.y}, {req.z})")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    result = model.Extension.SelectByID2("", "FACE", req.x, req.y, req.z, False, 0, None, 0)
+    return {"status": "ok", "selected": result}
+
+
+@router.post("/select_edge")
+async def select_edge(req: SelectRequest):
+    """Select an edge at the given coordinates."""
+    logger.info(f"Selecting edge at ({req.x}, {req.y}, {req.z})")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    result = model.Extension.SelectByID2("", "EDGE", req.x, req.y, req.z, False, 0, None, 0)
+    return {"status": "ok", "selected": result}
+
+
+@router.post("/clear_selection")
+async def clear_selection():
+    """Clear all selections."""
+    logger.info("Clearing selection")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    model.ClearSelection2(True)
+    return {"status": "ok"}
+
+
+@router.post("/zoom_fit")
+async def zoom_fit():
+    """Zoom to fit all geometry."""
+    logger.info("Zoom to fit")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    model.ViewZoomtofit2()
+    return {"status": "ok"}
+
+
+@router.post("/set_view")
+async def set_view(req: ViewRequest):
+    """Set the view orientation."""
+    logger.info(f"Setting view to {req.view}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # SolidWorks view constants
+    view_map = {
+        "front": 1,      # swFrontView
+        "back": 2,       # swBackView
+        "left": 3,       # swLeftView
+        "right": 4,      # swRightView
+        "top": 5,        # swTopView
+        "bottom": 6,     # swBottomView
+        "isometric": 7,  # swIsometricView
+        "trimetric": 8,  # swTrimetricView
+    }
+
+    view_const = view_map.get(req.view.lower(), 7)
+    model.ShowNamedView2("", view_const)
+    model.ViewZoomtofit2()
+
+    return {"status": "ok", "view": req.view}
