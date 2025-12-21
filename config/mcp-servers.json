@@ -54,30 +54,39 @@
     }
   },
   "solidworks-libs": {
-      "_comment": "Python libraries for SolidWorks automation (pick one)",
+      "_comment": "Python libraries for SolidWorks automation",
+      "solidwrap": {
+        "description": "🏆 RECOMMENDED: SolidWorks + PDM unified API",
+        "reference": "https://github.com/SeanYeatts/SolidWrap",
+        "install": "pip install solidwrap",
+        "status": "INSTALLED",
+        "tools": ["open_model", "export_step", "pdm_checkout", "pdm_checkin", "logging"]
+      },
       "pySldWrap": {
         "description": "Full SolidWorks API wrapper via pywin32",
         "reference": "https://github.com/ThomasNeve/pySldWrap",
         "install": "pip install pySldWrap",
+        "status": "INSTALLED",
         "tools": ["open_model", "modify_dimensions", "export_step", "get_features"]
       },
       "pySW": {
         "description": "Dimension extraction from drawings",
         "reference": "https://github.com/kalyanpi4/pySW",
         "install": "pip install pySW",
+        "status": "INSTALLED",
         "tools": ["extract_dimensions", "get_tolerances", "modify_assembly"]
       },
-      "swtoolkit": {
-        "description": "Quick script automation",
-        "reference": "https://github.com/Glutenberg/swtoolkit",
-        "install": "git clone + local",
-        "tools": ["automate_workflow", "batch_export"]
+      "SolidProxy": {
+        "description": "COM connection examples",
+        "reference": "https://github.com/Gautreaux/SolidProxy",
+        "install": "git clone (reference)",
+        "tools": ["com_connect", "api_examples"]
       },
-      "pySolidWorks": {
-        "description": "FEA, DXF export, dimension mods",
-        "reference": "https://github.com/mklanac/pySolidWorks",
-        "install": "git clone + local",
-        "tools": ["run_fea", "export_dxf", "modify_features"]
+      "SWPyMacros": {
+        "description": "Macro collection for Python",
+        "reference": "https://github.com/onuralpszr/SWPyMacros",
+        "install": "git clone (reference)",
+        "tools": ["macro_examples", "batch_processing"]
       }
     }
   },
