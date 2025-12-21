@@ -292,30 +292,37 @@ Complete redesign of `/trading` page based on 2024 trading app UX research. Inte
 - [x] Build `/trading/journal/page.tsx` (trade list with stats, filters)
 - [x] Restore AI chatbot interface (floating button + slide-out panel)
 
-### 🏗️ Week 3: Routes & Pages - IN PROGRESS
+### ✅ Week 3: Tabbed Interface Redesign - COMPLETE
 
-#### Route Structure
+**Design Decision**: All trading functionality consolidated into a single tabbed interface at `/trading` instead of separate routes. This provides a more cohesive TradingView-inspired experience.
+
+#### Tab Structure (Single Page)
+| Tab | Purpose | Status |
+|-----|---------|--------|
+| Dashboard | Main workspace (chart + panels) | ✅ |
+| Journal | Trade log with stats & filtering | ✅ |
+| Analysis | Live/Daily/Weekly/Monthly views | ✅ |
+| Performance | Stats, metrics, charts | ✅ |
+| Tools | Calculator, Checklist, ADR | ✅ |
+| Settings | Trading preferences | ✅ |
+
+#### Tab Components Created
+- `components/trading/tabs/DashboardTab.tsx` - Chart workspace
+- `components/trading/tabs/JournalTab.tsx` - Trade log with filtering
+- `components/trading/tabs/AnalysisTab.tsx` - Multi-view analysis (live/daily/weekly/monthly)
+- `components/trading/tabs/PerformanceTab.tsx` - Stats & metrics dashboard
+- `components/trading/tabs/ToolsTab.tsx` - Position calculator, checklist, ADR
+- `components/trading/tabs/SettingsTab.tsx` - User preferences
+
+#### Legacy Routes (Still Available)
 | Route | Purpose | Status |
 |-------|---------|--------|
-| `/trading` | Main workspace (chart + BTMM panels) | ✅ |
+| `/trading` | Main tabbed workspace | ✅ |
 | `/trading/dashboard` | Redirect to `/trading` | ✅ |
-| `/trading/journal` | Trade log list | ✅ |
-| `/trading/journal/new` | New trade entry form | 🔲 |
-| `/trading/journal/[id]` | Trade detail/edit | 🔲 |
-| `/trading/analysis` | Market analysis overview | 🔲 |
-| `/trading/analysis/live` | Live session analysis | 🔲 |
-| `/trading/analysis/daily` | Daily bias | 🔲 |
-| `/trading/analysis/weekly` | Weekly outlook | 🔲 |
-| `/trading/analysis/monthly` | Monthly cycle | 🔲 |
-| `/trading/performance` | Stats dashboard | 🔲 |
-| `/trading/performance/calendar` | Trade calendar | 🔲 |
-| `/trading/performance/reports` | Detailed reports | 🔲 |
-| `/trading/strategy-guide` | BTMM knowledge base | 🔲 |
-| `/trading/tools` | Utilities overview | 🔲 |
-| `/trading/tools/calculators` | Position size, RR, ADR | 🔲 |
-| `/trading/tools/trainer` | Pattern recognition practice | 🔲 |
-| `/trading/tools/checklist` | Pre-trade checklist | 🔲 |
-| `/trading/settings` | Trading settings | 🔲 |
+| `/trading/journal` | Standalone journal (legacy) | ✅ |
+| `/trading/journal/new` | New trade entry form | ✅ |
+| `/trading/journal/[id]` | Trade detail/edit | ✅ |
+| `/trading/analysis/*` | Standalone analysis pages | ✅ |
 
 ---
 
