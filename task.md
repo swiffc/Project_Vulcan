@@ -457,6 +457,8 @@ Automatically checks drawings against API 661, ASME, OSHA, and industry standard
 - [ ] Get markup annotations
 - [ ] Filter by checked-out status
 - [ ] Add `FLATTER_FILES_API_KEY` to .env
+- [ ] `agents/cad_agent/adapters/pdm_adapter.py` (~300 lines) - PDM vault integration
+- [ ] `agents/cad_agent/adapters/reference_tracker.py` (~250 lines) - Track assembly references/dependencies
 
 **Chatbot examples:**
 - "Find drawing for bracket 12345" → PDF/STEP links
