@@ -27,6 +27,14 @@
       "reference": "https://github.com/daobataotie/CAD-MCP",
       "note": "Reference only - we use thin adapters in desktop_server/com/",
       "tools": ["create_part", "modify_part", "export_step"]
+    },
+    "microsoft": {
+      "description": "Microsoft 365 (Outlook, Calendar, OneDrive)",
+      "reference": "https://github.com/elyxlz/microsoft-mcp",
+      "install": "uvx --from git+https://github.com/elyxlz/microsoft-mcp.git microsoft-mcp",
+      "env_required": ["MICROSOFT_MCP_CLIENT_ID"],
+      "tools": ["get_emails", "send_email", "get_calendar", "create_event", "get_files", "search_files"],
+      "note": "Requires Azure App registration - see apps/web/src/app/work/setup/page.tsx"
     }
   },
   "patterns": {
