@@ -16,6 +16,28 @@ const DEFAULT_WELCOME =
   "- `Weekly review` - Generate performance summary\n\n" +
   "How can I help you today?";
 
+// Quick command suggestions based on context
+const QUICK_COMMANDS = {
+  trading: [
+    { label: "Scan EUR/USD", command: "Scan EUR/USD for ICT setups" },
+    { label: "Weekly Review", command: "Generate my weekly trading review" },
+    { label: "Risk Check", command: "Check my open positions and risk" },
+    { label: "Session Times", command: "What are the key session times today?" },
+  ],
+  cad: [
+    { label: "New Part", command: "Create a new part from template" },
+    { label: "ECN Status", command: "Show pending ECN revisions" },
+    { label: "Export STEP", command: "Export current assembly to STEP" },
+    { label: "Check GD&T", command: "Validate GD&T on current drawing" },
+  ],
+  general: [
+    { label: "System Status", command: "Show system status" },
+    { label: "Cost Report", command: "Show today's API cost report" },
+    { label: "Help", command: "What can you do?" },
+    { label: "Dashboard", command: "Show me the dashboard metrics" },
+  ],
+};
+
 interface ChatProps {
   agentContext?: "trading" | "cad" | "general";
   welcomeMessage?: string;
