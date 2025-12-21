@@ -19,7 +19,8 @@
       "Bash(find:*)",
       "WebFetch(domain:github.com)",
       "Bash(where:*)",
-      "Bash(npx next dev:*)"
+      "Bash(npx next dev:*)",
+      "Bash(pip install:*)"
     ]
   }
 }
