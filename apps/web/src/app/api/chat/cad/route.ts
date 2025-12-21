@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { CAD_TOOLS, executeCADTool, formatToolResult } from "@/lib/cad-tools";
+import { formatRecipesForPrompt } from "@/lib/cad-recipes";
 
 export const runtime = "nodejs";
 export const maxDuration = 120; // 2 minute timeout for complex builds
