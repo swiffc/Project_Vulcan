@@ -22,7 +22,8 @@
       "Bash(npx next dev:*)",
       "Bash(pip install:*)",
       "Bash(playwright install:*)",
-      "WebFetch(domain:www.flatterfiles.com)"
+      "WebFetch(domain:www.flatterfiles.com)",
+      "Bash(dir /s /b \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\README.md\")"
     ]
   }
 }
