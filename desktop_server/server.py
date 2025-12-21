@@ -257,8 +257,12 @@ app.include_router(window_router)
 
 # Include CAD routers if available
 if CAD_AVAILABLE:
-    app.include_router(solidworks_router)
-    app.include_router(inventor_router)
+    if solidworks_router:
+        app.include_router(solidworks_router)
+    if solidworks_assembly_router:
+        app.include_router(solidworks_assembly_router)
+    if inventor_router:
+        app.include_router(inventor_router)
     logger.info("CAD COM adapters loaded")
 
 # Include memory router if available
