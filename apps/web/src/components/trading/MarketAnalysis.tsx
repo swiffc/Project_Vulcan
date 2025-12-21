@@ -5,6 +5,7 @@ import { Card, CardHeader, CardContent } from "../ui/Card";
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
 import { TradingViewChart } from "./TradingViewChart";
+import { TradingViewEmbed } from "./TradingViewEmbed";
 
 interface PairAnalysis {
   pair: string;
@@ -81,9 +82,12 @@ const biasColors = {
   neutral: "text-amber-400",
 };
 
+type ChartMode = "widget" | "account";
+
 export function MarketAnalysis() {
   const [selectedPair, setSelectedPair] = useState<PairAnalysis>(pairAnalysis[0]);
   const [selectedInterval, setSelectedInterval] = useState("1H");
+  const [chartMode, setChartMode] = useState<ChartMode>("widget");
 
   return (
     <div className="space-y-4 mt-4">
