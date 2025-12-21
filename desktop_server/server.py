@@ -26,6 +26,7 @@ import pyautogui
 
 # Import controllers
 from controllers import mouse_router, keyboard_router, screen_router, window_router
+from controllers import tradingview_router, TRADINGVIEW_AVAILABLE
 
 # Import memory controller (optional - requires chromadb)
 try:
