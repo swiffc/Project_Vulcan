@@ -46,11 +46,14 @@ logger = logging.getLogger(__name__)
 
 # Import CAD COM adapters (optional - only if CAD software is installed)
 try:
-    from com import solidworks_router, inventor_router
+    from com import solidworks_router, solidworks_assembly_router, inventor_router
 
     CAD_AVAILABLE = True
 except ImportError:
     CAD_AVAILABLE = False
+    solidworks_router = None
+    solidworks_assembly_router = None
+    inventor_router = None
     logger.warning("CAD COM adapters not available")
 
 # Global state
