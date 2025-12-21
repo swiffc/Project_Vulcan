@@ -1,7 +1,7 @@
 # Project Vulcan: Master Task List
 
-**Status**: Phase 15 COMPLETE + Phase 16 IN PROGRESS - CAD Drawing Review Bot + ACHE Standards
-**Last Updated**: Dec 21, 2025 - Task Files Consolidated
+**Status**: Phase 15 COMPLETE - CAD Drawing Review Bot (8 adapters)
+**Last Updated**: Dec 21, 2025 - Phase 15 Complete + README Consolidated
 **Goal**: Unified AI Operating System (Trading, CAD, General)
 **Pattern**: Adapter + Bridge (lightweight, no cloning)
 
@@ -418,9 +418,20 @@ Automatically checks drawings against API 661, ASME, OSHA, and industry standard
   - GD&T dimension types (diameter, radial, angular, reference, basic)
   - Confidence scoring
 
-### 🔲 Pending: Advanced Analysis Features
-- [ ] ASME B16.5 flange validation rules
-- [ ] Interference detection for assemblies
+### ✅ Completed: Advanced Analysis Features
+- [x] `agents/cad_agent/adapters/flange_validator.py` (~660 lines)
+  - ASME B16.5 flange dimensions (Class 150, 300, 600, 900)
+  - Pressure-temperature ratings per Table 2
+  - Bolt torque reference, gasket dimensions
+  - Flange validation and mating pair checks
+  - Class selection for design conditions
+- [x] `agents/cad_agent/adapters/interference_detector.py` (~590 lines)
+  - Bounding box overlap detection (2D and 3D)
+  - API 661 fan tip clearance validation
+  - Tube bundle insertion path checking
+  - OSHA headroom and walkway compliance
+  - Piping clearance and nozzle access checks
+  - Assembly interference analysis with reporting
 
 ### 📚 Useful Repos for Implementation
 
@@ -491,7 +502,7 @@ Automatically checks drawings against API 661, ASME, OSHA, and industry standard
 | API cost reduction | > 50% | ✅ **90-95%!** |
 | Trading module redesign | Complete | 🔄 In Progress |
 | CAD module redesign | Complete | 🔲 Planned |
-| **ACHE Standards Checker** | Complete | 🔄 In Progress |
+| **ACHE Standards Checker** | Complete (8 adapters) | ✅ Complete |
 
 ---
 
