@@ -374,19 +374,43 @@ Automatically checks drawings against API 661, ASME, OSHA, and industry standard
   - OSHA platform/ladder/stair requirements
   - Validation functions (weight, edge, bend, holes)
 
-### 🔲 Pending: Drawing Analysis Engine
-- [ ] `agents/cad_agent/adapters/drawing_analyzer.py` - PDF/DXF extraction
-- [ ] `agents/cad_agent/adapters/hole_pattern_checker.py` - Hole alignment verification
-- [ ] `agents/cad_agent/adapters/dimension_extractor.py` - OCR for dimensions
-- [ ] `agents/cad_agent/adapters/bom_cross_checker.py` - BOM vs drawing verification
-- [ ] `agents/cad_agent/adapters/weight_calculator.py` - Auto weight from dims + material
-- [ ] `agents/cad_agent/adapters/red_flag_scanner.py` - Pre-scan for obvious issues
+### ✅ Completed: Drawing Analysis Engine
+- [x] `agents/cad_agent/adapters/drawing_analyzer.py` (~530 lines)
+  - PDF to image conversion with parallel processing
+  - DXF file parsing with ezdxf
+  - Title block OCR extraction (part number, material, weight, etc.)
+  - Dimension extraction (feet/inches, fractions, decimals, metric)
+  - Hole and bend detection
+  - Intelligent caching for repeat verifications
+- [x] `agents/cad_agent/adapters/weight_calculator.py` (~420 lines)
+  - Weight calculation for plates, beams, angles, tubes, bars
+  - Auto-detection of part type from dimensions
+  - Description parsing for material specifications
+  - Weight validation with configurable tolerances
+- [x] `agents/cad_agent/adapters/hole_pattern_checker.py` (~480 lines)
+  - Mating part alignment verification (±1/16" tolerance)
+  - Edge distance checking per AISC J3.4
+  - Standard hole size validation
+  - Bolt circle pattern analysis
+- [x] `agents/cad_agent/adapters/red_flag_scanner.py` (~530 lines)
+  - Pre-scan for title block completeness
+  - Weight mismatch detection (>10%)
+  - Non-standard hole flagging
+  - Bend radius validation
+  - Description vs dimension mismatch
+  - OSHA platform/ladder/stair compliance
+  - API 661 fan tip clearance checks
+- [x] `agents/cad_agent/adapters/bom_cross_checker.py` (~460 lines)
+  - BOM to drawing matching with fuzzy logic
+  - Part number, material, weight comparison
+  - Missing/extra parts detection
+  - Quantity verification
+  - Report generation
 
-### 🔲 Pending: Standards Validation
-- [ ] API 661 rule engine (fan coverage, tip clearance)
-- [ ] OSHA 1910 platform/ladder checks
-- [ ] ASME B16.5 flange validation
-- [ ] AISC structural checks (using standards_db.py)
+### 🔲 Pending: Advanced Analysis Features
+- [ ] `agents/cad_agent/adapters/dimension_extractor.py` - Enhanced OCR with zone detection
+- [ ] ASME B16.5 flange validation rules
+- [ ] Interference detection for assemblies
 
 ### 📚 Useful Repos for Implementation
 
