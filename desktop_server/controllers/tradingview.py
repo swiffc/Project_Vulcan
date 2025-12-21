@@ -75,10 +75,13 @@ async def get_playwright():
     _context = await pw.chromium.launch_persistent_context(
         user_data_dir=str(SESSION_DIR),
         headless=False,  # Show browser so user can login
-        viewport={"width": 1920, "height": 1080},
+        viewport=None,  # Let it use full window
+        no_viewport=True,  # Don't constrain viewport
         args=[
             "--disable-blink-features=AutomationControlled",
             "--start-maximized",
+            "--window-position=100,100",
+            "--window-size=1600,900",
         ]
     )
 
