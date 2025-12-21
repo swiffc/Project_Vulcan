@@ -12,4 +12,25 @@ except ImportError:
     TRADINGVIEW_AVAILABLE = False
     tradingview_router = None
 
-__all__ = ['mouse_router', 'keyboard_router', 'screen_router', 'window_router', 'tradingview_router', 'TRADINGVIEW_AVAILABLE']
+# Browser automation controller (requires Playwright)
+try:
+    from .browser import router as browser_router
+    BROWSER_AVAILABLE = True
+except ImportError:
+    BROWSER_AVAILABLE = False
+    browser_router = None
+
+# J2 Tracker controller (requires browser controller)
+try:
+    from .j2_tracker import router as j2_tracker_router
+    J2_AVAILABLE = True
+except ImportError:
+    J2_AVAILABLE = False
+    j2_tracker_router = None
+
+__all__ = [
+    'mouse_router', 'keyboard_router', 'screen_router', 'window_router',
+    'tradingview_router', 'TRADINGVIEW_AVAILABLE',
+    'browser_router', 'BROWSER_AVAILABLE',
+    'j2_tracker_router', 'J2_AVAILABLE',
+]
