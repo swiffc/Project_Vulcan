@@ -337,6 +337,57 @@ Complete redesign of `/trading` page based on 2024 trading app UX research. Inte
 
 ---
 
+## 🔄 Phase 15: CAD Drawing Review Bot (ACHE Checker) - IN PROGRESS
+
+### 📋 Overview
+AI-powered engineering drawing review system for Air-Cooled Heat Exchangers (ACHE/Fin Fans).
+Automatically checks drawings against API 661, ASME, OSHA, and industry standards.
+
+**Reference Document:** `agents/cad_agent/knowledge/ACHE_CHECKLIST.md`
+
+---
+
+### ✅ Completed
+- [x] Complete ACHE Checklist V2 (`agents/cad_agent/knowledge/ACHE_CHECKLIST.md`)
+  - 28 sections covering ALL ACHE components
+  - API 661 compliance checks
+  - Cross-check requirements for mating parts
+  - Instrumentation, Electrical, Piping, Coatings
+  - Testing, Shipping, Documentation requirements
+  - Foundation, Nameplate, Spare Parts checklists
+
+### 🔲 Pending: Drawing Analysis Engine
+- [ ] `agents/cad_agent/adapters/drawing_analyzer.py` - PDF/DXF extraction
+- [ ] `agents/cad_agent/adapters/hole_pattern_checker.py` - Hole alignment verification
+- [ ] `agents/cad_agent/adapters/dimension_extractor.py` - OCR for dimensions
+- [ ] `agents/cad_agent/adapters/bom_cross_checker.py` - BOM vs drawing verification
+
+### 🔲 Pending: Standards Validation
+- [ ] API 661 rule engine
+- [ ] OSHA 1910 platform/ladder checks
+- [ ] ASME B16.5 flange validation
+- [ ] AISC structural checks
+
+### 📚 Useful Repos for Implementation
+
+| Repo | URL | Purpose |
+|------|-----|---------|
+| eDOCr | github.com/javvi51/eDOCr | OCR for engineering drawings |
+| Image2CAD | github.com/adityaintwala/Image2CAD | Circle/hole detection, DXF export |
+| python-hvac | github.com/TomLXXVI/python-hvac | Fin-tube HX thermal models |
+| steelpy | pypi.org/project/steelpy | AISC shapes database |
+| pyaisc | github.com/mwhit74/pyaisc | AISC manual calculations |
+| calctoys | github.com/thepvguy/calctoys | ASME pressure vessel calcs |
+| OpenCV HoughCircles | opencv.org | Hole detection algorithm |
+
+### 🎯 Key Features
+1. **Automatic Hole Pattern Cross-Check** - Verify mating parts align (±1/16")
+2. **Visual Before/After Examples** - Show problem AND solution
+3. **BOM Completeness Check** - All parts accounted for
+4. **Standards Compliance** - API 661, OSHA, ASME, AISC
+
+---
+
 ## 📋 Backlog
 
 ---
