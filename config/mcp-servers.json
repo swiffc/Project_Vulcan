@@ -53,6 +53,34 @@
       "note": "Framework for building trading logic from TV alerts"
     }
   },
+  "solidworks-libs": {
+      "_comment": "Python libraries for SolidWorks automation (pick one)",
+      "pySldWrap": {
+        "description": "Full SolidWorks API wrapper via pywin32",
+        "reference": "https://github.com/ThomasNeve/pySldWrap",
+        "install": "pip install pySldWrap",
+        "tools": ["open_model", "modify_dimensions", "export_step", "get_features"]
+      },
+      "pySW": {
+        "description": "Dimension extraction from drawings",
+        "reference": "https://github.com/kalyanpi4/pySW",
+        "install": "pip install pySW",
+        "tools": ["extract_dimensions", "get_tolerances", "modify_assembly"]
+      },
+      "swtoolkit": {
+        "description": "Quick script automation",
+        "reference": "https://github.com/Glutenberg/swtoolkit",
+        "install": "git clone + local",
+        "tools": ["automate_workflow", "batch_export"]
+      },
+      "pySolidWorks": {
+        "description": "FEA, DXF export, dimension mods",
+        "reference": "https://github.com/mklanac/pySolidWorks",
+        "install": "git clone + local",
+        "tools": ["run_fea", "export_dxf", "modify_features"]
+      }
+    }
+  },
   "patterns": {
     "adapter": "50-100 lines wrapping external package",
     "bridge": "Connects to MCP server or falls back to direct API",
