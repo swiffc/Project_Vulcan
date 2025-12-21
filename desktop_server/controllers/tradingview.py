@@ -1,12 +1,15 @@
 """
 TradingView Browser Controller - Playwright-based browser automation
-Allows logged-in TradingView with user's indicators to be displayed in Vulcan.
+Based on: https://github.com/ali-rajabpour/tradingview-mcp
+
+Uses session cookies for authentication (more reliable than login flow).
+User extracts cookies from browser DevTools once, then headless Playwright uses them.
 
 Features:
-- Persistent session (login once, stays logged in)
+- Session cookie authentication (no visible browser needed after setup)
+- Headless mode for better performance
 - Navigate to any symbol/timeframe
 - Screenshot streaming for web UI display
-- Click/keyboard forwarding for interaction
 """
 
 import os
@@ -15,7 +18,7 @@ import base64
 import asyncio
 import logging
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional
 from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
@@ -23,53 +26,48 @@ from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 
-# Playwright imported lazily
+# Playwright state
+_playwright = None
 _browser = None
 _context = None
 _page = None
-_streaming = False
+_is_initialized = False
 
-# Session storage path
-SESSION_DIR = Path(__file__).parent.parent / "data" / "tradingview_session"
-SESSION_DIR.mkdir(parents=True, exist_ok=True)
+# Config paths
+CONFIG_DIR = Path(__file__).parent.parent / "data"
+CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+COOKIES_FILE = CONFIG_DIR / "tradingview_cookies.json"
+STORAGE_STATE_FILE = CONFIG_DIR / "tradingview_state.json"
 
 router = APIRouter(prefix="/tradingview", tags=["tradingview"])
 
 
 class NavigateRequest(BaseModel):
-    symbol: str = "GBPUSD"
-    interval: str = "60"  # 1, 5, 15, 60, 240, D, W
+    symbol: str = "FX:GBPUSD"
+    interval: str = "60"
+
+
+class CookiesRequest(BaseModel):
+    session_id: str
+    session_id_sign: str
 
 
 class ClickRequest(BaseModel):
     x: int
     y: int
-    button: str = "left"
 
 
-class KeyRequest(BaseModel):
-    key: str
-    modifiers: list[str] = []
+async def init_playwright(headless: bool = True):
+    """Initialize Playwright with stored cookies/state."""
+    global _playwright, _browser, _context, _page, _is_initialized
 
-
-_playwright = None
-
-async def get_playwright():
-    """Lazy import and initialize Playwright."""
-    global _browser, _context, _page, _playwright
-
-    # Check if existing page is still valid
-    if _page is not None:
+    if _is_initialized and _page:
         try:
-            # Test if page is still alive
             await _page.title()
             return _page
         except Exception:
-            # Page is dead, reset everything
-            logger.info("Browser was closed, resetting...")
-            _page = None
-            _context = None
-            _browser = None
+            logger.info("Browser closed, reinitializing...")
+            _is_initialized = False
 
     try:
         from playwright.async_api import async_playwright
@@ -79,251 +77,297 @@ async def get_playwright():
             detail="Playwright not installed. Run: pip install playwright && playwright install chromium"
         )
 
-    logger.info("Initializing Playwright browser for TradingView...")
+    logger.info(f"Initializing Playwright (headless={headless})...")
 
-    # Start new playwright instance
     _playwright = await async_playwright().start()
 
-    # Launch browser with persistent context for session storage
-    _context = await _playwright.chromium.launch_persistent_context(
-        user_data_dir=str(SESSION_DIR),
-        headless=False,  # Show browser so user can login
-        viewport=None,  # Let it use full window
-        no_viewport=True,  # Don't constrain viewport
+    # Check if we have storage state
+    storage_state = None
+    if STORAGE_STATE_FILE.exists():
+        storage_state = str(STORAGE_STATE_FILE)
+        logger.info("Loading saved browser state...")
+
+    # Launch browser
+    _browser = await _playwright.chromium.launch(
+        headless=headless,
         args=[
             "--disable-blink-features=AutomationControlled",
-            "--start-maximized",
-            "--window-position=100,100",
-            "--window-size=1600,900",
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
         ]
     )
 
-    # Get or create page
-    if _context.pages:
-        _page = _context.pages[0]
-    else:
-        _page = await _context.new_page()
+    # Create context with storage state if available
+    context_options = {
+        "viewport": {"width": 1920, "height": 1080},
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    }
 
-    logger.info("Playwright browser initialized with persistent session")
+    if storage_state:
+        context_options["storage_state"] = storage_state
+
+    _context = await _browser.new_context(**context_options)
+    _page = await _context.new_page()
+
+    # If we have cookies file but no storage state, inject cookies
+    if not storage_state and COOKIES_FILE.exists():
+        logger.info("Injecting session cookies...")
+        await inject_cookies_from_file()
+
+    _is_initialized = True
+    logger.info("Playwright initialized successfully")
     return _page
 
 
-async def close_browser():
-    """Close the browser and cleanup."""
-    global _browser, _context, _page
+async def inject_cookies_from_file():
+    """Inject TradingView cookies from saved file."""
+    if not COOKIES_FILE.exists() or not _context:
+        return False
 
+    try:
+        with open(COOKIES_FILE) as f:
+            cookie_data = json.load(f)
+
+        cookies = [
+            {
+                "name": "sessionid",
+                "value": cookie_data.get("session_id", ""),
+                "domain": ".tradingview.com",
+                "path": "/",
+                "httpOnly": True,
+                "secure": True,
+            },
+            {
+                "name": "sessionid_sign",
+                "value": cookie_data.get("session_id_sign", ""),
+                "domain": ".tradingview.com",
+                "path": "/",
+                "httpOnly": True,
+                "secure": True,
+            },
+        ]
+
+        await _context.add_cookies(cookies)
+        logger.info("Cookies injected successfully")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to inject cookies: {e}")
+        return False
+
+
+async def save_storage_state():
+    """Save current browser state for future sessions."""
     if _context:
-        await _context.close()
-    _browser = None
-    _context = None
-    _page = None
-    logger.info("TradingView browser closed")
+        await _context.storage_state(path=str(STORAGE_STATE_FILE))
+        logger.info("Browser state saved")
 
 
 @router.get("/status")
 async def get_status():
     """Get TradingView browser status."""
+    has_cookies = COOKIES_FILE.exists()
+    has_state = STORAGE_STATE_FILE.exists()
+
     return {
-        "browser_active": _page is not None,
-        "session_dir": str(SESSION_DIR),
-        "streaming": _streaming,
+        "browser_active": _is_initialized,
+        "has_cookies": has_cookies,
+        "has_storage_state": has_state,
+        "cookies_file": str(COOKIES_FILE),
+        "ready": has_cookies or has_state,
         "timestamp": datetime.now().isoformat()
     }
 
 
+@router.post("/setup-cookies")
+async def setup_cookies(request: CookiesRequest):
+    """
+    Save TradingView session cookies.
+    User extracts these from browser DevTools after logging in.
+    """
+    if not request.session_id or not request.session_id_sign:
+        raise HTTPException(status_code=400, detail="Both session_id and session_id_sign are required")
+
+    # Save cookies to file
+    cookie_data = {
+        "session_id": request.session_id,
+        "session_id_sign": request.session_id_sign,
+        "saved_at": datetime.now().isoformat()
+    }
+
+    with open(COOKIES_FILE, "w") as f:
+        json.dump(cookie_data, f, indent=2)
+
+    logger.info("TradingView cookies saved")
+
+    # Clear old storage state so new cookies are used
+    if STORAGE_STATE_FILE.exists():
+        STORAGE_STATE_FILE.unlink()
+
+    return {"status": "saved", "message": "Cookies saved. Click 'Launch' to test."}
+
+
 @router.post("/launch")
 async def launch_tradingview(request: NavigateRequest = None):
-    """
-    Launch TradingView in browser.
-    First time: Browser opens, user logs in manually.
-    Subsequent times: Already logged in from saved session.
-    """
-    page = await get_playwright()
-
-    symbol = request.symbol if request else "GBPUSD"
+    """Launch TradingView chart with saved credentials."""
+    symbol = request.symbol if request else "FX:GBPUSD"
     interval = request.interval if request else "60"
 
-    # Build TradingView URL
+    # Check if we have credentials
+    if not COOKIES_FILE.exists() and not STORAGE_STATE_FILE.exists():
+        raise HTTPException(
+            status_code=400,
+            detail="No credentials found. Please set up cookies first via /setup-cookies"
+        )
+
+    # Initialize browser (headless)
+    page = await init_playwright(headless=True)
+
+    # Navigate to TradingView chart
     url = f"https://www.tradingview.com/chart/?symbol={symbol}&interval={interval}"
+    logger.info(f"Navigating to: {url}")
 
-    logger.info(f"Navigating to TradingView: {url}")
-    await page.goto(url, wait_until="networkidle", timeout=30000)
-
-    # Wait for chart to load
-    await asyncio.sleep(2)
-
-    # Check if login modal appeared
     try:
-        login_button = await page.query_selector('button[data-name="header-user-menu-button"]')
-        logged_in = login_button is not None
-    except:
-        logged_in = False
+        await page.goto(url, wait_until="networkidle", timeout=30000)
+        await asyncio.sleep(2)  # Wait for chart to render
 
-    return {
-        "status": "launched",
-        "url": url,
-        "logged_in": logged_in,
-        "message": "Browser opened. If not logged in, please log in manually - your session will be saved."
-    }
+        # Save state for future sessions
+        await save_storage_state()
+
+        # Check if logged in by looking for user menu
+        is_logged_in = False
+        try:
+            user_menu = await page.query_selector('[data-name="header-user-menu-button"]')
+            is_logged_in = user_menu is not None
+        except:
+            pass
+
+        return {
+            "status": "launched",
+            "url": url,
+            "logged_in": is_logged_in,
+            "message": "TradingView loaded" + (" (logged in)" if is_logged_in else " (not logged in - check cookies)")
+        }
+
+    except Exception as e:
+        logger.error(f"Failed to launch TradingView: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/navigate")
 async def navigate_to_symbol(request: NavigateRequest):
     """Navigate to a different symbol/timeframe."""
-    if _page is None:
+    if not _is_initialized or not _page:
         raise HTTPException(status_code=400, detail="Browser not launched. Call /launch first.")
 
     url = f"https://www.tradingview.com/chart/?symbol={request.symbol}&interval={request.interval}"
-
     logger.info(f"Navigating to: {url}")
-    await _page.goto(url, wait_until="networkidle", timeout=30000)
-    await asyncio.sleep(1)
 
-    return {"status": "navigated", "symbol": request.symbol, "interval": request.interval}
+    try:
+        await _page.goto(url, wait_until="networkidle", timeout=30000)
+        await asyncio.sleep(1)
+        return {"status": "navigated", "symbol": request.symbol, "interval": request.interval}
+    except Exception as e:
+        logger.error(f"Navigation failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/screenshot")
 async def get_screenshot():
     """Get current screenshot of TradingView chart."""
-    if _page is None:
+    if not _is_initialized or not _page:
         raise HTTPException(status_code=400, detail="Browser not launched. Call /launch first.")
 
-    # Take screenshot
-    screenshot_bytes = await _page.screenshot(type="jpeg", quality=85)
-    screenshot_b64 = base64.b64encode(screenshot_bytes).decode("utf-8")
+    try:
+        screenshot_bytes = await _page.screenshot(type="jpeg", quality=85)
+        screenshot_b64 = base64.b64encode(screenshot_bytes).decode("utf-8")
 
-    return {
-        "screenshot": f"data:image/jpeg;base64,{screenshot_b64}",
-        "timestamp": datetime.now().isoformat()
-    }
+        return {
+            "screenshot": f"data:image/jpeg;base64,{screenshot_b64}",
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Screenshot failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/click")
 async def click_on_chart(request: ClickRequest):
     """Send a click to the TradingView page."""
-    if _page is None:
+    if not _is_initialized or not _page:
         raise HTTPException(status_code=400, detail="Browser not launched.")
 
-    await _page.mouse.click(request.x, request.y, button=request.button)
-    return {"status": "clicked", "x": request.x, "y": request.y}
-
-
-@router.post("/key")
-async def send_key(request: KeyRequest):
-    """Send a keyboard input to TradingView."""
-    if _page is None:
-        raise HTTPException(status_code=400, detail="Browser not launched.")
-
-    # Build key combination
-    if request.modifiers:
-        key_combo = "+".join(request.modifiers + [request.key])
-        await _page.keyboard.press(key_combo)
-    else:
-        await _page.keyboard.press(request.key)
-
-    return {"status": "key_sent", "key": request.key, "modifiers": request.modifiers}
-
-
-@router.post("/type")
-async def type_text(text: str):
-    """Type text (for symbol search etc)."""
-    if _page is None:
-        raise HTTPException(status_code=400, detail="Browser not launched.")
-
-    await _page.keyboard.type(text, delay=50)
-    return {"status": "typed", "text": text}
+    try:
+        await _page.mouse.click(request.x, request.y)
+        return {"status": "clicked", "x": request.x, "y": request.y}
+    except Exception as e:
+        logger.error(f"Click failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/close")
 async def close_tradingview():
     """Close the TradingView browser."""
-    await close_browser()
+    global _playwright, _browser, _context, _page, _is_initialized
+
+    try:
+        if _context:
+            await save_storage_state()
+            await _context.close()
+        if _browser:
+            await _browser.close()
+        if _playwright:
+            await _playwright.stop()
+    except Exception as e:
+        logger.error(f"Close error: {e}")
+
+    _playwright = None
+    _browser = None
+    _context = None
+    _page = None
+    _is_initialized = False
+
     return {"status": "closed"}
 
 
+@router.delete("/cookies")
+async def delete_cookies():
+    """Delete saved cookies and storage state."""
+    if COOKIES_FILE.exists():
+        COOKIES_FILE.unlink()
+    if STORAGE_STATE_FILE.exists():
+        STORAGE_STATE_FILE.unlink()
+
+    return {"status": "deleted", "message": "Cookies and storage state cleared"}
+
+
+# WebSocket for streaming (alternative to polling)
 @router.websocket("/stream")
 async def screenshot_stream(websocket: WebSocket):
-    """
-    WebSocket endpoint for streaming screenshots.
-    Enables real-time chart display in web UI.
-    """
-    global _streaming
-
+    """WebSocket endpoint for streaming screenshots."""
     await websocket.accept()
-    _streaming = True
-
-    logger.info("TradingView screenshot stream started")
+    logger.info("Screenshot stream started")
 
     try:
         while True:
-            if _page is None:
+            if not _is_initialized or not _page:
                 await websocket.send_json({"error": "Browser not launched"})
                 await asyncio.sleep(1)
                 continue
 
-            # Capture screenshot
-            screenshot_bytes = await _page.screenshot(type="jpeg", quality=70)
-            screenshot_b64 = base64.b64encode(screenshot_bytes).decode("utf-8")
+            try:
+                screenshot_bytes = await _page.screenshot(type="jpeg", quality=70)
+                screenshot_b64 = base64.b64encode(screenshot_bytes).decode("utf-8")
 
-            # Send to client
-            await websocket.send_json({
-                "screenshot": f"data:image/jpeg;base64,{screenshot_b64}",
-                "timestamp": datetime.now().isoformat()
-            })
+                await websocket.send_json({
+                    "screenshot": f"data:image/jpeg;base64,{screenshot_b64}",
+                    "timestamp": datetime.now().isoformat()
+                })
+            except Exception as e:
+                await websocket.send_json({"error": str(e)})
 
-            # ~10 FPS
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.15)  # ~7 FPS
 
     except WebSocketDisconnect:
-        logger.info("TradingView stream client disconnected")
+        logger.info("Stream client disconnected")
     except Exception as e:
         logger.error(f"Stream error: {e}")
-    finally:
-        _streaming = False
-
-
-# Convenience endpoints for common actions
-@router.post("/search")
-async def search_symbol(symbol: str):
-    """Open symbol search and type symbol."""
-    if _page is None:
-        raise HTTPException(status_code=400, detail="Browser not launched.")
-
-    # Press / to open search (TradingView shortcut)
-    await _page.keyboard.press("/")
-    await asyncio.sleep(0.3)
-    await _page.keyboard.type(symbol, delay=30)
-    await asyncio.sleep(0.5)
-    await _page.keyboard.press("Enter")
-    await asyncio.sleep(1)
-
-    return {"status": "searched", "symbol": symbol}
-
-
-@router.post("/timeframe")
-async def change_timeframe(interval: str):
-    """
-    Change timeframe using keyboard shortcut.
-    Supported: 1, 5, 15, 60 (1H), 240 (4H), D, W, M
-    """
-    if _page is None:
-        raise HTTPException(status_code=400, detail="Browser not launched.")
-
-    # TradingView keyboard shortcuts for timeframes
-    shortcuts = {
-        "1": "1",
-        "5": "5",
-        "15": "1",  # Then 5
-        "60": "shift+1",  # 1H
-        "240": "shift+4",  # 4H
-        "D": "d",
-        "W": "w",
-        "M": "m"
-    }
-
-    if interval in shortcuts:
-        await _page.keyboard.press(shortcuts[interval])
-        if interval == "15":
-            await _page.keyboard.press("5")
-
-    return {"status": "timeframe_changed", "interval": interval}

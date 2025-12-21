@@ -9,159 +9,162 @@ interface TradingViewEmbedProps {
   desktopServerUrl?: string;
 }
 
-type ConnectionStatus = "disconnected" | "connecting" | "connected" | "error";
+type ViewState = "setup" | "connecting" | "streaming" | "error";
 
 export function TradingViewEmbed({
   symbol = "GBPUSD",
   interval = "60",
   desktopServerUrl = "http://localhost:8000",
 }: TradingViewEmbedProps) {
-  const [status, setStatus] = useState<ConnectionStatus>("disconnected");
+  const [viewState, setViewState] = useState<ViewState>("setup");
   const [screenshot, setScreenshot] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const wsRef = useRef<WebSocket | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [hasCredentials, setHasCredentials] = useState(false);
+  const [sessionId, setSessionId] = useState("");
+  const [sessionIdSign, setSessionIdSign] = useState("");
+  const [showSetup, setShowSetup] = useState(false);
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Launch TradingView browser
-  const launchTradingView = useCallback(async () => {
-    setStatus("connecting");
+  // Check status on mount
+  useEffect(() => {
+    checkStatus();
+  }, []);
+
+  const checkStatus = async () => {
+    try {
+      const response = await fetch(`${desktopServerUrl}/tradingview/status`);
+      if (response.ok) {
+        const data = await response.json();
+        setHasCredentials(data.ready);
+        if (data.browser_active) {
+          setViewState("streaming");
+          startPolling();
+        }
+      }
+    } catch {
+      // Server not running
+    }
+  };
+
+  // Fetch screenshot
+  const fetchScreenshot = useCallback(async () => {
+    try {
+      const response = await fetch(`${desktopServerUrl}/tradingview/screenshot`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.screenshot) {
+          setScreenshot(data.screenshot);
+          setErrorMessage(null);
+        }
+      }
+    } catch {
+      // Silent fail for polling
+    }
+  }, [desktopServerUrl]);
+
+  // Start polling for screenshots
+  const startPolling = useCallback(() => {
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+    }
+    pollingRef.current = setInterval(fetchScreenshot, 150);
+    fetchScreenshot();
+  }, [fetchScreenshot]);
+
+  // Stop polling
+  const stopPolling = useCallback(() => {
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
+  }, []);
+
+  // Save cookies
+  const saveCookies = async () => {
+    if (!sessionId || !sessionIdSign) {
+      setErrorMessage("Both cookie values are required");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${desktopServerUrl}/tradingview/setup-cookies`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: sessionId,
+          session_id_sign: sessionIdSign,
+        }),
+      });
+
+      if (response.ok) {
+        setHasCredentials(true);
+        setShowSetup(false);
+        setErrorMessage(null);
+      } else {
+        const data = await response.json();
+        setErrorMessage(data.detail || "Failed to save cookies");
+      }
+    } catch (error) {
+      setErrorMessage("Failed to connect to Desktop Server");
+    }
+  };
+
+  // Launch TradingView
+  const launchTradingView = async () => {
+    setViewState("connecting");
     setErrorMessage(null);
 
     try {
       const response = await fetch(`${desktopServerUrl}/tradingview/launch`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ symbol, interval }),
+        body: JSON.stringify({ symbol: `FX:${symbol}`, interval }),
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to launch: ${response.statusText}`);
+        const data = await response.json();
+        throw new Error(data.detail || "Failed to launch");
       }
 
       const data = await response.json();
       setIsLoggedIn(data.logged_in);
-      setStatus("connected");
-
-      // Start screenshot stream
-      startStream();
+      setViewState("streaming");
+      startPolling();
     } catch (error) {
-      console.error("Launch error:", error);
-      setErrorMessage(
-        error instanceof Error ? error.message : "Failed to connect to Desktop Server"
-      );
-      setStatus("error");
+      setErrorMessage(error instanceof Error ? error.message : "Failed to connect");
+      setViewState("error");
     }
-  }, [desktopServerUrl, symbol, interval]);
-
-  // Start WebSocket screenshot stream
-  const startStream = useCallback(() => {
-    if (wsRef.current) {
-      wsRef.current.close();
-    }
-
-    const wsUrl = desktopServerUrl.replace("http", "ws");
-    const ws = new WebSocket(`${wsUrl}/tradingview/stream`);
-
-    ws.onopen = () => {
-      console.log("TradingView stream connected");
-      setStatus("connected");
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.screenshot) {
-          setScreenshot(data.screenshot);
-        }
-        if (data.error) {
-          setErrorMessage(data.error);
-        }
-      } catch (e) {
-        console.error("Parse error:", e);
-      }
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      setStatus("error");
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket closed");
-      if (status === "connected") {
-        setStatus("disconnected");
-      }
-    };
-
-    wsRef.current = ws;
-  }, [desktopServerUrl, status]);
+  };
 
   // Navigate to symbol
-  const navigateToSymbol = useCallback(async (newSymbol: string, newInterval: string) => {
-    try {
-      await fetch(`${desktopServerUrl}/tradingview/navigate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ symbol: newSymbol, interval: newInterval }),
-      });
-    } catch (error) {
-      console.error("Navigate error:", error);
-    }
-  }, [desktopServerUrl]);
-
-  // Handle click on the chart image
-  const handleClick = useCallback(async (e: React.MouseEvent<HTMLImageElement>) => {
-    if (!containerRef.current || status !== "connected") return;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const scaleX = 1920 / rect.width;
-    const scaleY = 1080 / rect.height;
-
-    const x = Math.round((e.clientX - rect.left) * scaleX);
-    const y = Math.round((e.clientY - rect.top) * scaleY);
-
-    try {
-      await fetch(`${desktopServerUrl}/tradingview/click`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ x, y, button: "left" }),
-      });
-    } catch (error) {
-      console.error("Click error:", error);
-    }
-  }, [desktopServerUrl, status]);
-
-  // Update symbol when props change
   useEffect(() => {
-    if (status === "connected") {
-      navigateToSymbol(symbol, interval);
+    if (viewState === "streaming") {
+      fetch(`${desktopServerUrl}/tradingview/navigate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ symbol: `FX:${symbol}`, interval }),
+      }).catch(() => {});
     }
-  }, [symbol, interval, status, navigateToSymbol]);
+  }, [symbol, interval, viewState, desktopServerUrl]);
 
   // Cleanup on unmount
   useEffect(() => {
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
-  }, []);
+    return () => stopPolling();
+  }, [stopPolling]);
 
-  // Render based on status
-  if (status === "disconnected" || status === "error") {
+  // Setup/Error view
+  if (viewState === "setup" || viewState === "error" || showSetup) {
     return (
-      <div className="h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-8">
-        <div className="text-center max-w-md">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-            <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-6 overflow-auto">
+        <div className="text-center max-w-lg w-full">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+            <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">TradingView Integration</h3>
-          <p className="text-white/60 mb-6">
-            Launch TradingView with your account to see your custom indicators and saved layouts.
-          </p>
+
+          <h3 className="text-lg font-bold text-white mb-2">TradingView Integration</h3>
 
           {errorMessage && (
             <div className="mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/30 text-red-300 text-sm">
@@ -169,52 +172,109 @@ export function TradingViewEmbed({
             </div>
           )}
 
-          <Button
-            variant="primary"
-            onClick={launchTradingView}
-            className="px-6 py-3 text-lg"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Launch TradingView
-          </Button>
+          {!hasCredentials || showSetup ? (
+            <>
+              <p className="text-white/60 text-sm mb-4">
+                Enter your TradingView session cookies to view charts with your indicators.
+              </p>
 
-          <p className="text-white/40 text-xs mt-4">
-            Requires Desktop Server running on localhost:8000
+              <div className="bg-slate-800/50 rounded-lg p-4 mb-4 text-left">
+                <p className="text-xs text-white/50 mb-3">
+                  <strong>How to get cookies:</strong><br/>
+                  1. Log into TradingView.com<br/>
+                  2. Press F12 → Application → Cookies<br/>
+                  3. Copy <code className="text-indigo-300">sessionid</code> and <code className="text-indigo-300">sessionid_sign</code>
+                </p>
+
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs text-white/40 mb-1">sessionid</label>
+                    <input
+                      type="text"
+                      value={sessionId}
+                      onChange={(e) => setSessionId(e.target.value)}
+                      placeholder="Paste sessionid cookie value"
+                      className="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded text-sm text-white placeholder-white/30 focus:outline-none focus:border-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-white/40 mb-1">sessionid_sign</label>
+                    <input
+                      type="text"
+                      value={sessionIdSign}
+                      onChange={(e) => setSessionIdSign(e.target.value)}
+                      placeholder="Paste sessionid_sign cookie value"
+                      className="w-full px-3 py-2 bg-slate-700 border border-white/10 rounded text-sm text-white placeholder-white/30 focus:outline-none focus:border-indigo-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <Button variant="primary" onClick={saveCookies} className="flex-1">
+                  Save Cookies
+                </Button>
+                {hasCredentials && (
+                  <Button variant="secondary" onClick={() => setShowSetup(false)}>
+                    Cancel
+                  </Button>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-white/60 text-sm mb-4">
+                Cookies saved. Ready to launch TradingView with your account.
+              </p>
+
+              <div className="flex gap-2 justify-center">
+                <Button variant="primary" onClick={launchTradingView}>
+                  Launch TradingView
+                </Button>
+                <Button variant="secondary" onClick={() => setShowSetup(true)}>
+                  Update Cookies
+                </Button>
+              </div>
+            </>
+          )}
+
+          <p className="text-white/30 text-xs mt-4">
+            Requires Desktop Server on localhost:8000
           </p>
         </div>
       </div>
     );
   }
 
-  if (status === "connecting") {
+  // Connecting view
+  if (viewState === "connecting") {
     return (
       <div className="h-full flex items-center justify-center bg-slate-900 rounded-lg">
         <div className="text-center">
           <div className="w-12 h-12 mx-auto mb-4 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-white/60">Launching TradingView...</p>
-          <p className="text-white/40 text-sm mt-2">Browser will open for login if needed</p>
+          <p className="text-white/60">Loading TradingView...</p>
+          <p className="text-white/40 text-sm mt-2">This may take a few seconds</p>
         </div>
       </div>
     );
   }
 
-  // Connected - show screenshot stream
+  // Streaming view
   return (
-    <div ref={containerRef} className="h-full relative bg-slate-900 rounded-lg overflow-hidden">
+    <div className="h-full relative bg-slate-900 rounded-lg overflow-hidden">
       {screenshot ? (
         <img
           src={screenshot}
           alt="TradingView Chart"
-          className="w-full h-full object-contain cursor-crosshair"
-          onClick={handleClick}
+          className="w-full h-full object-contain"
           draggable={false}
         />
       ) : (
         <div className="h-full flex items-center justify-center">
-          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <div className="text-center">
+            <div className="w-8 h-8 mx-auto mb-4 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-white/50">Loading chart...</p>
+          </div>
         </div>
       )}
 
@@ -222,15 +282,33 @@ export function TradingViewEmbed({
       <div className="absolute top-2 right-2 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/50 backdrop-blur-sm">
         <div className={`w-2 h-2 rounded-full ${isLoggedIn ? "bg-emerald-400" : "bg-amber-400"} animate-pulse`} />
         <span className="text-xs text-white/70">
-          {isLoggedIn ? "Logged In" : "Log in to see indicators"}
+          {isLoggedIn ? "Logged In" : "Not Logged In"}
         </span>
+      </div>
+
+      {/* Controls */}
+      <div className="absolute top-2 left-2 flex gap-2">
+        <button
+          onClick={() => {
+            stopPolling();
+            setViewState("setup");
+            setScreenshot(null);
+          }}
+          className="px-3 py-1.5 rounded-lg bg-black/50 hover:bg-black/70 text-white/70 text-xs transition-colors"
+        >
+          Stop
+        </button>
+        <button
+          onClick={() => setShowSetup(true)}
+          className="px-3 py-1.5 rounded-lg bg-black/50 hover:bg-black/70 text-white/70 text-xs transition-colors"
+        >
+          Settings
+        </button>
       </div>
 
       {/* Symbol indicator */}
       <div className="absolute bottom-2 left-2 px-3 py-1.5 rounded-lg bg-black/50 backdrop-blur-sm">
         <span className="text-sm font-mono text-white">{symbol}</span>
-        <span className="text-white/40 mx-2">|</span>
-        <span className="text-sm text-white/60">{interval}m</span>
       </div>
     </div>
   );
