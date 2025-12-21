@@ -204,6 +204,10 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
     setIsStreaming(false);
   };
 
+  const context = agentContext || "general";
+  const quickCommands = QUICK_COMMANDS[context];
+  const showQuickCommands = messages.length <= 2 && !isStreaming;
+
   return (
     <div className="flex flex-col flex-1 gap-4">
       {/* Messages */}
@@ -211,11 +215,53 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
         {messages.map((message) => (
           <ChatMessage key={message.id} message={message} />
         ))}
+
+        {/* Typing indicator */}
+        {isStreaming && (
+          <div className="flex justify-start">
+            <div className="glass-dark rounded-2xl px-4 py-3">
+              <div className="flex items-center gap-2">
+                <div className="flex gap-1">
+                  <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+                <span className="text-xs text-white/40">Vulcan is thinking...</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Quick Commands */}
+      {showQuickCommands && (
+        <div className="flex flex-wrap gap-2 px-2">
+          {quickCommands.map((cmd) => (
+            <button
+              key={cmd.label}
+              onClick={() => handleSendMessage(cmd.command)}
+              className="px-3 py-1.5 rounded-full text-xs font-medium glass hover-lift
+                         text-white/70 hover:text-white border border-white/10
+                         hover:border-indigo-400/50 transition-all"
+            >
+              {cmd.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Input */}
       <ChatInput onSend={handleSendMessage} disabled={isStreaming} />
+
+      {/* Model indicator */}
+      <div className="flex items-center justify-center gap-2 text-xs text-white/30">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+        <span>Cost-optimized routing active</span>
+        <span className="text-white/20">|</span>
+        <span>Haiku for simple, Sonnet for complex</span>
+      </div>
     </div>
   );
 }
