@@ -11,8 +11,9 @@ export { Watchlist } from "./Watchlist";
 export { TradingViewChart } from "./TradingViewChart";
 export { TradingViewEmbed } from "./TradingViewEmbed";
 
-// New Phase 14 Components
+// Phase 14 Components
 export * from "./header";
 export * from "./layout";
 export * from "./calculators";
 export * from "./entry";
+export * from "./tabs";
