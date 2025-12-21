@@ -1,7 +1,7 @@
 # Project Vulcan: Master Task List
 
-**Status**: Phase 11 COMPLETE - CAD Performance Manager
-**Last Updated**: Dec 2025 - Phase 11 adapters complete
+**Status**: Phase 12 COMPLETE - Flatter Files Integration
+**Last Updated**: Dec 2025 - Phase 11 + 12 adapters complete
 **Goal**: Unified AI Operating System (Trading, CAD, General)
 **Pattern**: Adapter + Bridge (lightweight, no cloning)
 
@@ -193,6 +193,7 @@ system=[{
 | `agents/cad_agent/adapters/solidworks_settings.py` | Adapter | Graphics tier management | ~210 |
 | `agents/cad_agent/adapters/job_queue.py` | Adapter | Batch processing + resume | ~250 |
 | `agents/cad_agent/adapters/notification_store.py` | Adapter | Web UI notifications | ~200 |
+| `agents/cad_agent/adapters/flatter_files_adapter.py` | Adapter | Flatter Files REST API | ~320 |
 
 ---
 
@@ -260,26 +261,27 @@ system=[{
 
 ---
 
-## 📋 Backlog
+## ✅ Phase 12: Flatter Files Integration - Complete (Dec 2025)
 
----
+### Drawing Management via API
+**Uses**: httpx, Flatter Files REST API
 
-### Phase 12: Flatter Files Integration
-**Priority**: HIGH | **Dependency**: Flatter Files API Key
-
-- [ ] `agents/cad_agent/adapters/flatter_files_adapter.py` (~350 lines)
-- [ ] Search drawings by part number/description
-- [ ] Get PDF/STEP/DXF download URLs
-- [ ] Get assembly BOM structure
-- [ ] Get revision history
-- [ ] Get markup annotations
-- [ ] Filter by checked-out status
-- [ ] Add `FLATTER_FILES_API_KEY` to .env
+- [x] `agents/cad_agent/adapters/flatter_files_adapter.py` (~320 lines)
+- [x] Search drawings by part number/description
+- [x] Get PDF/STEP/DXF download URLs
+- [x] Get assembly BOM structure
+- [x] Create external sharing links
+- [x] Activity history tracking
+- [x] Item activation/deactivation
+- [x] Add `FLATTER_FILES_COMPANY_ID` + `FLATTER_FILES_API_KEY` to .env
 
 **Chatbot examples:**
 - "Find drawing for bracket 12345" → PDF/STEP links
 - "What parts are in assembly XYZ-100?" → BOM list
-- "Any markups on drawing ABC-500?" → Annotation list
+
+---
+
+## 📋 Backlog
 
 ---
 
