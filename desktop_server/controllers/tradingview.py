@@ -311,6 +311,22 @@ async def click_on_chart(request: ClickRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/scroll")
+async def scroll_on_chart(request: ScrollRequest):
+    """Send a scroll event to the TradingView page."""
+    if not _is_initialized or not _page:
+        raise HTTPException(status_code=400, detail="Browser not launched.")
+
+    try:
+        # Move mouse to position first, then scroll
+        await _page.mouse.move(request.x, request.y)
+        await _page.mouse.wheel(0, request.delta * 50)  # Multiply for visible scroll
+        return {"status": "scrolled", "x": request.x, "y": request.y, "delta": request.delta}
+    except Exception as e:
+        logger.error(f"Scroll failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.post("/close")
 async def close_tradingview():
     """Close the TradingView browser."""
