@@ -309,3 +309,163 @@ body {
   animation: blink 1s infinite;
   color: #6366f1;
 }
+
+/* Trading Module Styles */
+.trading-bullish { color: var(--trading-bullish); }
+.trading-bearish { color: var(--trading-bearish); }
+.trading-neutral { color: var(--trading-neutral); }
+
+.bg-trading-bullish { background-color: var(--trading-bullish); }
+.bg-trading-bearish { background-color: var(--trading-bearish); }
+.bg-trading-neutral { background-color: var(--trading-neutral); }
+
+.border-trading-bullish { border-color: var(--trading-bullish); }
+.border-trading-bearish { border-color: var(--trading-bearish); }
+
+/* Trading Layout */
+.trading-layout {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: auto 1fr auto;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.trading-header {
+  grid-column: 1 / -1;
+}
+
+.trading-left-panel {
+  grid-row: 2;
+  height: 100%;
+  overflow: hidden;
+}
+
+.trading-main {
+  grid-row: 2;
+  overflow: hidden;
+}
+
+.trading-right-panel {
+  grid-row: 2;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Trading Card Variants */
+.trading-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.trading-card-bullish {
+  border-left: 3px solid var(--trading-bullish);
+  background: linear-gradient(
+    135deg,
+    rgba(63, 185, 80, 0.1) 0%,
+    rgba(63, 185, 80, 0.02) 100%
+  );
+}
+
+.trading-card-bearish {
+  border-left: 3px solid var(--trading-bearish);
+  background: linear-gradient(
+    135deg,
+    rgba(248, 81, 73, 0.1) 0%,
+    rgba(248, 81, 73, 0.02) 100%
+  );
+}
+
+/* Kill Zone Pulse Animation */
+@keyframes killzone-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.4); }
+  50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(248, 81, 73, 0); }
+}
+
+.killzone-active {
+  animation: killzone-pulse 2s ease-in-out infinite;
+}
+
+/* Session Progress Bar */
+.session-progress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.session-progress-bar {
+  height: 100%;
+  transition: width 1s linear;
+}
+
+/* TradingView-style Chart Container */
+.chart-container {
+  background: #131722;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Trading Form Inputs */
+.trading-input {
+  @apply w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30;
+  @apply focus:outline-none focus:border-vulcan-accent focus:ring-1 focus:ring-vulcan-accent/50;
+  @apply transition-all duration-200;
+}
+
+.trading-select {
+  @apply trading-input appearance-none cursor-pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+/* Trading Button Variants */
+.trading-btn-buy {
+  @apply px-4 py-2 rounded-lg font-medium transition-all;
+  background: linear-gradient(135deg, var(--trading-bullish), #2ea043);
+  box-shadow: 0 4px 12px rgba(63, 185, 80, 0.3);
+}
+
+.trading-btn-buy:hover {
+  box-shadow: 0 6px 16px rgba(63, 185, 80, 0.4);
+  transform: translateY(-1px);
+}
+
+.trading-btn-sell {
+  @apply px-4 py-2 rounded-lg font-medium transition-all;
+  background: linear-gradient(135deg, var(--trading-bearish), #da3633);
+  box-shadow: 0 4px 12px rgba(248, 81, 73, 0.3);
+}
+
+.trading-btn-sell:hover {
+  box-shadow: 0 6px 16px rgba(248, 81, 73, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Cycle Day Indicators */
+.cycle-day-1 {
+  --cycle-color: #fbbf24;
+  border-color: var(--cycle-color);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, transparent 100%);
+}
+
+.cycle-day-2 {
+  --cycle-color: #f97316;
+  border-color: var(--cycle-color);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, transparent 100%);
+}
+
+.cycle-day-3 {
+  --cycle-color: #22c55e;
+  border-color: var(--cycle-color);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, transparent 100%);
+}

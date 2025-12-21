@@ -11,13 +11,33 @@ const config: Config = {
       colors: {
         vulcan: {
           dark: "#1e1b4b",
-          darker: "#312e81",
+          darker: "#0d1117",
           light: "#4338ca",
-          accent: "#818cf8",
+          accent: "#6366f1",
           success: "#34d399",
           warning: "#fbbf24",
           error: "#f87171",
           surface: "rgba(255, 255, 255, 0.1)",
+        },
+        trading: {
+          bullish: "var(--trading-bullish)",
+          bearish: "var(--trading-bearish)",
+          neutral: "var(--trading-neutral)",
+          warning: "var(--trading-warning)",
+          info: "var(--trading-info)",
+        },
+        session: {
+          asian: "var(--session-asian)",
+          london: "var(--session-london)",
+          newyork: "var(--session-newyork)",
+          gap: "var(--session-gap)",
+        },
+        ema: {
+          mustard: "var(--ema-mustard)",
+          ketchup: "var(--ema-ketchup)",
+          water: "var(--ema-water)",
+          mayo: "var(--ema-mayo)",
+          blueberry: "var(--ema-blueberry)",
         },
       },
       backgroundImage: {
