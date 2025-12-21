@@ -91,26 +91,58 @@ export function MarketAnalysis() {
 
   return (
     <div className="space-y-4 mt-4">
-      {/* TradingView Chart - Now Real! */}
+      {/* TradingView Chart */}
       <Card>
         <CardHeader
           title={`${selectedPair.pair} Chart`}
-          subtitle="TradingView Live Data"
+          subtitle={chartMode === "account" ? "Your TradingView Account" : "TradingView Public Widget"}
           action={
             <div className="flex items-center gap-3">
-              <div className="flex gap-1">
-                {["15M", "1H", "4H", "Daily"].map((tf) => (
-                  <Button
-                    key={tf}
-                    variant={selectedInterval === tf ? "primary" : "ghost"}
-                    size="sm"
-                    onClick={() => setSelectedInterval(tf)}
-                  >
-                    {tf}
-                  </Button>
-                ))}
+              {/* Mode Toggle */}
+              <div className="flex rounded-lg bg-white/5 p-0.5">
+                <button
+                  onClick={() => setChartMode("widget")}
+                  className={`px-3 py-1 text-xs rounded-md transition-all ${
+                    chartMode === "widget"
+                      ? "bg-indigo-500 text-white"
+                      : "text-white/50 hover:text-white"
+                  }`}
+                >
+                  Widget
+                </button>
+                <button
+                  onClick={() => setChartMode("account")}
+                  className={`px-3 py-1 text-xs rounded-md transition-all ${
+                    chartMode === "account"
+                      ? "bg-indigo-500 text-white"
+                      : "text-white/50 hover:text-white"
+                  }`}
+                >
+                  My Account
+                </button>
               </div>
+
               <div className="h-6 w-px bg-white/10" />
+
+              {/* Timeframe buttons - only for widget mode */}
+              {chartMode === "widget" && (
+                <>
+                  <div className="flex gap-1">
+                    {["15M", "1H", "4H", "Daily"].map((tf) => (
+                      <Button
+                        key={tf}
+                        variant={selectedInterval === tf ? "primary" : "ghost"}
+                        size="sm"
+                        onClick={() => setSelectedInterval(tf)}
+                      >
+                        {tf}
+                      </Button>
+                    ))}
+                  </div>
+                  <div className="h-6 w-px bg-white/10" />
+                </>
+              )}
+
               <Button
                 variant="secondary"
                 size="sm"
@@ -131,13 +163,20 @@ export function MarketAnalysis() {
             </div>
           }
         />
-        <CardContent className="h-[450px] p-0">
-          <TradingViewChart
-            symbol={selectedPair.symbol}
-            interval={intervals[selectedInterval]}
-            theme="dark"
-            autosize={true}
-          />
+        <CardContent className="h-[500px] p-0">
+          {chartMode === "widget" ? (
+            <TradingViewChart
+              symbol={selectedPair.symbol}
+              interval={intervals[selectedInterval]}
+              theme="dark"
+              autosize={true}
+            />
+          ) : (
+            <TradingViewEmbed
+              symbol={selectedPair.symbol}
+              interval={intervals[selectedInterval]}
+            />
+          )}
         </CardContent>
       </Card>
 
