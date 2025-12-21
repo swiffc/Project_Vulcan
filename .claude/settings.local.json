@@ -16,7 +16,8 @@
       "Bash(ping:*)",
       "Bash(node:*)",
       "Bash(powershell:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }
