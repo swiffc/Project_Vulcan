@@ -18,7 +18,8 @@
       "Bash(powershell:*)",
       "Bash(find:*)",
       "WebFetch(domain:github.com)",
-      "Bash(where:*)"
+      "Bash(where:*)",
+      "Bash(npx next dev:*)"
     ]
   }
 }
