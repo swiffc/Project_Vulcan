@@ -52,12 +52,24 @@ class KeyRequest(BaseModel):
     modifiers: list[str] = []
 
 
+_playwright = None
+
 async def get_playwright():
     """Lazy import and initialize Playwright."""
-    global _browser, _context, _page
+    global _browser, _context, _page, _playwright
 
+    # Check if existing page is still valid
     if _page is not None:
-        return _page
+        try:
+            # Test if page is still alive
+            await _page.title()
+            return _page
+        except Exception:
+            # Page is dead, reset everything
+            logger.info("Browser was closed, resetting...")
+            _page = None
+            _context = None
+            _browser = None
 
     try:
         from playwright.async_api import async_playwright
@@ -69,10 +81,11 @@ async def get_playwright():
 
     logger.info("Initializing Playwright browser for TradingView...")
 
-    pw = await async_playwright().start()
+    # Start new playwright instance
+    _playwright = await async_playwright().start()
 
     # Launch browser with persistent context for session storage
-    _context = await pw.chromium.launch_persistent_context(
+    _context = await _playwright.chromium.launch_persistent_context(
         user_data_dir=str(SESSION_DIR),
         headless=False,  # Show browser so user can login
         viewport=None,  # Let it use full window
