@@ -93,17 +93,37 @@ export function MarketAnalysis() {
           title={`${selectedPair.pair} Chart`}
           subtitle="TradingView Live Data"
           action={
-            <div className="flex gap-1">
-              {["15M", "1H", "4H", "Daily"].map((tf) => (
-                <Button
-                  key={tf}
-                  variant={selectedInterval === tf ? "primary" : "ghost"}
-                  size="sm"
-                  onClick={() => setSelectedInterval(tf)}
-                >
-                  {tf}
-                </Button>
-              ))}
+            <div className="flex items-center gap-3">
+              <div className="flex gap-1">
+                {["15M", "1H", "4H", "Daily"].map((tf) => (
+                  <Button
+                    key={tf}
+                    variant={selectedInterval === tf ? "primary" : "ghost"}
+                    size="sm"
+                    onClick={() => setSelectedInterval(tf)}
+                  >
+                    {tf}
+                  </Button>
+                ))}
+              </div>
+              <div className="h-6 w-px bg-white/10" />
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  const tvInterval = intervals[selectedInterval];
+                  const url = `https://www.tradingview.com/chart/?symbol=${selectedPair.symbol}&interval=${tvInterval}`;
+                  window.open(url, '_blank', 'noopener,noreferrer');
+                }}
+                className="flex items-center gap-1.5"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+                Open in TradingView
+              </Button>
             </div>
           }
         />
