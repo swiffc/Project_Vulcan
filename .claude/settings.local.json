@@ -20,7 +20,8 @@
       "WebFetch(domain:github.com)",
       "Bash(where:*)",
       "Bash(npx next dev:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(playwright install:*)"
     ]
   }
 }
