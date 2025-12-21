@@ -59,6 +59,7 @@ This document maintains all external dependencies and architectural references f
 | memory-vec | Vector RAG | chromadb | `controllers/memory.py` |
 | mcp-gdrive | Google Drive | [wong2/mcp-gdrive-adapter](https://github.com/wong2/mcp-gdrive-adapter) | `agents/cad_agent/adapters/gdrive_bridge.py` |
 | CAD-MCP | SolidWorks/Inventor | [daobataotie/CAD-MCP](https://github.com/daobataotie/CAD-MCP) | `desktop_server/com/*.py` |
+| microsoft-mcp | Outlook/Calendar/OneDrive | [elyxlz/microsoft-mcp](https://github.com/elyxlz/microsoft-mcp) | MCP Direct (Claude Desktop) |
 
 ---
 
@@ -141,6 +142,13 @@ class GDriveBridge:
 | [APScheduler](https://github.com/agronholm/apscheduler) | Job scheduling | AsyncIOScheduler usage |
 | [CAD-MCP](https://github.com/daobataotie/CAD-MCP) | CAD control patterns | Tool definitions |
 | [mcp-gdrive](https://github.com/wong2/mcp-gdrive-adapter) | Drive MCP | Server patterns |
+| [microsoft-mcp](https://github.com/elyxlz/microsoft-mcp) | M365 Outlook/Calendar/OneDrive | Device Code auth |
+| [TradingView-API](https://github.com/Mathieu2301/TradingView-API) | Realtime data, backtesting | Unofficial TV API |
+| [tradingview-webhooks-bot](https://github.com/robswc/tradingview-webhooks-bot) | Webhook alert receiver | Flask framework |
+| [pySldWrap](https://github.com/ThomasNeve/pySldWrap) | SolidWorks Python wrapper | pywin32 COM |
+| [pySW](https://github.com/kalyanpi4/pySW) | SW dimension extraction | Drawing parser |
+| [swtoolkit](https://github.com/Glutenberg/swtoolkit) | SW automation scripts | Batch operations |
+| [pySolidWorks](https://github.com/mklanac/pySolidWorks) | SW FEA/DXF export | Full API wrapper |
 
 ---
 
