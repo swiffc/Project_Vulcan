@@ -57,6 +57,12 @@ class ClickRequest(BaseModel):
     y: int
 
 
+class ScrollRequest(BaseModel):
+    x: int
+    y: int
+    delta: int  # positive = scroll up, negative = scroll down
+
+
 async def init_playwright(headless: bool = True):
     """Initialize Playwright with stored cookies/state."""
     global _playwright, _browser, _context, _page, _is_initialized

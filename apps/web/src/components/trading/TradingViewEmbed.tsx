@@ -259,14 +259,58 @@ export function TradingViewEmbed({
     );
   }
 
+  // Handle click on chart
+  const handleChartClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const scaleX = 1920 / rect.width;  // Browser viewport width
+    const scaleY = 1080 / rect.height; // Browser viewport height
+    const x = Math.round((e.clientX - rect.left) * scaleX);
+    const y = Math.round((e.clientY - rect.top) * scaleY);
+
+    try {
+      await fetch(`${desktopServerUrl}/tradingview/click`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ x, y }),
+      });
+    } catch {
+      // Silent fail
+    }
+  };
+
+  // Handle scroll on chart
+  const handleChartScroll = async (e: React.WheelEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const scaleX = 1920 / rect.width;
+    const scaleY = 1080 / rect.height;
+    const x = Math.round((e.clientX - rect.left) * scaleX);
+    const y = Math.round((e.clientY - rect.top) * scaleY);
+    const delta = e.deltaY > 0 ? -3 : 3; // Scroll direction
+
+    try {
+      await fetch(`${desktopServerUrl}/tradingview/scroll`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ x, y, delta }),
+      });
+    } catch {
+      // Silent fail
+    }
+  };
+
   // Streaming view
   return (
-    <div className="h-full relative bg-slate-900 rounded-lg overflow-hidden">
+    <div
+      className="h-full relative bg-slate-900 rounded-lg overflow-hidden cursor-pointer"
+      onClick={handleChartClick}
+      onWheel={handleChartScroll}
+    >
       {screenshot ? (
         <img
           src={screenshot}
           alt="TradingView Chart"
-          className="w-full h-full object-contain"
+          className="w-full h-full object-contain pointer-events-none"
           draggable={false}
         />
       ) : (
