@@ -270,14 +270,36 @@ Complete redesign of `/trading` page based on 2024 trading app UX research. Inte
 
 ---
 
-### 🏗️ Week 1: Foundation - IN PROGRESS
+### ✅ Week 1: Foundation - COMPLETE
+
+#### Week 1 Checklist
+- [x] Create all component directories (`header/`, `layout/`, `calculators/`, `entry/`)
+- [x] Create `types.ts` with BTMM types (~286 lines)
+- [x] Create `constants.ts` with BTMM constants (~245 lines)
+- [x] Build `TradingHeader.tsx` (pair selector, session clock, mode toggle)
+- [x] Build `LeftPanel.tsx` (collapsible, watchlist, cycle day, notes)
+- [x] Build enhanced `EnhancedSessionClock.tsx` (multi-timezone, kill zones)
+- [x] Build `PairSelector.tsx` (searchable dropdown)
+- [x] Build `ModeToggle.tsx` (basic/advanced)
+- [x] Update `globals.css` with trading CSS variables
+- [x] Update `tailwind.config.ts` with trading/session/ema colors
+
+### ✅ Week 2: Trade Entry - COMPLETE
+
+- [x] Build `RightPanel.tsx` (trade entry form with tabs)
+- [x] Build `PositionSizeCalculator.tsx` (account, risk, lots)
+- [x] Build `PreTradeChecklist.tsx` (12-item BTMM checklist)
+- [x] Build `/trading/journal/page.tsx` (trade list with stats, filters)
+- [x] Restore AI chatbot interface (floating button + slide-out panel)
+
+### 🏗️ Week 3: Routes & Pages - IN PROGRESS
 
 #### Route Structure
 | Route | Purpose | Status |
 |-------|---------|--------|
-| `/trading` | Redirect to `/trading/dashboard` | 🔲 |
-| `/trading/dashboard` | Main workspace (chart + BTMM panels) | 🔲 |
-| `/trading/journal` | Trade log list | 🔲 |
+| `/trading` | Main workspace (chart + BTMM panels) | ✅ |
+| `/trading/dashboard` | Redirect to `/trading` | ✅ |
+| `/trading/journal` | Trade log list | ✅ |
 | `/trading/journal/new` | New trade entry form | 🔲 |
 | `/trading/journal/[id]` | Trade detail/edit | 🔲 |
 | `/trading/analysis` | Market analysis overview | 🔲 |
@@ -294,16 +316,6 @@ Complete redesign of `/trading` page based on 2024 trading app UX research. Inte
 | `/trading/tools/trainer` | Pattern recognition practice | 🔲 |
 | `/trading/tools/checklist` | Pre-trade checklist | 🔲 |
 | `/trading/settings` | Trading settings | 🔲 |
-
-#### Week 1 Checklist
-- [ ] Create all route directories
-- [ ] Create all component directories
-- [ ] Create `types.ts` with BTMM types
-- [ ] Create `constants.ts` with BTMM constants
-- [ ] Build `TradingHeader.tsx`
-- [ ] Build `LeftPanel.tsx` (collapsible)
-- [ ] Build enhanced `SessionClock.tsx`
-- [ ] Update `globals.css` with trading variables
 
 ---
 
