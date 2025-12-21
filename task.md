@@ -1,7 +1,7 @@
 # Project Vulcan: Master Task List
 
-**Status**: Phase 12 COMPLETE - Flatter Files Integration
-**Last Updated**: Dec 2025 - Phase 11 + 12 adapters complete
+**Status**: Phase 14 IN PROGRESS - Trading Module Redesign
+**Last Updated**: Dec 2025 - Trading App Strategic Redesign
 **Goal**: Unified AI Operating System (Trading, CAD, General)
 **Pattern**: Adapter + Bridge (lightweight, no cloning)
 
@@ -281,6 +281,463 @@ system=[{
 
 ---
 
+## 🔥 Phase 14: Trading Module Redesign - IN PROGRESS
+
+### 📋 Overview
+Complete redesign of `/trading` page based on 2024 trading app UX research. Integrates content from `swiffc/Trading-Guide` repo with TradingView-inspired layout.
+
+**Source Content**: `github.com/swiffc/Trading-Guide` (24 HTML pages)
+**Design Inspiration**: TradingView, TraderSync, TradesViz 2.0, Robinhood
+
+---
+
+### 🏗️ Step 1: Create New Route Structure
+
+**Location**: `apps/web/src/app/trading/`
+
+```bash
+# Create directories
+mkdir -p apps/web/src/app/trading/{dashboard,journal/{new,[id]},analysis/{live,daily,weekly,monthly},performance/{calendar,reports},strategy-guide/{philosophy,setup,patterns,btmm-cycle,sessions,psychology,examples},tools/{calculators,trainer,checklist},settings/{risk,preferences,sync}}
+```
+
+**New Routes:**
+| Route | Purpose |
+|-------|---------|
+| `/trading` | Redirect to `/trading/dashboard` |
+| `/trading/dashboard` | Main workspace (chart + BTMM panels) |
+| `/trading/journal` | Trade log list |
+| `/trading/journal/new` | New trade entry form |
+| `/trading/journal/[id]` | Trade detail/edit |
+| `/trading/analysis` | Market analysis overview |
+| `/trading/analysis/live` | Live session analysis |
+| `/trading/analysis/daily` | Daily bias |
+| `/trading/analysis/weekly` | Weekly outlook |
+| `/trading/analysis/monthly` | Monthly cycle |
+| `/trading/performance` | Stats dashboard |
+| `/trading/performance/calendar` | Trade calendar |
+| `/trading/performance/reports` | Detailed reports |
+| `/trading/strategy-guide` | BTMM knowledge base |
+| `/trading/strategy-guide/philosophy` | Core concepts |
+| `/trading/strategy-guide/setup` | Technical setup (EMAs, TDI) |
+| `/trading/strategy-guide/patterns` | Chart models (M/W, etc) |
+| `/trading/strategy-guide/btmm-cycle` | 3-day cycle, levels |
+| `/trading/strategy-guide/sessions` | Session timing |
+| `/trading/strategy-guide/psychology` | Mental game |
+| `/trading/strategy-guide/examples` | Trade examples |
+| `/trading/tools` | Utilities overview |
+| `/trading/tools/calculators` | Position size, RR, ADR |
+| `/trading/tools/trainer` | Pattern recognition practice |
+| `/trading/tools/checklist` | Pre-trade checklist |
+| `/trading/settings` | Trading settings |
+| `/trading/settings/risk` | Risk management rules |
+| `/trading/settings/preferences` | UI preferences |
+| `/trading/settings/sync` | TradingView sync |
+
+---
+
+### 🏗️ Step 2: Create Component Structure
+
+**Location**: `apps/web/src/components/trading/`
+
+```bash
+# Create component directories
+mkdir -p apps/web/src/components/trading/{layout,dashboard,journal,analysis,performance,strategy-guide,tools,common}
+```
+
+**Components to Create:**
+
+#### Layout Components
+| File | Description | Lines |
+|------|-------------|-------|
+| `layout/TradingHeader.tsx` | Header with session clock, pair selector, mode toggle | ~150 |
+| `layout/TradingNav.tsx` | Side/bottom navigation | ~100 |
+| `layout/LeftPanel.tsx` | Collapsible left panel (watchlist, quick ref) | ~120 |
+| `layout/BottomTabs.tsx` | Mobile-friendly tab navigation | ~80 |
+
+#### Dashboard Components
+| File | Description | Lines |
+|------|-------------|-------|
+| `dashboard/TradingViewChart.tsx` | Full TradingView widget integration | ~100 |
+| `dashboard/BTMMAnalysisPanel.tsx` | Cycle phase, Level I/II/III, Asian Range | ~200 |
+| `dashboard/EntryChecklist.tsx` | M/W, EMA, TDI, Session confirmation checks | ~150 |
+| `dashboard/QuickReference.tsx` | Key levels, today's bias | ~100 |
+
+#### Journal Components
+| File | Description | Lines |
+|------|-------------|-------|
+| `journal/TradeEntry.tsx` | Full trade entry form | ~400 |
+| `journal/BTMMFields.tsx` | Setup Type, Level, Asian Range, Strike Zone | ~200 |
+| `journal/TradeList.tsx` | Filterable trade log | ~250 |
+| `journal/TradeCard.tsx` | Compact trade display | ~100 |
+| `journal/TradeDetail.tsx` | Expanded trade view | ~200 |
+| `journal/ScreenshotUploader.tsx` | Chart screenshot upload | ~150 |
+
+#### Analysis Components
+| File | Description | Lines |
+|------|-------------|-------|
+| `analysis/SessionInfo.tsx` | Current session, time to next | ~100 |
+| `analysis/CyclePhase.tsx` | Day 1/2/3 indicator | ~80 |
+| `analysis/LevelIndicator.tsx` | Level I/II/III display | ~80 |
+| `analysis/BiasPanel.tsx` | Daily/weekly bias display | ~150 |
+
+#### Performance Components
+| File | Description | Lines |
+|------|-------------|-------|
+| `performance/StatsOverview.tsx` | Win rate, PnL, drawdown | ~200 |
+| `performance/TradeCalendar.tsx` | Calendar view of trades | ~250 |
+| `performance/EquityCurve.tsx` | Equity curve chart | ~150 |
+| `performance/SetupAnalysis.tsx` | Performance by setup type | ~200 |
+
+#### Strategy Guide Components
+| File | Description | Lines |
+|------|-------------|-------|
+| `strategy-guide/GuideSidebar.tsx` | Topic navigation | ~100 |
+| `strategy-guide/GuideContent.tsx` | Content container | ~80 |
+| `strategy-guide/ExpandableCard.tsx` | Collapsible sections | ~100 |
+| `strategy-guide/InteractiveChecklist.tsx` | Checkable items | ~100 |
+
+#### Tools Components
+| File | Description | Lines |
+|------|-------------|-------|
+| `tools/PositionCalculator.tsx` | Position size calculator | ~200 |
+| `tools/RRCalculator.tsx` | Risk/reward calculator | ~150 |
+| `tools/ADRCalculator.tsx` | Average daily range calculator | ~150 |
+| `tools/PatternTrainer.tsx` | Pattern recognition game | ~300 |
+| `tools/PreTradeChecklist.tsx` | Configurable pre-trade checks | ~200 |
+
+#### Common Components
+| File | Description | Lines |
+|------|-------------|-------|
+| `common/SessionClock.tsx` | Enhanced session clock with countdown | ~150 |
+| `common/PairSelector.tsx` | Searchable pair dropdown | ~100 |
+| `common/ModeToggle.tsx` | Simple/Pro mode switch | ~50 |
+| `common/Watchlist.tsx` | Mini watchlist widget | ~150 |
+
+---
+
+### 🏗️ Step 3: Create Types & Constants
+
+**Location**: `apps/web/src/lib/trading/`
+
+```bash
+mkdir -p apps/web/src/lib/trading/hooks
+```
+
+#### `types.ts` - BTMM Type Definitions
+```typescript
+// Setup Types
+export type SetupType = 
+  | '1a' | '1b' | '1c'  // Type 1 variations
+  | '2a' | '2b' | '2c'  // Type 2 variations
+  | '3a' | '3b' | '3c'  // Type 3 variations
+  | '4a' | '4b' | '4c'; // Type 4 variations
+
+// BTMM Levels
+export type BTMMLevel = 'I' | 'II' | 'III';
+
+// Cycle Day
+export type CycleDay = 1 | 2 | 3;
+
+// Asian Range Status
+export type AsianRangeStatus = 'small' | 'large'; // <50 or >50 pips
+
+// Strike Zone
+export type StrikeZone = '+25-50' | '-25-50' | 'none';
+
+// MM Behavior
+export type MMBehavior = 'trap_up' | 'trap_down' | 'stop_hunt_high' | 'stop_hunt_low' | 'none';
+
+// Candlestick Patterns
+export type CandlestickPattern = 
+  | 'morning_star' | 'evening_star'
+  | 'hammer' | 'inverted_hammer'
+  | 'engulfing_bullish' | 'engulfing_bearish'
+  | 'doji' | 'shooting_star'
+  | 'none';
+
+// TDI Signals
+export type TDISignal = 'sharkfin' | 'blood_in_water' | 'cross_above' | 'cross_below' | 'none';
+
+// Trade Entry
+export interface Trade {
+  id: string;
+  pair: string;
+  direction: 'long' | 'short';
+  entryPrice: number;
+  exitPrice?: number;
+  stopLoss: number;
+  takeProfit1: number;
+  takeProfit2?: number;
+  takeProfit3?: number;
+  positionSize: number;
+  riskPercent: number;
+  
+  // BTMM Fields
+  setupType: SetupType;
+  cycleDay: CycleDay;
+  level: BTMMLevel;
+  asianRange: AsianRangeStatus;
+  strikeZone: StrikeZone;
+  mmBehavior: MMBehavior;
+  
+  // Confirmation Checklist
+  mwPattern: boolean;
+  mwPatternType?: 'M' | 'W';
+  candlestickPattern: CandlestickPattern;
+  emaAlignment: boolean;
+  tdiSignal: TDISignal;
+  
+  // Screenshots
+  entryScreenshot?: string;
+  exitScreenshot?: string;
+  
+  // Notes
+  preTradeNotes?: string;
+  duringTradeNotes?: string;
+  postTradeNotes?: string;
+  
+  // Timestamps
+  entryTime: string;
+  exitTime?: string;
+  createdAt: string;
+  updatedAt: string;
+  
+  // Results
+  result?: 'win' | 'loss' | 'breakeven';
+  pnlPips?: number;
+  pnlDollars?: number;
+}
+
+// Session
+export interface Session {
+  name: 'asian' | 'london' | 'newyork' | 'gap';
+  startTime: string; // HH:MM EST
+  endTime: string;
+  color: string;
+  isActive: boolean;
+}
+```
+
+#### `constants.ts` - BTMM Constants
+```typescript
+// Session Times (EST)
+export const SESSIONS = {
+  asian: { start: '19:00', end: '02:00', color: '#a371f7' },
+  london: { start: '02:00', end: '08:00', color: '#58a6ff' },
+  newyork: { start: '08:00', end: '17:00', color: '#3fb950' },
+  gap: { start: '17:00', end: '19:00', color: '#6e7681' },
+};
+
+// True Opens (EST)
+export const TRUE_OPENS = {
+  daily: '17:00',
+  london: '01:30',
+  newyork: '07:30',
+};
+
+// Kill Zones (EST)
+export const KILL_ZONES = {
+  london: { start: '02:00', end: '05:00' },
+  newyork: { start: '08:00', end: '11:00' },
+  asianClose: { start: '00:00', end: '01:00' },
+};
+
+// EMA Settings
+export const EMA_SETTINGS = {
+  mustard: { period: 5, color: '#FFD700' },
+  ketchup: { period: 13, color: '#FF4444' },
+  water: { period: 50, color: '#4A9EFF' },
+  mayo: { period: 200, color: '#E0E0E0' },
+  blueberry: { period: 800, color: '#1E3A8A' },
+};
+
+// TDI Settings
+export const TDI_SETTINGS = {
+  rsiPeriod: 13,
+  fastMAPeriod: 2,
+  slowMAPeriod: 7,
+  bands: { lower: 32, middle: 50, upper: 68 },
+};
+
+// Setup Type Labels
+export const SETUP_LABELS = {
+  '1a': 'Type 1a - Standard',
+  '1b': 'Type 1b - Variant',
+  '1c': 'Type 1c - Extended',
+  '2a': 'Type 2a - Standard',
+  '2b': 'Type 2b - Variant',
+  '2c': 'Type 2c - Extended',
+  '3a': 'Type 3a - Standard',
+  '3b': 'Type 3b - Variant',
+  '3c': 'Type 3c - Extended',
+  '4a': 'Type 4a - Standard (1H 50/50)',
+  '4b': 'Type 4b - Variant',
+  '4c': 'Type 4c - Extended',
+};
+
+// ADR Values (typical)
+export const TYPICAL_ADR = {
+  'EUR/USD': 80,
+  'GBP/USD': 110,
+  'USD/JPY': 70,
+  'EUR/JPY': 120,
+  'GBP/JPY': 150,
+  'AUD/USD': 70,
+  'USD/CAD': 80,
+  'NZD/USD': 60,
+};
+```
+
+---
+
+### 🏗️ Step 4: Migrate Trading Guide Content
+
+**Source**: `github.com/swiffc/Trading-Guide/pages/`
+
+| Trading Guide Page | Target Component/Route |
+|--------------------|----------------------|
+| `index.html` | Dashboard overview widget |
+| `core-philosophy.html` | `/strategy-guide/philosophy` |
+| `technical-setup.html` | `/strategy-guide/setup` |
+| `chart-models.html` | `/strategy-guide/patterns` |
+| `btmm-cycle.html` | `/strategy-guide/btmm-cycle` |
+| `daily-sessions.html` | `/strategy-guide/sessions` + Analysis panel |
+| `entry-rules.html` | `/strategy-guide/setup` + Journal entry form |
+| `trade-execution.html` | `/journal/new` trade entry flow |
+| `risk-management.html` | `/settings/risk` |
+| `trading-journal.html` | `/journal` main component |
+| `calculators.html` | `/tools/calculators` |
+| `quick-reference.html` | `QuickReference.tsx` sidebar widget |
+| `checklist.html` | `/tools/checklist` |
+| `pattern-trainer.html` | `/tools/trainer` |
+| `intraday-bias.html` | `/analysis/daily` |
+| `live-session-guide.html` | `/analysis/live` |
+| `micro-quarters.html` | `/analysis` quarterly panel |
+| `monthly-cycle.html` | `/analysis/monthly` |
+| `weekly-schedule.html` | `/analysis/weekly` |
+| `yearly-cycle.html` | `/analysis/monthly` (extended view) |
+| `session-cycle.html` | `/strategy-guide/sessions` |
+| `trading-psychology.html` | `/strategy-guide/psychology` |
+| `examples.html` | `/strategy-guide/examples` |
+
+---
+
+### 🏗️ Step 5: Design System Updates
+
+**Location**: `apps/web/src/app/globals.css`
+
+Add trading-specific CSS variables:
+```css
+:root {
+  /* Trading-specific colors */
+  --trading-bg-primary: #0d1117;
+  --trading-bg-secondary: #161b22;
+  --trading-bg-tertiary: #21262d;
+  --trading-bg-elevated: #30363d;
+  
+  --trading-accent-blue: #58a6ff;
+  --trading-accent-green: #3fb950;
+  --trading-accent-red: #f85149;
+  --trading-accent-yellow: #d29922;
+  --trading-accent-purple: #a371f7;
+  
+  --trading-border: #30363d;
+  --trading-border-active: #58a6ff;
+  
+  /* Session colors */
+  --session-asian: #a371f7;
+  --session-london: #58a6ff;
+  --session-newyork: #3fb950;
+  --session-gap: #6e7681;
+}
+```
+
+---
+
+### 📋 Implementation Checklist
+
+#### Week 1: Foundation
+- [ ] Create all route directories (Step 1)
+- [ ] Create all component directories (Step 2)
+- [ ] Create `types.ts` with BTMM types (Step 3)
+- [ ] Create `constants.ts` with BTMM constants (Step 3)
+- [ ] Build `TradingHeader.tsx`
+- [ ] Build `LeftPanel.tsx` (collapsible)
+- [ ] Build enhanced `SessionClock.tsx`
+- [ ] Update `globals.css` with trading variables
+
+#### Week 2: Dashboard
+- [ ] Update `/trading/page.tsx` to redirect to `/dashboard`
+- [ ] Create `/trading/dashboard/page.tsx`
+- [ ] Build `TradingViewChart.tsx` (full widget)
+- [ ] Build `BTMMAnalysisPanel.tsx`
+- [ ] Build `EntryChecklist.tsx`
+- [ ] Build `QuickReference.tsx`
+- [ ] Build `ModeToggle.tsx` (Simple/Pro)
+
+#### Week 3: Journal
+- [ ] Create `/trading/journal/page.tsx`
+- [ ] Create `/trading/journal/new/page.tsx`
+- [ ] Build `TradeEntry.tsx` with BTMM fields
+- [ ] Build `BTMMFields.tsx` component
+- [ ] Build `TradeList.tsx` with filters
+- [ ] Build `TradeCard.tsx`
+- [ ] Build `TradeDetail.tsx`
+- [ ] Build `ScreenshotUploader.tsx`
+
+#### Week 4: Analysis & Performance
+- [ ] Create all `/trading/analysis/` pages
+- [ ] Build `SessionInfo.tsx`
+- [ ] Build `CyclePhase.tsx`
+- [ ] Build `LevelIndicator.tsx`
+- [ ] Build `BiasPanel.tsx`
+- [ ] Create all `/trading/performance/` pages
+- [ ] Build `StatsOverview.tsx`
+- [ ] Build `TradeCalendar.tsx`
+- [ ] Build `EquityCurve.tsx`
+- [ ] Build `SetupAnalysis.tsx`
+
+#### Week 5: Strategy Guide
+- [ ] Create all `/trading/strategy-guide/` pages
+- [ ] Build `GuideSidebar.tsx`
+- [ ] Build `GuideContent.tsx`
+- [ ] Build `ExpandableCard.tsx`
+- [ ] Build `InteractiveChecklist.tsx`
+- [ ] Migrate Trading Guide content to React components
+- [ ] Convert HTML tables to React tables
+- [ ] Convert checklists to interactive components
+
+#### Week 6: Tools & Settings
+- [ ] Create all `/trading/tools/` pages
+- [ ] Build `PositionCalculator.tsx`
+- [ ] Build `RRCalculator.tsx`
+- [ ] Build `ADRCalculator.tsx`
+- [ ] Build `PatternTrainer.tsx`
+- [ ] Build `PreTradeChecklist.tsx`
+- [ ] Create all `/trading/settings/` pages
+- [ ] Build risk management settings
+- [ ] Build UI preferences
+
+#### Week 7: Polish & Integration
+- [ ] Responsive design testing
+- [ ] Mobile layout adjustments
+- [ ] Performance optimization
+- [ ] Integration testing
+- [ ] Documentation
+
+---
+
+### 📚 Reference Repos for Trading Journal
+
+| Repo | Use For |
+|------|---------|
+| [Eleven-Trading/TradeNote](https://github.com/Eleven-Trading/TradeNote) | Journal structure, MongoDB schema |
+| [bukosabino/ta](https://github.com/bukosabino/ta) | TA library for indicators |
+| [keithorange/PatternPy](https://github.com/keithorange/PatternPy) | M/W pattern detection |
+| [polakowo/vectorbt](https://github.com/polakowo/vectorbt) | Backtesting framework |
+
+---
+
 ## 📋 Backlog
 
 ---
@@ -307,6 +764,7 @@ system=[{
 | Docker deployment | Working | ✅ |
 | Circuit breaker | Protecting | ✅ |
 | API cost reduction | > 50% | ✅ **90-95%!** |
+| Trading module redesign | Complete | 🔄 In Progress |
 
 ---
 
@@ -317,4 +775,6 @@ system=[{
 - `RULES.md` - Architecture rules (Section 6 = Elite Patterns)
 - `CLAUDE.md` - AI instructions
 - `docker-compose.yml` - Deployment config
+- `TRADING_APP_REDESIGN_PLAN.md` - Full trading module design spec
 - [Anthropic Prompt Caching Docs](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
+- [Trading-Guide Repo](https://github.com/swiffc/Trading-Guide) - BTMM content source
