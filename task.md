@@ -355,18 +355,38 @@ Automatically checks drawings against API 661, ASME, OSHA, and industry standard
   - Instrumentation, Electrical, Piping, Coatings
   - Testing, Shipping, Documentation requirements
   - Foundation, Nameplate, Spare Parts checklists
+- [x] Verification Requirements V2 (`agents/cad_agent/knowledge/VERIFICATION_REQUIREMENTS.md`)
+  - Weight verification workflow
+  - Edge distance (AISC Table J3.4)
+  - Bend radius by material
+  - Description vs dimensions matching
+  - Speed optimization strategies (70-80% faster)
+- [x] Standards Database (`agents/cad_agent/adapters/standards_db.py`)
+  - AISC W-shapes (50+ beams)
+  - AISC Angles (30+ shapes)
+  - Sheet gauges (7GA-26GA)
+  - Plate thicknesses (1/16"-2")
+  - Edge distances per bolt size
+  - Hole sizes (std, oversize, slot)
+  - Bend factors by material
+  - Material densities
+  - API 661 fan tip clearances
+  - OSHA platform/ladder/stair requirements
+  - Validation functions (weight, edge, bend, holes)
 
 ### 🔲 Pending: Drawing Analysis Engine
 - [ ] `agents/cad_agent/adapters/drawing_analyzer.py` - PDF/DXF extraction
 - [ ] `agents/cad_agent/adapters/hole_pattern_checker.py` - Hole alignment verification
 - [ ] `agents/cad_agent/adapters/dimension_extractor.py` - OCR for dimensions
 - [ ] `agents/cad_agent/adapters/bom_cross_checker.py` - BOM vs drawing verification
+- [ ] `agents/cad_agent/adapters/weight_calculator.py` - Auto weight from dims + material
+- [ ] `agents/cad_agent/adapters/red_flag_scanner.py` - Pre-scan for obvious issues
 
 ### 🔲 Pending: Standards Validation
-- [ ] API 661 rule engine
+- [ ] API 661 rule engine (fan coverage, tip clearance)
 - [ ] OSHA 1910 platform/ladder checks
 - [ ] ASME B16.5 flange validation
-- [ ] AISC structural checks
+- [ ] AISC structural checks (using standards_db.py)
 
 ### 📚 Useful Repos for Implementation
 
