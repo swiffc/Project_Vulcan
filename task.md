@@ -191,7 +191,50 @@ system=[{
 
 ## 📋 Backlog
 
-### Phase 11: Advanced Features
+### Phase 11: CAD Performance Manager (20K+ Part Assemblies)
+**Priority**: HIGH | **Dependency**: Windows + SolidWorks + PDM
+
+Use **SolidWrap** library! `pip install solidwrap` - handles COM boilerplate
+
+- [ ] Install SolidWrap + GPUtil: `pip install solidwrap GPUtil`
+- [ ] `agents/cad_agent/cad_orchestrator.py` - Main coordinator using SolidWrap
+- [ ] `agents/cad_agent/adapters/performance_manager.py` - RAM/GPU monitoring, auto-tier
+- [ ] `agents/cad_agent/adapters/solidworks_settings.py` - Graphics settings per tier
+- [ ] `agents/cad_agent/adapters/job_queue.py` - Batch processing with resume
+- [ ] `agents/cad_agent/adapters/notification_store.py` - Web UI notifications
+- [ ] Restart SolidWorks every N files to prevent memory issues
+- [ ] Performance tiers: FULL → REDUCED → MINIMAL → SURVIVAL
+
+**RAM Thresholds:**
+| RAM % | Action |
+|-------|--------|
+| 60% | Switch to REDUCED mode |
+| 75% | Switch to MINIMAL mode |
+| 85% | Switch to SURVIVAL mode |
+| 90% | Force restart SolidWorks |
+
+---
+
+### Phase 12: Flatter Files Integration
+**Priority**: HIGH | **Dependency**: Flatter Files API Key
+
+- [ ] `agents/cad_agent/adapters/flatter_files_adapter.py` (~350 lines)
+- [ ] Search drawings by part number/description
+- [ ] Get PDF/STEP/DXF download URLs
+- [ ] Get assembly BOM structure
+- [ ] Get revision history
+- [ ] Get markup annotations
+- [ ] Filter by checked-out status
+- [ ] Add `FLATTER_FILES_API_KEY` to .env
+
+**Chatbot examples:**
+- "Find drawing for bracket 12345" → PDF/STEP links
+- "What parts are in assembly XYZ-100?" → BOM list
+- "Any markups on drawing ABC-500?" → Annotation list
+
+---
+
+### Phase 13: Advanced Features
 - [ ] Multi-user support
 - [ ] Custom strategy upload
 - [ ] Real broker integration (paper trading first)
