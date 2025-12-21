@@ -193,6 +193,15 @@ system=[{
 | `agents/cad_agent/adapters/solidworks_settings.py` | Adapter | Graphics tier management | ~210 |
 | `agents/cad_agent/adapters/job_queue.py` | Adapter | Batch processing + resume | ~250 |
 | `agents/cad_agent/adapters/notification_store.py` | Adapter | Web UI notifications | ~200 |
+| `agents/cad_agent/adapters/standards_db.py` | Adapter | AISC/OSHA/API 661 tables | ~650 |
+| `agents/cad_agent/adapters/drawing_analyzer.py` | Adapter | PDF/DXF parsing, OCR | ~530 |
+| `agents/cad_agent/adapters/weight_calculator.py` | Adapter | Part weight calculation | ~420 |
+| `agents/cad_agent/adapters/hole_pattern_checker.py` | Adapter | Mating part alignment | ~480 |
+| `agents/cad_agent/adapters/red_flag_scanner.py` | Adapter | Pre-scan issue detection | ~530 |
+| `agents/cad_agent/adapters/bom_cross_checker.py` | Adapter | BOM vs drawing matching | ~460 |
+| `agents/cad_agent/adapters/dimension_extractor.py` | Adapter | Zone-based dim extraction | ~520 |
+| `agents/cad_agent/adapters/flange_validator.py` | Adapter | ASME B16.5 flanges | ~660 |
+| `agents/cad_agent/adapters/interference_detector.py` | Adapter | Assembly clearance checks | ~590 |
 
 ---
 
