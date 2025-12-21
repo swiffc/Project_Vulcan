@@ -51,6 +51,65 @@
       "language": "python",
       "tools": ["receive_alert", "execute_trade", "log_signal"],
       "note": "Framework for building trading logic from TV alerts"
+    },
+    "github-mcp": {
+      "description": "Official GitHub MCP server",
+      "reference": "https://github.com/github/github-mcp-server",
+      "install": "npm install @github/mcp-server",
+      "tools": ["create_issue", "create_pr", "search_repos", "get_actions"],
+      "note": "Official GitHub integration"
+    },
+    "n8n-mcp": {
+      "description": "Build n8n workflows via AI",
+      "reference": "https://github.com/czlonkowski/n8n-mcp",
+      "install": "npx n8n-mcp",
+      "tools": ["create_workflow", "list_nodes", "execute_workflow"],
+      "note": "545 automation nodes"
+    },
+    "claude-context": {
+      "description": "Semantic code search for entire codebase",
+      "reference": "https://github.com/zilliztech/claude-context",
+      "install": "pip install claude-context",
+      "tools": ["semantic_search", "find_code", "get_context"],
+      "note": "RAG for codebases"
+    }
+  },
+  "browser-automation": {
+    "_comment": "For J2 Tracker and web scraping",
+    "playwright": {
+      "description": "🏆 Microsoft browser automation",
+      "reference": "https://github.com/microsoft/playwright-python",
+      "install": "pip install playwright && playwright install chromium",
+      "status": "INSTALLED",
+      "tools": ["navigate", "click", "fill", "screenshot", "save_session"]
+    },
+    "crawlee": {
+      "description": "Web scraping for AI/RAG",
+      "reference": "https://github.com/apify/crawlee-python",
+      "install": "pip install crawlee",
+      "status": "INSTALLED",
+      "tools": ["crawl", "extract", "parse_html", "export_data"]
+    },
+    "playwright-scraping": {
+      "description": "Scraping examples with auth",
+      "reference": "https://github.com/HasData/playwright-scraping",
+      "install": "git clone (reference)",
+      "tools": ["auth_handling", "error_management", "data_extraction"]
+    }
+  },
+  "inventor-libs": {
+    "_comment": "Python libraries for Autodesk Inventor automation",
+    "PyInventor": {
+      "description": "Inventor API wrapper (parametric)",
+      "reference": "https://github.com/AndrewOriani/PyInventor",
+      "install": "pip install pyinvent",
+      "tools": ["create_part", "modify_params", "export_step"]
+    },
+    "InventorTools": {
+      "description": "COM scripts for Inventor",
+      "reference": "https://github.com/mickp/InventorTools",
+      "install": "git clone (reference)",
+      "tools": ["batch_export", "modify_parts", "get_bom"]
     }
   },
   "solidworks-libs": {
