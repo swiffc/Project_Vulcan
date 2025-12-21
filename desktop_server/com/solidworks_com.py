@@ -61,6 +61,32 @@ class SaveRequest(BaseModel):
     filepath: str
 
 
+class LineRequest(BaseModel):
+    x1: float
+    y1: float
+    x2: float
+    y2: float
+
+
+class ExtrudeCutRequest(BaseModel):
+    depth: float  # Use 999 for "Through All"
+
+
+class ChamferRequest(BaseModel):
+    distance: float
+    angle: float = 45.0
+
+
+class SelectRequest(BaseModel):
+    x: float
+    y: float
+    z: float
+
+
+class ViewRequest(BaseModel):
+    view: str = "isometric"  # front, back, top, bottom, left, right, isometric, trimetric
+
+
 def get_app():
     """Get or create SolidWorks application instance."""
     global _sw_app
