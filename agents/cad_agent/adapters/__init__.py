@@ -22,6 +22,11 @@ from .notification_store import (
     NotificationStore, get_notification_store, Notification, NotificationType
 )
 
+# Phase 12: Flatter Files Integration
+from .flatter_files_adapter import (
+    FlatterFilesAdapter, get_flatter_files_adapter, FlatterItem, BOMItem
+)
+
 __all__ = [
     # Existing
     "PDFBridge",
@@ -45,4 +50,9 @@ __all__ = [
     "get_notification_store",
     "Notification",
     "NotificationType",
+    # Phase 12
+    "FlatterFilesAdapter",
+    "get_flatter_files_adapter",
+    "FlatterItem",
+    "BOMItem",
 ]
