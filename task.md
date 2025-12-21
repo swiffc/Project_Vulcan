@@ -407,8 +407,14 @@ Automatically checks drawings against API 661, ASME, OSHA, and industry standard
   - Quantity verification
   - Report generation
 
+- [x] `agents/cad_agent/adapters/dimension_extractor.py` (~520 lines)
+  - Zone-based extraction (title block, main view, notes)
+  - Multi-format parsing (feet-inches, fractions, decimals, metric)
+  - Tolerance extraction (bilateral and asymmetric)
+  - GD&T dimension types (diameter, radial, angular, reference, basic)
+  - Confidence scoring
+
 ### 🔲 Pending: Advanced Analysis Features
-- [ ] `agents/cad_agent/adapters/dimension_extractor.py` - Enhanced OCR with zone detection
 - [ ] ASME B16.5 flange validation rules
 - [ ] Interference detection for assemblies
 

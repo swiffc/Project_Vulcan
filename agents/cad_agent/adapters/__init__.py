@@ -52,6 +52,10 @@ from .red_flag_scanner import (
 from .bom_cross_checker import (
     BOMChecker, BOMItem as BOMCheckItem, DrawingPart, ItemMatch, BOMCheckResult, MatchStatus,
 )
+from .dimension_extractor import (
+    DimensionExtractor, ExtractedDimension, ExtractionResult, TitleBlockData,
+    Tolerance, DimensionType, Unit,
+)
 
 __all__ = [
     # Existing
@@ -134,4 +138,11 @@ __all__ = [
     "ItemMatch",
     "BOMCheckResult",
     "MatchStatus",
+    "DimensionExtractor",
+    "ExtractedDimension",
+    "ExtractionResult",
+    "TitleBlockData",
+    "Tolerance",
+    "DimensionType",
+    "Unit",
 ]
