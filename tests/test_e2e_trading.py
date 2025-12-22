@@ -30,7 +30,7 @@ class TestTradingE2EFlow:
 
         Simulates: "Create this week's EUR/USD plan"
         """
-        from agents.core.orchestrator_adapter import (
+        from core.orchestrator_adapter import (
             OrchestratorAdapter, TaskRequest, AgentType
         )
 

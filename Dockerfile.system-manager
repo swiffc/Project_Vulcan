@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY agents/system-manager/ ./agents/system-manager/
-COPY agents/core/ ./agents/core/
+COPY core/ ./core/
 COPY config/ ./config/
 
 # Create storage directories

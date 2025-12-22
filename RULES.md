@@ -17,41 +17,32 @@ All agents share a **Desktop Control Server** that physically operates your Wind
 
 ## Architecture
 
-```text
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         YOUR WEB CHATBOT                                    │
-│                        (One Chat Interface)                                 │
-└─────────────────────────────────────┬───────────────────────────────────────┘
-                                      │
-                                      ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           ORCHESTRATOR                                      │
-│                   (Routes requests to correct agent)                        │
-└─────────────────────────────────────┬───────────────────────────────────────┘
-                                      │
-            ┌─────────────────────────┼─────────────────────────┐
-            ▼                         ▼                         ▼
-     ┌─────────────┐          ┌─────────────┐
-     │   TRADING   │          │     CAD     │
-     │    AGENT    │          │    AGENT    │
-     └──────┬──────┘          └──────┬──────┘
-            │                        │
-            └────────────────────────┼────────────────────────┘
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    DESKTOP CONTROL SERVER                                   │
-│              (Runs on your Windows PC - Physical Control)                   │
-│                                                                             │
-│   🖱️ Mouse    ⌨️ Keyboard    📸 Screenshot    🔍 Zoom    📁 Files           │
-└─────────────────────────────────────┬───────────────────────────────────────┘
-                                      │
-            ┌─────────────────────────┼─────────────────────────┐
-            ▼                         ▼                         ▼
-     ┌─────────────┐          ┌─────────────┐
-     │ TradingView │          │ SolidWorks  │
-     │  (Desktop)  │          │  AutoCAD    │
-     │             │          │  Bentley    │
-     └─────────────┘          └─────────────┘
+```
+                         RENDER.COM (Cloud)
+  +----------------------------------------------------------+
+  |                                                          |
+  |    WEB CHATBOT (Next.js)                                |
+  |    Accessible from anywhere                              |
+  |                  |                                       |
+  |                  v                                       |
+  |    ORCHESTRATOR + AGENTS (Trading, CAD, Work, General)  |
+  |                                                          |
+  +----------------------------------------------------------+
+                          |
+                    TAILSCALE VPN
+                          |
+  +----------------------------------------------------------+
+  |                YOUR WINDOWS PC                           |
+  |                                                          |
+  |    DESKTOP CONTROL SERVER (MCP)                         |
+  |    Mouse | Keyboard | Screenshot | Replay | Verifier    |
+  |    Vector Memory | Browser Automation                    |
+  |                  |                                       |
+  |    +-------------+-------------+                         |
+  |    |             |             |                         |
+  |    v             v             v                         |
+  | TradingView  SolidWorks    J2 Tracker                   |
+  +----------------------------------------------------------+
 ```
 
 ---
@@ -390,6 +381,41 @@ Agent logic (`src/`) and domain knowledge (`knowledge/`) are separate.
 - 🚫 **NO DUPLICATION**: Never create redundant files for the same purpose (e.g., multiple task lists or redundant PRDs).
 - 🔄 **ALWAYS UPDATE**: Modify existing authoritative documents rather than creating "v2" or "lite" versions unless explicitly asked for archiving.
 - 📂 **CENTRALIZED TASKS**: Use `c:\Users\DCornealius\Documents\GitHub\Project_Vulcan\task.md` as the ONLY authoritative track for progress.
+
+## Rule 22: Forward-Looking Documentation (No Historical Records)
+
+- 📝 **CURRENT STATE ONLY**: Documentation should reflect the current state of the project and what needs to be done next.
+- ❌ **NO CHANGELOGS**: Do not maintain historical records of completed work in separate CHANGELOG files.
+- ✅ **UPDATE IN PLACE**: When features are completed, update README.md, REFERENCES.md, and other relevant files to reflect the new capabilities.
+- 🗑️ **REMOVE COMPLETED TASKS**: Once tasks are done, remove them from task.md. Keep only pending work.
+- 📊 **CURRENT STATUS**: README.md should show current features and capabilities, not a history of development.
+- 🎯 **ACTIONABLE FOCUS**: task.md should be a concise, actionable list of what needs to be done, not a record of what was accomplished.
+
+**Example**:
+```markdown
+❌ BAD (Historical):
+## Completed
+- [x] Phase 1: Foundation (Jan 2025)
+- [x] Phase 2: Integration (Feb 2025)
+...500 lines of completed work...
+
+## Current Work
+- [ ] Fix bug in validator
+
+✅ GOOD (Forward-looking):
+## Current Work
+- [ ] Fix bug in validator
+- [ ] Add new feature X
+- [ ] Improve performance of Y
+
+(Completed work is reflected in README.md features section)
+```
+
+**When features are completed**:
+1. Update README.md to list the new capability
+2. Update REFERENCES.md if new dependencies were added
+3. Remove the completed tasks from task.md
+4. Update success criteria in README.md if applicable
 
 ---
 

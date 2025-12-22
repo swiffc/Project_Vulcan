@@ -28,7 +28,7 @@ class TestLoadPerformance:
 
         Simulates 100 concurrent chat requests.
         """
-        from agents.core.orchestrator_adapter import (
+        from core.orchestrator_adapter import (
             OrchestratorAdapter, TaskRequest, AgentType
         )
 
@@ -62,7 +62,7 @@ class TestLoadPerformance:
         """
         PRD Criteria: Chat response < 5 sec
         """
-        from agents.core.orchestrator_adapter import (
+        from core.orchestrator_adapter import (
             OrchestratorAdapter, TaskRequest, AgentType
         )
 
@@ -90,7 +90,7 @@ class TestLoadPerformance:
     @pytest.mark.asyncio
     async def test_rate_limiter_under_load(self):
         """Test rate limiter handles burst traffic."""
-        from agents.core.rate_limiter import RateLimiter, RateLimitConfig
+        from core.rate_limiter import RateLimiter, RateLimitConfig
 
         config = RateLimitConfig(
             requests_per_minute=60,
@@ -132,7 +132,7 @@ class TestLoadPerformance:
     @pytest.mark.asyncio
     async def test_circuit_breaker_under_load(self):
         """Test circuit breaker protects under failure storm."""
-        from agents.core.circuit_breaker import CircuitBreakerAdapter, CircuitConfig, CircuitState
+        from core.circuit_breaker import CircuitBreakerAdapter, CircuitConfig, CircuitState
 
         breaker = CircuitBreakerAdapter()
         config = CircuitConfig(failure_threshold=3, timeout_seconds=1)
@@ -154,7 +154,7 @@ class TestLoadPerformance:
         assert breaker.circuits["test_circuit"] == CircuitState.OPEN
 
         # Further calls should fail fast with CircuitBreakerError
-        from agents.core.circuit_breaker import CircuitBreakerError
+        from core.circuit_breaker import CircuitBreakerError
         start = time.time()
         try:
             await failing_function()
@@ -174,7 +174,7 @@ class TestEndurance:
     @pytest.mark.asyncio
     async def test_sustained_load(self):
         """Test sustained load over time (simulated)."""
-        from agents.core.orchestrator_adapter import (
+        from core.orchestrator_adapter import (
             OrchestratorAdapter, TaskRequest, AgentType
         )
 
@@ -205,7 +205,7 @@ class TestEndurance:
         """Basic check for memory growth."""
         import gc
 
-        from agents.core.orchestrator_adapter import OrchestratorAdapter
+        from core.orchestrator_adapter import OrchestratorAdapter
 
         # Create and destroy many instances
         for _ in range(100):
@@ -224,7 +224,7 @@ class TestLatencyPercentiles:
     @pytest.mark.asyncio
     async def test_p95_latency(self):
         """Test 95th percentile latency is acceptable."""
-        from agents.core.orchestrator_adapter import (
+        from core.orchestrator_adapter import (
             OrchestratorAdapter, TaskRequest, AgentType
         )
 

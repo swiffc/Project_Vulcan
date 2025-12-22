@@ -53,4 +53,5 @@ numpy<2.0.0  # Fix NumPy 2.0 incompatibility
 ezdxf>=1.1.0  # DXF file analysis
 reportlab>=4.0.0  # PDF generation in validators
 PyPDF2>=3.0.0  # PDF annotation feature
+fluids>=1.0.0  # Pipe fitting calculations (used in standards scripts)
 

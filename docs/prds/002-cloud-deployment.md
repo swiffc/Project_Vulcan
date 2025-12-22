@@ -40,7 +40,7 @@ Migrate the presentation and orchestration layers to **Render** to ensure 24/7 a
 - **Environment**: Node.js
 - **Purpose**: Glassmorphism dashboard, real-time logs, trade/CAD controls.
 
-### 3.2 Python Orchestrator (`agents/core`)
+### 3.2 Python Orchestrator (`core`)
 
 - **Service Type**: Render Web Service
 - **Runtime**: Python 3.11+
@@ -71,7 +71,7 @@ services:
     name: vulcan-orchestrator
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn agents.core.api:app
+    startCommand: gunicorn core.api:app
     envVars:
       - key: DESKTOP_SERVER_URL
         sync: false # Set to Tailscale IP of local PC
@@ -93,5 +93,5 @@ To allow Render services to talk to the local Windows PC:
 
 1. **Step 1**: Create `render.yaml` in the project root.
 2. **Step 2**: Add `apps/web` basic Next.js structure.
-3. **Step 3**: Configure the `orchestrator-api` wrapper in `agents/core`.
+3. **Step 3**: Configure the `orchestrator-api` wrapper in `core`.
 4. **Step 4**: Set up Render Blueprint via the Render Dashboard.

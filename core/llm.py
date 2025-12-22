@@ -48,7 +48,7 @@ class LLMClient:
     def router(self):
         if self._router is None:
             try:
-                from agents.core.model_router import get_model_router
+                from .model_router import get_model_router
                 self._router = get_model_router()
             except ImportError:
                 pass
@@ -59,11 +59,11 @@ class LLMClient:
         if self._optimizer is None:
             try:
                 # Use V2 optimizer with Anthropic native caching
-                from agents.core.token_optimizer_v2 import get_token_optimizer_v2
+                from .token_optimizer_v2 import get_token_optimizer_v2
                 self._optimizer = get_token_optimizer_v2()
             except ImportError:
                 try:
-                    from agents.core.token_optimizer import get_token_optimizer
+                    from .token_optimizer import get_token_optimizer
                     self._optimizer = get_token_optimizer()
                 except ImportError:
                     pass
@@ -73,7 +73,7 @@ class LLMClient:
     def cache(self):
         if self._cache is None:
             try:
-                from agents.core.redis_adapter import get_cache
+                from .redis_adapter import get_cache
                 self._cache = get_cache()
             except ImportError:
                 pass

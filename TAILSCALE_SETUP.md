@@ -18,8 +18,7 @@ YOUR PC (Cisco Network)
         
 RENDER.COM (Cloud - No Cisco)
 ├── Orchestrator + Agents
-│   ├── core/llm.py (ALL Anthropic API calls) ✅
-│   └── agents/core/llm.py ✅
+│   └── core/llm.py (ALL Anthropic API calls) ✅
 │
 └── Direct HTTPS → Anthropic API ✅
 ```

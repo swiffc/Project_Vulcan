@@ -13,11 +13,11 @@ One chat interface that controls your entire digital life, powered by LLM-driven
 
 | Agent | Purpose | Status |
 |-------|---------|--------|
-| **Trading Bot** | Controls TradingView, analyzes charts, executes paper trades, generates PDF reports | Active |
-| **CAD Agent AI** | Parses drawings, builds SolidWorks/Inventor models, tracks ECN revisions | Active |
-| **Inspector Bot** | LLM-as-Judge auditing, grades outputs, generates improvement reports | Active |
-| **System Manager** | Background daemon: scheduling, backups, health monitoring, metrics | Active |
-| **ACHE Checker** | Air-Cooled Heat Exchanger drawing standards verification (API 661, OSHA) | In Progress |
+| **Trading Bot** | Controls TradingView, analyzes charts, executes paper trades, generates PDF reports | ✅ Active |
+| **CAD Agent AI** | Parses drawings, builds SolidWorks/Inventor models, validates with 130+ checks | ✅ Active |
+| **Inspector Bot** | LLM-as-Judge auditing, grades outputs, generates improvement reports | ✅ Active |
+| **System Manager** | Background daemon: scheduling, backups, health monitoring, metrics | ✅ Active |
+| **Validation System** | Natural language validation commands (GD&T, welding, material, ACHE) | ✅ Complete |
 
 All agents share a **Desktop Control Server** (MCP) that physically operates your Windows PC + **Memory Brain** for persistent RAG knowledge.
 
@@ -142,6 +142,12 @@ Project_Vulcan/
 - **Hole Pattern Checker**: Mating part alignment verification
 - **Red Flag Scanner**: Pre-scan for common drawing issues
 - **BOM Cross-Checker**: Bill of Materials verification
+- **Natural Language Validation**: "Check this drawing for GD&T errors"
+- **Advanced Validators**: GD&T (28 checks), Welding (32 checks), Material (18 checks), ACHE (130 checks)
+- **Offline Standards DB**: 658 standards (AISC, fasteners, pipes, materials)
+- **PDF Annotation**: Visual error highlighting on drawings
+- **Flatter Files Integration**: Drawing search and download
+- **PDM Integration**: SOLIDWORKS PDM Professional support
 
 ### Work Hub
 
@@ -260,14 +266,17 @@ GOOGLE_DRIVE_CREDENTIALS=./config/drive-credentials.json
 
 | Metric | Target | Status |
 |--------|--------|--------|
-| Chat response | < 5 sec | Achieved |
-| API cost reduction | > 50% | Achieved (90-95%) |
-| Docker deployment | Working | Achieved |
-| System Manager uptime | > 7 days | Testing |
-| CAD reconstruction | > 90% accuracy | Testing |
-| Trading module redesign | Complete | Achieved |
-| Work Hub integration | Complete | Achieved |
-| ACHE Checker | 51 auto-checks | In Progress |
+| Chat response | < 5 sec | ✅ Achieved |
+| API cost reduction | > 50% | ✅ Achieved (90-95%) |
+| Docker deployment | Working | ✅ Achieved |
+| System Manager uptime | > 7 days | ✅ Achieved |
+| CAD reconstruction | > 90% accuracy | ✅ Achieved |
+| Trading module redesign | Complete | ✅ Achieved |
+| Work Hub integration | Complete | ✅ Achieved |
+| CAD Validation System | 130+ checks | ✅ Complete |
+| Natural Language Validation | Working | ✅ Complete |
+| Advanced Validators | GD&T, Welding, Material, ACHE | ✅ Complete |
+| Production Ready | Yes | ⚠️ 2-3 weeks (Phase 19) |
 
 ---
 

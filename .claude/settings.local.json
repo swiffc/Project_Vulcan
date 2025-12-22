@@ -23,7 +23,10 @@
       "Bash(pip install:*)",
       "Bash(playwright install:*)",
       "WebFetch(domain:www.flatterfiles.com)",
-      "Bash(dir /s /b \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\README.md\")"
+      "Bash(dir /s /b \"C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\README.md\")",
+      "Bash(ls:*)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\DCornealius\\\\Documents\\\\GitHub\\\\Project_Vulcan_Fresh\\\\agents\")",
+      "Bash(findstr:*)"
     ]
   }
 }

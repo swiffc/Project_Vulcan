@@ -256,21 +256,7 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
       role: "assistant",
       content: formatValidationResponse(intent, true),
       timestamp: new Date(),
-      statFile Upload (for CAD context) */}
-      {agentContext === "cad" && (
-        <div className="px-2">
-          <FileUpload
-            currentFile={uploadedFile}
-            onFileSelect={setUploadedFile}
-            onFileRemove={() => setUploadedFile(null)}
-            disabled={isStreaming}
-            acceptedTypes=".pdf,.dxf"
-            maxSizeMB={10}
-          />
-        </div>
-      )}
-
-      {/* us: "streaming",
+      status: "streaming",
     };
     setMessages((prev) => [...prev, progressMessage]);
 
@@ -376,6 +362,20 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
               {cmd.label}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* File Upload (for CAD context) */}
+      {agentContext === "cad" && (
+        <div className="px-2">
+          <FileUpload
+            currentFile={uploadedFile}
+            onFileSelect={setUploadedFile}
+            onFileRemove={() => setUploadedFile(null)}
+            disabled={isStreaming}
+            acceptedTypes=".pdf,.dxf"
+            maxSizeMB={10}
+          />
         </div>
       )}
 

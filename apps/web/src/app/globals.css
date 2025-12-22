@@ -35,6 +35,9 @@
   /* Vulcan Theme */
   --vulcan-accent: #6366f1;
   --vulcan-darker: #0d1117;
+  --vulcan-success: #10b981;
+  --vulcan-warning: #f59e0b;
+  --vulcan-error: #ef4444;
 }
 
 body {

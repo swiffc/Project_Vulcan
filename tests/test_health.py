@@ -106,7 +106,7 @@ class TestAgentDetection:
 
     def test_trading_keywords(self):
         """Trading keywords should route to trading agent."""
-        from agents.core.api import detect_agent
+        from core.api import detect_agent
 
         assert detect_agent("Analyze GBP/USD setup") == "trading"
         assert detect_agent("What's the bias for forex today?") == "trading"
@@ -114,7 +114,7 @@ class TestAgentDetection:
 
     def test_cad_keywords(self):
         """CAD keywords should route to cad agent."""
-        from agents.core.api import detect_agent
+        from core.api import detect_agent
 
         assert detect_agent("Create a flange in SolidWorks") == "cad"
         assert detect_agent("Extrude this sketch") == "cad"
@@ -122,7 +122,7 @@ class TestAgentDetection:
 
     def test_general_fallback(self):
         """Unknown queries should route to general agent."""
-        from agents.core.api import detect_agent
+        from core.api import detect_agent
 
         assert detect_agent("Hello, how are you?") == "general"
         assert detect_agent("What's the weather?") == "general"
