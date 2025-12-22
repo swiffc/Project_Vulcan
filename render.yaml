@@ -22,7 +22,7 @@ services:
     region: ohio
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn agents.core.api:app -w 2 -k uvicorn.workers.UvicornWorker
+    startCommand: uvicorn agents.core.api:app --host 0.0.0.0 --port 8080
     envVars:
       - key: PYTHON_VERSION
         value: "3.11"
