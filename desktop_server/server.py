@@ -38,6 +38,14 @@ except ImportError:
     MEMORY_AVAILABLE = False
     logger.warning("Memory/RAG module not available - install chromadb and sentence-transformers")
 
+# Import CAD validation controller (optional - requires validators)
+try:
+    from controllers.cad_validation import router as cad_validation_router
+    CAD_VALIDATION_AVAILABLE = True
+except ImportError:
+    CAD_VALIDATION_AVAILABLE = False
+    logger.warning("CAD validation module not available - install validation dependencies")
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -285,6 +293,11 @@ if BROWSER_AVAILABLE:
 if J2_AVAILABLE:
     app.include_router(j2_tracker_router)
     logger.info("J2 Tracker controller loaded")
+
+# Include CAD validation router if available
+if CAD_VALIDATION_AVAILABLE:
+    app.include_router(cad_validation_router)
+    logger.info("CAD validation controller loaded")
 
 
 @app.get("/")

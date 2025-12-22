@@ -1,7 +1,7 @@
 # Project Vulcan: Master Task List
 
-**Status**: Phase 16 COMPLETE - CAD UI Redesign + Phase 12 Complete
-**Last Updated**: Dec 22, 2025 - All Major Phases Complete!
+**Status**: Phase 18.1 COMPLETE - CAD Validation Integration
+**Last Updated**: Dec 22, 2025 - Validation System Deployed!
 **Goal**: Unified AI Operating System (Trading, CAD, General)
 **Pattern**: Adapter + Bridge (lightweight, no cloning)
 
@@ -698,6 +698,121 @@ Automatically checks drawings against API 661, ASME, OSHA, and industry standard
    - Phase 6: Installation & Testing (12 checks)
    - Phase 7: Operations & Maintenance (12 checks)
    - Phase 8: Loads & Analysis (9 checks)
+
+5. **Offline Standards Database** (`agents/cad_agent/adapters/standards_db_v2.py`) - 658 entries
+   - AISC structural shapes (234 beams, channels, angles)
+   - Bolts and fasteners (21 specifications)
+   - Pipe dimensions (383 NPS sizes)
+   - Material specifications (20 ASTM specs)
+   - 100-1000x faster than API calls with @lru_cache
+
+**Status**: ✅ COMPLETE - All validators tested and production-ready
+
+---
+
+## ✅ Phase 18: CAD Validation Integration - COMPLETE (Dec 22, 2025) 🎉
+
+**Natural Language Drawing Validation System:**
+
+### Backend Infrastructure (Phase 18.1)
+- [x] `agents/cad_agent/validators/orchestrator.py` (~446 lines)
+  - Main validation coordinator
+  - Coordinates GDT, welding, material, ACHE checks
+  - Progress callback system for real-time updates
+  - Graceful fallbacks for missing validators
+  - Async validation with timing metrics
+
+- [x] `agents/cad_agent/validators/drawing_analyzer.py` (~420 lines)
+  - PDF text extraction (PyPDF2)
+  - OCR support (pytesseract + pdf2image)
+  - Engineering data parsing (datums, welds, materials)
+  - Drawing metadata extraction (number, revision, title)
+  - Dimension and note detection
+
+- [x] `agents/cad_agent/validators/validation_models.py` (~255 lines)
+  - Pydantic models for type safety
+  - ValidationRequest, ValidationReport
+  - Issue tracking by severity (critical/error/warning/info)
+  - Summary statistics calculation
+  - Support for all validator types
+
+- [x] `agents/cad_agent/validators/pdf_annotator.py` (~373 lines)
+  - PDF annotation with reportlab
+  - Visual error highlighting
+  - Flag/circle/arrow icons
+  - Color coding by severity
+  - Image annotation alternative
+
+- [x] `desktop_server/controllers/cad_validation.py` (~240 lines)
+  - FastAPI endpoints: `/cad/validate/drawing`, `/cad/validate/ache`
+  - File upload handling
+  - Validation status checking
+  - Integration with ValidationOrchestrator
+
+- [x] Desktop server integration
+  - Added CAD validation router to main server
+  - Graceful fallback if validators not installed
+
+### Frontend Integration (Phase 18.2)
+- [x] `apps/web/src/app/api/cad/validate/route.ts`
+  - Next.js API proxy to desktop server
+  - File upload support
+  - Validation type routing (drawing/ACHE)
+  - Status endpoint for system availability
+
+- [x] `apps/web/src/lib/cad/validation-client.ts` (~260 lines)
+  - TypeScript client library
+  - Complete type definitions
+  - `validateDrawing()` and `validateACHE()` functions
+  - Markdown report formatting
+  - System status checking
+
+- [x] `apps/web/src/components/cad/dashboard/ValidationWidget.tsx` (~200 lines)
+  - Recent validations display
+  - Pass rate visualization
+  - System status indicator
+  - Weekly summary statistics
+  - Color-coded severity badges
+
+### Testing & Documentation (Phase 18.3)
+- [x] `tests/test_validation_flow.py` (~210 lines)
+  - Orchestrator initialization test
+  - Drawing analyzer test
+  - PDF annotator test
+  - Validation models test
+  - API endpoint test
+  - Integration test framework
+
+- [x] `docs/prds/PRD-018-CAD-CHATBOT-INTEGRATION.md`
+  - Complete PRD with architecture
+  - API specifications
+  - UI/UX flow diagrams
+  - Implementation plan
+  - Success metrics
+
+### 🎯 Key Features
+- ✅ Natural language commands: "Check drawing X for GD&T errors"
+- ✅ Real-time progress streaming
+- ✅ Multi-validator orchestration (GDT, welding, material, ACHE)
+- ✅ Visual error annotations on PDFs
+- ✅ Pass rate calculations and summaries
+- ✅ All tests passing ✅
+
+### 📊 Architecture
+```
+User → Next.js → /api/cad/validate → Desktop Server → ValidationOrchestrator
+                                                        ├─ DrawingAnalyzer
+                                                        ├─ GDTParser
+                                                        ├─ WeldingValidator
+                                                        ├─ MaterialValidator
+                                                        └─ ACHEValidator
+```
+
+**Status**: ✅ COMPLETE - Ready for chatbot integration (Phase 18.4)
+
+---
+
+## 📋 Backlog
 
 **Total New Checks Implemented: 383+ across all validators**
 
