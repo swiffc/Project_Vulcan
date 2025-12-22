@@ -4,6 +4,9 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Message, MessageRole } from "@/lib/types";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
+import { FileUpload, UploadedFile } from "./FileUpload";
+import { parseValidationIntent, formatValidationResponse } from "@/lib/cad/validation-intent";
+import { validateDrawing, formatValidationReport } from "@/lib/cad/validation-client";
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000;
@@ -25,10 +28,10 @@ const QUICK_COMMANDS = {
     { label: "Session Times", command: "What are the key session times today?" },
   ],
   cad: [
-    { label: "New Part", command: "Create a new part from template" },
-    { label: "ECN Status", command: "Show pending ECN revisions" },
-    { label: "Export STEP", command: "Export current assembly to STEP" },
-    { label: "Check GD&T", command: "Validate GD&T on current drawing" },
+    { label: "Validate Drawing", command: "Check this drawing for errors" },
+    { label: "GD&T Check", command: "Validate GD&T on this drawing" },
+    { label: "ACHE Validation", command: "Run comprehensive ACHE validation" },
+    { label: "Weld Check", command: "Check welds for AWS D1.1 compliance" },
   ],
   general: [
     { label: "System Status", command: "Show system status" },
@@ -54,6 +57,7 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
     },
   ]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -158,6 +162,16 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
   );
 
   const handleSendMessage = async (content: string) => {
+    // Check for validation intent
+    const validationIntent = parseValidationIntent(content);
+    
+    if (validationIntent && validationIntent.confidence > 0.7) {
+      // Handle validation request
+      await handleValidationRequest(content, validationIntent);
+      return;
+    }
+
+    // Regular chat message
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       role: "user",
@@ -194,6 +208,119 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
             ? {
                 ...m,
                 content: "Connection failed after multiple attempts. Please check your network and try again.",
+                status: "error",
+              }
+            : m
+        )
+      );
+    }
+
+    setIsStreaming(false);
+  };
+
+  const handleValidationRequest = async (
+    content: string,
+    intent: ReturnType<typeof parseValidationIntent>
+  ) => {
+    if (!intent) return;
+
+    // Add user message
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      content,
+      timestamp: new Date(),
+      status: "complete",
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setIsStreaming(true);
+
+    // Check if file is uploaded
+    if (!uploadedFile) {
+      const assistantMessage: Message = {
+        id: `assistant-${Date.now()}`,
+        role: "assistant",
+        content: formatValidationResponse(intent, false),
+        timestamp: new Date(),
+        status: "complete",
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+      setIsStreaming(false);
+      return;
+    }
+
+    // Start validation
+    const progressMessageId = `assistant-${Date.now()}`;
+    const progressMessage: Message = {
+      id: progressMessageId,
+      role: "assistant",
+      content: formatValidationResponse(intent, true),
+      timestamp: new Date(),
+      statFile Upload (for CAD context) */}
+      {agentContext === "cad" && (
+        <div className="px-2">
+          <FileUpload
+            currentFile={uploadedFile}
+            onFileSelect={setUploadedFile}
+            onFileRemove={() => setUploadedFile(null)}
+            disabled={isStreaming}
+            acceptedTypes=".pdf,.dxf"
+            maxSizeMB={10}
+          />
+        </div>
+      )}
+
+      {/* us: "streaming",
+    };
+    setMessages((prev) => [...prev, progressMessage]);
+
+    try {
+      // Run validation
+      const response = await validateDrawing({
+        type: intent.type === "ache" ? "ache" : "drawing",
+        file: uploadedFile.file,
+        checks: intent.checks || ["all"],
+        userId: "user@vulcan.ai",
+      });
+
+      // Format results
+      if (response.report) {
+        const reportMarkdown = formatValidationReport(response.report);
+        
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === progressMessageId
+              ? {
+                  ...m,
+                  content: reportMarkdown,
+                  status: "complete",
+                }
+              : m
+          )
+        );
+      } else {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === progressMessageId
+              ? {
+                  ...m,
+                  content: `✅ Validation complete!\n\n${response.message}`,
+                  status: "complete",
+                }
+              : m
+          )
+        );
+      }
+
+      // Clear uploaded file after validation
+      setUploadedFile(null);
+    } catch (error) {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === progressMessageId
+            ? {
+                ...m,
+                content: `❌ Validation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
                 status: "error",
               }
             : m

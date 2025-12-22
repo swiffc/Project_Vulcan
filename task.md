@@ -812,6 +812,103 @@ User → Next.js → /api/cad/validate → Desktop Server → ValidationOrchestr
 
 ---
 
+## ✅ Phase 18.4: Chatbot Natural Language Integration - COMPLETE (Dec 22, 2025) 🎉
+
+**Natural Language Validation Commands:**
+
+### Chatbot Integration
+- [x] `apps/web/src/lib/cad/validation-intent.ts` (~150 lines)
+  - Natural language intent parsing
+  - Detects validation keywords (validate, check, verify, inspect, analyze)
+  - Extracts validation type (GD&T, welding, material, ACHE)
+  - File reference extraction (drawing ABC-123, this drawing, etc.)
+  - Confidence scoring (0-1)
+
+- [x] `apps/web/src/components/FileUpload.tsx` (~150 lines)
+  - PDF/DXF file upload component
+  - Drag-and-drop support
+  - File size validation (max 10MB)
+  - File type validation
+  - Visual file preview with remove option
+
+- [x] `apps/web/src/components/Chat.tsx` (UPDATED ~350 lines)
+  - Integrated validation intent detection
+  - Automatic validation triggering on keywords
+  - File upload button for CAD context
+  - Progress streaming during validation
+  - Markdown report formatting
+  - File cleanup after validation
+
+- [x] Updated quick commands with validation examples:
+  - "Validate Drawing"
+  - "GD&T Check"
+  - "ACHE Validation"
+  - "Weld Check"
+
+- [x] `tests/test_validation_intent.ts` (~120 lines)
+  - Intent parser test suite
+  - 8 test cases covering all patterns
+  - Confidence threshold validation
+
+### 🎯 Supported Commands
+
+Users can now validate drawings with natural language:
+
+```
+✅ "Check drawing ABC-123 for GD&T errors"
+✅ "Validate this drawing"
+✅ "Run ACHE validation"
+✅ "Inspect welds in drawing XYZ-456"
+✅ "Verify material specs"
+✅ "Check GD&T and welding on this print"
+✅ "Analyze this drawing for all issues"
+```
+
+### 🔄 Validation Workflow
+
+1. **User uploads PDF** → FileUpload component
+2. **User types command** → "Check this drawing for GD&T"
+3. **Intent parser detects** → ValidationIntent { action: "check", type: "gdt" }
+4. **Validation runs** → ValidationOrchestrator → GDTParser
+5. **Results stream** → Markdown report in chat
+6. **File cleanup** → Auto-remove after validation
+
+### 📊 Example Chat Flow
+
+```
+User: [Uploads drawing-123.pdf]
+
+User: Check this drawing for GD&T errors
+
+Bot: 📊 Starting gdt validation for the uploaded drawing...
+     Running gdt...
+     
+Bot: # Validation Report
+
+     **Status:** complete
+     **Duration:** 3,245ms
+     **Pass Rate:** 89.3%
+
+     ## Summary
+     - Total Checks: 28
+     - Passed: 25 (89.3%)
+     - Warnings: 2
+     - Errors: 1
+
+     ## ⚠️ Errors
+     - **gdt**: Feature control frame missing datum C reference
+       - Location: Page 1, Section A
+       - Suggestion: Add datum C to position tolerance frame
+
+     ## ⚠️ Warnings
+     - Position tolerance may be too tight (Ø0.005)
+     - Datum A flatness not specified
+```
+
+**Status**: ✅ PRODUCTION READY - Full chatbot integration complete!
+
+---
+
 ## 📋 Backlog
 
 **Total New Checks Implemented: 383+ across all validators**
