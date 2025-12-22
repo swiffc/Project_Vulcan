@@ -7,6 +7,8 @@ interface TradingViewEmbedProps {
   symbol?: string;
   interval?: string;
   desktopServerUrl?: string;
+  theme?: string;
+  height?: string;
 }
 
 type ViewState = "setup" | "connecting" | "streaming" | "error";

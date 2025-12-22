@@ -1,0 +1,188 @@
+{
+  "carbon_steel": {
+    "A36": {
+      "designation": "A36",
+      "type": "Carbon Steel",
+      "yield_strength_ksi": 36,
+      "tensile_strength_ksi": 58,
+      "elongation_pct": 20,
+      "density_lb_in3": 0.284,
+      "modulus_elasticity_ksi": 29000,
+      "poissons_ratio": 0.26,
+      "thermal_expansion_in_in_F": 6.5e-6,
+      "max_temperature_F": 650,
+      "weldable": true,
+      "bend_radius_factor": 1.0,
+      "typical_uses": ["Structural shapes", "Plates", "Bars"]
+    },
+    "A572-50": {
+      "designation": "A572 Grade 50",
+      "type": "HSLA Steel",
+      "yield_strength_ksi": 50,
+      "tensile_strength_ksi": 65,
+      "elongation_pct": 18,
+      "density_lb_in3": 0.284,
+      "modulus_elasticity_ksi": 29000,
+      "poissons_ratio": 0.26,
+      "thermal_expansion_in_in_F": 6.5e-6,
+      "max_temperature_F": 650,
+      "weldable": true,
+      "bend_radius_factor": 1.5,
+      "typical_uses": ["High-strength structural", "Columns", "Beams"]
+    },
+    "A516-70": {
+      "designation": "A516 Grade 70",
+      "type": "Pressure Vessel Steel",
+      "yield_strength_ksi": 38,
+      "tensile_strength_ksi": 70,
+      "elongation_pct": 21,
+      "density_lb_in3": 0.284,
+      "modulus_elasticity_ksi": 29000,
+      "poissons_ratio": 0.26,
+      "thermal_expansion_in_in_F": 6.5e-6,
+      "max_temperature_F": 650,
+      "weldable": true,
+      "bend_radius_factor": 1.0,
+      "impact_tested": true,
+      "typical_uses": ["Pressure vessels", "Boilers", "Heat exchangers"]
+    }
+  },
+  "stainless_steel": {
+    "304": {
+      "designation": "304 Stainless",
+      "type": "Austenitic Stainless",
+      "yield_strength_ksi": 30,
+      "tensile_strength_ksi": 75,
+      "elongation_pct": 40,
+      "density_lb_in3": 0.289,
+      "modulus_elasticity_ksi": 28000,
+      "poissons_ratio": 0.27,
+      "thermal_expansion_in_in_F": 9.6e-6,
+      "max_temperature_F": 1500,
+      "weldable": true,
+      "bend_radius_factor": 2.0,
+      "corrosion_resistant": true,
+      "typical_uses": ["Food processing", "Chemical equipment", "Architectural"]
+    },
+    "316": {
+      "designation": "316 Stainless",
+      "type": "Austenitic Stainless",
+      "yield_strength_ksi": 30,
+      "tensile_strength_ksi": 75,
+      "elongation_pct": 40,
+      "density_lb_in3": 0.289,
+      "modulus_elasticity_ksi": 28000,
+      "poissons_ratio": 0.27,
+      "thermal_expansion_in_in_F": 9.6e-6,
+      "max_temperature_F": 1500,
+      "weldable": true,
+      "bend_radius_factor": 2.0,
+      "corrosion_resistant": true,
+      "chloride_resistant": true,
+      "typical_uses": ["Marine", "Chemical processing", "Pharmaceuticals"]
+    }
+  },
+  "aluminum": {
+    "6061-T6": {
+      "designation": "6061-T6",
+      "type": "Aluminum Alloy",
+      "yield_strength_ksi": 40,
+      "tensile_strength_ksi": 45,
+      "elongation_pct": 12,
+      "density_lb_in3": 0.098,
+      "modulus_elasticity_ksi": 10000,
+      "poissons_ratio": 0.33,
+      "thermal_expansion_in_in_F": 13.1e-6,
+      "max_temperature_F": 350,
+      "weldable": true,
+      "bend_radius_factor": 1.0,
+      "corrosion_resistant": true,
+      "typical_uses": ["Structural frames", "Marine", "Aerospace"]
+    },
+    "1100": {
+      "designation": "1100 Aluminum",
+      "type": "Pure Aluminum",
+      "yield_strength_ksi": 5,
+      "tensile_strength_ksi": 13,
+      "elongation_pct": 35,
+      "density_lb_in3": 0.098,
+      "modulus_elasticity_ksi": 10000,
+      "poissons_ratio": 0.33,
+      "thermal_expansion_in_in_F": 13.1e-6,
+      "max_temperature_F": 400,
+      "weldable": true,
+      "bend_radius_factor": 0.5,
+      "thermal_conductivity": "Excellent",
+      "typical_uses": ["Finned tubes", "Heat exchangers", "Chemical equipment"]
+    }
+  },
+  "tube_materials": {
+    "A179": {
+      "designation": "A179 Seamless",
+      "type": "Carbon Steel Tube",
+      "yield_strength_ksi": 30,
+      "tensile_strength_ksi": 47,
+      "density_lb_in3": 0.284,
+      "max_temperature_F": 650,
+      "typical_uses": ["Heat exchanger tubes", "Boiler tubes"]
+    },
+    "A214": {
+      "designation": "A214 ERW",
+      "type": "Carbon Steel Tube",
+      "yield_strength_ksi": 30,
+      "tensile_strength_ksi": 55,
+      "density_lb_in3": 0.284,
+      "max_temperature_F": 650,
+      "typical_uses": ["Heat exchanger tubes", "Condenser tubes"]
+    },
+    "A213-T11": {
+      "designation": "A213 Grade T11",
+      "type": "Alloy Steel Tube",
+      "yield_strength_ksi": 30,
+      "tensile_strength_ksi": 60,
+      "density_lb_in3": 0.284,
+      "max_temperature_F": 1000,
+      "alloy_content": "1.25Cr-0.5Mo",
+      "typical_uses": ["High-temperature heat exchangers"]
+    },
+    "A213-T5": {
+      "designation": "A213 Grade T5",
+      "type": "Alloy Steel Tube",
+      "yield_strength_ksi": 30,
+      "tensile_strength_ksi": 60,
+      "density_lb_in3": 0.284,
+      "max_temperature_F": 1100,
+      "alloy_content": "5Cr-0.5Mo",
+      "typical_uses": ["High-temperature service", "Refinery equipment"]
+    }
+  },
+  "flange_materials": {
+    "A105": {
+      "designation": "A105",
+      "type": "Carbon Steel Forging",
+      "yield_strength_ksi": 36,
+      "tensile_strength_ksi": 70,
+      "max_temperature_F": 650,
+      "typical_uses": ["Flanges", "Fittings", "Valves"]
+    },
+    "A350-LF2": {
+      "designation": "A350 LF2",
+      "type": "Low-Temperature Carbon Steel",
+      "yield_strength_ksi": 40,
+      "tensile_strength_ksi": 70,
+      "max_temperature_F": 650,
+      "min_temperature_F": -50,
+      "impact_tested": true,
+      "typical_uses": ["Low-temp flanges", "Low-temp forgings"]
+    }
+  },
+  "sheet_gauges": {
+    "10GA": {"gauge": 10, "thickness_in": 0.1345, "weight_per_sqft_lb": 5.49},
+    "11GA": {"gauge": 11, "thickness_in": 0.1196, "weight_per_sqft_lb": 4.88},
+    "12GA": {"gauge": 12, "thickness_in": 0.1046, "weight_per_sqft_lb": 4.27},
+    "14GA": {"gauge": 14, "thickness_in": 0.0747, "weight_per_sqft_lb": 3.05},
+    "16GA": {"gauge": 16, "thickness_in": 0.0598, "weight_per_sqft_lb": 2.44},
+    "18GA": {"gauge": 18, "thickness_in": 0.0478, "weight_per_sqft_lb": 1.95},
+    "20GA": {"gauge": 20, "thickness_in": 0.0359, "weight_per_sqft_lb": 1.47}
+  }
+}

@@ -57,6 +57,27 @@ from .dimension_extractor import (
     Tolerance, DimensionType, Unit,
 )
 
+# Phase 16: Advanced Validation (GD&T, Welding, Materials, ACHE Master)
+from .gdt_parser import (
+    GDTParser, ToleranceType, MaterialCondition, DatumPrecedence,
+    Datum, FeatureControlFrame, GDTValidationResult, PositionToleranceAnalysis,
+    validate_feature_control_frame, check_datum_completeness, GDT_SYMBOLS,
+)
+from .welding_validator import (
+    WeldingValidator, WeldType, WeldLocation, WeldSymbol, WeldProcedure,
+    NDEMethod, NDERequirement, WeldValidationResult,
+    get_min_fillet_weld_size, get_max_fillet_size, calculate_fillet_weld_strength,
+)
+from .material_validator import (
+    MaterialValidator, MTRData, ChemicalComposition, MechanicalProperties,
+    MaterialSpec, MaterialGrade, HeatTreatment, MaterialValidationResult,
+    MATERIAL_SPECS, get_allowable_stress,
+)
+from .ache_validator import (
+    ACHEValidator, ACHEDesignData, ACHEValidationReport,
+    ValidationPhase, PhaseResult,
+)
+
 __all__ = [
     # Existing
     "PDFBridge",
@@ -107,6 +128,35 @@ __all__ = [
     "DrawingPackageAnalysis",
     "PageAnalysis",
     "TitleBlock",
+    "PartData",
+    "Severity",
+    "FlagCategory",
+    "quick_scan",
+    "BOMChecker",
+    "BOMCheckItem",
+    "BOMCheckResult",
+    "DimensionExtractor",
+    "ExtractedDimension",
+    "ExtractionResult",
+    # Phase 16: Advanced validation
+    "GDTParser",
+    "ToleranceType",
+    "MaterialCondition",
+    "FeatureControlFrame",
+    "GDTValidationResult",
+    "validate_feature_control_frame",
+    "WeldingValidator",
+    "WeldType",
+    "WeldSymbol",
+    "WeldValidationResult",
+    "get_min_fillet_weld_size",
+    "MaterialValidator",
+    "MTRData",
+    "MaterialValidationResult",
+    "ACHEValidator",
+    "ACHEDesignData",
+    "ACHEValidationReport",
+    "ValidationPhase",
     "Dimension",
     "HoleData",
     "BendData",
@@ -128,19 +178,9 @@ __all__ = [
     "CheckStatus",
     "RedFlagScanner",
     "ScanResult",
-    "PartData",
-    "Severity",
-    "FlagCategory",
-    "quick_scan",
-    "BOMChecker",
-    "BOMCheckItem",
     "DrawingPart",
     "ItemMatch",
-    "BOMCheckResult",
     "MatchStatus",
-    "DimensionExtractor",
-    "ExtractedDimension",
-    "ExtractionResult",
     "TitleBlockData",
     "Tolerance",
     "DimensionType",

@@ -1,0 +1,104 @@
+{
+  "pipe_sizes": {
+    "1/2": {
+      "NPS": "1/2",
+      "OD": 0.840,
+      "schedules": {
+        "40": {"wall_thickness": 0.109, "ID": 0.622, "weight_per_ft": 0.85},
+        "80": {"wall_thickness": 0.147, "ID": 0.546, "weight_per_ft": 1.09},
+        "160": {"wall_thickness": 0.188, "ID": 0.464, "weight_per_ft": 1.31},
+        "XXS": {"wall_thickness": 0.294, "ID": 0.252, "weight_per_ft": 1.71}
+      }
+    },
+    "3/4": {
+      "NPS": "3/4",
+      "OD": 1.050,
+      "schedules": {
+        "40": {"wall_thickness": 0.113, "ID": 0.824, "weight_per_ft": 1.13},
+        "80": {"wall_thickness": 0.154, "ID": 0.742, "weight_per_ft": 1.47},
+        "160": {"wall_thickness": 0.219, "ID": 0.612, "weight_per_ft": 1.94},
+        "XXS": {"wall_thickness": 0.308, "ID": 0.434, "weight_per_ft": 2.44}
+      }
+    },
+    "1": {
+      "NPS": "1",
+      "OD": 1.315,
+      "schedules": {
+        "40": {"wall_thickness": 0.133, "ID": 1.049, "weight_per_ft": 1.68},
+        "80": {"wall_thickness": 0.179, "ID": 0.957, "weight_per_ft": 2.17},
+        "160": {"wall_thickness": 0.250, "ID": 0.815, "weight_per_ft": 2.84},
+        "XXS": {"wall_thickness": 0.358, "ID": 0.599, "weight_per_ft": 3.66}
+      }
+    },
+    "2": {
+      "NPS": "2",
+      "OD": 2.375,
+      "schedules": {
+        "40": {"wall_thickness": 0.154, "ID": 2.067, "weight_per_ft": 3.65},
+        "80": {"wall_thickness": 0.218, "ID": 1.939, "weight_per_ft": 5.02},
+        "160": {"wall_thickness": 0.344, "ID": 1.687, "weight_per_ft": 7.44},
+        "XXS": {"wall_thickness": 0.436, "ID": 1.503, "weight_per_ft": 9.03}
+      }
+    },
+    "3": {
+      "NPS": "3",
+      "OD": 3.500,
+      "schedules": {
+        "40": {"wall_thickness": 0.216, "ID": 3.068, "weight_per_ft": 7.58},
+        "80": {"wall_thickness": 0.300, "ID": 2.900, "weight_per_ft": 10.25},
+        "160": {"wall_thickness": 0.438, "ID": 2.624, "weight_per_ft": 14.32},
+        "XXS": {"wall_thickness": 0.600, "ID": 2.300, "weight_per_ft": 18.58}
+      }
+    },
+    "4": {
+      "NPS": "4",
+      "OD": 4.500,
+      "schedules": {
+        "40": {"wall_thickness": 0.237, "ID": 4.026, "weight_per_ft": 10.79},
+        "80": {"wall_thickness": 0.337, "ID": 3.826, "weight_per_ft": 14.98},
+        "160": {"wall_thickness": 0.531, "ID": 3.438, "weight_per_ft": 22.51},
+        "XXS": {"wall_thickness": 0.674, "ID": 3.152, "weight_per_ft": 27.54}
+      }
+    },
+    "6": {
+      "NPS": "6",
+      "OD": 6.625,
+      "schedules": {
+        "40": {"wall_thickness": 0.280, "ID": 6.065, "weight_per_ft": 18.97},
+        "80": {"wall_thickness": 0.432, "ID": 5.761, "weight_per_ft": 28.57},
+        "160": {"wall_thickness": 0.719, "ID": 5.187, "weight_per_ft": 45.30},
+        "XXS": {"wall_thickness": 0.864, "ID": 4.897, "weight_per_ft": 53.16}
+      }
+    },
+    "8": {
+      "NPS": "8",
+      "OD": 8.625,
+      "schedules": {
+        "40": {"wall_thickness": 0.322, "ID": 7.981, "weight_per_ft": 28.55},
+        "80": {"wall_thickness": 0.500, "ID": 7.625, "weight_per_ft": 43.39},
+        "160": {"wall_thickness": 0.906, "ID": 6.813, "weight_per_ft": 72.42},
+        "XXS": {"wall_thickness": 0.875, "ID": 6.875, "weight_per_ft": 72.42}
+      }
+    },
+    "10": {
+      "NPS": "10",
+      "OD": 10.750,
+      "schedules": {
+        "40": {"wall_thickness": 0.365, "ID": 10.020, "weight_per_ft": 40.48},
+        "80": {"wall_thickness": 0.593, "ID": 9.564, "weight_per_ft": 64.43},
+        "160": {"wall_thickness": 1.125, "ID": 8.500, "weight_per_ft": 115.65},
+        "XXS": {"wall_thickness": 1.000, "ID": 8.750, "weight_per_ft": 104.13}
+      }
+    },
+    "12": {
+      "NPS": "12",
+      "OD": 12.750,
+      "schedules": {
+        "40": {"wall_thickness": 0.406, "ID": 11.938, "weight_per_ft": 53.52},
+        "80": {"wall_thickness": 0.687, "ID": 11.376, "weight_per_ft": 88.51},
+        "160": {"wall_thickness": 1.312, "ID": 10.126, "weight_per_ft": 160.27},
+        "XXS": {"wall_thickness": 1.000, "ID": 10.750, "weight_per_ft": 125.49}
+      }
+    }
+  }
+}

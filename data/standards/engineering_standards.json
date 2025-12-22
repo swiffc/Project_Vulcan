@@ -1,0 +1,4685 @@
+{
+  "metadata": {
+    "source": "External repositories and packages (optional) + local offline cache",
+    "date_generated": "2025-12-22",
+    "packages_used": [
+      "aisc-shapes (if installed)",
+      "fastener-db (if installed)",
+      "fluids (if installed)",
+      "requests (if available)"
+    ]
+  },
+  "aisc_shapes": {
+    "W8X31": {
+      "designation": "W8X31",
+      "type": "W-Shape",
+      "weight_per_ft": 31.0,
+      "area": 9.13,
+      "depth": 8.0,
+      "flange_width": 7.995,
+      "web_thickness": 0.285,
+      "flange_thickness": 0.435,
+      "Ix": 110.0,
+      "Zx": 30.4,
+      "Sx": 27.5,
+      "rx": 3.47,
+      "Iy": 37.1,
+      "Zy": 14.1,
+      "Sy": 9.27,
+      "ry": 2.02,
+      "bf_2tf": 9.19,
+      "h_tw": 22.0
+    },
+    "W8X18": {
+      "designation": "W8X18",
+      "type": "W-Shape",
+      "weight_per_ft": 18.0,
+      "area": 5.26,
+      "depth": 8.14,
+      "flange_width": 5.25,
+      "web_thickness": 0.23,
+      "flange_thickness": 0.33,
+      "Ix": 61.9,
+      "Zx": 17.0,
+      "Sx": 15.2,
+      "rx": 3.43,
+      "Iy": 7.97,
+      "Zy": 4.66,
+      "Sy": 3.04,
+      "ry": 1.23,
+      "bf_2tf": 7.95,
+      "h_tw": 28.3
+    },
+    "W8X10": {
+      "designation": "W8X10",
+      "type": "W-Shape",
+      "weight_per_ft": 10.0,
+      "area": 2.96,
+      "depth": 7.89,
+      "flange_width": 3.94,
+      "web_thickness": 0.17,
+      "flange_thickness": 0.205,
+      "Ix": 30.8,
+      "Zx": 8.87,
+      "Sx": 7.81,
+      "rx": 3.22,
+      "Iy": 2.09,
+      "Zy": 1.74,
+      "Sy": 1.06,
+      "ry": 0.841,
+      "bf_2tf": 9.61,
+      "h_tw": 40.0
+    },
+    "W10X49": {
+      "designation": "W10X49",
+      "type": "W-Shape",
+      "weight_per_ft": 49.0,
+      "area": 14.4,
+      "depth": 10.0,
+      "flange_width": 10.0,
+      "web_thickness": 0.34,
+      "flange_thickness": 0.56,
+      "Ix": 272.0,
+      "Zx": 60.4,
+      "Sx": 54.6,
+      "rx": 4.35,
+      "Iy": 93.4,
+      "Zy": 28.3,
+      "Sy": 18.7,
+      "ry": 2.54,
+      "bf_2tf": 8.93,
+      "h_tw": 23.2
+    },
+    "W10X33": {
+      "designation": "W10X33",
+      "type": "W-Shape",
+      "weight_per_ft": 33.0,
+      "area": 9.71,
+      "depth": 9.73,
+      "flange_width": 7.96,
+      "web_thickness": 0.29,
+      "flange_thickness": 0.435,
+      "Ix": 171.0,
+      "Zx": 38.8,
+      "Sx": 35.0,
+      "rx": 4.19,
+      "Iy": 36.6,
+      "Zy": 14.0,
+      "Sy": 9.2,
+      "ry": 1.94,
+      "bf_2tf": 9.15,
+      "h_tw": 26.9
+    },
+    "W12X65": {
+      "designation": "W12X65",
+      "type": "W-Shape",
+      "weight_per_ft": 65.0,
+      "area": 19.1,
+      "depth": 12.12,
+      "flange_width": 12.0,
+      "web_thickness": 0.39,
+      "flange_thickness": 0.605,
+      "Ix": 533.0,
+      "Zx": 96.8,
+      "Sx": 87.9,
+      "rx": 5.28,
+      "Iy": 174.0,
+      "Zy": 44.1,
+      "Sy": 29.1,
+      "ry": 3.02,
+      "bf_2tf": 9.92,
+      "h_tw": 25.5
+    },
+    "W12X26": {
+      "designation": "W12X26",
+      "type": "W-Shape",
+      "weight_per_ft": 26.0,
+      "area": 7.65,
+      "depth": 12.22,
+      "flange_width": 6.49,
+      "web_thickness": 0.23,
+      "flange_thickness": 0.38,
+      "Ix": 204.0,
+      "Zx": 37.2,
+      "Sx": 33.4,
+      "rx": 5.17,
+      "Iy": 17.3,
+      "Zy": 8.15,
+      "Sy": 5.34,
+      "ry": 1.51,
+      "bf_2tf": 8.54,
+      "h_tw": 45.5
+    },
+    "W14X90": {
+      "designation": "W14X90",
+      "type": "W-Shape",
+      "weight_per_ft": 90.0,
+      "area": 26.5,
+      "depth": 14.02,
+      "flange_width": 14.52,
+      "web_thickness": 0.44,
+      "flange_thickness": 0.71,
+      "Ix": 999.0,
+      "Zx": 157.0,
+      "Sx": 143.0,
+      "rx": 6.14,
+      "Iy": 362.0,
+      "Zy": 76.5,
+      "Sy": 49.9,
+      "ry": 3.7,
+      "bf_2tf": 10.2,
+      "h_tw": 25.7
+    },
+    "W14X43": {
+      "designation": "W14X43",
+      "type": "W-Shape",
+      "weight_per_ft": 43.0,
+      "area": 12.6,
+      "depth": 13.66,
+      "flange_width": 7.995,
+      "web_thickness": 0.305,
+      "flange_thickness": 0.53,
+      "Ix": 428.0,
+      "Zx": 69.6,
+      "Sx": 62.7,
+      "rx": 5.82,
+      "Iy": 45.2,
+      "Zy": 17.3,
+      "Sy": 11.3,
+      "ry": 1.89,
+      "bf_2tf": 7.54,
+      "h_tw": 36.6
+    },
+    "W16X100": {
+      "designation": "W16X100",
+      "type": "W-Shape",
+      "weight_per_ft": 100.0,
+      "area": 29.4,
+      "depth": 17.0,
+      "flange_width": 10.425,
+      "web_thickness": 0.585,
+      "flange_thickness": 0.985,
+      "Ix": 1490.0,
+      "Zx": 198.0,
+      "Sx": 175.0,
+      "rx": 7.1,
+      "Iy": 186.0,
+      "Zy": 54.9,
+      "Sy": 35.7,
+      "ry": 2.51,
+      "bf_2tf": 5.29,
+      "h_tw": 22.0
+    },
+    "W18X50": {
+      "designation": "W18X50",
+      "type": "W-Shape",
+      "weight_per_ft": 50.0,
+      "area": 14.7,
+      "depth": 17.99,
+      "flange_width": 7.495,
+      "web_thickness": 0.355,
+      "flange_thickness": 0.57,
+      "Ix": 800.0,
+      "Zx": 101.0,
+      "Sx": 88.9,
+      "rx": 7.38,
+      "Iy": 40.1,
+      "Zy": 16.6,
+      "Sy": 10.7,
+      "ry": 1.65,
+      "bf_2tf": 6.58,
+      "h_tw": 43.2
+    },
+    "W21X62": {
+      "designation": "W21X62",
+      "type": "W-Shape",
+      "weight_per_ft": 62.0,
+      "area": 18.3,
+      "depth": 20.99,
+      "flange_width": 8.24,
+      "web_thickness": 0.4,
+      "flange_thickness": 0.615,
+      "Ix": 1330.0,
+      "Zx": 144.0,
+      "Sx": 127.0,
+      "rx": 8.54,
+      "Iy": 57.5,
+      "Zy": 21.7,
+      "Sy": 13.9,
+      "ry": 1.77,
+      "bf_2tf": 6.7,
+      "h_tw": 46.6
+    },
+    "W24X76": {
+      "designation": "W24X76",
+      "type": "W-Shape",
+      "weight_per_ft": 76.0,
+      "area": 22.4,
+      "depth": 23.92,
+      "flange_width": 8.99,
+      "web_thickness": 0.44,
+      "flange_thickness": 0.68,
+      "Ix": 2100.0,
+      "Zx": 200.0,
+      "Sx": 176.0,
+      "rx": 9.69,
+      "Iy": 82.5,
+      "Zy": 28.6,
+      "Sy": 18.4,
+      "ry": 1.92,
+      "bf_2tf": 6.61,
+      "h_tw": 48.6
+    }
+  },
+  "fasteners": {
+    "bolts": {
+      "1/4": {
+        "nominal_diameter": 0.25,
+        "threads_per_inch": 20,
+        "tensile_stress_area": 0.0318,
+        "minor_diameter": 0.185,
+        "hole_size_standard": 0.281,
+        "hole_size_oversize": 0.313,
+        "hole_size_short_slot_width": 0.281,
+        "hole_size_short_slot_length": 0.344,
+        "edge_distance_min_sheared": 0.75,
+        "edge_distance_min_rolled": 0.625,
+        "A325_tensile_capacity_kips": 8.7,
+        "A490_tensile_capacity_kips": 10.9
+      },
+      "3/8": {
+        "nominal_diameter": 0.375,
+        "threads_per_inch": 16,
+        "tensile_stress_area": 0.0775,
+        "minor_diameter": 0.294,
+        "hole_size_standard": 0.4375,
+        "hole_size_oversize": 0.5,
+        "hole_size_short_slot_width": 0.4375,
+        "hole_size_short_slot_length": 0.563,
+        "edge_distance_min_sheared": 1.0,
+        "edge_distance_min_rolled": 0.875,
+        "A325_tensile_capacity_kips": 21.2,
+        "A490_tensile_capacity_kips": 26.5
+      },
+      "1/2": {
+        "nominal_diameter": 0.5,
+        "threads_per_inch": 13,
+        "tensile_stress_area": 0.1419,
+        "minor_diameter": 0.4,
+        "hole_size_standard": 0.5625,
+        "hole_size_oversize": 0.656,
+        "hole_size_short_slot_width": 0.5625,
+        "hole_size_short_slot_length": 0.688,
+        "edge_distance_min_sheared": 1.25,
+        "edge_distance_min_rolled": 1.0,
+        "A325_tensile_capacity_kips": 38.9,
+        "A490_tensile_capacity_kips": 48.6
+      },
+      "5/8": {
+        "nominal_diameter": 0.625,
+        "threads_per_inch": 11,
+        "tensile_stress_area": 0.226,
+        "minor_diameter": 0.507,
+        "hole_size_standard": 0.6875,
+        "hole_size_oversize": 0.813,
+        "hole_size_short_slot_width": 0.6875,
+        "hole_size_short_slot_length": 0.813,
+        "edge_distance_min_sheared": 1.5,
+        "edge_distance_min_rolled": 1.25,
+        "A325_tensile_capacity_kips": 61.9,
+        "A490_tensile_capacity_kips": 77.4
+      },
+      "3/4": {
+        "nominal_diameter": 0.75,
+        "threads_per_inch": 10,
+        "tensile_stress_area": 0.334,
+        "minor_diameter": 0.62,
+        "hole_size_standard": 0.8125,
+        "hole_size_oversize": 0.938,
+        "hole_size_short_slot_width": 0.8125,
+        "hole_size_short_slot_length": 0.938,
+        "edge_distance_min_sheared": 1.75,
+        "edge_distance_min_rolled": 1.5,
+        "A325_tensile_capacity_kips": 91.5,
+        "A490_tensile_capacity_kips": 114.0
+      },
+      "7/8": {
+        "nominal_diameter": 0.875,
+        "threads_per_inch": 9,
+        "tensile_stress_area": 0.462,
+        "minor_diameter": 0.731,
+        "hole_size_standard": 0.9375,
+        "hole_size_oversize": 1.094,
+        "hole_size_short_slot_width": 0.9375,
+        "hole_size_short_slot_length": 1.094,
+        "edge_distance_min_sheared": 2.0,
+        "edge_distance_min_rolled": 1.75,
+        "A325_tensile_capacity_kips": 126.6,
+        "A490_tensile_capacity_kips": 158.2
+      },
+      "1": {
+        "nominal_diameter": 1.0,
+        "threads_per_inch": 8,
+        "tensile_stress_area": 0.606,
+        "minor_diameter": 0.838,
+        "hole_size_standard": 1.0625,
+        "hole_size_oversize": 1.25,
+        "hole_size_short_slot_width": 1.0625,
+        "hole_size_short_slot_length": 1.25,
+        "edge_distance_min_sheared": 2.25,
+        "edge_distance_min_rolled": 2.0,
+        "A325_tensile_capacity_kips": 166.0,
+        "A490_tensile_capacity_kips": 207.5
+      },
+      "1-1/8": {
+        "nominal_diameter": 1.125,
+        "threads_per_inch": 7,
+        "tensile_stress_area": 0.763,
+        "minor_diameter": 0.939,
+        "hole_size_standard": 1.1875,
+        "hole_size_oversize": 1.406,
+        "hole_size_short_slot_width": 1.1875,
+        "hole_size_short_slot_length": 1.406,
+        "edge_distance_min_sheared": 2.5,
+        "edge_distance_min_rolled": 2.25,
+        "A325_tensile_capacity_kips": 209.0,
+        "A490_tensile_capacity_kips": 261.3
+      },
+      "1-1/4": {
+        "nominal_diameter": 1.25,
+        "threads_per_inch": 7,
+        "tensile_stress_area": 0.969,
+        "minor_diameter": 1.064,
+        "hole_size_standard": 1.3125,
+        "hole_size_oversize": 1.563,
+        "hole_size_short_slot_width": 1.3125,
+        "hole_size_short_slot_length": 1.563,
+        "edge_distance_min_sheared": 2.75,
+        "edge_distance_min_rolled": 2.5,
+        "A325_tensile_capacity_kips": 265.5,
+        "A490_tensile_capacity_kips": 331.9
+      }
+    },
+    "torque_specs": {
+      "1/4": {
+        "dry_ftlb": 9,
+        "lubricated_ftlb": 7
+      },
+      "5/16": {
+        "dry_ftlb": 19,
+        "lubricated_ftlb": 14
+      },
+      "3/8": {
+        "dry_ftlb": 33,
+        "lubricated_ftlb": 25
+      },
+      "7/16": {
+        "dry_ftlb": 55,
+        "lubricated_ftlb": 40
+      },
+      "1/2": {
+        "dry_ftlb": 75,
+        "lubricated_ftlb": 55
+      },
+      "9/16": {
+        "dry_ftlb": 110,
+        "lubricated_ftlb": 80
+      },
+      "5/8": {
+        "dry_ftlb": 150,
+        "lubricated_ftlb": 110
+      },
+      "3/4": {
+        "dry_ftlb": 265,
+        "lubricated_ftlb": 200
+      },
+      "7/8": {
+        "dry_ftlb": 420,
+        "lubricated_ftlb": 315
+      },
+      "1": {
+        "dry_ftlb": 640,
+        "lubricated_ftlb": 480
+      },
+      "1-1/8": {
+        "dry_ftlb": 950,
+        "lubricated_ftlb": 710
+      },
+      "1-1/4": {
+        "dry_ftlb": 1320,
+        "lubricated_ftlb": 990
+      }
+    }
+  },
+  "pipe_fittings": {
+    "butt_weld_elbows_90_LR": {},
+    "butt_weld_elbows_90_SR": {},
+    "butt_weld_elbows_45": {},
+    "butt_weld_tees_straight": {},
+    "butt_weld_tees_reducing": {},
+    "butt_weld_reducers_concentric": {},
+    "butt_weld_reducers_eccentric": {},
+    "butt_weld_caps": {},
+    "butt_weld_stub_ends": {},
+    "socket_weld_elbows_90": {
+      "NPS0.5_3000#": {
+        "NPS": 0.5,
+        "pressure_class": 3000,
+        "center_to_end": 0.75,
+        "socket_depth": 0.5
+      },
+      "NPS0.5_6000#": {
+        "NPS": 0.5,
+        "pressure_class": 6000,
+        "center_to_end": 0.75,
+        "socket_depth": 0.5
+      },
+      "NPS0.75_3000#": {
+        "NPS": 0.75,
+        "pressure_class": 3000,
+        "center_to_end": 1.125,
+        "socket_depth": 0.5
+      },
+      "NPS0.75_6000#": {
+        "NPS": 0.75,
+        "pressure_class": 6000,
+        "center_to_end": 1.125,
+        "socket_depth": 0.5
+      },
+      "NPS1_3000#": {
+        "NPS": 1,
+        "pressure_class": 3000,
+        "center_to_end": 1.5,
+        "socket_depth": 0.5
+      },
+      "NPS1_6000#": {
+        "NPS": 1,
+        "pressure_class": 6000,
+        "center_to_end": 1.5,
+        "socket_depth": 0.5
+      },
+      "NPS1.25_3000#": {
+        "NPS": 1.25,
+        "pressure_class": 3000,
+        "center_to_end": 1.875,
+        "socket_depth": 0.5
+      },
+      "NPS1.25_6000#": {
+        "NPS": 1.25,
+        "pressure_class": 6000,
+        "center_to_end": 1.875,
+        "socket_depth": 0.5
+      },
+      "NPS1.5_3000#": {
+        "NPS": 1.5,
+        "pressure_class": 3000,
+        "center_to_end": 2.25,
+        "socket_depth": 0.5
+      },
+      "NPS1.5_6000#": {
+        "NPS": 1.5,
+        "pressure_class": 6000,
+        "center_to_end": 2.25,
+        "socket_depth": 0.5
+      },
+      "NPS2_3000#": {
+        "NPS": 2,
+        "pressure_class": 3000,
+        "center_to_end": 3.0,
+        "socket_depth": 0.5
+      },
+      "NPS2_6000#": {
+        "NPS": 2,
+        "pressure_class": 6000,
+        "center_to_end": 3.0,
+        "socket_depth": 0.5
+      },
+      "NPS2.5_3000#": {
+        "NPS": 2.5,
+        "pressure_class": 3000,
+        "center_to_end": 3.75,
+        "socket_depth": 0.625
+      },
+      "NPS2.5_6000#": {
+        "NPS": 2.5,
+        "pressure_class": 6000,
+        "center_to_end": 3.75,
+        "socket_depth": 0.625
+      },
+      "NPS3_3000#": {
+        "NPS": 3,
+        "pressure_class": 3000,
+        "center_to_end": 4.5,
+        "socket_depth": 0.625
+      },
+      "NPS3_6000#": {
+        "NPS": 3,
+        "pressure_class": 6000,
+        "center_to_end": 4.5,
+        "socket_depth": 0.625
+      },
+      "NPS4_3000#": {
+        "NPS": 4,
+        "pressure_class": 3000,
+        "center_to_end": 6.0,
+        "socket_depth": 0.625
+      },
+      "NPS4_6000#": {
+        "NPS": 4,
+        "pressure_class": 6000,
+        "center_to_end": 6.0,
+        "socket_depth": 0.625
+      }
+    },
+    "socket_weld_elbows_45": {},
+    "socket_weld_tees": {
+      "NPS0.5_3000#": {
+        "NPS": 0.5,
+        "pressure_class": 3000,
+        "center_to_end": 0.75,
+        "socket_depth": 0.5
+      },
+      "NPS0.5_6000#": {
+        "NPS": 0.5,
+        "pressure_class": 6000,
+        "center_to_end": 0.75,
+        "socket_depth": 0.5
+      },
+      "NPS0.75_3000#": {
+        "NPS": 0.75,
+        "pressure_class": 3000,
+        "center_to_end": 1.125,
+        "socket_depth": 0.5
+      },
+      "NPS0.75_6000#": {
+        "NPS": 0.75,
+        "pressure_class": 6000,
+        "center_to_end": 1.125,
+        "socket_depth": 0.5
+      },
+      "NPS1_3000#": {
+        "NPS": 1,
+        "pressure_class": 3000,
+        "center_to_end": 1.5,
+        "socket_depth": 0.5
+      },
+      "NPS1_6000#": {
+        "NPS": 1,
+        "pressure_class": 6000,
+        "center_to_end": 1.5,
+        "socket_depth": 0.5
+      },
+      "NPS1.25_3000#": {
+        "NPS": 1.25,
+        "pressure_class": 3000,
+        "center_to_end": 1.875,
+        "socket_depth": 0.5
+      },
+      "NPS1.25_6000#": {
+        "NPS": 1.25,
+        "pressure_class": 6000,
+        "center_to_end": 1.875,
+        "socket_depth": 0.5
+      },
+      "NPS1.5_3000#": {
+        "NPS": 1.5,
+        "pressure_class": 3000,
+        "center_to_end": 2.25,
+        "socket_depth": 0.5
+      },
+      "NPS1.5_6000#": {
+        "NPS": 1.5,
+        "pressure_class": 6000,
+        "center_to_end": 2.25,
+        "socket_depth": 0.5
+      },
+      "NPS2_3000#": {
+        "NPS": 2,
+        "pressure_class": 3000,
+        "center_to_end": 3.0,
+        "socket_depth": 0.5
+      },
+      "NPS2_6000#": {
+        "NPS": 2,
+        "pressure_class": 6000,
+        "center_to_end": 3.0,
+        "socket_depth": 0.5
+      },
+      "NPS2.5_3000#": {
+        "NPS": 2.5,
+        "pressure_class": 3000,
+        "center_to_end": 3.75,
+        "socket_depth": 0.625
+      },
+      "NPS2.5_6000#": {
+        "NPS": 2.5,
+        "pressure_class": 6000,
+        "center_to_end": 3.75,
+        "socket_depth": 0.625
+      },
+      "NPS3_3000#": {
+        "NPS": 3,
+        "pressure_class": 3000,
+        "center_to_end": 4.5,
+        "socket_depth": 0.625
+      },
+      "NPS3_6000#": {
+        "NPS": 3,
+        "pressure_class": 6000,
+        "center_to_end": 4.5,
+        "socket_depth": 0.625
+      },
+      "NPS4_3000#": {
+        "NPS": 4,
+        "pressure_class": 3000,
+        "center_to_end": 6.0,
+        "socket_depth": 0.625
+      },
+      "NPS4_6000#": {
+        "NPS": 4,
+        "pressure_class": 6000,
+        "center_to_end": 6.0,
+        "socket_depth": 0.625
+      }
+    },
+    "socket_weld_couplings": {},
+    "socket_weld_caps": {},
+    "threaded_elbows_90": {},
+    "threaded_elbows_45": {},
+    "threaded_tees": {},
+    "threaded_couplings": {},
+    "threaded_unions": {},
+    "threaded_plugs": {},
+    "threaded_bushings": {},
+    "flanges_weld_neck": {
+      "NPS0.5_150#": {
+        "NPS": 0.5,
+        "class": 150,
+        "OD": 7.47,
+        "bolt_circle": 5.47,
+        "num_bolts": 4,
+        "thickness": 0.56
+      },
+      "NPS0.5_300#": {
+        "NPS": 0.5,
+        "class": 300,
+        "OD": 8.45,
+        "bolt_circle": 6.45,
+        "num_bolts": 4,
+        "thickness": 0.599
+      },
+      "NPS0.5_600#": {
+        "NPS": 0.5,
+        "class": 600,
+        "OD": 10.4,
+        "bolt_circle": 8.4,
+        "num_bolts": 4,
+        "thickness": 0.677
+      },
+      "NPS0.5_900#": {
+        "NPS": 0.5,
+        "class": 900,
+        "OD": 12.35,
+        "bolt_circle": 10.35,
+        "num_bolts": 4,
+        "thickness": 0.755
+      },
+      "NPS0.5_1500#": {
+        "NPS": 0.5,
+        "class": 1500,
+        "OD": 16.25,
+        "bolt_circle": 14.25,
+        "num_bolts": 4,
+        "thickness": 0.911
+      },
+      "NPS0.5_2500#": {
+        "NPS": 0.5,
+        "class": 2500,
+        "OD": 22.75,
+        "bolt_circle": 20.75,
+        "num_bolts": 4,
+        "thickness": 1.172
+      },
+      "NPS0.75_150#": {
+        "NPS": 0.75,
+        "class": 150,
+        "OD": 7.76,
+        "bolt_circle": 5.76,
+        "num_bolts": 4,
+        "thickness": 0.571
+      },
+      "NPS0.75_300#": {
+        "NPS": 0.75,
+        "class": 300,
+        "OD": 8.78,
+        "bolt_circle": 6.78,
+        "num_bolts": 4,
+        "thickness": 0.611
+      },
+      "NPS0.75_600#": {
+        "NPS": 0.75,
+        "class": 600,
+        "OD": 10.8,
+        "bolt_circle": 8.8,
+        "num_bolts": 4,
+        "thickness": 0.691
+      },
+      "NPS0.75_900#": {
+        "NPS": 0.75,
+        "class": 900,
+        "OD": 12.82,
+        "bolt_circle": 10.82,
+        "num_bolts": 4,
+        "thickness": 0.77
+      },
+      "NPS0.75_1500#": {
+        "NPS": 0.75,
+        "class": 1500,
+        "OD": 16.88,
+        "bolt_circle": 14.88,
+        "num_bolts": 4,
+        "thickness": 0.93
+      },
+      "NPS0.75_2500#": {
+        "NPS": 0.75,
+        "class": 2500,
+        "OD": 23.62,
+        "bolt_circle": 21.62,
+        "num_bolts": 4,
+        "thickness": 1.195
+      },
+      "NPS1_150#": {
+        "NPS": 1,
+        "class": 150,
+        "OD": 8.05,
+        "bolt_circle": 6.05,
+        "num_bolts": 4,
+        "thickness": 0.582
+      },
+      "NPS1_300#": {
+        "NPS": 1,
+        "class": 300,
+        "OD": 9.1,
+        "bolt_circle": 7.1,
+        "num_bolts": 4,
+        "thickness": 0.623
+      },
+      "NPS1_600#": {
+        "NPS": 1,
+        "class": 600,
+        "OD": 11.2,
+        "bolt_circle": 9.2,
+        "num_bolts": 4,
+        "thickness": 0.704
+      },
+      "NPS1_900#": {
+        "NPS": 1,
+        "class": 900,
+        "OD": 13.3,
+        "bolt_circle": 11.3,
+        "num_bolts": 4,
+        "thickness": 0.785
+      },
+      "NPS1_1500#": {
+        "NPS": 1,
+        "class": 1500,
+        "OD": 17.5,
+        "bolt_circle": 15.5,
+        "num_bolts": 4,
+        "thickness": 0.948
+      },
+      "NPS1_2500#": {
+        "NPS": 1,
+        "class": 2500,
+        "OD": 24.5,
+        "bolt_circle": 22.5,
+        "num_bolts": 4,
+        "thickness": 1.219
+      },
+      "NPS1.25_150#": {
+        "NPS": 1.25,
+        "class": 150,
+        "OD": 8.34,
+        "bolt_circle": 6.34,
+        "num_bolts": 4,
+        "thickness": 0.593
+      },
+      "NPS1.25_300#": {
+        "NPS": 1.25,
+        "class": 300,
+        "OD": 9.43,
+        "bolt_circle": 7.43,
+        "num_bolts": 4,
+        "thickness": 0.635
+      },
+      "NPS1.25_600#": {
+        "NPS": 1.25,
+        "class": 600,
+        "OD": 11.6,
+        "bolt_circle": 9.6,
+        "num_bolts": 4,
+        "thickness": 0.718
+      },
+      "NPS1.25_900#": {
+        "NPS": 1.25,
+        "class": 900,
+        "OD": 13.77,
+        "bolt_circle": 11.77,
+        "num_bolts": 4,
+        "thickness": 0.801
+      },
+      "NPS1.25_1500#": {
+        "NPS": 1.25,
+        "class": 1500,
+        "OD": 18.12,
+        "bolt_circle": 16.12,
+        "num_bolts": 4,
+        "thickness": 0.966
+      },
+      "NPS1.25_2500#": {
+        "NPS": 1.25,
+        "class": 2500,
+        "OD": 25.38,
+        "bolt_circle": 23.38,
+        "num_bolts": 4,
+        "thickness": 1.242
+      },
+      "NPS1.5_150#": {
+        "NPS": 1.5,
+        "class": 150,
+        "OD": 8.62,
+        "bolt_circle": 6.62,
+        "num_bolts": 4,
+        "thickness": 0.605
+      },
+      "NPS1.5_300#": {
+        "NPS": 1.5,
+        "class": 300,
+        "OD": 9.75,
+        "bolt_circle": 7.75,
+        "num_bolts": 4,
+        "thickness": 0.647
+      },
+      "NPS1.5_600#": {
+        "NPS": 1.5,
+        "class": 600,
+        "OD": 12.0,
+        "bolt_circle": 10.0,
+        "num_bolts": 4,
+        "thickness": 0.731
+      },
+      "NPS1.5_900#": {
+        "NPS": 1.5,
+        "class": 900,
+        "OD": 14.25,
+        "bolt_circle": 12.25,
+        "num_bolts": 4,
+        "thickness": 0.816
+      },
+      "NPS1.5_1500#": {
+        "NPS": 1.5,
+        "class": 1500,
+        "OD": 18.75,
+        "bolt_circle": 16.75,
+        "num_bolts": 4,
+        "thickness": 0.984
+      },
+      "NPS1.5_2500#": {
+        "NPS": 1.5,
+        "class": 2500,
+        "OD": 26.25,
+        "bolt_circle": 24.25,
+        "num_bolts": 4,
+        "thickness": 1.266
+      },
+      "NPS2_150#": {
+        "NPS": 2,
+        "class": 150,
+        "OD": 9.2,
+        "bolt_circle": 7.2,
+        "num_bolts": 4,
+        "thickness": 0.627
+      },
+      "NPS2_300#": {
+        "NPS": 2,
+        "class": 300,
+        "OD": 10.4,
+        "bolt_circle": 8.4,
+        "num_bolts": 4,
+        "thickness": 0.671
+      },
+      "NPS2_600#": {
+        "NPS": 2,
+        "class": 600,
+        "OD": 12.8,
+        "bolt_circle": 10.8,
+        "num_bolts": 4,
+        "thickness": 0.758
+      },
+      "NPS2_900#": {
+        "NPS": 2,
+        "class": 900,
+        "OD": 15.2,
+        "bolt_circle": 13.2,
+        "num_bolts": 4,
+        "thickness": 0.846
+      },
+      "NPS2_1500#": {
+        "NPS": 2,
+        "class": 1500,
+        "OD": 20.0,
+        "bolt_circle": 18.0,
+        "num_bolts": 4,
+        "thickness": 1.021
+      },
+      "NPS2_2500#": {
+        "NPS": 2,
+        "class": 2500,
+        "OD": 28.0,
+        "bolt_circle": 26.0,
+        "num_bolts": 4,
+        "thickness": 1.312
+      },
+      "NPS2.5_150#": {
+        "NPS": 2.5,
+        "class": 150,
+        "OD": 9.77,
+        "bolt_circle": 7.77,
+        "num_bolts": 8,
+        "thickness": 0.649
+      },
+      "NPS2.5_300#": {
+        "NPS": 2.5,
+        "class": 300,
+        "OD": 11.05,
+        "bolt_circle": 9.05,
+        "num_bolts": 8,
+        "thickness": 0.695
+      },
+      "NPS2.5_600#": {
+        "NPS": 2.5,
+        "class": 600,
+        "OD": 13.6,
+        "bolt_circle": 11.6,
+        "num_bolts": 8,
+        "thickness": 0.785
+      },
+      "NPS2.5_900#": {
+        "NPS": 2.5,
+        "class": 900,
+        "OD": 16.15,
+        "bolt_circle": 14.15,
+        "num_bolts": 8,
+        "thickness": 0.876
+      },
+      "NPS2.5_1500#": {
+        "NPS": 2.5,
+        "class": 1500,
+        "OD": 21.25,
+        "bolt_circle": 19.25,
+        "num_bolts": 8,
+        "thickness": 1.057
+      },
+      "NPS2.5_2500#": {
+        "NPS": 2.5,
+        "class": 2500,
+        "OD": 29.75,
+        "bolt_circle": 27.75,
+        "num_bolts": 8,
+        "thickness": 1.359
+      },
+      "NPS3_150#": {
+        "NPS": 3,
+        "class": 150,
+        "OD": 10.35,
+        "bolt_circle": 8.35,
+        "num_bolts": 8,
+        "thickness": 0.672
+      },
+      "NPS3_300#": {
+        "NPS": 3,
+        "class": 300,
+        "OD": 11.7,
+        "bolt_circle": 9.7,
+        "num_bolts": 8,
+        "thickness": 0.719
+      },
+      "NPS3_600#": {
+        "NPS": 3,
+        "class": 600,
+        "OD": 14.4,
+        "bolt_circle": 12.4,
+        "num_bolts": 8,
+        "thickness": 0.812
+      },
+      "NPS3_900#": {
+        "NPS": 3,
+        "class": 900,
+        "OD": 17.1,
+        "bolt_circle": 15.1,
+        "num_bolts": 8,
+        "thickness": 0.906
+      },
+      "NPS3_1500#": {
+        "NPS": 3,
+        "class": 1500,
+        "OD": 22.5,
+        "bolt_circle": 20.5,
+        "num_bolts": 8,
+        "thickness": 1.094
+      },
+      "NPS3_2500#": {
+        "NPS": 3,
+        "class": 2500,
+        "OD": 31.5,
+        "bolt_circle": 29.5,
+        "num_bolts": 8,
+        "thickness": 1.406
+      },
+      "NPS3.5_150#": {
+        "NPS": 3.5,
+        "class": 150,
+        "OD": 10.92,
+        "bolt_circle": 8.92,
+        "num_bolts": 8,
+        "thickness": 0.694
+      },
+      "NPS3.5_300#": {
+        "NPS": 3.5,
+        "class": 300,
+        "OD": 12.35,
+        "bolt_circle": 10.35,
+        "num_bolts": 8,
+        "thickness": 0.743
+      },
+      "NPS3.5_600#": {
+        "NPS": 3.5,
+        "class": 600,
+        "OD": 15.2,
+        "bolt_circle": 13.2,
+        "num_bolts": 8,
+        "thickness": 0.84
+      },
+      "NPS3.5_900#": {
+        "NPS": 3.5,
+        "class": 900,
+        "OD": 18.05,
+        "bolt_circle": 16.05,
+        "num_bolts": 8,
+        "thickness": 0.936
+      },
+      "NPS3.5_1500#": {
+        "NPS": 3.5,
+        "class": 1500,
+        "OD": 23.75,
+        "bolt_circle": 21.75,
+        "num_bolts": 8,
+        "thickness": 1.13
+      },
+      "NPS3.5_2500#": {
+        "NPS": 3.5,
+        "class": 2500,
+        "OD": 33.25,
+        "bolt_circle": 31.25,
+        "num_bolts": 8,
+        "thickness": 1.453
+      },
+      "NPS4_150#": {
+        "NPS": 4,
+        "class": 150,
+        "OD": 11.5,
+        "bolt_circle": 9.5,
+        "num_bolts": 8,
+        "thickness": 0.717
+      },
+      "NPS4_300#": {
+        "NPS": 4,
+        "class": 300,
+        "OD": 13.0,
+        "bolt_circle": 11.0,
+        "num_bolts": 8,
+        "thickness": 0.767
+      },
+      "NPS4_600#": {
+        "NPS": 4,
+        "class": 600,
+        "OD": 16.0,
+        "bolt_circle": 14.0,
+        "num_bolts": 8,
+        "thickness": 0.867
+      },
+      "NPS4_900#": {
+        "NPS": 4,
+        "class": 900,
+        "OD": 19.0,
+        "bolt_circle": 17.0,
+        "num_bolts": 8,
+        "thickness": 0.967
+      },
+      "NPS4_1500#": {
+        "NPS": 4,
+        "class": 1500,
+        "OD": 25.0,
+        "bolt_circle": 23.0,
+        "num_bolts": 8,
+        "thickness": 1.167
+      },
+      "NPS4_2500#": {
+        "NPS": 4,
+        "class": 2500,
+        "OD": 35.0,
+        "bolt_circle": 33.0,
+        "num_bolts": 8,
+        "thickness": 1.5
+      },
+      "NPS5_150#": {
+        "NPS": 5,
+        "class": 150,
+        "OD": 12.65,
+        "bolt_circle": 10.65,
+        "num_bolts": 8,
+        "thickness": 0.761
+      },
+      "NPS5_300#": {
+        "NPS": 5,
+        "class": 300,
+        "OD": 14.3,
+        "bolt_circle": 12.3,
+        "num_bolts": 8,
+        "thickness": 0.815
+      },
+      "NPS5_600#": {
+        "NPS": 5,
+        "class": 600,
+        "OD": 17.6,
+        "bolt_circle": 15.6,
+        "num_bolts": 8,
+        "thickness": 0.921
+      },
+      "NPS5_900#": {
+        "NPS": 5,
+        "class": 900,
+        "OD": 20.9,
+        "bolt_circle": 18.9,
+        "num_bolts": 8,
+        "thickness": 1.027
+      },
+      "NPS5_1500#": {
+        "NPS": 5,
+        "class": 1500,
+        "OD": 27.5,
+        "bolt_circle": 25.5,
+        "num_bolts": 8,
+        "thickness": 1.24
+      },
+      "NPS5_2500#": {
+        "NPS": 5,
+        "class": 2500,
+        "OD": 38.5,
+        "bolt_circle": 36.5,
+        "num_bolts": 8,
+        "thickness": 1.594
+      },
+      "NPS6_150#": {
+        "NPS": 6,
+        "class": 150,
+        "OD": 13.8,
+        "bolt_circle": 11.8,
+        "num_bolts": 8,
+        "thickness": 0.806
+      },
+      "NPS6_300#": {
+        "NPS": 6,
+        "class": 300,
+        "OD": 15.6,
+        "bolt_circle": 13.6,
+        "num_bolts": 8,
+        "thickness": 0.862
+      },
+      "NPS6_600#": {
+        "NPS": 6,
+        "class": 600,
+        "OD": 19.2,
+        "bolt_circle": 17.2,
+        "num_bolts": 8,
+        "thickness": 0.975
+      },
+      "NPS6_900#": {
+        "NPS": 6,
+        "class": 900,
+        "OD": 22.8,
+        "bolt_circle": 20.8,
+        "num_bolts": 8,
+        "thickness": 1.087
+      },
+      "NPS6_1500#": {
+        "NPS": 6,
+        "class": 1500,
+        "OD": 30.0,
+        "bolt_circle": 28.0,
+        "num_bolts": 8,
+        "thickness": 1.312
+      },
+      "NPS6_2500#": {
+        "NPS": 6,
+        "class": 2500,
+        "OD": 42.0,
+        "bolt_circle": 40.0,
+        "num_bolts": 8,
+        "thickness": 1.688
+      },
+      "NPS8_150#": {
+        "NPS": 8,
+        "class": 150,
+        "OD": 16.1,
+        "bolt_circle": 14.1,
+        "num_bolts": 12,
+        "thickness": 0.896
+      },
+      "NPS8_300#": {
+        "NPS": 8,
+        "class": 300,
+        "OD": 18.2,
+        "bolt_circle": 16.2,
+        "num_bolts": 12,
+        "thickness": 0.958
+      },
+      "NPS8_600#": {
+        "NPS": 8,
+        "class": 600,
+        "OD": 22.4,
+        "bolt_circle": 20.4,
+        "num_bolts": 12,
+        "thickness": 1.083
+      },
+      "NPS8_900#": {
+        "NPS": 8,
+        "class": 900,
+        "OD": 26.6,
+        "bolt_circle": 24.6,
+        "num_bolts": 12,
+        "thickness": 1.208
+      },
+      "NPS8_1500#": {
+        "NPS": 8,
+        "class": 1500,
+        "OD": 35.0,
+        "bolt_circle": 33.0,
+        "num_bolts": 12,
+        "thickness": 1.458
+      },
+      "NPS8_2500#": {
+        "NPS": 8,
+        "class": 2500,
+        "OD": 49.0,
+        "bolt_circle": 47.0,
+        "num_bolts": 12,
+        "thickness": 1.875
+      },
+      "NPS10_150#": {
+        "NPS": 10,
+        "class": 150,
+        "OD": 18.4,
+        "bolt_circle": 16.4,
+        "num_bolts": 12,
+        "thickness": 0.985
+      },
+      "NPS10_300#": {
+        "NPS": 10,
+        "class": 300,
+        "OD": 20.8,
+        "bolt_circle": 18.8,
+        "num_bolts": 12,
+        "thickness": 1.054
+      },
+      "NPS10_600#": {
+        "NPS": 10,
+        "class": 600,
+        "OD": 25.6,
+        "bolt_circle": 23.6,
+        "num_bolts": 12,
+        "thickness": 1.192
+      },
+      "NPS10_900#": {
+        "NPS": 10,
+        "class": 900,
+        "OD": 30.4,
+        "bolt_circle": 28.4,
+        "num_bolts": 12,
+        "thickness": 1.329
+      },
+      "NPS10_1500#": {
+        "NPS": 10,
+        "class": 1500,
+        "OD": 40.0,
+        "bolt_circle": 38.0,
+        "num_bolts": 12,
+        "thickness": 1.604
+      },
+      "NPS10_2500#": {
+        "NPS": 10,
+        "class": 2500,
+        "OD": 56.0,
+        "bolt_circle": 54.0,
+        "num_bolts": 12,
+        "thickness": 2.062
+      },
+      "NPS12_150#": {
+        "NPS": 12,
+        "class": 150,
+        "OD": 20.7,
+        "bolt_circle": 18.7,
+        "num_bolts": 12,
+        "thickness": 1.075
+      },
+      "NPS12_300#": {
+        "NPS": 12,
+        "class": 300,
+        "OD": 23.4,
+        "bolt_circle": 21.4,
+        "num_bolts": 12,
+        "thickness": 1.15
+      },
+      "NPS12_600#": {
+        "NPS": 12,
+        "class": 600,
+        "OD": 28.8,
+        "bolt_circle": 26.8,
+        "num_bolts": 12,
+        "thickness": 1.3
+      },
+      "NPS12_900#": {
+        "NPS": 12,
+        "class": 900,
+        "OD": 34.2,
+        "bolt_circle": 32.2,
+        "num_bolts": 12,
+        "thickness": 1.45
+      },
+      "NPS12_1500#": {
+        "NPS": 12,
+        "class": 1500,
+        "OD": 45.0,
+        "bolt_circle": 43.0,
+        "num_bolts": 12,
+        "thickness": 1.75
+      },
+      "NPS12_2500#": {
+        "NPS": 12,
+        "class": 2500,
+        "OD": 63.0,
+        "bolt_circle": 61.0,
+        "num_bolts": 12,
+        "thickness": 2.25
+      },
+      "NPS14_150#": {
+        "NPS": 14,
+        "class": 150,
+        "OD": 23.0,
+        "bolt_circle": 21.0,
+        "num_bolts": 16,
+        "thickness": 1.165
+      },
+      "NPS14_300#": {
+        "NPS": 14,
+        "class": 300,
+        "OD": 26.0,
+        "bolt_circle": 24.0,
+        "num_bolts": 16,
+        "thickness": 1.246
+      },
+      "NPS14_600#": {
+        "NPS": 14,
+        "class": 600,
+        "OD": 32.0,
+        "bolt_circle": 30.0,
+        "num_bolts": 16,
+        "thickness": 1.408
+      },
+      "NPS14_900#": {
+        "NPS": 14,
+        "class": 900,
+        "OD": 38.0,
+        "bolt_circle": 36.0,
+        "num_bolts": 16,
+        "thickness": 1.571
+      },
+      "NPS14_1500#": {
+        "NPS": 14,
+        "class": 1500,
+        "OD": 50.0,
+        "bolt_circle": 48.0,
+        "num_bolts": 16,
+        "thickness": 1.896
+      },
+      "NPS14_2500#": {
+        "NPS": 14,
+        "class": 2500,
+        "OD": 70.0,
+        "bolt_circle": 68.0,
+        "num_bolts": 16,
+        "thickness": 2.438
+      },
+      "NPS16_150#": {
+        "NPS": 16,
+        "class": 150,
+        "OD": 25.3,
+        "bolt_circle": 23.3,
+        "num_bolts": 16,
+        "thickness": 1.254
+      },
+      "NPS16_300#": {
+        "NPS": 16,
+        "class": 300,
+        "OD": 28.6,
+        "bolt_circle": 26.6,
+        "num_bolts": 16,
+        "thickness": 1.342
+      },
+      "NPS16_600#": {
+        "NPS": 16,
+        "class": 600,
+        "OD": 35.2,
+        "bolt_circle": 33.2,
+        "num_bolts": 16,
+        "thickness": 1.517
+      },
+      "NPS16_900#": {
+        "NPS": 16,
+        "class": 900,
+        "OD": 41.8,
+        "bolt_circle": 39.8,
+        "num_bolts": 16,
+        "thickness": 1.692
+      },
+      "NPS16_1500#": {
+        "NPS": 16,
+        "class": 1500,
+        "OD": 55.0,
+        "bolt_circle": 53.0,
+        "num_bolts": 16,
+        "thickness": 2.042
+      },
+      "NPS16_2500#": {
+        "NPS": 16,
+        "class": 2500,
+        "OD": 77.0,
+        "bolt_circle": 75.0,
+        "num_bolts": 16,
+        "thickness": 2.625
+      },
+      "NPS18_150#": {
+        "NPS": 18,
+        "class": 150,
+        "OD": 27.6,
+        "bolt_circle": 25.6,
+        "num_bolts": 16,
+        "thickness": 1.344
+      },
+      "NPS18_300#": {
+        "NPS": 18,
+        "class": 300,
+        "OD": 31.2,
+        "bolt_circle": 29.2,
+        "num_bolts": 16,
+        "thickness": 1.438
+      },
+      "NPS18_600#": {
+        "NPS": 18,
+        "class": 600,
+        "OD": 38.4,
+        "bolt_circle": 36.4,
+        "num_bolts": 16,
+        "thickness": 1.625
+      },
+      "NPS18_900#": {
+        "NPS": 18,
+        "class": 900,
+        "OD": 45.6,
+        "bolt_circle": 43.6,
+        "num_bolts": 16,
+        "thickness": 1.812
+      },
+      "NPS18_1500#": {
+        "NPS": 18,
+        "class": 1500,
+        "OD": 60.0,
+        "bolt_circle": 58.0,
+        "num_bolts": 16,
+        "thickness": 2.188
+      },
+      "NPS18_2500#": {
+        "NPS": 18,
+        "class": 2500,
+        "OD": 84.0,
+        "bolt_circle": 82.0,
+        "num_bolts": 16,
+        "thickness": 2.812
+      },
+      "NPS20_150#": {
+        "NPS": 20,
+        "class": 150,
+        "OD": 29.9,
+        "bolt_circle": 27.9,
+        "num_bolts": 16,
+        "thickness": 1.433
+      },
+      "NPS20_300#": {
+        "NPS": 20,
+        "class": 300,
+        "OD": 33.8,
+        "bolt_circle": 31.8,
+        "num_bolts": 16,
+        "thickness": 1.533
+      },
+      "NPS20_600#": {
+        "NPS": 20,
+        "class": 600,
+        "OD": 41.6,
+        "bolt_circle": 39.6,
+        "num_bolts": 16,
+        "thickness": 1.733
+      },
+      "NPS20_900#": {
+        "NPS": 20,
+        "class": 900,
+        "OD": 49.4,
+        "bolt_circle": 47.4,
+        "num_bolts": 16,
+        "thickness": 1.933
+      },
+      "NPS20_1500#": {
+        "NPS": 20,
+        "class": 1500,
+        "OD": 65.0,
+        "bolt_circle": 63.0,
+        "num_bolts": 16,
+        "thickness": 2.333
+      },
+      "NPS20_2500#": {
+        "NPS": 20,
+        "class": 2500,
+        "OD": 91.0,
+        "bolt_circle": 89.0,
+        "num_bolts": 16,
+        "thickness": 3.0
+      },
+      "NPS24_150#": {
+        "NPS": 24,
+        "class": 150,
+        "OD": 34.5,
+        "bolt_circle": 32.5,
+        "num_bolts": 20,
+        "thickness": 1.612
+      },
+      "NPS24_300#": {
+        "NPS": 24,
+        "class": 300,
+        "OD": 39.0,
+        "bolt_circle": 37.0,
+        "num_bolts": 20,
+        "thickness": 1.725
+      },
+      "NPS24_600#": {
+        "NPS": 24,
+        "class": 600,
+        "OD": 48.0,
+        "bolt_circle": 46.0,
+        "num_bolts": 20,
+        "thickness": 1.95
+      },
+      "NPS24_900#": {
+        "NPS": 24,
+        "class": 900,
+        "OD": 57.0,
+        "bolt_circle": 55.0,
+        "num_bolts": 20,
+        "thickness": 2.175
+      },
+      "NPS24_1500#": {
+        "NPS": 24,
+        "class": 1500,
+        "OD": 75.0,
+        "bolt_circle": 73.0,
+        "num_bolts": 20,
+        "thickness": 2.625
+      },
+      "NPS24_2500#": {
+        "NPS": 24,
+        "class": 2500,
+        "OD": 105.0,
+        "bolt_circle": 103.0,
+        "num_bolts": 20,
+        "thickness": 3.375
+      }
+    },
+    "flanges_slip_on": {},
+    "flanges_socket_weld": {},
+    "flanges_threaded": {},
+    "flanges_lap_joint": {},
+    "flanges_blind": {
+      "NPS0.5_150#": {
+        "NPS": 0.5,
+        "class": 150,
+        "OD": 7.47,
+        "thickness": 0.84
+      },
+      "NPS0.5_300#": {
+        "NPS": 0.5,
+        "class": 300,
+        "OD": 8.45,
+        "thickness": 0.898
+      },
+      "NPS0.5_600#": {
+        "NPS": 0.5,
+        "class": 600,
+        "OD": 10.4,
+        "thickness": 1.016
+      },
+      "NPS0.5_900#": {
+        "NPS": 0.5,
+        "class": 900,
+        "OD": 12.35,
+        "thickness": 1.133
+      },
+      "NPS0.5_1500#": {
+        "NPS": 0.5,
+        "class": 1500,
+        "OD": 16.25,
+        "thickness": 1.367
+      },
+      "NPS0.5_2500#": {
+        "NPS": 0.5,
+        "class": 2500,
+        "OD": 22.75,
+        "thickness": 1.758
+      },
+      "NPS0.75_150#": {
+        "NPS": 0.75,
+        "class": 150,
+        "OD": 7.76,
+        "thickness": 0.856
+      },
+      "NPS0.75_300#": {
+        "NPS": 0.75,
+        "class": 300,
+        "OD": 8.78,
+        "thickness": 0.916
+      },
+      "NPS0.75_600#": {
+        "NPS": 0.75,
+        "class": 600,
+        "OD": 10.8,
+        "thickness": 1.036
+      },
+      "NPS0.75_900#": {
+        "NPS": 0.75,
+        "class": 900,
+        "OD": 12.82,
+        "thickness": 1.155
+      },
+      "NPS0.75_1500#": {
+        "NPS": 0.75,
+        "class": 1500,
+        "OD": 16.88,
+        "thickness": 1.395
+      },
+      "NPS0.75_2500#": {
+        "NPS": 0.75,
+        "class": 2500,
+        "OD": 23.62,
+        "thickness": 1.792
+      },
+      "NPS1_150#": {
+        "NPS": 1,
+        "class": 150,
+        "OD": 8.05,
+        "thickness": 0.873
+      },
+      "NPS1_300#": {
+        "NPS": 1,
+        "class": 300,
+        "OD": 9.1,
+        "thickness": 0.934
+      },
+      "NPS1_600#": {
+        "NPS": 1,
+        "class": 600,
+        "OD": 11.2,
+        "thickness": 1.056
+      },
+      "NPS1_900#": {
+        "NPS": 1,
+        "class": 900,
+        "OD": 13.3,
+        "thickness": 1.177
+      },
+      "NPS1_1500#": {
+        "NPS": 1,
+        "class": 1500,
+        "OD": 17.5,
+        "thickness": 1.422
+      },
+      "NPS1_2500#": {
+        "NPS": 1,
+        "class": 2500,
+        "OD": 24.5,
+        "thickness": 1.829
+      },
+      "NPS1.25_150#": {
+        "NPS": 1.25,
+        "class": 150,
+        "OD": 8.34,
+        "thickness": 0.889
+      },
+      "NPS1.25_300#": {
+        "NPS": 1.25,
+        "class": 300,
+        "OD": 9.43,
+        "thickness": 0.953
+      },
+      "NPS1.25_600#": {
+        "NPS": 1.25,
+        "class": 600,
+        "OD": 11.6,
+        "thickness": 1.077
+      },
+      "NPS1.25_900#": {
+        "NPS": 1.25,
+        "class": 900,
+        "OD": 13.77,
+        "thickness": 1.202
+      },
+      "NPS1.25_1500#": {
+        "NPS": 1.25,
+        "class": 1500,
+        "OD": 18.12,
+        "thickness": 1.449
+      },
+      "NPS1.25_2500#": {
+        "NPS": 1.25,
+        "class": 2500,
+        "OD": 25.38,
+        "thickness": 1.863
+      },
+      "NPS1.5_150#": {
+        "NPS": 1.5,
+        "class": 150,
+        "OD": 8.62,
+        "thickness": 0.907
+      },
+      "NPS1.5_300#": {
+        "NPS": 1.5,
+        "class": 300,
+        "OD": 9.75,
+        "thickness": 0.971
+      },
+      "NPS1.5_600#": {
+        "NPS": 1.5,
+        "class": 600,
+        "OD": 12.0,
+        "thickness": 1.097
+      },
+      "NPS1.5_900#": {
+        "NPS": 1.5,
+        "class": 900,
+        "OD": 14.25,
+        "thickness": 1.224
+      },
+      "NPS1.5_1500#": {
+        "NPS": 1.5,
+        "class": 1500,
+        "OD": 18.75,
+        "thickness": 1.476
+      },
+      "NPS1.5_2500#": {
+        "NPS": 1.5,
+        "class": 2500,
+        "OD": 26.25,
+        "thickness": 1.899
+      },
+      "NPS2_150#": {
+        "NPS": 2,
+        "class": 150,
+        "OD": 9.2,
+        "thickness": 0.941
+      },
+      "NPS2_300#": {
+        "NPS": 2,
+        "class": 300,
+        "OD": 10.4,
+        "thickness": 1.006
+      },
+      "NPS2_600#": {
+        "NPS": 2,
+        "class": 600,
+        "OD": 12.8,
+        "thickness": 1.137
+      },
+      "NPS2_900#": {
+        "NPS": 2,
+        "class": 900,
+        "OD": 15.2,
+        "thickness": 1.269
+      },
+      "NPS2_1500#": {
+        "NPS": 2,
+        "class": 1500,
+        "OD": 20.0,
+        "thickness": 1.531
+      },
+      "NPS2_2500#": {
+        "NPS": 2,
+        "class": 2500,
+        "OD": 28.0,
+        "thickness": 1.968
+      },
+      "NPS2.5_150#": {
+        "NPS": 2.5,
+        "class": 150,
+        "OD": 9.77,
+        "thickness": 0.974
+      },
+      "NPS2.5_300#": {
+        "NPS": 2.5,
+        "class": 300,
+        "OD": 11.05,
+        "thickness": 1.042
+      },
+      "NPS2.5_600#": {
+        "NPS": 2.5,
+        "class": 600,
+        "OD": 13.6,
+        "thickness": 1.177
+      },
+      "NPS2.5_900#": {
+        "NPS": 2.5,
+        "class": 900,
+        "OD": 16.15,
+        "thickness": 1.314
+      },
+      "NPS2.5_1500#": {
+        "NPS": 2.5,
+        "class": 1500,
+        "OD": 21.25,
+        "thickness": 1.585
+      },
+      "NPS2.5_2500#": {
+        "NPS": 2.5,
+        "class": 2500,
+        "OD": 29.75,
+        "thickness": 2.038
+      },
+      "NPS3_150#": {
+        "NPS": 3,
+        "class": 150,
+        "OD": 10.35,
+        "thickness": 1.008
+      },
+      "NPS3_300#": {
+        "NPS": 3,
+        "class": 300,
+        "OD": 11.7,
+        "thickness": 1.079
+      },
+      "NPS3_600#": {
+        "NPS": 3,
+        "class": 600,
+        "OD": 14.4,
+        "thickness": 1.218
+      },
+      "NPS3_900#": {
+        "NPS": 3,
+        "class": 900,
+        "OD": 17.1,
+        "thickness": 1.359
+      },
+      "NPS3_1500#": {
+        "NPS": 3,
+        "class": 1500,
+        "OD": 22.5,
+        "thickness": 1.641
+      },
+      "NPS3_2500#": {
+        "NPS": 3,
+        "class": 2500,
+        "OD": 31.5,
+        "thickness": 2.109
+      },
+      "NPS3.5_150#": {
+        "NPS": 3.5,
+        "class": 150,
+        "OD": 10.92,
+        "thickness": 1.041
+      },
+      "NPS3.5_300#": {
+        "NPS": 3.5,
+        "class": 300,
+        "OD": 12.35,
+        "thickness": 1.115
+      },
+      "NPS3.5_600#": {
+        "NPS": 3.5,
+        "class": 600,
+        "OD": 15.2,
+        "thickness": 1.26
+      },
+      "NPS3.5_900#": {
+        "NPS": 3.5,
+        "class": 900,
+        "OD": 18.05,
+        "thickness": 1.404
+      },
+      "NPS3.5_1500#": {
+        "NPS": 3.5,
+        "class": 1500,
+        "OD": 23.75,
+        "thickness": 1.695
+      },
+      "NPS3.5_2500#": {
+        "NPS": 3.5,
+        "class": 2500,
+        "OD": 33.25,
+        "thickness": 2.179
+      },
+      "NPS4_150#": {
+        "NPS": 4,
+        "class": 150,
+        "OD": 11.5,
+        "thickness": 1.075
+      },
+      "NPS4_300#": {
+        "NPS": 4,
+        "class": 300,
+        "OD": 13.0,
+        "thickness": 1.151
+      },
+      "NPS4_600#": {
+        "NPS": 4,
+        "class": 600,
+        "OD": 16.0,
+        "thickness": 1.3
+      },
+      "NPS4_900#": {
+        "NPS": 4,
+        "class": 900,
+        "OD": 19.0,
+        "thickness": 1.45
+      },
+      "NPS4_1500#": {
+        "NPS": 4,
+        "class": 1500,
+        "OD": 25.0,
+        "thickness": 1.751
+      },
+      "NPS4_2500#": {
+        "NPS": 4,
+        "class": 2500,
+        "OD": 35.0,
+        "thickness": 2.25
+      },
+      "NPS5_150#": {
+        "NPS": 5,
+        "class": 150,
+        "OD": 12.65,
+        "thickness": 1.141
+      },
+      "NPS5_300#": {
+        "NPS": 5,
+        "class": 300,
+        "OD": 14.3,
+        "thickness": 1.222
+      },
+      "NPS5_600#": {
+        "NPS": 5,
+        "class": 600,
+        "OD": 17.6,
+        "thickness": 1.381
+      },
+      "NPS5_900#": {
+        "NPS": 5,
+        "class": 900,
+        "OD": 20.9,
+        "thickness": 1.54
+      },
+      "NPS5_1500#": {
+        "NPS": 5,
+        "class": 1500,
+        "OD": 27.5,
+        "thickness": 1.86
+      },
+      "NPS5_2500#": {
+        "NPS": 5,
+        "class": 2500,
+        "OD": 38.5,
+        "thickness": 2.391
+      },
+      "NPS6_150#": {
+        "NPS": 6,
+        "class": 150,
+        "OD": 13.8,
+        "thickness": 1.209
+      },
+      "NPS6_300#": {
+        "NPS": 6,
+        "class": 300,
+        "OD": 15.6,
+        "thickness": 1.293
+      },
+      "NPS6_600#": {
+        "NPS": 6,
+        "class": 600,
+        "OD": 19.2,
+        "thickness": 1.462
+      },
+      "NPS6_900#": {
+        "NPS": 6,
+        "class": 900,
+        "OD": 22.8,
+        "thickness": 1.631
+      },
+      "NPS6_1500#": {
+        "NPS": 6,
+        "class": 1500,
+        "OD": 30.0,
+        "thickness": 1.968
+      },
+      "NPS6_2500#": {
+        "NPS": 6,
+        "class": 2500,
+        "OD": 42.0,
+        "thickness": 2.532
+      },
+      "NPS8_150#": {
+        "NPS": 8,
+        "class": 150,
+        "OD": 16.1,
+        "thickness": 1.344
+      },
+      "NPS8_300#": {
+        "NPS": 8,
+        "class": 300,
+        "OD": 18.2,
+        "thickness": 1.437
+      },
+      "NPS8_600#": {
+        "NPS": 8,
+        "class": 600,
+        "OD": 22.4,
+        "thickness": 1.624
+      },
+      "NPS8_900#": {
+        "NPS": 8,
+        "class": 900,
+        "OD": 26.6,
+        "thickness": 1.812
+      },
+      "NPS8_1500#": {
+        "NPS": 8,
+        "class": 1500,
+        "OD": 35.0,
+        "thickness": 2.187
+      },
+      "NPS8_2500#": {
+        "NPS": 8,
+        "class": 2500,
+        "OD": 49.0,
+        "thickness": 2.812
+      },
+      "NPS10_150#": {
+        "NPS": 10,
+        "class": 150,
+        "OD": 18.4,
+        "thickness": 1.478
+      },
+      "NPS10_300#": {
+        "NPS": 10,
+        "class": 300,
+        "OD": 20.8,
+        "thickness": 1.581
+      },
+      "NPS10_600#": {
+        "NPS": 10,
+        "class": 600,
+        "OD": 25.6,
+        "thickness": 1.788
+      },
+      "NPS10_900#": {
+        "NPS": 10,
+        "class": 900,
+        "OD": 30.4,
+        "thickness": 1.994
+      },
+      "NPS10_1500#": {
+        "NPS": 10,
+        "class": 1500,
+        "OD": 40.0,
+        "thickness": 2.406
+      },
+      "NPS10_2500#": {
+        "NPS": 10,
+        "class": 2500,
+        "OD": 56.0,
+        "thickness": 3.093
+      },
+      "NPS12_150#": {
+        "NPS": 12,
+        "class": 150,
+        "OD": 20.7,
+        "thickness": 1.612
+      },
+      "NPS12_300#": {
+        "NPS": 12,
+        "class": 300,
+        "OD": 23.4,
+        "thickness": 1.725
+      },
+      "NPS12_600#": {
+        "NPS": 12,
+        "class": 600,
+        "OD": 28.8,
+        "thickness": 1.95
+      },
+      "NPS12_900#": {
+        "NPS": 12,
+        "class": 900,
+        "OD": 34.2,
+        "thickness": 2.175
+      },
+      "NPS12_1500#": {
+        "NPS": 12,
+        "class": 1500,
+        "OD": 45.0,
+        "thickness": 2.625
+      },
+      "NPS12_2500#": {
+        "NPS": 12,
+        "class": 2500,
+        "OD": 63.0,
+        "thickness": 3.375
+      },
+      "NPS14_150#": {
+        "NPS": 14,
+        "class": 150,
+        "OD": 23.0,
+        "thickness": 1.748
+      },
+      "NPS14_300#": {
+        "NPS": 14,
+        "class": 300,
+        "OD": 26.0,
+        "thickness": 1.869
+      },
+      "NPS14_600#": {
+        "NPS": 14,
+        "class": 600,
+        "OD": 32.0,
+        "thickness": 2.112
+      },
+      "NPS14_900#": {
+        "NPS": 14,
+        "class": 900,
+        "OD": 38.0,
+        "thickness": 2.357
+      },
+      "NPS14_1500#": {
+        "NPS": 14,
+        "class": 1500,
+        "OD": 50.0,
+        "thickness": 2.844
+      },
+      "NPS14_2500#": {
+        "NPS": 14,
+        "class": 2500,
+        "OD": 70.0,
+        "thickness": 3.657
+      },
+      "NPS16_150#": {
+        "NPS": 16,
+        "class": 150,
+        "OD": 25.3,
+        "thickness": 1.881
+      },
+      "NPS16_300#": {
+        "NPS": 16,
+        "class": 300,
+        "OD": 28.6,
+        "thickness": 2.013
+      },
+      "NPS16_600#": {
+        "NPS": 16,
+        "class": 600,
+        "OD": 35.2,
+        "thickness": 2.276
+      },
+      "NPS16_900#": {
+        "NPS": 16,
+        "class": 900,
+        "OD": 41.8,
+        "thickness": 2.538
+      },
+      "NPS16_1500#": {
+        "NPS": 16,
+        "class": 1500,
+        "OD": 55.0,
+        "thickness": 3.063
+      },
+      "NPS16_2500#": {
+        "NPS": 16,
+        "class": 2500,
+        "OD": 77.0,
+        "thickness": 3.938
+      },
+      "NPS18_150#": {
+        "NPS": 18,
+        "class": 150,
+        "OD": 27.6,
+        "thickness": 2.016
+      },
+      "NPS18_300#": {
+        "NPS": 18,
+        "class": 300,
+        "OD": 31.2,
+        "thickness": 2.157
+      },
+      "NPS18_600#": {
+        "NPS": 18,
+        "class": 600,
+        "OD": 38.4,
+        "thickness": 2.438
+      },
+      "NPS18_900#": {
+        "NPS": 18,
+        "class": 900,
+        "OD": 45.6,
+        "thickness": 2.718
+      },
+      "NPS18_1500#": {
+        "NPS": 18,
+        "class": 1500,
+        "OD": 60.0,
+        "thickness": 3.282
+      },
+      "NPS18_2500#": {
+        "NPS": 18,
+        "class": 2500,
+        "OD": 84.0,
+        "thickness": 4.218
+      },
+      "NPS20_150#": {
+        "NPS": 20,
+        "class": 150,
+        "OD": 29.9,
+        "thickness": 2.15
+      },
+      "NPS20_300#": {
+        "NPS": 20,
+        "class": 300,
+        "OD": 33.8,
+        "thickness": 2.3
+      },
+      "NPS20_600#": {
+        "NPS": 20,
+        "class": 600,
+        "OD": 41.6,
+        "thickness": 2.599
+      },
+      "NPS20_900#": {
+        "NPS": 20,
+        "class": 900,
+        "OD": 49.4,
+        "thickness": 2.9
+      },
+      "NPS20_1500#": {
+        "NPS": 20,
+        "class": 1500,
+        "OD": 65.0,
+        "thickness": 3.5
+      },
+      "NPS20_2500#": {
+        "NPS": 20,
+        "class": 2500,
+        "OD": 91.0,
+        "thickness": 4.5
+      },
+      "NPS24_150#": {
+        "NPS": 24,
+        "class": 150,
+        "OD": 34.5,
+        "thickness": 2.418
+      },
+      "NPS24_300#": {
+        "NPS": 24,
+        "class": 300,
+        "OD": 39.0,
+        "thickness": 2.588
+      },
+      "NPS24_600#": {
+        "NPS": 24,
+        "class": 600,
+        "OD": 48.0,
+        "thickness": 2.925
+      },
+      "NPS24_900#": {
+        "NPS": 24,
+        "class": 900,
+        "OD": 57.0,
+        "thickness": 3.262
+      },
+      "NPS24_1500#": {
+        "NPS": 24,
+        "class": 1500,
+        "OD": 75.0,
+        "thickness": 3.938
+      },
+      "NPS24_2500#": {
+        "NPS": 24,
+        "class": 2500,
+        "OD": 105.0,
+        "thickness": 5.062
+      }
+    },
+    "branch_weldolet": {
+      "RUN2_BRANCH0.5": {
+        "run_size": 2,
+        "branch_size": 0.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN2_BRANCH0.75": {
+        "run_size": 2,
+        "branch_size": 0.75,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN2_BRANCH1": {
+        "run_size": 2,
+        "branch_size": 1,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN2_BRANCH1.25": {
+        "run_size": 2,
+        "branch_size": 1.25,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN2_BRANCH1.5": {
+        "run_size": 2,
+        "branch_size": 1.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN2_BRANCH2": {
+        "run_size": 2,
+        "branch_size": 2,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN3_BRANCH0.5": {
+        "run_size": 3,
+        "branch_size": 0.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN3_BRANCH0.75": {
+        "run_size": 3,
+        "branch_size": 0.75,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN3_BRANCH1": {
+        "run_size": 3,
+        "branch_size": 1,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN3_BRANCH1.25": {
+        "run_size": 3,
+        "branch_size": 1.25,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN3_BRANCH1.5": {
+        "run_size": 3,
+        "branch_size": 1.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN3_BRANCH2": {
+        "run_size": 3,
+        "branch_size": 2,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN3_BRANCH3": {
+        "run_size": 3,
+        "branch_size": 3,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN4_BRANCH0.5": {
+        "run_size": 4,
+        "branch_size": 0.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN4_BRANCH0.75": {
+        "run_size": 4,
+        "branch_size": 0.75,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN4_BRANCH1": {
+        "run_size": 4,
+        "branch_size": 1,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN4_BRANCH1.25": {
+        "run_size": 4,
+        "branch_size": 1.25,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN4_BRANCH1.5": {
+        "run_size": 4,
+        "branch_size": 1.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN4_BRANCH2": {
+        "run_size": 4,
+        "branch_size": 2,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN4_BRANCH3": {
+        "run_size": 4,
+        "branch_size": 3,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN4_BRANCH4": {
+        "run_size": 4,
+        "branch_size": 4,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN6_BRANCH0.5": {
+        "run_size": 6,
+        "branch_size": 0.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN6_BRANCH0.75": {
+        "run_size": 6,
+        "branch_size": 0.75,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN6_BRANCH1": {
+        "run_size": 6,
+        "branch_size": 1,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN6_BRANCH1.25": {
+        "run_size": 6,
+        "branch_size": 1.25,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN6_BRANCH1.5": {
+        "run_size": 6,
+        "branch_size": 1.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN6_BRANCH2": {
+        "run_size": 6,
+        "branch_size": 2,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN6_BRANCH3": {
+        "run_size": 6,
+        "branch_size": 3,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN6_BRANCH4": {
+        "run_size": 6,
+        "branch_size": 4,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN8_BRANCH0.5": {
+        "run_size": 8,
+        "branch_size": 0.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN8_BRANCH0.75": {
+        "run_size": 8,
+        "branch_size": 0.75,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN8_BRANCH1": {
+        "run_size": 8,
+        "branch_size": 1,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN8_BRANCH1.25": {
+        "run_size": 8,
+        "branch_size": 1.25,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN8_BRANCH1.5": {
+        "run_size": 8,
+        "branch_size": 1.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN8_BRANCH2": {
+        "run_size": 8,
+        "branch_size": 2,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN8_BRANCH3": {
+        "run_size": 8,
+        "branch_size": 3,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN8_BRANCH4": {
+        "run_size": 8,
+        "branch_size": 4,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN10_BRANCH0.5": {
+        "run_size": 10,
+        "branch_size": 0.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN10_BRANCH0.75": {
+        "run_size": 10,
+        "branch_size": 0.75,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN10_BRANCH1": {
+        "run_size": 10,
+        "branch_size": 1,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN10_BRANCH1.25": {
+        "run_size": 10,
+        "branch_size": 1.25,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN10_BRANCH1.5": {
+        "run_size": 10,
+        "branch_size": 1.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN10_BRANCH2": {
+        "run_size": 10,
+        "branch_size": 2,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN10_BRANCH3": {
+        "run_size": 10,
+        "branch_size": 3,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN10_BRANCH4": {
+        "run_size": 10,
+        "branch_size": 4,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN12_BRANCH0.5": {
+        "run_size": 12,
+        "branch_size": 0.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN12_BRANCH0.75": {
+        "run_size": 12,
+        "branch_size": 0.75,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN12_BRANCH1": {
+        "run_size": 12,
+        "branch_size": 1,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN12_BRANCH1.25": {
+        "run_size": 12,
+        "branch_size": 1.25,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN12_BRANCH1.5": {
+        "run_size": 12,
+        "branch_size": 1.5,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN12_BRANCH2": {
+        "run_size": 12,
+        "branch_size": 2,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN12_BRANCH3": {
+        "run_size": 12,
+        "branch_size": 3,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      },
+      "RUN12_BRANCH4": {
+        "run_size": 12,
+        "branch_size": 4,
+        "type": "Weldolet",
+        "outlet_type": "Butt-weld"
+      }
+    },
+    "branch_sockolet": {
+      "RUN2_BRANCH0.5": {
+        "run_size": 2,
+        "branch_size": 0.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN2_BRANCH0.75": {
+        "run_size": 2,
+        "branch_size": 0.75,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN2_BRANCH1": {
+        "run_size": 2,
+        "branch_size": 1,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN2_BRANCH1.25": {
+        "run_size": 2,
+        "branch_size": 1.25,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN2_BRANCH1.5": {
+        "run_size": 2,
+        "branch_size": 1.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN2_BRANCH2": {
+        "run_size": 2,
+        "branch_size": 2,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN3_BRANCH0.5": {
+        "run_size": 3,
+        "branch_size": 0.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN3_BRANCH0.75": {
+        "run_size": 3,
+        "branch_size": 0.75,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN3_BRANCH1": {
+        "run_size": 3,
+        "branch_size": 1,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN3_BRANCH1.25": {
+        "run_size": 3,
+        "branch_size": 1.25,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN3_BRANCH1.5": {
+        "run_size": 3,
+        "branch_size": 1.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN3_BRANCH2": {
+        "run_size": 3,
+        "branch_size": 2,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN3_BRANCH3": {
+        "run_size": 3,
+        "branch_size": 3,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN4_BRANCH0.5": {
+        "run_size": 4,
+        "branch_size": 0.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN4_BRANCH0.75": {
+        "run_size": 4,
+        "branch_size": 0.75,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN4_BRANCH1": {
+        "run_size": 4,
+        "branch_size": 1,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN4_BRANCH1.25": {
+        "run_size": 4,
+        "branch_size": 1.25,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN4_BRANCH1.5": {
+        "run_size": 4,
+        "branch_size": 1.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN4_BRANCH2": {
+        "run_size": 4,
+        "branch_size": 2,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN4_BRANCH3": {
+        "run_size": 4,
+        "branch_size": 3,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN4_BRANCH4": {
+        "run_size": 4,
+        "branch_size": 4,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN6_BRANCH0.5": {
+        "run_size": 6,
+        "branch_size": 0.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN6_BRANCH0.75": {
+        "run_size": 6,
+        "branch_size": 0.75,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN6_BRANCH1": {
+        "run_size": 6,
+        "branch_size": 1,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN6_BRANCH1.25": {
+        "run_size": 6,
+        "branch_size": 1.25,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN6_BRANCH1.5": {
+        "run_size": 6,
+        "branch_size": 1.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN6_BRANCH2": {
+        "run_size": 6,
+        "branch_size": 2,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN6_BRANCH3": {
+        "run_size": 6,
+        "branch_size": 3,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN6_BRANCH4": {
+        "run_size": 6,
+        "branch_size": 4,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN8_BRANCH0.5": {
+        "run_size": 8,
+        "branch_size": 0.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN8_BRANCH0.75": {
+        "run_size": 8,
+        "branch_size": 0.75,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN8_BRANCH1": {
+        "run_size": 8,
+        "branch_size": 1,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN8_BRANCH1.25": {
+        "run_size": 8,
+        "branch_size": 1.25,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN8_BRANCH1.5": {
+        "run_size": 8,
+        "branch_size": 1.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN8_BRANCH2": {
+        "run_size": 8,
+        "branch_size": 2,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN8_BRANCH3": {
+        "run_size": 8,
+        "branch_size": 3,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN8_BRANCH4": {
+        "run_size": 8,
+        "branch_size": 4,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN10_BRANCH0.5": {
+        "run_size": 10,
+        "branch_size": 0.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN10_BRANCH0.75": {
+        "run_size": 10,
+        "branch_size": 0.75,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN10_BRANCH1": {
+        "run_size": 10,
+        "branch_size": 1,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN10_BRANCH1.25": {
+        "run_size": 10,
+        "branch_size": 1.25,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN10_BRANCH1.5": {
+        "run_size": 10,
+        "branch_size": 1.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN10_BRANCH2": {
+        "run_size": 10,
+        "branch_size": 2,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN10_BRANCH3": {
+        "run_size": 10,
+        "branch_size": 3,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN10_BRANCH4": {
+        "run_size": 10,
+        "branch_size": 4,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN12_BRANCH0.5": {
+        "run_size": 12,
+        "branch_size": 0.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN12_BRANCH0.75": {
+        "run_size": 12,
+        "branch_size": 0.75,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN12_BRANCH1": {
+        "run_size": 12,
+        "branch_size": 1,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN12_BRANCH1.25": {
+        "run_size": 12,
+        "branch_size": 1.25,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN12_BRANCH1.5": {
+        "run_size": 12,
+        "branch_size": 1.5,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN12_BRANCH2": {
+        "run_size": 12,
+        "branch_size": 2,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN12_BRANCH3": {
+        "run_size": 12,
+        "branch_size": 3,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      },
+      "RUN12_BRANCH4": {
+        "run_size": 12,
+        "branch_size": 4,
+        "type": "Sockolet",
+        "outlet_type": "Socket-weld"
+      }
+    },
+    "branch_threadolet": {},
+    "branch_elbolet": {},
+    "branch_latrolet": {},
+    "pipe_schedules_local": {
+      "pipe_sizes": {
+        "1/2": {
+          "NPS": "1/2",
+          "OD": 0.84,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.109,
+              "ID": 0.622,
+              "weight_per_ft": 0.85
+            },
+            "80": {
+              "wall_thickness": 0.147,
+              "ID": 0.546,
+              "weight_per_ft": 1.09
+            },
+            "160": {
+              "wall_thickness": 0.188,
+              "ID": 0.464,
+              "weight_per_ft": 1.31
+            },
+            "XXS": {
+              "wall_thickness": 0.294,
+              "ID": 0.252,
+              "weight_per_ft": 1.71
+            }
+          }
+        },
+        "3/4": {
+          "NPS": "3/4",
+          "OD": 1.05,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.113,
+              "ID": 0.824,
+              "weight_per_ft": 1.13
+            },
+            "80": {
+              "wall_thickness": 0.154,
+              "ID": 0.742,
+              "weight_per_ft": 1.47
+            },
+            "160": {
+              "wall_thickness": 0.219,
+              "ID": 0.612,
+              "weight_per_ft": 1.94
+            },
+            "XXS": {
+              "wall_thickness": 0.308,
+              "ID": 0.434,
+              "weight_per_ft": 2.44
+            }
+          }
+        },
+        "1": {
+          "NPS": "1",
+          "OD": 1.315,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.133,
+              "ID": 1.049,
+              "weight_per_ft": 1.68
+            },
+            "80": {
+              "wall_thickness": 0.179,
+              "ID": 0.957,
+              "weight_per_ft": 2.17
+            },
+            "160": {
+              "wall_thickness": 0.25,
+              "ID": 0.815,
+              "weight_per_ft": 2.84
+            },
+            "XXS": {
+              "wall_thickness": 0.358,
+              "ID": 0.599,
+              "weight_per_ft": 3.66
+            }
+          }
+        },
+        "2": {
+          "NPS": "2",
+          "OD": 2.375,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.154,
+              "ID": 2.067,
+              "weight_per_ft": 3.65
+            },
+            "80": {
+              "wall_thickness": 0.218,
+              "ID": 1.939,
+              "weight_per_ft": 5.02
+            },
+            "160": {
+              "wall_thickness": 0.344,
+              "ID": 1.687,
+              "weight_per_ft": 7.44
+            },
+            "XXS": {
+              "wall_thickness": 0.436,
+              "ID": 1.503,
+              "weight_per_ft": 9.03
+            }
+          }
+        },
+        "3": {
+          "NPS": "3",
+          "OD": 3.5,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.216,
+              "ID": 3.068,
+              "weight_per_ft": 7.58
+            },
+            "80": {
+              "wall_thickness": 0.3,
+              "ID": 2.9,
+              "weight_per_ft": 10.25
+            },
+            "160": {
+              "wall_thickness": 0.438,
+              "ID": 2.624,
+              "weight_per_ft": 14.32
+            },
+            "XXS": {
+              "wall_thickness": 0.6,
+              "ID": 2.3,
+              "weight_per_ft": 18.58
+            }
+          }
+        },
+        "4": {
+          "NPS": "4",
+          "OD": 4.5,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.237,
+              "ID": 4.026,
+              "weight_per_ft": 10.79
+            },
+            "80": {
+              "wall_thickness": 0.337,
+              "ID": 3.826,
+              "weight_per_ft": 14.98
+            },
+            "160": {
+              "wall_thickness": 0.531,
+              "ID": 3.438,
+              "weight_per_ft": 22.51
+            },
+            "XXS": {
+              "wall_thickness": 0.674,
+              "ID": 3.152,
+              "weight_per_ft": 27.54
+            }
+          }
+        },
+        "6": {
+          "NPS": "6",
+          "OD": 6.625,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.28,
+              "ID": 6.065,
+              "weight_per_ft": 18.97
+            },
+            "80": {
+              "wall_thickness": 0.432,
+              "ID": 5.761,
+              "weight_per_ft": 28.57
+            },
+            "160": {
+              "wall_thickness": 0.719,
+              "ID": 5.187,
+              "weight_per_ft": 45.3
+            },
+            "XXS": {
+              "wall_thickness": 0.864,
+              "ID": 4.897,
+              "weight_per_ft": 53.16
+            }
+          }
+        },
+        "8": {
+          "NPS": "8",
+          "OD": 8.625,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.322,
+              "ID": 7.981,
+              "weight_per_ft": 28.55
+            },
+            "80": {
+              "wall_thickness": 0.5,
+              "ID": 7.625,
+              "weight_per_ft": 43.39
+            },
+            "160": {
+              "wall_thickness": 0.906,
+              "ID": 6.813,
+              "weight_per_ft": 72.42
+            },
+            "XXS": {
+              "wall_thickness": 0.875,
+              "ID": 6.875,
+              "weight_per_ft": 72.42
+            }
+          }
+        },
+        "10": {
+          "NPS": "10",
+          "OD": 10.75,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.365,
+              "ID": 10.02,
+              "weight_per_ft": 40.48
+            },
+            "80": {
+              "wall_thickness": 0.593,
+              "ID": 9.564,
+              "weight_per_ft": 64.43
+            },
+            "160": {
+              "wall_thickness": 1.125,
+              "ID": 8.5,
+              "weight_per_ft": 115.65
+            },
+            "XXS": {
+              "wall_thickness": 1.0,
+              "ID": 8.75,
+              "weight_per_ft": 104.13
+            }
+          }
+        },
+        "12": {
+          "NPS": "12",
+          "OD": 12.75,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.406,
+              "ID": 11.938,
+              "weight_per_ft": 53.52
+            },
+            "80": {
+              "wall_thickness": 0.687,
+              "ID": 11.376,
+              "weight_per_ft": 88.51
+            },
+            "160": {
+              "wall_thickness": 1.312,
+              "ID": 10.126,
+              "weight_per_ft": 160.27
+            },
+            "XXS": {
+              "wall_thickness": 1.0,
+              "ID": 10.75,
+              "weight_per_ft": 125.49
+            }
+          }
+        }
+      }
+    }
+  },
+  "materials": {
+    "carbon_steel": {
+      "A36": {
+        "designation": "A36",
+        "type": "Carbon Steel",
+        "yield_strength_ksi": 36,
+        "tensile_strength_ksi": 58,
+        "elongation_pct": 20,
+        "density_lb_in3": 0.284,
+        "modulus_elasticity_ksi": 29000,
+        "poissons_ratio": 0.26,
+        "thermal_expansion_in_in_F": 6.5e-06,
+        "max_temperature_F": 650,
+        "weldable": true,
+        "bend_radius_factor": 1.0,
+        "typical_uses": [
+          "Structural shapes",
+          "Plates",
+          "Bars"
+        ]
+      },
+      "A572-50": {
+        "designation": "A572 Grade 50",
+        "type": "HSLA Steel",
+        "yield_strength_ksi": 50,
+        "tensile_strength_ksi": 65,
+        "elongation_pct": 18,
+        "density_lb_in3": 0.284,
+        "modulus_elasticity_ksi": 29000,
+        "poissons_ratio": 0.26,
+        "thermal_expansion_in_in_F": 6.5e-06,
+        "max_temperature_F": 650,
+        "weldable": true,
+        "bend_radius_factor": 1.5,
+        "typical_uses": [
+          "High-strength structural",
+          "Columns",
+          "Beams"
+        ]
+      },
+      "A516-70": {
+        "designation": "A516 Grade 70",
+        "type": "Pressure Vessel Steel",
+        "yield_strength_ksi": 38,
+        "tensile_strength_ksi": 70,
+        "elongation_pct": 21,
+        "density_lb_in3": 0.284,
+        "modulus_elasticity_ksi": 29000,
+        "poissons_ratio": 0.26,
+        "thermal_expansion_in_in_F": 6.5e-06,
+        "max_temperature_F": 650,
+        "weldable": true,
+        "bend_radius_factor": 1.0,
+        "impact_tested": true,
+        "typical_uses": [
+          "Pressure vessels",
+          "Boilers",
+          "Heat exchangers"
+        ]
+      }
+    },
+    "stainless_steel": {
+      "304": {
+        "designation": "304 Stainless",
+        "type": "Austenitic Stainless",
+        "yield_strength_ksi": 30,
+        "tensile_strength_ksi": 75,
+        "elongation_pct": 40,
+        "density_lb_in3": 0.289,
+        "modulus_elasticity_ksi": 28000,
+        "poissons_ratio": 0.27,
+        "thermal_expansion_in_in_F": 9.6e-06,
+        "max_temperature_F": 1500,
+        "weldable": true,
+        "bend_radius_factor": 2.0,
+        "corrosion_resistant": true,
+        "typical_uses": [
+          "Food processing",
+          "Chemical equipment",
+          "Architectural"
+        ]
+      },
+      "316": {
+        "designation": "316 Stainless",
+        "type": "Austenitic Stainless",
+        "yield_strength_ksi": 30,
+        "tensile_strength_ksi": 75,
+        "elongation_pct": 40,
+        "density_lb_in3": 0.289,
+        "modulus_elasticity_ksi": 28000,
+        "poissons_ratio": 0.27,
+        "thermal_expansion_in_in_F": 9.6e-06,
+        "max_temperature_F": 1500,
+        "weldable": true,
+        "bend_radius_factor": 2.0,
+        "corrosion_resistant": true,
+        "chloride_resistant": true,
+        "typical_uses": [
+          "Marine",
+          "Chemical processing",
+          "Pharmaceuticals"
+        ]
+      }
+    },
+    "aluminum": {
+      "6061-T6": {
+        "designation": "6061-T6",
+        "type": "Aluminum Alloy",
+        "yield_strength_ksi": 40,
+        "tensile_strength_ksi": 45,
+        "elongation_pct": 12,
+        "density_lb_in3": 0.098,
+        "modulus_elasticity_ksi": 10000,
+        "poissons_ratio": 0.33,
+        "thermal_expansion_in_in_F": 1.31e-05,
+        "max_temperature_F": 350,
+        "weldable": true,
+        "bend_radius_factor": 1.0,
+        "corrosion_resistant": true,
+        "typical_uses": [
+          "Structural frames",
+          "Marine",
+          "Aerospace"
+        ]
+      },
+      "1100": {
+        "designation": "1100 Aluminum",
+        "type": "Pure Aluminum",
+        "yield_strength_ksi": 5,
+        "tensile_strength_ksi": 13,
+        "elongation_pct": 35,
+        "density_lb_in3": 0.098,
+        "modulus_elasticity_ksi": 10000,
+        "poissons_ratio": 0.33,
+        "thermal_expansion_in_in_F": 1.31e-05,
+        "max_temperature_F": 400,
+        "weldable": true,
+        "bend_radius_factor": 0.5,
+        "thermal_conductivity": "Excellent",
+        "typical_uses": [
+          "Finned tubes",
+          "Heat exchangers",
+          "Chemical equipment"
+        ]
+      }
+    },
+    "tube_materials": {
+      "A179": {
+        "designation": "A179 Seamless",
+        "type": "Carbon Steel Tube",
+        "yield_strength_ksi": 30,
+        "tensile_strength_ksi": 47,
+        "density_lb_in3": 0.284,
+        "max_temperature_F": 650,
+        "typical_uses": [
+          "Heat exchanger tubes",
+          "Boiler tubes"
+        ]
+      },
+      "A214": {
+        "designation": "A214 ERW",
+        "type": "Carbon Steel Tube",
+        "yield_strength_ksi": 30,
+        "tensile_strength_ksi": 55,
+        "density_lb_in3": 0.284,
+        "max_temperature_F": 650,
+        "typical_uses": [
+          "Heat exchanger tubes",
+          "Condenser tubes"
+        ]
+      },
+      "A213-T11": {
+        "designation": "A213 Grade T11",
+        "type": "Alloy Steel Tube",
+        "yield_strength_ksi": 30,
+        "tensile_strength_ksi": 60,
+        "density_lb_in3": 0.284,
+        "max_temperature_F": 1000,
+        "alloy_content": "1.25Cr-0.5Mo",
+        "typical_uses": [
+          "High-temperature heat exchangers"
+        ]
+      },
+      "A213-T5": {
+        "designation": "A213 Grade T5",
+        "type": "Alloy Steel Tube",
+        "yield_strength_ksi": 30,
+        "tensile_strength_ksi": 60,
+        "density_lb_in3": 0.284,
+        "max_temperature_F": 1100,
+        "alloy_content": "5Cr-0.5Mo",
+        "typical_uses": [
+          "High-temperature service",
+          "Refinery equipment"
+        ]
+      }
+    },
+    "flange_materials": {
+      "A105": {
+        "designation": "A105",
+        "type": "Carbon Steel Forging",
+        "yield_strength_ksi": 36,
+        "tensile_strength_ksi": 70,
+        "max_temperature_F": 650,
+        "typical_uses": [
+          "Flanges",
+          "Fittings",
+          "Valves"
+        ]
+      },
+      "A350-LF2": {
+        "designation": "A350 LF2",
+        "type": "Low-Temperature Carbon Steel",
+        "yield_strength_ksi": 40,
+        "tensile_strength_ksi": 70,
+        "max_temperature_F": 650,
+        "min_temperature_F": -50,
+        "impact_tested": true,
+        "typical_uses": [
+          "Low-temp flanges",
+          "Low-temp forgings"
+        ]
+      }
+    },
+    "sheet_gauges": {
+      "10GA": {
+        "gauge": 10,
+        "thickness_in": 0.1345,
+        "weight_per_sqft_lb": 5.49
+      },
+      "11GA": {
+        "gauge": 11,
+        "thickness_in": 0.1196,
+        "weight_per_sqft_lb": 4.88
+      },
+      "12GA": {
+        "gauge": 12,
+        "thickness_in": 0.1046,
+        "weight_per_sqft_lb": 4.27
+      },
+      "14GA": {
+        "gauge": 14,
+        "thickness_in": 0.0747,
+        "weight_per_sqft_lb": 3.05
+      },
+      "16GA": {
+        "gauge": 16,
+        "thickness_in": 0.0598,
+        "weight_per_sqft_lb": 2.44
+      },
+      "18GA": {
+        "gauge": 18,
+        "thickness_in": 0.0478,
+        "weight_per_sqft_lb": 1.95
+      },
+      "20GA": {
+        "gauge": 20,
+        "thickness_in": 0.0359,
+        "weight_per_sqft_lb": 1.47
+      }
+    }
+  },
+  "local_offline": {
+    "aisc_shapes": {
+      "W8X31": {
+        "designation": "W8X31",
+        "type": "W-Shape",
+        "weight_per_ft": 31.0,
+        "area": 9.13,
+        "depth": 8.0,
+        "flange_width": 7.995,
+        "web_thickness": 0.285,
+        "flange_thickness": 0.435,
+        "Ix": 110.0,
+        "Zx": 30.4,
+        "Sx": 27.5,
+        "rx": 3.47,
+        "Iy": 37.1,
+        "Zy": 14.1,
+        "Sy": 9.27,
+        "ry": 2.02,
+        "bf_2tf": 9.19,
+        "h_tw": 22.0
+      },
+      "W8X18": {
+        "designation": "W8X18",
+        "type": "W-Shape",
+        "weight_per_ft": 18.0,
+        "area": 5.26,
+        "depth": 8.14,
+        "flange_width": 5.25,
+        "web_thickness": 0.23,
+        "flange_thickness": 0.33,
+        "Ix": 61.9,
+        "Zx": 17.0,
+        "Sx": 15.2,
+        "rx": 3.43,
+        "Iy": 7.97,
+        "Zy": 4.66,
+        "Sy": 3.04,
+        "ry": 1.23,
+        "bf_2tf": 7.95,
+        "h_tw": 28.3
+      },
+      "W8X10": {
+        "designation": "W8X10",
+        "type": "W-Shape",
+        "weight_per_ft": 10.0,
+        "area": 2.96,
+        "depth": 7.89,
+        "flange_width": 3.94,
+        "web_thickness": 0.17,
+        "flange_thickness": 0.205,
+        "Ix": 30.8,
+        "Zx": 8.87,
+        "Sx": 7.81,
+        "rx": 3.22,
+        "Iy": 2.09,
+        "Zy": 1.74,
+        "Sy": 1.06,
+        "ry": 0.841,
+        "bf_2tf": 9.61,
+        "h_tw": 40.0
+      },
+      "W10X49": {
+        "designation": "W10X49",
+        "type": "W-Shape",
+        "weight_per_ft": 49.0,
+        "area": 14.4,
+        "depth": 10.0,
+        "flange_width": 10.0,
+        "web_thickness": 0.34,
+        "flange_thickness": 0.56,
+        "Ix": 272.0,
+        "Zx": 60.4,
+        "Sx": 54.6,
+        "rx": 4.35,
+        "Iy": 93.4,
+        "Zy": 28.3,
+        "Sy": 18.7,
+        "ry": 2.54,
+        "bf_2tf": 8.93,
+        "h_tw": 23.2
+      },
+      "W10X33": {
+        "designation": "W10X33",
+        "type": "W-Shape",
+        "weight_per_ft": 33.0,
+        "area": 9.71,
+        "depth": 9.73,
+        "flange_width": 7.96,
+        "web_thickness": 0.29,
+        "flange_thickness": 0.435,
+        "Ix": 171.0,
+        "Zx": 38.8,
+        "Sx": 35.0,
+        "rx": 4.19,
+        "Iy": 36.6,
+        "Zy": 14.0,
+        "Sy": 9.2,
+        "ry": 1.94,
+        "bf_2tf": 9.15,
+        "h_tw": 26.9
+      },
+      "W12X65": {
+        "designation": "W12X65",
+        "type": "W-Shape",
+        "weight_per_ft": 65.0,
+        "area": 19.1,
+        "depth": 12.12,
+        "flange_width": 12.0,
+        "web_thickness": 0.39,
+        "flange_thickness": 0.605,
+        "Ix": 533.0,
+        "Zx": 96.8,
+        "Sx": 87.9,
+        "rx": 5.28,
+        "Iy": 174.0,
+        "Zy": 44.1,
+        "Sy": 29.1,
+        "ry": 3.02,
+        "bf_2tf": 9.92,
+        "h_tw": 25.5
+      },
+      "W12X26": {
+        "designation": "W12X26",
+        "type": "W-Shape",
+        "weight_per_ft": 26.0,
+        "area": 7.65,
+        "depth": 12.22,
+        "flange_width": 6.49,
+        "web_thickness": 0.23,
+        "flange_thickness": 0.38,
+        "Ix": 204.0,
+        "Zx": 37.2,
+        "Sx": 33.4,
+        "rx": 5.17,
+        "Iy": 17.3,
+        "Zy": 8.15,
+        "Sy": 5.34,
+        "ry": 1.51,
+        "bf_2tf": 8.54,
+        "h_tw": 45.5
+      },
+      "W14X90": {
+        "designation": "W14X90",
+        "type": "W-Shape",
+        "weight_per_ft": 90.0,
+        "area": 26.5,
+        "depth": 14.02,
+        "flange_width": 14.52,
+        "web_thickness": 0.44,
+        "flange_thickness": 0.71,
+        "Ix": 999.0,
+        "Zx": 157.0,
+        "Sx": 143.0,
+        "rx": 6.14,
+        "Iy": 362.0,
+        "Zy": 76.5,
+        "Sy": 49.9,
+        "ry": 3.7,
+        "bf_2tf": 10.2,
+        "h_tw": 25.7
+      },
+      "W14X43": {
+        "designation": "W14X43",
+        "type": "W-Shape",
+        "weight_per_ft": 43.0,
+        "area": 12.6,
+        "depth": 13.66,
+        "flange_width": 7.995,
+        "web_thickness": 0.305,
+        "flange_thickness": 0.53,
+        "Ix": 428.0,
+        "Zx": 69.6,
+        "Sx": 62.7,
+        "rx": 5.82,
+        "Iy": 45.2,
+        "Zy": 17.3,
+        "Sy": 11.3,
+        "ry": 1.89,
+        "bf_2tf": 7.54,
+        "h_tw": 36.6
+      },
+      "W16X100": {
+        "designation": "W16X100",
+        "type": "W-Shape",
+        "weight_per_ft": 100.0,
+        "area": 29.4,
+        "depth": 17.0,
+        "flange_width": 10.425,
+        "web_thickness": 0.585,
+        "flange_thickness": 0.985,
+        "Ix": 1490.0,
+        "Zx": 198.0,
+        "Sx": 175.0,
+        "rx": 7.1,
+        "Iy": 186.0,
+        "Zy": 54.9,
+        "Sy": 35.7,
+        "ry": 2.51,
+        "bf_2tf": 5.29,
+        "h_tw": 22.0
+      },
+      "W18X50": {
+        "designation": "W18X50",
+        "type": "W-Shape",
+        "weight_per_ft": 50.0,
+        "area": 14.7,
+        "depth": 17.99,
+        "flange_width": 7.495,
+        "web_thickness": 0.355,
+        "flange_thickness": 0.57,
+        "Ix": 800.0,
+        "Zx": 101.0,
+        "Sx": 88.9,
+        "rx": 7.38,
+        "Iy": 40.1,
+        "Zy": 16.6,
+        "Sy": 10.7,
+        "ry": 1.65,
+        "bf_2tf": 6.58,
+        "h_tw": 43.2
+      },
+      "W21X62": {
+        "designation": "W21X62",
+        "type": "W-Shape",
+        "weight_per_ft": 62.0,
+        "area": 18.3,
+        "depth": 20.99,
+        "flange_width": 8.24,
+        "web_thickness": 0.4,
+        "flange_thickness": 0.615,
+        "Ix": 1330.0,
+        "Zx": 144.0,
+        "Sx": 127.0,
+        "rx": 8.54,
+        "Iy": 57.5,
+        "Zy": 21.7,
+        "Sy": 13.9,
+        "ry": 1.77,
+        "bf_2tf": 6.7,
+        "h_tw": 46.6
+      },
+      "W24X76": {
+        "designation": "W24X76",
+        "type": "W-Shape",
+        "weight_per_ft": 76.0,
+        "area": 22.4,
+        "depth": 23.92,
+        "flange_width": 8.99,
+        "web_thickness": 0.44,
+        "flange_thickness": 0.68,
+        "Ix": 2100.0,
+        "Zx": 200.0,
+        "Sx": 176.0,
+        "rx": 9.69,
+        "Iy": 82.5,
+        "Zy": 28.6,
+        "Sy": 18.4,
+        "ry": 1.92,
+        "bf_2tf": 6.61,
+        "h_tw": 48.6
+      }
+    },
+    "fasteners": {
+      "bolts": {
+        "1/4": {
+          "nominal_diameter": 0.25,
+          "threads_per_inch": 20,
+          "tensile_stress_area": 0.0318,
+          "minor_diameter": 0.185,
+          "hole_size_standard": 0.281,
+          "hole_size_oversize": 0.313,
+          "hole_size_short_slot_width": 0.281,
+          "hole_size_short_slot_length": 0.344,
+          "edge_distance_min_sheared": 0.75,
+          "edge_distance_min_rolled": 0.625,
+          "A325_tensile_capacity_kips": 8.7,
+          "A490_tensile_capacity_kips": 10.9
+        },
+        "3/8": {
+          "nominal_diameter": 0.375,
+          "threads_per_inch": 16,
+          "tensile_stress_area": 0.0775,
+          "minor_diameter": 0.294,
+          "hole_size_standard": 0.4375,
+          "hole_size_oversize": 0.5,
+          "hole_size_short_slot_width": 0.4375,
+          "hole_size_short_slot_length": 0.563,
+          "edge_distance_min_sheared": 1.0,
+          "edge_distance_min_rolled": 0.875,
+          "A325_tensile_capacity_kips": 21.2,
+          "A490_tensile_capacity_kips": 26.5
+        },
+        "1/2": {
+          "nominal_diameter": 0.5,
+          "threads_per_inch": 13,
+          "tensile_stress_area": 0.1419,
+          "minor_diameter": 0.4,
+          "hole_size_standard": 0.5625,
+          "hole_size_oversize": 0.656,
+          "hole_size_short_slot_width": 0.5625,
+          "hole_size_short_slot_length": 0.688,
+          "edge_distance_min_sheared": 1.25,
+          "edge_distance_min_rolled": 1.0,
+          "A325_tensile_capacity_kips": 38.9,
+          "A490_tensile_capacity_kips": 48.6
+        },
+        "5/8": {
+          "nominal_diameter": 0.625,
+          "threads_per_inch": 11,
+          "tensile_stress_area": 0.226,
+          "minor_diameter": 0.507,
+          "hole_size_standard": 0.6875,
+          "hole_size_oversize": 0.813,
+          "hole_size_short_slot_width": 0.6875,
+          "hole_size_short_slot_length": 0.813,
+          "edge_distance_min_sheared": 1.5,
+          "edge_distance_min_rolled": 1.25,
+          "A325_tensile_capacity_kips": 61.9,
+          "A490_tensile_capacity_kips": 77.4
+        },
+        "3/4": {
+          "nominal_diameter": 0.75,
+          "threads_per_inch": 10,
+          "tensile_stress_area": 0.334,
+          "minor_diameter": 0.62,
+          "hole_size_standard": 0.8125,
+          "hole_size_oversize": 0.938,
+          "hole_size_short_slot_width": 0.8125,
+          "hole_size_short_slot_length": 0.938,
+          "edge_distance_min_sheared": 1.75,
+          "edge_distance_min_rolled": 1.5,
+          "A325_tensile_capacity_kips": 91.5,
+          "A490_tensile_capacity_kips": 114.0
+        },
+        "7/8": {
+          "nominal_diameter": 0.875,
+          "threads_per_inch": 9,
+          "tensile_stress_area": 0.462,
+          "minor_diameter": 0.731,
+          "hole_size_standard": 0.9375,
+          "hole_size_oversize": 1.094,
+          "hole_size_short_slot_width": 0.9375,
+          "hole_size_short_slot_length": 1.094,
+          "edge_distance_min_sheared": 2.0,
+          "edge_distance_min_rolled": 1.75,
+          "A325_tensile_capacity_kips": 126.6,
+          "A490_tensile_capacity_kips": 158.2
+        },
+        "1": {
+          "nominal_diameter": 1.0,
+          "threads_per_inch": 8,
+          "tensile_stress_area": 0.606,
+          "minor_diameter": 0.838,
+          "hole_size_standard": 1.0625,
+          "hole_size_oversize": 1.25,
+          "hole_size_short_slot_width": 1.0625,
+          "hole_size_short_slot_length": 1.25,
+          "edge_distance_min_sheared": 2.25,
+          "edge_distance_min_rolled": 2.0,
+          "A325_tensile_capacity_kips": 166.0,
+          "A490_tensile_capacity_kips": 207.5
+        },
+        "1-1/8": {
+          "nominal_diameter": 1.125,
+          "threads_per_inch": 7,
+          "tensile_stress_area": 0.763,
+          "minor_diameter": 0.939,
+          "hole_size_standard": 1.1875,
+          "hole_size_oversize": 1.406,
+          "hole_size_short_slot_width": 1.1875,
+          "hole_size_short_slot_length": 1.406,
+          "edge_distance_min_sheared": 2.5,
+          "edge_distance_min_rolled": 2.25,
+          "A325_tensile_capacity_kips": 209.0,
+          "A490_tensile_capacity_kips": 261.3
+        },
+        "1-1/4": {
+          "nominal_diameter": 1.25,
+          "threads_per_inch": 7,
+          "tensile_stress_area": 0.969,
+          "minor_diameter": 1.064,
+          "hole_size_standard": 1.3125,
+          "hole_size_oversize": 1.563,
+          "hole_size_short_slot_width": 1.3125,
+          "hole_size_short_slot_length": 1.563,
+          "edge_distance_min_sheared": 2.75,
+          "edge_distance_min_rolled": 2.5,
+          "A325_tensile_capacity_kips": 265.5,
+          "A490_tensile_capacity_kips": 331.9
+        }
+      },
+      "torque_specs": {
+        "1/4": {
+          "dry_ftlb": 9,
+          "lubricated_ftlb": 7
+        },
+        "5/16": {
+          "dry_ftlb": 19,
+          "lubricated_ftlb": 14
+        },
+        "3/8": {
+          "dry_ftlb": 33,
+          "lubricated_ftlb": 25
+        },
+        "7/16": {
+          "dry_ftlb": 55,
+          "lubricated_ftlb": 40
+        },
+        "1/2": {
+          "dry_ftlb": 75,
+          "lubricated_ftlb": 55
+        },
+        "9/16": {
+          "dry_ftlb": 110,
+          "lubricated_ftlb": 80
+        },
+        "5/8": {
+          "dry_ftlb": 150,
+          "lubricated_ftlb": 110
+        },
+        "3/4": {
+          "dry_ftlb": 265,
+          "lubricated_ftlb": 200
+        },
+        "7/8": {
+          "dry_ftlb": 420,
+          "lubricated_ftlb": 315
+        },
+        "1": {
+          "dry_ftlb": 640,
+          "lubricated_ftlb": 480
+        },
+        "1-1/8": {
+          "dry_ftlb": 950,
+          "lubricated_ftlb": 710
+        },
+        "1-1/4": {
+          "dry_ftlb": 1320,
+          "lubricated_ftlb": 990
+        }
+      }
+    },
+    "materials": {
+      "carbon_steel": {
+        "A36": {
+          "designation": "A36",
+          "type": "Carbon Steel",
+          "yield_strength_ksi": 36,
+          "tensile_strength_ksi": 58,
+          "elongation_pct": 20,
+          "density_lb_in3": 0.284,
+          "modulus_elasticity_ksi": 29000,
+          "poissons_ratio": 0.26,
+          "thermal_expansion_in_in_F": 6.5e-06,
+          "max_temperature_F": 650,
+          "weldable": true,
+          "bend_radius_factor": 1.0,
+          "typical_uses": [
+            "Structural shapes",
+            "Plates",
+            "Bars"
+          ]
+        },
+        "A572-50": {
+          "designation": "A572 Grade 50",
+          "type": "HSLA Steel",
+          "yield_strength_ksi": 50,
+          "tensile_strength_ksi": 65,
+          "elongation_pct": 18,
+          "density_lb_in3": 0.284,
+          "modulus_elasticity_ksi": 29000,
+          "poissons_ratio": 0.26,
+          "thermal_expansion_in_in_F": 6.5e-06,
+          "max_temperature_F": 650,
+          "weldable": true,
+          "bend_radius_factor": 1.5,
+          "typical_uses": [
+            "High-strength structural",
+            "Columns",
+            "Beams"
+          ]
+        },
+        "A516-70": {
+          "designation": "A516 Grade 70",
+          "type": "Pressure Vessel Steel",
+          "yield_strength_ksi": 38,
+          "tensile_strength_ksi": 70,
+          "elongation_pct": 21,
+          "density_lb_in3": 0.284,
+          "modulus_elasticity_ksi": 29000,
+          "poissons_ratio": 0.26,
+          "thermal_expansion_in_in_F": 6.5e-06,
+          "max_temperature_F": 650,
+          "weldable": true,
+          "bend_radius_factor": 1.0,
+          "impact_tested": true,
+          "typical_uses": [
+            "Pressure vessels",
+            "Boilers",
+            "Heat exchangers"
+          ]
+        }
+      },
+      "stainless_steel": {
+        "304": {
+          "designation": "304 Stainless",
+          "type": "Austenitic Stainless",
+          "yield_strength_ksi": 30,
+          "tensile_strength_ksi": 75,
+          "elongation_pct": 40,
+          "density_lb_in3": 0.289,
+          "modulus_elasticity_ksi": 28000,
+          "poissons_ratio": 0.27,
+          "thermal_expansion_in_in_F": 9.6e-06,
+          "max_temperature_F": 1500,
+          "weldable": true,
+          "bend_radius_factor": 2.0,
+          "corrosion_resistant": true,
+          "typical_uses": [
+            "Food processing",
+            "Chemical equipment",
+            "Architectural"
+          ]
+        },
+        "316": {
+          "designation": "316 Stainless",
+          "type": "Austenitic Stainless",
+          "yield_strength_ksi": 30,
+          "tensile_strength_ksi": 75,
+          "elongation_pct": 40,
+          "density_lb_in3": 0.289,
+          "modulus_elasticity_ksi": 28000,
+          "poissons_ratio": 0.27,
+          "thermal_expansion_in_in_F": 9.6e-06,
+          "max_temperature_F": 1500,
+          "weldable": true,
+          "bend_radius_factor": 2.0,
+          "corrosion_resistant": true,
+          "chloride_resistant": true,
+          "typical_uses": [
+            "Marine",
+            "Chemical processing",
+            "Pharmaceuticals"
+          ]
+        }
+      },
+      "aluminum": {
+        "6061-T6": {
+          "designation": "6061-T6",
+          "type": "Aluminum Alloy",
+          "yield_strength_ksi": 40,
+          "tensile_strength_ksi": 45,
+          "elongation_pct": 12,
+          "density_lb_in3": 0.098,
+          "modulus_elasticity_ksi": 10000,
+          "poissons_ratio": 0.33,
+          "thermal_expansion_in_in_F": 1.31e-05,
+          "max_temperature_F": 350,
+          "weldable": true,
+          "bend_radius_factor": 1.0,
+          "corrosion_resistant": true,
+          "typical_uses": [
+            "Structural frames",
+            "Marine",
+            "Aerospace"
+          ]
+        },
+        "1100": {
+          "designation": "1100 Aluminum",
+          "type": "Pure Aluminum",
+          "yield_strength_ksi": 5,
+          "tensile_strength_ksi": 13,
+          "elongation_pct": 35,
+          "density_lb_in3": 0.098,
+          "modulus_elasticity_ksi": 10000,
+          "poissons_ratio": 0.33,
+          "thermal_expansion_in_in_F": 1.31e-05,
+          "max_temperature_F": 400,
+          "weldable": true,
+          "bend_radius_factor": 0.5,
+          "thermal_conductivity": "Excellent",
+          "typical_uses": [
+            "Finned tubes",
+            "Heat exchangers",
+            "Chemical equipment"
+          ]
+        }
+      },
+      "tube_materials": {
+        "A179": {
+          "designation": "A179 Seamless",
+          "type": "Carbon Steel Tube",
+          "yield_strength_ksi": 30,
+          "tensile_strength_ksi": 47,
+          "density_lb_in3": 0.284,
+          "max_temperature_F": 650,
+          "typical_uses": [
+            "Heat exchanger tubes",
+            "Boiler tubes"
+          ]
+        },
+        "A214": {
+          "designation": "A214 ERW",
+          "type": "Carbon Steel Tube",
+          "yield_strength_ksi": 30,
+          "tensile_strength_ksi": 55,
+          "density_lb_in3": 0.284,
+          "max_temperature_F": 650,
+          "typical_uses": [
+            "Heat exchanger tubes",
+            "Condenser tubes"
+          ]
+        },
+        "A213-T11": {
+          "designation": "A213 Grade T11",
+          "type": "Alloy Steel Tube",
+          "yield_strength_ksi": 30,
+          "tensile_strength_ksi": 60,
+          "density_lb_in3": 0.284,
+          "max_temperature_F": 1000,
+          "alloy_content": "1.25Cr-0.5Mo",
+          "typical_uses": [
+            "High-temperature heat exchangers"
+          ]
+        },
+        "A213-T5": {
+          "designation": "A213 Grade T5",
+          "type": "Alloy Steel Tube",
+          "yield_strength_ksi": 30,
+          "tensile_strength_ksi": 60,
+          "density_lb_in3": 0.284,
+          "max_temperature_F": 1100,
+          "alloy_content": "5Cr-0.5Mo",
+          "typical_uses": [
+            "High-temperature service",
+            "Refinery equipment"
+          ]
+        }
+      },
+      "flange_materials": {
+        "A105": {
+          "designation": "A105",
+          "type": "Carbon Steel Forging",
+          "yield_strength_ksi": 36,
+          "tensile_strength_ksi": 70,
+          "max_temperature_F": 650,
+          "typical_uses": [
+            "Flanges",
+            "Fittings",
+            "Valves"
+          ]
+        },
+        "A350-LF2": {
+          "designation": "A350 LF2",
+          "type": "Low-Temperature Carbon Steel",
+          "yield_strength_ksi": 40,
+          "tensile_strength_ksi": 70,
+          "max_temperature_F": 650,
+          "min_temperature_F": -50,
+          "impact_tested": true,
+          "typical_uses": [
+            "Low-temp flanges",
+            "Low-temp forgings"
+          ]
+        }
+      },
+      "sheet_gauges": {
+        "10GA": {
+          "gauge": 10,
+          "thickness_in": 0.1345,
+          "weight_per_sqft_lb": 5.49
+        },
+        "11GA": {
+          "gauge": 11,
+          "thickness_in": 0.1196,
+          "weight_per_sqft_lb": 4.88
+        },
+        "12GA": {
+          "gauge": 12,
+          "thickness_in": 0.1046,
+          "weight_per_sqft_lb": 4.27
+        },
+        "14GA": {
+          "gauge": 14,
+          "thickness_in": 0.0747,
+          "weight_per_sqft_lb": 3.05
+        },
+        "16GA": {
+          "gauge": 16,
+          "thickness_in": 0.0598,
+          "weight_per_sqft_lb": 2.44
+        },
+        "18GA": {
+          "gauge": 18,
+          "thickness_in": 0.0478,
+          "weight_per_sqft_lb": 1.95
+        },
+        "20GA": {
+          "gauge": 20,
+          "thickness_in": 0.0359,
+          "weight_per_sqft_lb": 1.47
+        }
+      }
+    },
+    "pipe_schedules": {
+      "pipe_sizes": {
+        "1/2": {
+          "NPS": "1/2",
+          "OD": 0.84,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.109,
+              "ID": 0.622,
+              "weight_per_ft": 0.85
+            },
+            "80": {
+              "wall_thickness": 0.147,
+              "ID": 0.546,
+              "weight_per_ft": 1.09
+            },
+            "160": {
+              "wall_thickness": 0.188,
+              "ID": 0.464,
+              "weight_per_ft": 1.31
+            },
+            "XXS": {
+              "wall_thickness": 0.294,
+              "ID": 0.252,
+              "weight_per_ft": 1.71
+            }
+          }
+        },
+        "3/4": {
+          "NPS": "3/4",
+          "OD": 1.05,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.113,
+              "ID": 0.824,
+              "weight_per_ft": 1.13
+            },
+            "80": {
+              "wall_thickness": 0.154,
+              "ID": 0.742,
+              "weight_per_ft": 1.47
+            },
+            "160": {
+              "wall_thickness": 0.219,
+              "ID": 0.612,
+              "weight_per_ft": 1.94
+            },
+            "XXS": {
+              "wall_thickness": 0.308,
+              "ID": 0.434,
+              "weight_per_ft": 2.44
+            }
+          }
+        },
+        "1": {
+          "NPS": "1",
+          "OD": 1.315,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.133,
+              "ID": 1.049,
+              "weight_per_ft": 1.68
+            },
+            "80": {
+              "wall_thickness": 0.179,
+              "ID": 0.957,
+              "weight_per_ft": 2.17
+            },
+            "160": {
+              "wall_thickness": 0.25,
+              "ID": 0.815,
+              "weight_per_ft": 2.84
+            },
+            "XXS": {
+              "wall_thickness": 0.358,
+              "ID": 0.599,
+              "weight_per_ft": 3.66
+            }
+          }
+        },
+        "2": {
+          "NPS": "2",
+          "OD": 2.375,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.154,
+              "ID": 2.067,
+              "weight_per_ft": 3.65
+            },
+            "80": {
+              "wall_thickness": 0.218,
+              "ID": 1.939,
+              "weight_per_ft": 5.02
+            },
+            "160": {
+              "wall_thickness": 0.344,
+              "ID": 1.687,
+              "weight_per_ft": 7.44
+            },
+            "XXS": {
+              "wall_thickness": 0.436,
+              "ID": 1.503,
+              "weight_per_ft": 9.03
+            }
+          }
+        },
+        "3": {
+          "NPS": "3",
+          "OD": 3.5,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.216,
+              "ID": 3.068,
+              "weight_per_ft": 7.58
+            },
+            "80": {
+              "wall_thickness": 0.3,
+              "ID": 2.9,
+              "weight_per_ft": 10.25
+            },
+            "160": {
+              "wall_thickness": 0.438,
+              "ID": 2.624,
+              "weight_per_ft": 14.32
+            },
+            "XXS": {
+              "wall_thickness": 0.6,
+              "ID": 2.3,
+              "weight_per_ft": 18.58
+            }
+          }
+        },
+        "4": {
+          "NPS": "4",
+          "OD": 4.5,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.237,
+              "ID": 4.026,
+              "weight_per_ft": 10.79
+            },
+            "80": {
+              "wall_thickness": 0.337,
+              "ID": 3.826,
+              "weight_per_ft": 14.98
+            },
+            "160": {
+              "wall_thickness": 0.531,
+              "ID": 3.438,
+              "weight_per_ft": 22.51
+            },
+            "XXS": {
+              "wall_thickness": 0.674,
+              "ID": 3.152,
+              "weight_per_ft": 27.54
+            }
+          }
+        },
+        "6": {
+          "NPS": "6",
+          "OD": 6.625,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.28,
+              "ID": 6.065,
+              "weight_per_ft": 18.97
+            },
+            "80": {
+              "wall_thickness": 0.432,
+              "ID": 5.761,
+              "weight_per_ft": 28.57
+            },
+            "160": {
+              "wall_thickness": 0.719,
+              "ID": 5.187,
+              "weight_per_ft": 45.3
+            },
+            "XXS": {
+              "wall_thickness": 0.864,
+              "ID": 4.897,
+              "weight_per_ft": 53.16
+            }
+          }
+        },
+        "8": {
+          "NPS": "8",
+          "OD": 8.625,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.322,
+              "ID": 7.981,
+              "weight_per_ft": 28.55
+            },
+            "80": {
+              "wall_thickness": 0.5,
+              "ID": 7.625,
+              "weight_per_ft": 43.39
+            },
+            "160": {
+              "wall_thickness": 0.906,
+              "ID": 6.813,
+              "weight_per_ft": 72.42
+            },
+            "XXS": {
+              "wall_thickness": 0.875,
+              "ID": 6.875,
+              "weight_per_ft": 72.42
+            }
+          }
+        },
+        "10": {
+          "NPS": "10",
+          "OD": 10.75,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.365,
+              "ID": 10.02,
+              "weight_per_ft": 40.48
+            },
+            "80": {
+              "wall_thickness": 0.593,
+              "ID": 9.564,
+              "weight_per_ft": 64.43
+            },
+            "160": {
+              "wall_thickness": 1.125,
+              "ID": 8.5,
+              "weight_per_ft": 115.65
+            },
+            "XXS": {
+              "wall_thickness": 1.0,
+              "ID": 8.75,
+              "weight_per_ft": 104.13
+            }
+          }
+        },
+        "12": {
+          "NPS": "12",
+          "OD": 12.75,
+          "schedules": {
+            "40": {
+              "wall_thickness": 0.406,
+              "ID": 11.938,
+              "weight_per_ft": 53.52
+            },
+            "80": {
+              "wall_thickness": 0.687,
+              "ID": 11.376,
+              "weight_per_ft": 88.51
+            },
+            "160": {
+              "wall_thickness": 1.312,
+              "ID": 10.126,
+              "weight_per_ft": 160.27
+            },
+            "XXS": {
+              "wall_thickness": 1.0,
+              "ID": 10.75,
+              "weight_per_ft": 125.49
+            }
+          }
+        }
+      }
+    },
+    "api_661_data": {
+      "fan_tip_clearances": {
+        "4-5ft": {
+          "min_dia_ft": 4,
+          "max_dia_ft": 5,
+          "max_clearance_in": 0.375
+        },
+        "6-8ft": {
+          "min_dia_ft": 6,
+          "max_dia_ft": 8,
+          "max_clearance_in": 0.5
+        },
+        "9-12ft": {
+          "min_dia_ft": 9,
+          "max_dia_ft": 12,
+          "max_clearance_in": 0.625
+        },
+        "13-18ft": {
+          "min_dia_ft": 13,
+          "max_dia_ft": 18,
+          "max_clearance_in": 0.75
+        },
+        "19-28ft": {
+          "min_dia_ft": 19,
+          "max_dia_ft": 28,
+          "max_clearance_in": 1.0
+        },
+        ">28ft": {
+          "min_dia_ft": 28,
+          "max_dia_ft": 999,
+          "max_clearance_in": 1.25
+        }
+      },
+      "fan_balance_grades": {
+        "BV-3": {
+          "grade": "BV-3",
+          "description": "High precision",
+          "velocity_mm_s": 3.0,
+          "typical_application": "High-speed fans, >3600 RPM"
+        },
+        "BV-7": {
+          "grade": "BV-7",
+          "description": "Standard",
+          "velocity_mm_s": 7.0,
+          "typical_application": "Standard ACHE fans, 1200-3600 RPM"
+        },
+        "BV-11": {
+          "grade": "BV-11",
+          "description": "Commercial",
+          "velocity_mm_s": 11.0,
+          "typical_application": "Low-speed fans, <1200 RPM"
+        }
+      },
+      "vibration_limits": {
+        "alarm": {
+          "displacement_in_pp": 0.2,
+          "description": "High vibration alarm"
+        },
+        "shutdown": {
+          "displacement_in_pp": 0.5,
+          "description": "Automatic shutdown"
+        }
+      },
+      "header_plate_thickness": {
+        "notes": "Per API 661 Table 1 - Minimum thickness based on pressure and span",
+        "typical_ranges": {
+          "150_psig": {
+            "min_thickness_in": 0.375,
+            "max_span_in": 48
+          },
+          "300_psig": {
+            "min_thickness_in": 0.5,
+            "max_span_in": 48
+          },
+          "600_psig": {
+            "min_thickness_in": 0.75,
+            "max_span_in": 48
+          }
+        }
+      },
+      "tube_specifications": {
+        "common_sizes": {
+          "1_inch": {
+            "OD": 1.0,
+            "common_wall_BWG": [
+              12,
+              14,
+              16
+            ],
+            "BWG_12": {
+              "wall_thickness": 0.109,
+              "ID": 0.782
+            },
+            "BWG_14": {
+              "wall_thickness": 0.083,
+              "ID": 0.834
+            },
+            "BWG_16": {
+              "wall_thickness": 0.065,
+              "ID": 0.87
+            }
+          }
+        },
+        "fin_types": {
+          "extruded": {
+            "type": "Extruded Aluminum",
+            "max_temperature_F": 400,
+            "thermal_bond": "Excellent",
+            "typical_fpi": [
+              9,
+              10,
+              11
+            ]
+          },
+          "embedded": {
+            "type": "Embedded L-Foot",
+            "max_temperature_F": 750,
+            "thermal_bond": "Good",
+            "typical_fpi": [
+              7,
+              8,
+              9,
+              10
+            ]
+          },
+          "tension_wound": {
+            "type": "Tension Wound",
+            "max_temperature_F": 1000,
+            "thermal_bond": "Fair",
+            "typical_fpi": [
+              6,
+              7,
+              8
+            ]
+          }
+        }
+      },
+      "osha_requirements": {
+        "platforms": {
+          "min_width_in": 30,
+          "load_rating_psf": 50,
+          "handrail_height_in": 42,
+          "handrail_tolerance_in": 3,
+          "midrail_height_in": 21,
+          "toeboard_height_in": 4
+        },
+        "ladders": {
+          "rung_spacing_in": 12,
+          "rung_diameter_in": 0.75,
+          "side_rail_clearance_in": 7,
+          "cage_required_above_ft": 20,
+          "landing_required_every_ft": 30
+        },
+        "stairs": {
+          "min_width_in": 22,
+          "min_tread_depth_in": 9.5,
+          "max_riser_height_in": 7.5,
+          "handrail_height_min_in": 30,
+          "handrail_height_max_in": 37
+        }
+      }
+    }
+  },
+  "additional_standards": {}
+}

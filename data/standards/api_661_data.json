@@ -1,0 +1,103 @@
+{
+  "fan_tip_clearances": {
+    "4-5ft": {"min_dia_ft": 4, "max_dia_ft": 5, "max_clearance_in": 0.375},
+    "6-8ft": {"min_dia_ft": 6, "max_dia_ft": 8, "max_clearance_in": 0.500},
+    "9-12ft": {"min_dia_ft": 9, "max_dia_ft": 12, "max_clearance_in": 0.625},
+    "13-18ft": {"min_dia_ft": 13, "max_dia_ft": 18, "max_clearance_in": 0.750},
+    "19-28ft": {"min_dia_ft": 19, "max_dia_ft": 28, "max_clearance_in": 1.000},
+    ">28ft": {"min_dia_ft": 28, "max_dia_ft": 999, "max_clearance_in": 1.250}
+  },
+  "fan_balance_grades": {
+    "BV-3": {
+      "grade": "BV-3",
+      "description": "High precision",
+      "velocity_mm_s": 3.0,
+      "typical_application": "High-speed fans, >3600 RPM"
+    },
+    "BV-7": {
+      "grade": "BV-7",
+      "description": "Standard",
+      "velocity_mm_s": 7.0,
+      "typical_application": "Standard ACHE fans, 1200-3600 RPM"
+    },
+    "BV-11": {
+      "grade": "BV-11",
+      "description": "Commercial",
+      "velocity_mm_s": 11.0,
+      "typical_application": "Low-speed fans, <1200 RPM"
+    }
+  },
+  "vibration_limits": {
+    "alarm": {
+      "displacement_in_pp": 0.2,
+      "description": "High vibration alarm"
+    },
+    "shutdown": {
+      "displacement_in_pp": 0.5,
+      "description": "Automatic shutdown"
+    }
+  },
+  "header_plate_thickness": {
+    "notes": "Per API 661 Table 1 - Minimum thickness based on pressure and span",
+    "typical_ranges": {
+      "150_psig": {"min_thickness_in": 0.375, "max_span_in": 48},
+      "300_psig": {"min_thickness_in": 0.500, "max_span_in": 48},
+      "600_psig": {"min_thickness_in": 0.750, "max_span_in": 48}
+    }
+  },
+  "tube_specifications": {
+    "common_sizes": {
+      "1_inch": {
+        "OD": 1.000,
+        "common_wall_BWG": [12, 14, 16],
+        "BWG_12": {"wall_thickness": 0.109, "ID": 0.782},
+        "BWG_14": {"wall_thickness": 0.083, "ID": 0.834},
+        "BWG_16": {"wall_thickness": 0.065, "ID": 0.870}
+      }
+    },
+    "fin_types": {
+      "extruded": {
+        "type": "Extruded Aluminum",
+        "max_temperature_F": 400,
+        "thermal_bond": "Excellent",
+        "typical_fpi": [9, 10, 11]
+      },
+      "embedded": {
+        "type": "Embedded L-Foot",
+        "max_temperature_F": 750,
+        "thermal_bond": "Good",
+        "typical_fpi": [7, 8, 9, 10]
+      },
+      "tension_wound": {
+        "type": "Tension Wound",
+        "max_temperature_F": 1000,
+        "thermal_bond": "Fair",
+        "typical_fpi": [6, 7, 8]
+      }
+    }
+  },
+  "osha_requirements": {
+    "platforms": {
+      "min_width_in": 30,
+      "load_rating_psf": 50,
+      "handrail_height_in": 42,
+      "handrail_tolerance_in": 3,
+      "midrail_height_in": 21,
+      "toeboard_height_in": 4
+    },
+    "ladders": {
+      "rung_spacing_in": 12,
+      "rung_diameter_in": 0.75,
+      "side_rail_clearance_in": 7,
+      "cage_required_above_ft": 20,
+      "landing_required_every_ft": 30
+    },
+    "stairs": {
+      "min_width_in": 22,
+      "min_tread_depth_in": 9.5,
+      "max_riser_height_in": 7.5,
+      "handrail_height_min_in": 30,
+      "handrail_height_max_in": 37
+    }
+  }
+}
