@@ -40,12 +40,22 @@
 - [ ] Get Tailscale auth key from https://login.tailscale.com/admin/settings/keys
 - [ ] Add `TAILSCALE_AUTHKEY` to Render environment
 
-### **4. Local Development**
+### 4. Local Development
 - [ ] Python 3.11 installed
 - [ ] Node.js 18+ installed
 - [ ] SolidWorks/Inventor installed (if using CAD features)
 - [ ] Playwright installed: `pip install playwright && playwright install chromium`
 - [ ] All `requirements.txt` dependencies installed
+
+### 5. Logging
+- [ ] Verify that logs are being written to `storage/logs/vulcan.log`.
+- [ ] Check that the log format is JSON.
+- [ ] Confirm that log rotation is working as expected (logs should be rotated after 10MB).
+
+### 6. Backup and Restore
+- [ ] Verify that daily backups are being created by the System Manager.
+- [ ] Test the restore process using the `scripts/restore_backup.py` script.
+- [ ] For more details, see `docs/BACKUP_AND_RESTORE.md`.
 
 ---
 

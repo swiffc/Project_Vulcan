@@ -23,6 +23,9 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import yaml
 import pyautogui
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
 
 # Import controllers
 from controllers import mouse_router, keyboard_router, screen_router, window_router
@@ -47,11 +50,8 @@ except ImportError:
     logger.warning("CAD validation module not available - install validation dependencies")
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("vulcan_actions.log"), logging.StreamHandler()],
-)
+from core.logging_config import setup_logging
+setup_logging()
 logger = logging.getLogger(__name__)
 
 # Import CAD COM adapters (optional - only if CAD software is installed)
