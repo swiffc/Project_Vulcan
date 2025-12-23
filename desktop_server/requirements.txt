@@ -38,3 +38,9 @@ anthropic==0.18.1
 
 # Monitoring
 psutil==5.9.8
+
+# Browser Automation (Optional for specific agents)
+playwright==1.41.1
+
+# API Client
+httpx==0.26.0

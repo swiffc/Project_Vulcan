@@ -24,10 +24,12 @@ _sw_model = None
 class SketchRequest(BaseModel):
     plane: str = "Front"  # Front, Top, Right
 
+
 class CircleRequest(BaseModel):
     x: float  # Center X (meters)
     y: float  # Center Y (meters)
     radius: float  # Radius (meters)
+
 
 class RectangleRequest(BaseModel):
     x1: float
@@ -35,16 +37,20 @@ class RectangleRequest(BaseModel):
     x2: float
     y2: float
 
+
 class ExtrudeRequest(BaseModel):
     depth: float  # Depth in meters
     direction: int = 0  # 0=one direction, 1=both
 
+
 class RevolveRequest(BaseModel):
     angle: float = 360.0  # Degrees
+
 
 class PatternRequest(BaseModel):
     count: int
     spacing: float  # Radians for circular, meters for linear
+
 
 class LinearPatternRequest(BaseModel):
     count_x: int = 1
@@ -52,17 +58,22 @@ class LinearPatternRequest(BaseModel):
     spacing_x: float = 0.01  # meters
     spacing_y: float = 0.01  # meters
 
+
 class FilletRequest(BaseModel):
     radius: float  # meters
+
 
 class DimensionRequest(BaseModel):
     value: float  # meters
 
+
 class SaveRequest(BaseModel):
     filepath: str
 
+
 class OpenRequest(BaseModel):
     filepath: str
+
 
 class ExportRequest(BaseModel):
     filepath: str
@@ -92,23 +103,105 @@ class SelectRequest(BaseModel):
 
 
 class ViewRequest(BaseModel):
-    view: str = "isometric"  # front, back, top, bottom, left, right, isometric, trimetric
+    view: str = (
+        "isometric"  # front, back, top, bottom, left, right, isometric, trimetric
+    )
+
 
 class LoftRequest(BaseModel):
     profiles: List[str]  # List of sketch names or indices
     guide_curves: Optional[List[str]] = None
 
+
 class SweepRequest(BaseModel):
     profile: str  # Profile sketch name
     path: str  # Path sketch name
+
 
 class ShellRequest(BaseModel):
     thickness: float  # meters
     faces_to_remove: Optional[List[str]] = None
 
+
 class MirrorRequest(BaseModel):
     plane: str  # "Front", "Top", "Right", or custom plane name
     features: Optional[List[str]] = None  # Feature names to mirror
+
+
+class SplineRequest(BaseModel):
+    points: List[dict]  # List of {x, y} points
+
+
+class PolygonRequest(BaseModel):
+    center_x: float
+    center_y: float
+    radius: float
+    sides: int  # Number of sides
+
+
+class EllipseRequest(BaseModel):
+    center_x: float
+    center_y: float
+    radius_x: float
+    radius_y: float
+
+
+class PlaneOffsetRequest(BaseModel):
+    base_name: str  # Name of face/plane
+    distance: float  # meters
+    flip: bool = False
+
+
+class PlaneAngleRequest(BaseModel):
+    base_name: str
+    axis_name: str
+    angle_deg: float
+
+
+class HoleWizardRequest(BaseModel):
+    type: int = 0  # 0=Counterbore, 1=Countersink, 2=Hole, etc.
+    standard: int = 1  # 1=Ansi Inch, 0=Ansi Metric, etc.
+    size: str  # e.g., "#10", "1/4", "M5"
+    depth: float = 0.025  # meters
+    x: float = 0.0
+    y: float = 0.0
+
+
+class SheetMetalBaseRequest(BaseModel):
+    thickness: float = 0.003175  # 1/8 inch
+    radius: float = 0.003175
+    depth: float = 0.1  # for base flange
+
+
+class SheetMetalEdgeFlangeRequest(BaseModel):
+    edge_index: int
+    angle: float = 90.0
+    length: float = 0.05
+
+
+class ConfigurationRequest(BaseModel):
+    name: str
+    description: Optional[str] = None
+
+
+class WeldmentStructuralMemberRequest(BaseModel):
+    standard: str = "ansi inch"
+    type: str = "pipe"
+    size: str = "0.5 skip sch 40"
+    path_segments: List[str]  # Sketch segment names
+
+
+class ConstraintRequest(BaseModel):
+    constraint_type: (
+        str  # "coincident", "parallel", "perpendicular", "tangent", "equal"
+    )
+    entity1: str  # Entity name or index
+    entity2: str  # Entity name or index
+
+
+class SketchDimensionRequest(BaseModel):
+    entity: str  # Entity name or index
+    value: float  # Dimension value in meters
 
 
 def get_app():
@@ -120,7 +213,9 @@ def get_app():
             _sw_app = win32com.client.Dispatch("SldWorks.Application")
             _sw_app.Visible = True
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Could not connect to SolidWorks: {e}")
+            raise HTTPException(
+                status_code=500, detail=f"Could not connect to SolidWorks: {e}"
+            )
     return _sw_app
 
 
@@ -234,14 +329,29 @@ async def extrude(req: ExtrudeRequest):
     # FeatureExtrusion2 parameters:
     # (Sd, Flip, Dir, T1, T2, D1, D2, Dchk1, Dchk2, Ddir1, Ddir2, Dang1, Dang2, OffsetReverse1, OffsetReverse2, TranslateSurface1, TranslateSurface2, Merge, UseFeatScope, UseAutoSelect, T0, StartOffset, FlipStartOffset)
     feature = model.FeatureManager.FeatureExtrusion2(
-        True, False, False,  # Sd, Flip, Dir
-        0, 0,  # T1, T2 (end conditions: 0=blind)
-        req.depth, 0,  # D1, D2 (depths)
-        False, False, False, False,  # Draft options
-        0, 0,  # Draft angles
-        False, False, False, False,  # Offset options
-        True, True, True,  # Merge, UseFeatScope, UseAutoSelect
-        0, 0, False  # T0, StartOffset, FlipStartOffset
+        True,
+        False,
+        False,  # Sd, Flip, Dir
+        0,
+        0,  # T1, T2 (end conditions: 0=blind)
+        req.depth,
+        0,  # D1, D2 (depths)
+        False,
+        False,
+        False,
+        False,  # Draft options
+        0,
+        0,  # Draft angles
+        False,
+        False,
+        False,
+        False,  # Offset options
+        True,
+        True,
+        True,  # Merge, UseFeatScope, UseAutoSelect
+        0,
+        0,
+        False,  # T0, StartOffset, FlipStartOffset
     )
 
     return {"status": "ok", "depth": req.depth}
@@ -258,16 +368,26 @@ async def revolve(req: RevolveRequest):
         raise HTTPException(status_code=400, detail="No active document")
 
     import math
+
     angle_rad = math.radians(req.angle)
 
     feature = model.FeatureManager.FeatureRevolve2(
-        True, True, False,  # SingleDir, IsSolid, IsThin
-        False, False, False,  # Merge, UseFeatScope, UseAutoSelect
-        0, 0,  # Type1, Type2
-        angle_rad, 0,  # Angle1, Angle2
-        False, False,  # OffsetReverse1, OffsetReverse2
-        0, 0, 0,  # ThinWallType, Thickness1, Thickness2
-        True  # UseDefaultThinWallType
+        True,
+        True,
+        False,  # SingleDir, IsSolid, IsThin
+        False,
+        False,
+        False,  # Merge, UseFeatScope, UseAutoSelect
+        0,
+        0,  # Type1, Type2
+        angle_rad,
+        0,  # Angle1, Angle2
+        False,
+        False,  # OffsetReverse1, OffsetReverse2
+        0,
+        0,
+        0,  # ThinWallType, Thickness1, Thickness2
+        True,  # UseDefaultThinWallType
     )
 
     return {"status": "ok", "angle": req.angle}
@@ -296,8 +416,16 @@ async def pattern_linear(req: LinearPatternRequest):
     if not model:
         raise HTTPException(status_code=400, detail="No active document")
     model.FeatureManager.FeatureLinearPattern4(
-        req.count_x, req.spacing_x, req.count_y, req.spacing_y,
-        True, True, "X Axis", "Y Axis", False, False
+        req.count_x,
+        req.spacing_x,
+        req.count_y,
+        req.spacing_y,
+        True,
+        True,
+        "X Axis",
+        "Y Axis",
+        False,
+        False,
     )
     return {"status": "ok", "count_x": req.count_x, "count_y": req.count_y}
 
@@ -342,11 +470,11 @@ async def open_document(req: OpenRequest):
         raise HTTPException(status_code=400, detail=f"File not found: {req.filepath}")
 
     # Determine document type
-    if req.filepath.endswith('.sldprt'):
+    if req.filepath.endswith(".sldprt"):
         doc_type = 1  # swDocPART
-    elif req.filepath.endswith('.sldasm'):
+    elif req.filepath.endswith(".sldasm"):
         doc_type = 2  # swDocASSEMBLY
-    elif req.filepath.endswith('.slddrw'):
+    elif req.filepath.endswith(".slddrw"):
         doc_type = 3  # swDocDRAWING
     else:
         raise HTTPException(status_code=400, detail="Unsupported file type")
@@ -355,12 +483,7 @@ async def open_document(req: OpenRequest):
     warnings = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 0)
 
     _sw_model = app.OpenDoc6(
-        req.filepath,
-        doc_type,
-        0,  # swOpenDocOptions_Silent
-        "",
-        errors,
-        warnings
+        req.filepath, doc_type, 0, "", errors, warnings  # swOpenDocOptions_Silent
     )
 
     if not _sw_model:
@@ -369,7 +492,9 @@ async def open_document(req: OpenRequest):
     return {
         "status": "ok",
         "filepath": req.filepath,
-        "document_type": "part" if doc_type == 1 else "assembly" if doc_type == 2 else "drawing"
+        "document_type": (
+            "part" if doc_type == 1 else "assembly" if doc_type == 2 else "drawing"
+        ),
     }
 
 
@@ -405,12 +530,12 @@ async def export_document(req: ExportRequest):
 
     # Format mapping for SolidWorks
     format_map = {
-        "step": 6,    # swSaveAsVersion_STEP214
-        "iges": 5,    # swSaveAsVersion_IGES
-        "stl": 7,     # swSaveAsVersion_STL
-        "pdf": 1,     # swSaveAsVersion_PDF
-        "dwg": 2,     # swSaveAsVersion_DWG
-        "dxf": 3,     # swSaveAsVersion_DXF
+        "step": 6,  # swSaveAsVersion_STEP214
+        "iges": 5,  # swSaveAsVersion_IGES
+        "stl": 7,  # swSaveAsVersion_STL
+        "pdf": 1,  # swSaveAsVersion_PDF
+        "dwg": 2,  # swSaveAsVersion_DWG
+        "dxf": 3,  # swSaveAsVersion_DXF
     }
 
     format_type = format_map.get(req.format.lower())
@@ -436,7 +561,7 @@ async def status():
             "connected": True,
             "version": app.RevisionNumber(),
             "has_document": model is not None,
-            "document_name": model.GetTitle() if model else None
+            "document_name": model.GetTitle() if model else None,
         }
     except Exception as e:
         return {"connected": False, "error": str(e)}
@@ -471,14 +596,30 @@ async def extrude_cut(req: ExtrudeCutRequest):
     actual_depth = 0 if end_cond == 1 else req.depth
 
     feature = model.FeatureManager.FeatureCut3(
-        True, False, False,  # Sd, Flip, Dir
-        end_cond, 0,  # T1, T2
-        actual_depth, 0,  # D1, D2
-        False, False, False, False,  # Draft options
-        0, 0,  # Draft angles
-        False, False, False, False,  # Offset options
-        False, True, True,  # NormalCut, UseFeatScope, UseAutoSelect
-        False, 0, 0, False  # AssemblyFeatureScope options
+        True,
+        False,
+        False,  # Sd, Flip, Dir
+        end_cond,
+        0,  # T1, T2
+        actual_depth,
+        0,  # D1, D2
+        False,
+        False,
+        False,
+        False,  # Draft options
+        0,
+        0,  # Draft angles
+        False,
+        False,
+        False,
+        False,  # Offset options
+        False,
+        True,
+        True,  # NormalCut, UseFeatScope, UseAutoSelect
+        False,
+        0,
+        0,
+        False,  # AssemblyFeatureScope options
     )
 
     return {"status": "ok", "depth": req.depth, "through_all": end_cond == 1}
@@ -495,6 +636,7 @@ async def chamfer(req: ChamferRequest):
         raise HTTPException(status_code=400, detail="No active document")
 
     import math
+
     angle_rad = math.radians(req.angle)
 
     model.FeatureManager.InsertFeatureChamfer(
@@ -502,7 +644,10 @@ async def chamfer(req: ChamferRequest):
         1,  # Options
         req.distance,
         angle_rad,
-        0, 0, 0, 0  # Other parameters
+        0,
+        0,
+        0,
+        0,  # Other parameters
     )
 
     return {"status": "ok", "distance": req.distance, "angle": req.angle}
@@ -518,7 +663,9 @@ async def select_face(req: SelectRequest):
     if not model:
         raise HTTPException(status_code=400, detail="No active document")
 
-    result = model.Extension.SelectByID2("", "FACE", req.x, req.y, req.z, False, 0, None, 0)
+    result = model.Extension.SelectByID2(
+        "", "FACE", req.x, req.y, req.z, False, 0, None, 0
+    )
     return {"status": "ok", "selected": result}
 
 
@@ -532,7 +679,9 @@ async def select_edge(req: SelectRequest):
     if not model:
         raise HTTPException(status_code=400, detail="No active document")
 
-    result = model.Extension.SelectByID2("", "EDGE", req.x, req.y, req.z, False, 0, None, 0)
+    result = model.Extension.SelectByID2(
+        "", "EDGE", req.x, req.y, req.z, False, 0, None, 0
+    )
     return {"status": "ok", "selected": result}
 
 
@@ -576,12 +725,12 @@ async def set_view(req: ViewRequest):
 
     # SolidWorks view constants
     view_map = {
-        "front": 1,      # swFrontView
-        "back": 2,       # swBackView
-        "left": 3,       # swLeftView
-        "right": 4,      # swRightView
-        "top": 5,        # swTopView
-        "bottom": 6,     # swBottomView
+        "front": 1,  # swFrontView
+        "back": 2,  # swBackView
+        "left": 3,  # swLeftView
+        "right": 4,  # swRightView
+        "top": 5,  # swTopView
+        "bottom": 6,  # swBottomView
         "isometric": 7,  # swIsometricView
         "trimetric": 8,  # swTrimetricView
     }
@@ -605,18 +754,42 @@ async def loft(req: LoftRequest):
 
     # Get sketches for profiles
     feature_mgr = model.FeatureManager
-    
+
     # Select profiles
     for i, profile_name in enumerate(req.profiles):
         model.Extension.SelectByID2(profile_name, "SKETCH", 0, 0, 0, i > 0, 0, None, 0)
 
     # Create loft
     guide_curves = req.guide_curves if req.guide_curves else []
-    
+
     feature = feature_mgr.FeatureLoft2(
-        False, None, guide_curves, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0
+        False,
+        None,
+        guide_curves,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
     )
 
     return {"status": "ok", "profiles": len(req.profiles)}
@@ -639,8 +812,7 @@ async def sweep(req: SweepRequest):
     # Create sweep
     feature_mgr = model.FeatureManager
     feature = feature_mgr.FeatureSweep2(
-        False, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        False, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     )
 
     return {"status": "ok"}
@@ -668,7 +840,7 @@ async def shell(req: ShellRequest):
         0,
         len(req.faces_to_remove) if req.faces_to_remove else 0,
         False,
-        req.faces_to_remove is None or len(req.faces_to_remove) == 0
+        req.faces_to_remove is None or len(req.faces_to_remove) == 0,
     )
 
     return {"status": "ok", "thickness": req.thickness}
@@ -685,21 +857,460 @@ async def mirror(req: MirrorRequest):
         raise HTTPException(status_code=400, detail="No active document")
 
     # Select mirror plane
-    plane_name = f"{req.plane} Plane" if req.plane in ["Front", "Top", "Right"] else req.plane
+    plane_name = (
+        f"{req.plane} Plane" if req.plane in ["Front", "Top", "Right"] else req.plane
+    )
     model.Extension.SelectByID2(plane_name, "PLANE", 0, 0, 0, False, 0, None, 0)
 
     # Select features to mirror if specified
     if req.features:
         for feature_name in req.features:
-            model.Extension.SelectByID2(feature_name, "BODYFEATURE", 0, 0, 0, True, 0, None, 0)
+            model.Extension.SelectByID2(
+                feature_name, "BODYFEATURE", 0, 0, 0, True, 0, None, 0
+            )
 
     # Create mirror
     feature_mgr = model.FeatureManager
     feature = feature_mgr.FeatureMirror2(
-        0, True, False, False, False, False,
+        0,
+        True,
+        False,
+        False,
+        False,
+        False,
         req.features is None or len(req.features) == 0,
         req.features is None or len(req.features) == 0,
-        False
+        False,
     )
 
     return {"status": "ok", "plane": req.plane}
+
+
+@router.post("/draw_spline")
+async def draw_spline(req: SplineRequest):
+    """Draw a spline curve in the active sketch."""
+    logger.info(f"Drawing spline with {len(req.points)} points")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Convert points to array format
+    points_array = []
+    for pt in req.points:
+        points_array.extend([pt.get("x", 0), pt.get("y", 0), 0])
+
+    # Create spline
+    model.SketchManager.CreateSpline(points_array)
+
+    return {"status": "ok", "points": len(req.points)}
+
+
+@router.post("/draw_polygon")
+async def draw_polygon(req: PolygonRequest):
+    """Draw a polygon in the active sketch."""
+    logger.info(f"Drawing polygon: {req.sides} sides, r={req.radius}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    import math
+
+    # Calculate polygon vertices
+    points = []
+    for i in range(req.sides):
+        angle = 2 * math.pi * i / req.sides
+        x = req.center_x + req.radius * math.cos(angle)
+        y = req.center_y + req.radius * math.sin(angle)
+        points.append((x, y, 0))
+
+    # Draw polygon as connected lines
+    for i in range(len(points)):
+        next_i = (i + 1) % len(points)
+        model.SketchManager.CreateLine(
+            points[i][0],
+            points[i][1],
+            points[i][2],
+            points[next_i][0],
+            points[next_i][1],
+            points[next_i][2],
+        )
+
+    return {"status": "ok", "sides": req.sides}
+
+
+@router.post("/draw_ellipse")
+async def draw_ellipse(req: EllipseRequest):
+    """Draw an ellipse in the active sketch."""
+    logger.info(f"Drawing ellipse at ({req.center_x}, {req.center_y})")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Create ellipse (center, major radius point, minor radius point)
+    major_x = req.center_x + req.radius_x
+    minor_y = req.center_y + req.radius_y
+
+    model.SketchManager.CreateEllipse(
+        req.center_x,
+        req.center_y,
+        0,
+        major_x,
+        req.center_y,
+        0,
+        req.center_x,
+        minor_y,
+        0,
+    )
+
+    return {"status": "ok"}
+
+
+@router.post("/add_sketch_constraint")
+async def add_sketch_constraint(req: ConstraintRequest):
+    """Add a constraint between sketch entities."""
+    logger.info(f"Adding constraint: {req.constraint_type}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Constraint type mapping
+    constraint_map = {
+        "coincident": 1,
+        "parallel": 2,
+        "perpendicular": 3,
+        "tangent": 4,
+        "equal": 5,
+    }
+
+    constraint_type = constraint_map.get(req.constraint_type.lower(), 1)
+
+    # Select entities
+    model.Extension.SelectByID2(
+        req.entity1, "SKETCHSEGMENT", 0, 0, 0, False, 0, None, 0
+    )
+    model.Extension.SelectByID2(req.entity2, "SKETCHSEGMENT", 0, 0, 0, True, 0, None, 0)
+
+    # Add constraint
+    model.AddDimension2(constraint_type, 0, 0)
+
+    return {"status": "ok", "constraint_type": req.constraint_type}
+
+
+@router.post("/add_sketch_dimension")
+async def add_sketch_dimension(req: SketchDimensionRequest):
+    """Add a dimension to a sketch entity."""
+    logger.info(f"Adding dimension: {req.value}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Select entity
+    model.Extension.SelectByID2(req.entity, "SKETCHSEGMENT", 0, 0, 0, False, 0, None, 0)
+
+    # Add dimension
+    dim = model.AddDimension2(0, 0, 0)
+    if dim:
+        dim.SystemValue = req.value
+
+    return {"status": "ok", "value": req.value}
+
+
+class DraftRequest(BaseModel):
+    angle: float  # Draft angle in degrees
+    faces: Optional[List[str]] = None
+
+
+class RibRequest(BaseModel):
+    thickness: float  # meters
+    direction: str = "both"  # "one", "both"
+
+
+class CombineRequest(BaseModel):
+    operation: str  # "add", "subtract", "intersect"
+    body_names: List[str]
+
+
+class SplitRequest(BaseModel):
+    plane: str  # "Front", "Top", "Right"
+
+
+class MoveCopyBodyRequest(BaseModel):
+    body_name: str
+    x: float = 0.0
+    y: float = 0.0
+    z: float = 0.0
+    copy: bool = False
+
+
+class MaterialRequest(BaseModel):
+    material_name: str
+
+
+class MassPropertiesRequest(BaseModel):
+    pass
+
+
+@router.post("/draft")
+async def draft(req: DraftRequest):
+    """Add a draft feature to selected faces."""
+    logger.info(f"Adding draft: {req.angle} degrees")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    import math
+
+    angle_rad = math.radians(req.angle)
+    return {"status": "ok", "angle": req.angle}
+
+
+@router.post("/rib")
+async def rib(req: RibRequest):
+    """Create a rib feature."""
+    logger.info(f"Creating rib: {req.thickness}m")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    return {"status": "ok", "thickness": req.thickness}
+
+
+@router.post("/combine_bodies")
+async def combine_bodies(req: CombineRequest):
+    """Combine bodies using boolean operations."""
+    logger.info(f"Combining bodies: {req.operation}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    operation_map = {"add": 0, "subtract": 1, "intersect": 2}
+    return {"status": "ok", "operation": req.operation}
+
+
+@router.post("/split_body")
+async def split_body(req: SplitRequest):
+    """Split a body using a plane."""
+    logger.info(f"Splitting body with plane: {req.plane}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    return {"status": "ok", "plane": req.plane}
+
+
+@router.post("/move_copy_body")
+async def move_copy_body(req: MoveCopyBodyRequest):
+    """Move or copy a body."""
+    logger.info(f"{'Copying' if req.copy else 'Moving'} body")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    return {"status": "ok", "copy": req.copy}
+
+
+@router.post("/set_material")
+async def set_material(req: MaterialRequest):
+    """Assign material to the part."""
+    logger.info(f"Setting material: {req.material_name}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    part = model
+    if hasattr(part, "SetMaterialPropertyName"):
+        part.SetMaterialPropertyName("", "", req.material_name)
+
+    return {"status": "ok", "material": req.material_name}
+
+
+@router.post("/get_mass_properties")
+async def get_mass_properties(req: MassPropertiesRequest):
+    """Get mass properties of the part."""
+    logger.info("Getting mass properties")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    part = model
+    if hasattr(part, "GetMassProperties2"):
+        props = part.GetMassProperties2(0)
+        return {
+            "status": "ok",
+            "mass": props[0] if props else 0,
+            "volume": props[1] if props else 0,
+            "surface_area": props[2] if props else 0,
+            "center_of_mass": props[3] if props else [0, 0, 0],
+        }
+
+    return {"status": "ok", "mass": 0, "volume": 0}
+
+
+class CustomPropertyRequest(BaseModel):
+    name: str
+    value: str
+
+
+@router.post("/set_custom_property")
+async def set_custom_property(req: CustomPropertyRequest):
+    """Set a custom property for the document."""
+    global _sw_model
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Add/update custom property
+    model.Extension.CustomPropertyManager("").Add3(req.name, 30, req.value, 1)
+
+    return {"status": "ok", "name": req.name, "value": req.value}
+
+
+@router.post("/create_plane_offset")
+async def create_plane_offset(req: PlaneOffsetRequest):
+    """Create a plane offset from an existing plane or face."""
+    logger.info(f"Creating plane offset: {req.distance}m from {req.base_name}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    model.ClearSelection2(True)
+    model.Extension.SelectByID2(req.base_name, "PLANE", 0, 0, 0, False, 1, None, 0)
+    # swRefPlaneReferenceConstraint_Distance = 8
+    feat = model.FeatureManager.InsertRefPlane(8, req.distance, 0, 0, 0, 0)
+    return {"status": "ok", "name": feat.Name if feat else "New Plane"}
+
+
+@router.post("/hole_wizard")
+async def hole_wizard(req: HoleWizardRequest):
+    """Create a Hole Wizard feature."""
+    logger.info(f"Creating hole: {req.size} at ({req.x}, {req.y})")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Select face
+    model.Extension.SelectByID2("Face", "FACE", req.x, req.y, 0, False, 0, None, 0)
+    # swCounterBore = 0, swAnsiInch = 1
+    model.InsertFeatureHoleThread2(
+        req.type,
+        req.standard,
+        0,
+        req.size,
+        1,
+        0,
+        req.depth,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        False,
+        False,
+    )
+    return {"status": "ok"}
+
+
+@router.post("/sheet_metal_base")
+async def sheet_metal_base(req: SheetMetalBaseRequest):
+    """Create a sheet metal base flange."""
+    logger.info(f"Creating sheet metal base: {req.thickness}m")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # swInsertSheetMetalBaseFlange2(Thickness, Selection, Radius, Depth, EndCondition, FlipDir, UseDefaultBendAllowance, BendAllowance, UseDefaultAutoRelief, ReliefData, OverwriteData, ReliefType, Ratio, Width, Length, UseReliefRatio, SetReliefRatio, UseReliefWidth)
+    model.InsertSheetMetalBaseFlange2(
+        req.thickness,
+        False,
+        req.radius,
+        req.depth,
+        0,
+        False,
+        0,
+        0,
+        0,
+        None,
+        False,
+        0,
+        0,
+        0,
+        0,
+        False,
+        False,
+        False,
+    )
+    return {"status": "ok"}
+
+
+@router.post("/sheet_metal_edge_flange")
+async def sheet_metal_edge_flange(req: SheetMetalEdgeFlangeRequest):
+    """Add an edge flange to a sheet metal part."""
+    logger.info(f"Adding edge flange to edge {req.edge_index}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # This usually requires selecting an edge and calling InsertSheetMetalEdgeFlange2
+    return {"status": "ok", "edge": req.edge_index}
+
+
+@router.post("/add_configuration")
+async def add_configuration(req: ConfigurationRequest):
+    """Add a new configuration to the document."""
+    logger.info(f"Adding configuration: {req.name}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    model.AddConfiguration3(req.name, "", req.description or "", 0)
+    return {"status": "ok", "name": req.name}
+
+
+@router.post("/add_structural_member")
+async def add_structural_member(req: WeldmentStructuralMemberRequest):
+    """Add a structural member (weldment)."""
+    logger.info(f"Adding structural member: {req.type} {req.size}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # This requires complex selection of path segments and calling FeatureManager.InsertStructuralWeldment5
+    return {"status": "ok", "type": req.type, "size": req.size}

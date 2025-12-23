@@ -38,15 +38,33 @@ except ImportError:
     solidworks_mate_refs_router = None
     SOLIDWORKS_MATE_REFS_AVAILABLE = False
 
+try:
+    from .solidworks_drawings import router as solidworks_drawings_router
+    SOLIDWORKS_DRAWINGS_AVAILABLE = True
+except ImportError:
+    solidworks_drawings_router = None
+    SOLIDWORKS_DRAWINGS_AVAILABLE = False
+
+try:
+    from .inventor_drawings import router as inventor_drawings_router
+    INVENTOR_DRAWINGS_AVAILABLE = True
+except ImportError:
+    inventor_drawings_router = None
+    INVENTOR_DRAWINGS_AVAILABLE = False
+
 __all__ = [
     "solidworks_router",
     "solidworks_assembly_router",
     "inventor_router",
     "inventor_imates_router",
     "solidworks_mate_refs_router",
+    "solidworks_drawings_router",
+    "inventor_drawings_router",
     "SOLIDWORKS_AVAILABLE",
     "SOLIDWORKS_ASSEMBLY_AVAILABLE",
     "INVENTOR_AVAILABLE",
     "INVENTOR_IMATES_AVAILABLE",
     "SOLIDWORKS_MATE_REFS_AVAILABLE",
+    "SOLIDWORKS_DRAWINGS_AVAILABLE",
+    "INVENTOR_DRAWINGS_AVAILABLE",
 ]

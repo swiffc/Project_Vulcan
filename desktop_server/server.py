@@ -25,43 +25,45 @@ import yaml
 import pyautogui
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent))
-
-# Import controllers
-from controllers import mouse_router, keyboard_router, screen_router, window_router
-from controllers import tradingview_router, TRADINGVIEW_AVAILABLE
-from controllers import browser_router, BROWSER_AVAILABLE
-from controllers import j2_tracker_router, J2_AVAILABLE
-
-# Import memory controller (optional - requires chromadb)
-try:
-    from controllers.memory import router as memory_router
-    MEMORY_AVAILABLE = True
-except ImportError:
-    MEMORY_AVAILABLE = False
-    logger.warning("Memory/RAG module not available - install chromadb and sentence-transformers")
-
-# Import CAD validation controller (optional - requires validators)
-try:
-    from controllers.cad_validation import router as cad_validation_router
-    CAD_VALIDATION_AVAILABLE = True
-except ImportError:
-    CAD_VALIDATION_AVAILABLE = False
-    logger.warning("CAD validation module not available - install validation dependencies")
 
 # Configure logging
 from core.logging_config import setup_logging
+
 setup_logging()
 logger = logging.getLogger(__name__)
+
+# Import controllers
+from controllers import (
+    mouse_router,
+    keyboard_router,
+    screen_router,
+    window_router,
+    tradingview_router,
+    TRADINGVIEW_AVAILABLE,
+    browser_router,
+    BROWSER_AVAILABLE,
+    j2_tracker_router,
+    J2_AVAILABLE,
+    memory_router,
+    MEMORY_AVAILABLE,
+    cad_validation_router,
+    CAD_VALIDATION_AVAILABLE,
+    recorder_router,
+    verifier_router,
+)
 
 # Import CAD COM adapters (optional - only if CAD software is installed)
 try:
     from com import (
-        solidworks_router, 
-        solidworks_assembly_router, 
+        solidworks_router,
+        solidworks_assembly_router,
+        solidworks_drawings_router,
         inventor_router,
         inventor_imates_router,
-        solidworks_mate_refs_router
+        inventor_drawings_router,
+        solidworks_mate_refs_router,
     )
 
     CAD_AVAILABLE = True
@@ -69,8 +71,10 @@ except ImportError:
     CAD_AVAILABLE = False
     solidworks_router = None
     solidworks_assembly_router = None
+    solidworks_drawings_router = None
     inventor_router = None
     inventor_imates_router = None
+    inventor_drawings_router = None
     solidworks_mate_refs_router = None
     logger.warning("CAD COM adapters not available")
 
@@ -93,41 +97,65 @@ class CommandRequest(BaseModel):
 async def process_command_queue():
     """Background worker to process commands sequentially."""
     logger.info("Queue Worker Started")
-    while True:
-        try:
-            # Get a "unit of work"
-            command = await COMMAND_QUEUE.get()
+    # Store port locally to avoid relying on global port during startup
+    port = int(os.environ.get("PORT", 8000))
+    # Wait for server to be ready before processing queue
+    await asyncio.sleep(2)
 
-            # Check kill switch before processing
-            if KILL_SWITCH_ACTIVE:
-                logger.warning(f"Skipping command {command} due to Kill Switch")
+    async with httpx.AsyncClient(
+        base_url=f"http://127.0.0.1:{port}", timeout=60.0
+    ) as client:
+        while True:
+            try:
+                # Get a "unit of work"
+                command: CommandRequest = await COMMAND_QUEUE.get()
+
+                # Check kill switch before processing
+                if KILL_SWITCH_ACTIVE:
+                    logger.warning(
+                        f"Skipping command {command.type}/{command.action} due to Kill Switch"
+                    )
+                    COMMAND_QUEUE.task_done()
+                    continue
+
+                logger.info(f"Processing command: {command.type}/{command.action}")
+
+                # Map command types to router prefixes
+                endpoint = f"/{command.type}/{command.action}"
+
+                # Execute command via local API call
+                try:
+                    resp = await client.post(endpoint, json=command.params)
+                    result = (
+                        resp.json() if resp.status_code < 400 else {"error": resp.text}
+                    )
+                    logger.info(
+                        f"Command {command.type}/{command.action} result: {resp.status_code}"
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to execute command locally: {e}")
+                    result = {"error": str(e)}
+
+                # Log completion
+                ACTION_LOG.append(
+                    {
+                        "timestamp": datetime.now().isoformat(),
+                        "type": "queue_execution",
+                        "command": command.dict(),
+                        "result": result,
+                    }
+                )
+
+                # Notify queue that content is processed
                 COMMAND_QUEUE.task_done()
-                continue
 
-            logger.info(f"Processing command: {command}")
-
-            # Simulate processing delay or route to specific controller
-            # In a real implementation, you would route to controllers here
-            # e.g., await mouse_router.execute(command)
-
-            # Log completion
-            ACTION_LOG.append(
-                {
-                    "timestamp": datetime.now().isoformat(),
-                    "type": "queue_execution",
-                    "command": command.dict(),
-                }
-            )
-
-            # Notify queue that content is processed
-            COMMAND_QUEUE.task_done()
-
-        except asyncio.CancelledError:
-            logger.info("Queue Worker Cancelled")
-            break
-        except Exception as e:
-            logger.error(f"Error processing command: {e}")
-            COMMAND_QUEUE.task_done()
+            except asyncio.CancelledError:
+                logger.info("Queue Worker Cancelled")
+                break
+            except Exception as e:
+                logger.error(f"Error in queue worker loop: {e}")
+                # Don't call task_done() here if we didn't successfully get a command
+                await asyncio.sleep(1)
 
 
 def get_tailscale_ip() -> str | None:
@@ -279,10 +307,14 @@ if CAD_AVAILABLE:
         app.include_router(solidworks_router)
     if solidworks_assembly_router:
         app.include_router(solidworks_assembly_router)
+    if solidworks_drawings_router:
+        app.include_router(solidworks_drawings_router)
     if inventor_router:
         app.include_router(inventor_router)
     if inventor_imates_router:
         app.include_router(inventor_imates_router)
+    if inventor_drawings_router:
+        app.include_router(inventor_drawings_router)
     if solidworks_mate_refs_router:
         app.include_router(solidworks_mate_refs_router)
     logger.info("CAD COM adapters loaded")
@@ -310,6 +342,11 @@ if J2_AVAILABLE:
 if CAD_VALIDATION_AVAILABLE:
     app.include_router(cad_validation_router)
     logger.info("CAD validation controller loaded")
+
+# Include recorder and verifier routers
+app.include_router(recorder_router)
+app.include_router(verifier_router)
+logger.info("Recorder and Verifier routers loaded")
 
 
 @app.get("/")

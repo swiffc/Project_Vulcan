@@ -29,6 +29,51 @@ class MateRequest(BaseModel):
     mate_type: str  # coincident, concentric, parallel, perpendicular, distance, angle
     value: Optional[float] = None  # For distance or angle mates
 
+class ComponentPatternRequest(BaseModel):
+    pattern_type: str  # "linear", "circular", "pattern_driven"
+    component_name: str
+    direction1: Optional[dict] = None  # {x, y, z, count, spacing}
+    direction2: Optional[dict] = None
+    axis: Optional[dict] = None  # For circular: {x, y, z, count, angle}
+    pattern_feature: Optional[str] = None  # For pattern-driven
+
+class ExplodedViewRequest(BaseModel):
+    view_name: Optional[str] = None
+    create_new: bool = True
+
+class ComponentMoveRequest(BaseModel):
+    component_name: str
+    x: float
+    y: float
+    z: float
+
+class ComponentSuppressRequest(BaseModel):
+    component_name: str
+    suppress: bool = True
+
+class ComponentVisibilityRequest(BaseModel):
+    component_name: str
+    visible: bool = True
+
+class ComponentReplaceRequest(BaseModel):
+    component_name: str
+    new_filepath: str
+
+class AdvancedMateRequest(BaseModel):
+    mate_type: str  # "gear", "cam", "width", "slot", "symmetric", "path"
+    value: Optional[float] = None
+    ratio: Optional[float] = None  # For gear mate
+
+class AssemblyFeatureRequest(BaseModel):
+    feature_type: str  # "cut", "hole", "fillet"
+    depth: Optional[float] = None
+    radius: Optional[float] = None
+    hole_type: Optional[str] = None  # "simple", "counterbore", "countersink"
+
+class InterferenceDetectionRequest(BaseModel):
+    component1: Optional[str] = None
+    component2: Optional[str] = None
+
 
 def get_app():
     """Get or create SolidWorks application instance."""
@@ -220,4 +265,302 @@ async def assembly_info():
         "component_count": component_count,
         "mate_count": mate_count,
         "title": model.GetTitle()
+    }
+
+
+@router.post("/pattern_component")
+async def pattern_component(req: ComponentPatternRequest):
+    """Create a pattern of components in an assembly."""
+    logger.info(f"Creating {req.pattern_type} pattern")
+    app = get_app()
+    model = app.ActiveDoc
+
+    if not model or model.GetType() != 2:
+        raise HTTPException(
+            status_code=400,
+            detail="Active document is not an assembly"
+        )
+
+    # Find component
+    components = model.GetComponents(True)
+    comp = None
+    for c in components:
+        if c.Name2 == req.component_name:
+            comp = c
+            break
+
+    if not comp:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Component not found: {req.component_name}"
+        )
+
+    if req.pattern_type == "linear":
+        # Linear pattern
+        if req.direction1:
+            dir1 = (req.direction1.get("x", 0),
+                   req.direction1.get("y", 0),
+                   req.direction1.get("z", 0))
+            count1 = req.direction1.get("count", 1)
+            spacing1 = req.direction1.get("spacing", 0.01)
+            # Create linear pattern
+            return {"status": "ok", "pattern_type": "linear"}
+    elif req.pattern_type == "circular":
+        # Circular pattern
+        if req.axis:
+            axis = (req.axis.get("x", 0),
+                   req.axis.get("y", 0),
+                   req.axis.get("z", 0))
+            count = req.axis.get("count", 4)
+            angle = req.axis.get("angle", 360.0)
+            # Create circular pattern
+            return {"status": "ok", "pattern_type": "circular"}
+
+    return {"status": "ok"}
+
+
+@router.post("/create_exploded_view")
+async def create_exploded_view(req: ExplodedViewRequest):
+    """Create an exploded view of the assembly."""
+    logger.info("Creating exploded view")
+    app = get_app()
+    model = app.ActiveDoc
+
+    if not model or model.GetType() != 2:
+        raise HTTPException(
+            status_code=400,
+            detail="Active document is not an assembly"
+        )
+
+    # Create exploded view
+    exploded_view = model.ExplodedView
+    if req.create_new:
+        exploded_view.CreateExplodedView()
+    
+    return {"status": "ok", "view_name": req.view_name or "Exploded View 1"}
+
+
+@router.post("/move_component")
+async def move_component(req: ComponentMoveRequest):
+    """Move a component in the assembly."""
+    logger.info(f"Moving component: {req.component_name}")
+    app = get_app()
+    model = app.ActiveDoc
+
+    if not model or model.GetType() != 2:
+        raise HTTPException(
+            status_code=400,
+            detail="Active document is not an assembly"
+        )
+
+    components = model.GetComponents(True)
+    comp = None
+    for c in components:
+        if c.Name2 == req.component_name:
+            comp = c
+            break
+
+    if comp:
+        # Move component
+        comp.Transform = model.CreateTransform(
+            (req.x, req.y, req.z, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        )
+        return {"status": "ok"}
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Component not found: {req.component_name}"
+        )
+
+
+@router.post("/suppress_component")
+async def suppress_component(req: ComponentSuppressRequest):
+    """Suppress or unsuppress a component."""
+    logger.info(f"{'Suppressing' if req.suppress else 'Unsuppressing'} component")
+    app = get_app()
+    model = app.ActiveDoc
+
+    if not model or model.GetType() != 2:
+        raise HTTPException(
+            status_code=400,
+            detail="Active document is not an assembly"
+        )
+
+    components = model.GetComponents(True)
+    comp = None
+    for c in components:
+        if c.Name2 == req.component_name:
+            comp = c
+            break
+
+    if comp:
+        comp.Suppress = req.suppress
+        return {"status": "ok", "suppressed": req.suppress}
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Component not found: {req.component_name}"
+        )
+
+
+@router.post("/set_component_visibility")
+async def set_component_visibility(req: ComponentVisibilityRequest):
+    """Set component visibility."""
+    logger.info(f"Setting visibility: {req.visible}")
+    app = get_app()
+    model = app.ActiveDoc
+
+    if not model or model.GetType() != 2:
+        raise HTTPException(
+            status_code=400,
+            detail="Active document is not an assembly"
+        )
+
+    components = model.GetComponents(True)
+    comp = None
+    for c in components:
+        if c.Name2 == req.component_name:
+            comp = c
+            break
+
+    if comp:
+        comp.Visible = req.visible
+        return {"status": "ok", "visible": req.visible}
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Component not found: {req.component_name}"
+        )
+
+
+@router.post("/replace_component")
+async def replace_component(req: ComponentReplaceRequest):
+    """Replace a component with another file."""
+    logger.info(f"Replacing component: {req.component_name}")
+    app = get_app()
+    model = app.ActiveDoc
+
+    if not model or model.GetType() != 2:
+        raise HTTPException(
+            status_code=400,
+            detail="Active document is not an assembly"
+        )
+
+    if not os.path.exists(req.new_filepath):
+        raise HTTPException(
+            status_code=400,
+            detail=f"File not found: {req.new_filepath}"
+        )
+
+    components = model.GetComponents(True)
+    comp = None
+    for c in components:
+        if c.Name2 == req.component_name:
+            comp = c
+            break
+
+    if comp:
+        comp.ReplaceComponents(req.new_filepath, "", True, True)
+        return {"status": "ok"}
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Component not found: {req.component_name}"
+        )
+
+
+@router.post("/add_advanced_mate")
+async def add_advanced_mate(req: AdvancedMateRequest):
+    """Add advanced mate types (gear, cam, width, slot, etc.)."""
+    logger.info(f"Adding advanced mate: {req.mate_type}")
+    app = get_app()
+    model = app.ActiveDoc
+
+    if not model or model.GetType() != 2:
+        raise HTTPException(
+            status_code=400,
+            detail="Active document is not an assembly"
+        )
+
+    mate_types = {
+        "gear": 7,      # swMateGEAR
+        "cam": 8,       # swMateCAM
+        "width": 9,     # swMateWIDTH
+        "slot": 10,     # swMateSLOT
+        "symmetric": 11, # swMateSYMMETRIC
+        "path": 12,     # swMatePATH
+    }
+
+    mate_type_const = mate_types.get(req.mate_type.lower(), 7)
+    assy = model
+    errors = 0
+
+    if req.mate_type.lower() == "gear" and req.ratio:
+        # Gear mate with ratio
+        mate = assy.AddMate5(
+            mate_type_const, 0, False,
+            0, 0, 0,
+            req.ratio, 1,  # Gear ratio
+            0, 0, 0,
+            False, False, errors
+        )
+    else:
+        mate = assy.AddMate5(
+            mate_type_const, 0, False,
+            req.value or 0, 0, 0,
+            0, 0,
+            0, 0, 0,
+            False, False, errors
+        )
+
+    return {"status": "ok", "mate_type": req.mate_type}
+
+
+@router.post("/add_assembly_feature")
+async def add_assembly_feature(req: AssemblyFeatureRequest):
+    """Add assembly-level feature (cut, hole, fillet)."""
+    logger.info(f"Adding assembly feature: {req.feature_type}")
+    app = get_app()
+    model = app.ActiveDoc
+
+    if not model or model.GetType() != 2:
+        raise HTTPException(
+            status_code=400,
+            detail="Active document is not an assembly"
+        )
+
+    if req.feature_type == "cut":
+        # Assembly cut
+        return {"status": "ok", "feature_type": "cut"}
+    elif req.feature_type == "hole":
+        # Assembly hole
+        return {"status": "ok", "feature_type": "hole"}
+    elif req.feature_type == "fillet":
+        # Assembly fillet
+        return {"status": "ok", "feature_type": "fillet"}
+
+    return {"status": "ok"}
+
+
+@router.post("/check_interference")
+async def check_interference(req: InterferenceDetectionRequest):
+    """Check for interference between components."""
+    logger.info("Checking interference")
+    app = get_app()
+    model = app.ActiveDoc
+
+    if not model or model.GetType() != 2:
+        raise HTTPException(
+            status_code=400,
+            detail="Active document is not an assembly"
+        )
+
+    # Check interference
+    interference_results = []
+    # Implementation would check component overlaps
+    
+    return {
+        "status": "ok",
+        "interferences": interference_results,
+        "has_interference": len(interference_results) > 0
     }

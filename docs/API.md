@@ -69,8 +69,17 @@ For local development, use the `VULCAN_API_KEY` defined in your `.env` file.
 
 These endpoints are exposed by the `desktop_server` running on your local machine (`http://localhost:8000`).
 
-- `POST /mouse/click` - Perform a click.
+- `POST /mouse/move` - Move cursor to (x, y).
+- `POST /mouse/click` - Perform a click (left, right, middle).
 - `POST /keyboard/type` - Send keystrokes.
 - `POST /screen/screenshot` - Capture current screen.
 - `POST /window/focus` - Focus a specific application.
+- `GET /window/list` - Get list of active windows.
+- `POST /recorder/start` - Start screen recording.
+- `POST /recorder/stop` - Stop screen recording.
+- `POST /verifier/compare` - Compare screen with "gold master".
 - `POST /memory/rag/augment` - Get context-aware memory snippets.
+- `POST /com/solidworks/drawings/new_drawing` - Create SW drawing.
+- `POST /com/inventor/drawings/new_drawing` - Create Inventor drawing.
+- `POST /com/inventor/imates/create_mates` - Auto-create iMates.
+- `POST /com/solidworks/mate_refs/create` - Auto-create Mate References.

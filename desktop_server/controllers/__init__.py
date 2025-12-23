@@ -7,6 +7,7 @@ from .window import router as window_router
 # TradingView browser controller (requires Playwright)
 try:
     from .tradingview import router as tradingview_router
+
     TRADINGVIEW_AVAILABLE = True
 except ImportError:
     TRADINGVIEW_AVAILABLE = False
@@ -15,6 +16,7 @@ except ImportError:
 # Browser automation controller (requires Playwright)
 try:
     from .browser import router as browser_router
+
     BROWSER_AVAILABLE = True
 except ImportError:
     BROWSER_AVAILABLE = False
@@ -23,14 +25,48 @@ except ImportError:
 # J2 Tracker controller (requires browser controller)
 try:
     from .j2_tracker import router as j2_tracker_router
+
     J2_AVAILABLE = True
 except ImportError:
     J2_AVAILABLE = False
     j2_tracker_router = None
 
+# Memory/RAG controller
+try:
+    from .memory import router as memory_router
+
+    MEMORY_AVAILABLE = True
+except ImportError:
+    MEMORY_AVAILABLE = False
+    memory_router = None
+
+# CAD Validation controller
+try:
+    from .cad_validation import router as cad_validation_router
+
+    CAD_VALIDATION_AVAILABLE = True
+except ImportError:
+    CAD_VALIDATION_AVAILABLE = False
+    cad_validation_router = None
+
+from .recorder import router as recorder_router
+from .verifier import router as verifier_router
+
 __all__ = [
-    'mouse_router', 'keyboard_router', 'screen_router', 'window_router',
-    'tradingview_router', 'TRADINGVIEW_AVAILABLE',
-    'browser_router', 'BROWSER_AVAILABLE',
-    'j2_tracker_router', 'J2_AVAILABLE',
+    "mouse_router",
+    "keyboard_router",
+    "screen_router",
+    "window_router",
+    "tradingview_router",
+    "TRADINGVIEW_AVAILABLE",
+    "browser_router",
+    "BROWSER_AVAILABLE",
+    "j2_tracker_router",
+    "J2_AVAILABLE",
+    "memory_router",
+    "MEMORY_AVAILABLE",
+    "cad_validation_router",
+    "CAD_VALIDATION_AVAILABLE",
+    "recorder_router",
+    "verifier_router",
 ]
