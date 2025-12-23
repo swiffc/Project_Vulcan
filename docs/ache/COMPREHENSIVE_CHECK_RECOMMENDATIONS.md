@@ -752,7 +752,88 @@ This document outlines **ALL recommended checks** for a comprehensive engineerin
 
 ---
 
+---
+
+# CATEGORY 24: IMPLEMENTATION CODE EXAMPLES
+
+## 1. GD&T Symbol Recognition (Python + OpenCV)
+
+```python
+import cv2
+import numpy as np
+
+def detect_gdt_symbols(image_path):
+    """Detect GD&T symbols using template matching."""
+    img = cv2.imread(image_path, 0)
+    
+    # Pre-defined symbol templates (Position, Flatness, etc.)
+    templates = {
+        'position': cv2.imread('templates/position_sym.png', 0),
+        'flatness': cv2.imread('templates/flatness_sym.png', 0),
+        'parallelism': cv2.imread('templates/parallelism_sym.png', 0)
+    }
+    
+    detections = []
+    for name, template in templates.items():
+        res = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
+        threshold = 0.8
+        loc = np.where(res >= threshold)
+        for pt in zip(*loc[::-1]):
+            detections.append({'symbol': name, 'pt': pt})
+            
+    return detections
+```
+
+## 2. Weld Symbol Breakdown (Python + Regex)
+
+```python
+import re
+
+def parse_weld_symbol(text):
+    """Break down weld symbol text into functional components."""
+    # Pattern: [Size][Type][Length]-[Pitch]
+    # Example: 1/4 (fillet) 3-6
+    pattern = r'(\d+/?\d*)?\s*(\(.*\))?\s*(\d+)?-?(\d+)?'
+    match = re.match(pattern, text)
+    
+    if match:
+        return {
+            'size': match.group(1),
+            'type': match.group(2),
+            'length': match.group(3),
+            'pitch': match.group(4)
+        }
+    return None
+```
+
+## 3. ASME UG-37 Nozzle Reinforcement Calculation
+
+```python
+def check_nozzle_reinforcement(P, S, E, R, tr, Rn, tn, te):
+    """
+    Check if nozzle reinforcement is adequate per ASME VIII UG-37.
+    A_required = d * tr
+    A_provided = A1 + A2 + A3...
+    """
+    d = Rn * 2 # Nozzle diameter
+    A_req = d * tr
+    
+    # Area in shell
+    A1 = d * (tr * E - tr) 
+    
+    # Area in nozzle wall
+    A2 = 2 * (tn - trn) * 5 * tn # simplified
+    
+    # Total Provided
+    A_total = A1 + A2
+    
+    return A_total >= A_req
+```
+
+---
+
 # CONCLUSION
+
 
 **Total Recommended Additions: 383 new checks across 23 categories**
 

@@ -272,4 +272,70 @@ flowchart TB
 
 ---
 
+---
+
+# PHASE 9: THERMAL PERFORMANCE (15 checks)
+
+### Heat Transfer Calculations
+- [ ] Heat duty (MMBtu/hr) matches process requirements
+- [ ] LMTD (Log Mean Temperature Difference) calculation verified
+- [ ] MTD correction factor applied (F-factor)
+- [ ] Air-side heat transfer coefficient (ha)
+- [ ] Process-side heat transfer coefficient (hp)
+- [ ] Overall heat transfer coefficient (U)
+- [ ] Fouling factors applied (air-side, process-side)
+
+### Thermal Design Validation
+- [ ] Tube surface area adequate
+- [ ] Fin efficiency calculation (extended surface)
+- [ ] Approach temperature achievable
+- [ ] Design margin (typically 10-15%)
+- [ ] Seasonal ambient temperature range
+- [ ] Winterization requirements (louvers, steam coils)
+
+### Performance Testing
+- [ ] Test acceptance criteria (±5% of rated duty)
+- [ ] Instrumentation for performance test
+- [ ] Air flow measurement method
+
+---
+
+# PHASE 10: FAN SELECTION (12 checks)
+
+### Fan Sizing
+- [ ] Fan diameter per API 661 recommendations
+- [ ] Fan coverage ratio (min 40% of bundle face area)
+- [ ] Static pressure requirement calculated
+- [ ] Air flow rate (ACFM) at operating conditions
+- [ ] Fan tip speed (<12,000 fpm typical)
+- [ ] Blade angle (fixed vs adjustable pitch)
+
+### Fan Performance
+- [ ] Fan curve provided by manufacturer
+- [ ] Operating point on fan curve (avoid surge/stall)
+- [ ] System resistance curve
+- [ ] Motor HP with service factor (1.15 typical)
+- [ ] VFD requirements for turndown
+- [ ] Noise level (dBA at 3 feet)
+
+---
+
+# PHASE 11: WINTERIZATION (10 checks)
+
+### Louver System
+- [ ] Louver blade material (aluminum, galvanized steel)
+- [ ] Actuator type (pneumatic, electric)
+- [ ] Actuator sizing (torque requirement)
+- [ ] Position indication (open/closed)
+- [ ] Seal when closed (max 2% leakage)
+- [ ] Linkage material (stainless steel)
+
+### Freeze Protection
+- [ ] Steam coil capacity (if required)
+- [ ] Recirculation duct sizing
+- [ ] Process fluid freeze point
+- [ ] Minimum ambient temperature
+
+---
+
 Reference: Chart Industries (Hudson, Air-X-Changers), API 661, OSHA 1910

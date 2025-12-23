@@ -58,4 +58,65 @@ Tolerance: +/-5% simple, +/-10% assemblies
 2. AUTO PRE-SCAN -> Check weights, descriptions, holes
 3. VISUAL VERIFY -> Flagged items only
 4. FUNCTIONAL ANALYSIS -> Assembly purpose
-5. OUTPUT -> Report, DELETE temp images
+---
+
+# 6. API 661 SPECIFIC REQUIREMENTS
+
+### Tube Bundle Design
+| Parameter | API 661 Requirement |
+|-----------|---------------------|
+| Tube OD | 1" or 1-1/4" typical |
+| Fin type | Embedded, extruded, or welded |
+| Fin density | 8-11 fins/inch typical |
+| Tube pitch | 2.0" - 2.5" typical |
+| Header plate thickness | Per API 661 Table 1 |
+
+### Fan Requirements (API 661 Section 6.3)
+| Fan Diameter | Max Tip Clearance |
+|--------------|-------------------|
+| 4'-5' | 3/8" |
+| 6'-8' | 1/2" |
+| 9'-12' | 5/8" |
+| 13'-18' | 3/4" |
+| 19'-28' | 1" |
+| >28' | 1-1/4" |
+
+### Air-Side Pressure Drop
+- Maximum: 0.5" H2O (typical)
+- Calculation: ΔP = (V²/2g) × K
+  - V = face velocity (ft/s)
+  - K = resistance coefficient
+  - g = 32.2 ft/s²
+
+### Performance Testing (API 661 Section 7)
+- [ ] Heat duty within ±5% of rated
+- [ ] Air flow within ±10% of design
+- [ ] Process outlet temperature within ±5°F
+- [ ] Mechanical run test: 4 hours minimum
+- [ ] Vibration limits: 0.2" peak-to-peak displacement
+
+---
+
+# 7. THERMAL RATING FORMULAS
+
+### Log Mean Temperature Difference (LMTD)
+```
+LMTD = (ΔT1 - ΔT2) / ln(ΔT1 / ΔT2)
+```
+*Note: Apply F-factor for cross-flow correction.*
+
+### Heat Duty (Q)
+```
+Q = U * A * MTD
+```
+- U = Overall heat transfer coefficient
+- A = Total surface area
+- MTD = Corrected Mean Temperature Difference
+
+### Overall Heat Transfer Coefficient (U)
+```
+1/Uc = 1/ha + 1/hp + Rf
+```
+- ha = Air-side coefficient
+- hp = Process-side coefficient
+- Rf = Fouling factor

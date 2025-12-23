@@ -98,3 +98,18 @@ These are nice-to-have improvements that can be done after production deployment
 
 **Status**: All critical functionality is production-ready. These are quality-of-life improvements.
 
+### 📒 ACHE Documentation Enhancements
+
+- [x] **Phase 1: Visual Enhancements** – Added Mermaid flowcharts, mating matrices, and BOM cross-reference templates to `HOLE_PATTERN_DIMS.md` and `MULTI_DRAWING.md`.
+- [x] **Phase 2: ACHE-Specific Content** – Added 50+ thermal performance, fan selection, and winterization checks to `ACHE_CHECKLIST.md` and API 661 requirements to `REQUIREMENTS_V2.md`.
+- [x] **Phase 3: Calculation Examples** – Added tolerance formulas, BCD calculations, and thermal rating/pressure drop formulas.
+- [x] **Phase 4: Implementation Examples** – Added code snippets for GD&T and weld symbol recognition to `COMPREHENSIVE_CHECK_RECOMMENDATIONS.md`.
+
+### 🛠️ CAD Constraint Automation (Future)
+
+- [ ] **Inventor iMate Automation** – Implement COM API to auto‑create Insert, Mate, and Composite iMates for hole‑to‑hole alignment in ACHE assemblies (estimated 4 hrs).
+- [ ] **SolidWorks Mate Reference Automation** – Add Concentric + Coincident Mate References (SmartMates) for plenum‑to‑I‑R‑O plate hole alignment (estimated 4 hrs).
+- [ ] **Composite Bolt‑Pattern iMate Generation** – Group multiple hole iMates into a single Composite iMate for bolt‑pattern parts (estimated 2 hrs).
+- [ ] **Automated Hole‑Alignment Verification** – Extend chatbot to read created iMates/Mate References and report any mis‑aligned holes (±1/16 in tolerance) (estimated 3 hrs).
+
+
