@@ -51,18 +51,46 @@ This is NOT optional - it's the CORE function!
 # VISUAL TEMPLATES
 
 ## Edge Distance:
-```
-PROBLEM:          CORRECT:
-+------+          +--------+
-| o    |0.5"      |   o    |1.5"
-+------+          +--------+
-TOO CLOSE!        ADEQUATE
+
+```mermaid
+flowchart LR
+    subgraph Problem["❌ PROBLEM"]
+        P1["Hole<br/>0.5\" edge<br/>TOO CLOSE!"]
+    end
+    
+    subgraph Correct["✅ CORRECT"]
+        C1["Hole<br/>1.5\" edge<br/>ADEQUATE"]
+    end
+    
+    Problem -.->|"Fix"| Correct
+    
+    style Problem fill:#ffcccc,stroke:#cc0000,stroke-width:2px
+    style Correct fill:#ccffcc,stroke:#00cc00,stroke-width:2px
+    style P1 fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px,color:#000
+    style C1 fill:#51cf66,stroke:#2f9e44,stroke-width:2px,color:#000
 ```
 
 ## Hole Alignment:
-```
-MISMATCH:         ALIGNED:
-Part A: o at 6-1/4"    o at 6-1/4"
-Part B: o at 6"        o at 6-1/4"
-        ^ FAIL!        ^ OK!
+
+```mermaid
+flowchart TB
+    subgraph Mismatch["❌ MISMATCH"]
+        MA["Part A: Hole at 6-1/4\""]
+        MB["Part B: Hole at 6\""]
+        MResult["FAIL!"]
+    end
+    
+    subgraph Aligned["✅ ALIGNED"]
+        AA["Part A: Hole at 6-1/4\""]
+        AB["Part B: Hole at 6-1/4\""]
+        AResult["OK!"]
+    end
+    
+    MA --> MB --> MResult
+    AA --> AB --> AResult
+    
+    style Mismatch fill:#ffcccc,stroke:#cc0000,stroke-width:2px
+    style Aligned fill:#ccffcc,stroke:#00cc00,stroke-width:2px
+    style MResult fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px,color:#fff
+    style AResult fill:#51cf66,stroke:#2f9e44,stroke-width:2px,color:#000
 ```
