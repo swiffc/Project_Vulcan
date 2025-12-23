@@ -80,6 +80,12 @@ class ValidationOrchestrator:
         self.ache_validator = ACHEValidator() if ACHEValidator else None
         self.drawing_analyzer = DrawingAnalyzer()
         
+        try:
+            from core.flatter_files_client import FlatterFilesClient
+            self.flatter_files_client = FlatterFilesClient()
+        except (ImportError, ValueError):
+            self.flatter_files_client = None
+        
         # Progress callbacks
         self._progress_callbacks: List[Callable[[ValidationProgress], None]] = []
         
@@ -88,6 +94,7 @@ class ValidationOrchestrator:
         logger.info(f"  Welding Validator: {'✓' if self.welding_validator else '✗'}")
         logger.info(f"  Material Validator: {'✓' if self.material_validator else '✗'}")
         logger.info(f"  ACHE Validator: {'✓' if self.ache_validator else '✗'}")
+        logger.info(f"  Flatter Files Client: {'✓' if self.flatter_files_client else '✗'}")
     
     def register_progress_callback(
         self,
@@ -133,7 +140,7 @@ class ValidationOrchestrator:
         request_id = str(uuid.uuid4())
         
         # Determine file path
-        file_path = request.file_path or self._resolve_file_id(request.file_id)
+        file_path = request.file_path or await self._resolve_file_id(request.file_id)
         if not file_path:
             raise ValueError("Either file_path or file_id must be provided")
         
@@ -458,11 +465,19 @@ class ValidationOrchestrator:
                 )]
             )
     
-    def _resolve_file_id(self, file_id: Optional[str]) -> Optional[str]:
+    async def _resolve_file_id(self, file_id: Optional[str]) -> Optional[str]:
         """Resolve Flatter Files ID to local path."""
         if not file_id:
             return None
         
-        # TODO: Integrate with Flatter Files API
-        # For now, assume file_id is already a path
+        if self.flatter_files_client:
+            import tempfile
+            import os
+            download_path = os.path.join(tempfile.gettempdir(), file_id)
+            if await self.flatter_files_client.download_file(file_id, download_path):
+                return download_path
+            else:
+                return None
+        
+        # For now, assume file_id is already a path if client is not available
         return file_id

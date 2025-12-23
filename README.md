@@ -1,9 +1,12 @@
 # Project Vulcan
 
-**Personal AI Operating System** - A unified web chatbot that physically controls your Windows PC for Trading, CAD, and Work workflows.
-
+[![CI](https://github.com/DCornealius/Project_Vulcan_Fresh/actions/workflows/ci.yml/badge.svg)](https://github.com/DCornealius/Project_Vulcan_Fresh/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/DCornealius/Project_Vulcan_Fresh/badge.svg?branch=main)](https://coveralls.io/github/DCornealius/Project_Vulcan_Fresh?branch=main)
+[![Security Scan](https://github.com/DCornealius/Project_Vulcan_Fresh/actions/workflows/ci.yml/badge.svg?event=schedule)](https://github.com/DCornealius/Project_Vulcan_Fresh/actions/workflows/ci.yml)
 [![Render](https://img.shields.io/badge/Deployed%20on-Render-46E3B7)](https://render.com)
 [![MCP](https://img.shields.io/badge/Protocol-MCP-blue)](https://modelcontextprotocol.org)
+
+**Personal AI Operating System** - A unified web chatbot that physically controls your Windows PC for Trading, CAD, and Work workflows.
 
 ---
 

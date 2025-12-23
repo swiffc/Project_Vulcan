@@ -7,6 +7,7 @@ Routes requests to appropriate agents and proxies desktop commands via Tailscale
 import os
 import httpx
 import time
+import logging
 from collections import defaultdict
 from typing import List, Dict, Any, Optional
 from fastapi import FastAPI, HTTPException, Security, Depends, Request
@@ -18,13 +19,25 @@ from fastapi.security import APIKeyHeader
 from core.trading_journal import router as trading_journal_router
 from core.validation_history import router as validation_history_router
 
+# Initialize logging
+from core.logging_config import setup_logging
+
+setup_logging(log_level=os.getenv("LOG_LEVEL", "INFO"))
+logger = logging.getLogger(__name__)
+
+logger.info("Vulcan Orchestrator starting up...")
+
+
 # Lazy imports for heavy modules
 def get_llm_client():
     from core.llm import LLMClient
+
     return LLMClient()
+
 
 def get_rag_engine():
     from core.memory.rag_engine import RAGEngine
+
     return RAGEngine()
 
 
@@ -39,29 +52,34 @@ RATE_LIMIT_DURATION = 60  # seconds
 RATE_LIMIT_REQUESTS = 100  # requests per duration
 rate_limiter = defaultdict(lambda: [])
 
+
 @app.middleware("http")
 async def rate_limit_middleware(request: Request, call_next):
     client_ip = request.client.host
     request_times = rate_limiter[client_ip]
-    
+
     # Remove old timestamps
     while request_times and request_times[0] < time.time() - RATE_LIMIT_DURATION:
         request_times.pop(0)
-    
+
     if len(request_times) >= RATE_LIMIT_REQUESTS:
         raise HTTPException(status_code=429, detail="Too Many Requests")
-    
+
     request_times.append(time.time())
     response = await call_next(request)
     return response
 
+
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
     response = await call_next(request)
-    response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+    )
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     return response
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -82,6 +100,7 @@ API_KEY = os.getenv("API_KEY")
 API_KEY_NAME = "X-API-Key"
 
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
+
 
 async def get_api_key(api_key: str = Security(api_key_header)):
     if api_key == API_KEY:
@@ -114,12 +133,10 @@ AGENT_PROMPTS = {
 You specialize in ICT, BTMM, and Stacey Burke trading methodologies.
 Analyze setups, provide bias, and help with trade journaling.
 When the user wants to interact with TradingView, use desktop commands.""",
-
     "cad": """You are a CAD automation agent for Project Vulcan.
 You help create 3D models in SolidWorks and Inventor via COM automation.
 Break down part creation into steps: sketch, extrude, pattern, etc.
 When ready to execute, use desktop commands to control the CAD software.""",
-
     "general": """You are the general assistant for Project Vulcan.
 You help with life management, calendar, notes, and general queries.
 Route specialized tasks to trading or CAD agents when appropriate.""",
@@ -130,10 +147,34 @@ def detect_agent(message: str) -> str:
     """Detect which agent should handle the request based on keywords."""
     message_lower = message.lower()
 
-    trading_keywords = ["trade", "trading", "forex", "gbp", "usd", "eur", "setup",
-                        "bias", "ict", "btmm", "order block", "fvg", "liquidity"]
-    cad_keywords = ["cad", "solidworks", "inventor", "part", "sketch", "extrude",
-                    "flange", "model", "3d", "drawing", "assembly"]
+    trading_keywords = [
+        "trade",
+        "trading",
+        "forex",
+        "gbp",
+        "usd",
+        "eur",
+        "setup",
+        "bias",
+        "ict",
+        "btmm",
+        "order block",
+        "fvg",
+        "liquidity",
+    ]
+    cad_keywords = [
+        "cad",
+        "solidworks",
+        "inventor",
+        "part",
+        "sketch",
+        "extrude",
+        "flange",
+        "model",
+        "3d",
+        "drawing",
+        "assembly",
+    ]
 
     if any(kw in message_lower for kw in trading_keywords):
         return "trading"
@@ -206,7 +247,13 @@ async def desktop_command(cmd: DesktopCommand, api_key: str = Depends(get_api_ke
 
             return {
                 "status": resp.status_code,
-                "data": resp.json() if resp.headers.get("content-type", "").startswith("application/json") else resp.text,
+                "data": (
+                    resp.json()
+                    if resp.headers.get("content-type", "").startswith(
+                        "application/json"
+                    )
+                    else resp.text
+                ),
             }
     except httpx.TimeoutException:
         raise HTTPException(status_code=504, detail="Desktop server timeout")
@@ -229,4 +276,5 @@ async def desktop_health(api_key: str = Depends(get_api_key)):
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

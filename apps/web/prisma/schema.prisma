@@ -1,0 +1,31 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Trade {
+  id      String   @id @default(cuid())
+  pair    String
+  bias    String
+  setup   String
+  entry   Float
+  target  Float
+  stop    Float
+  rr      Float
+  result  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Validation {
+  id        String   @id @default(cuid())
+  drawing   String
+  status    String
+  result    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

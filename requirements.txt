@@ -55,3 +55,5 @@ reportlab>=4.0.0  # PDF generation in validators
 PyPDF2>=3.0.0  # PDF annotation feature
 fluids>=1.0.0  # Pipe fitting calculations (used in standards scripts)
 
+# Logging (Phase 19.4.21)
+python-json-logger>=2.0.0  # JSON logging formatter
