@@ -40,6 +40,19 @@ This document maintains all external dependencies and architectural references f
 | chromadb | 0.4.22 | Vector database (local) | `pip install chromadb` |
 | sentence-transformers | 2.2.2 | Embedding models | `pip install sentence-transformers` |
 
+### Monitoring & Observability (Python)
+
+| Package | Version | Purpose | Install Command |
+|---------|---------|---------|-----------------|
+| sentry-sdk | 1.40.0 | Error tracking and performance monitoring | `pip install sentry-sdk` |
+| python-json-logger | 2.0.7 | JSON structured logging | `pip install python-json-logger` |
+
+### Database (Python)
+
+| Package | Version | Purpose | Install Command |
+|---------|---------|---------|-----------------|
+| psycopg2-binary | 2.9.9 | PostgreSQL adapter | `pip install psycopg2-binary` |
+
 ### Web Interface (Node.js)
 
 | Package | Version | Purpose | Install Command |
@@ -48,6 +61,9 @@ This document maintains all external dependencies and architectural references f
 | next | 14.2.0 | React framework | `npm install next` |
 | react | 18.3.0 | UI library | `npm install react` |
 | axios | 1.7.0 | HTTP client | `npm install axios` |
+| @sentry/nextjs | ^8.0.0 | Sentry error tracking for Next.js | `npm install @sentry/nextjs` |
+| @prisma/client | ^5.0.0 | Prisma database ORM client | `npm install @prisma/client` |
+| prisma | ^5.0.0 | Prisma CLI and migrations | `npm install -D prisma` |
 
 ---
 

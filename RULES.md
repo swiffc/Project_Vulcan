@@ -17,32 +17,78 @@ All agents share a **Desktop Control Server** that physically operates your Wind
 
 ## Architecture
 
-```
-                         RENDER.COM (Cloud)
-  +----------------------------------------------------------+
-  |                                                          |
-  |    WEB CHATBOT (Next.js)                                |
-  |    Accessible from anywhere                              |
-  |                  |                                       |
-  |                  v                                       |
-  |    ORCHESTRATOR + AGENTS (Trading, CAD, Work, General)  |
-  |                                                          |
-  +----------------------------------------------------------+
-                          |
-                    TAILSCALE VPN
-                          |
-  +----------------------------------------------------------+
-  |                YOUR WINDOWS PC                           |
-  |                                                          |
-  |    DESKTOP CONTROL SERVER (MCP)                         |
-  |    Mouse | Keyboard | Screenshot | Replay | Verifier    |
-  |    Vector Memory | Browser Automation                    |
-  |                  |                                       |
-  |    +-------------+-------------+                         |
-  |    |             |             |                         |
-  |    v             v             v                         |
-  | TradingView  SolidWorks    J2 Tracker                   |
-  +----------------------------------------------------------+
+```mermaid
+flowchart TB
+    Start([👤 User Request])
+    
+    subgraph Cloud["☁️ RENDER.COM - Cloud Infrastructure"]
+        direction TB
+        Web["🌐 WEB CHATBOT<br/>━━━━━━━━━━━━<br/>Next.js Framework<br/>Accessible from Anywhere"]
+        
+        Orch["🎯 ORCHESTRATOR<br/>━━━━━━━━━━━━<br/>FastAPI + Python<br/>Agent Coordination Layer"]
+        
+        subgraph Agents["🤖 AI Agents"]
+            direction LR
+            A1["📈 Trading"]
+            A2["📐 CAD"]
+            A3["💼 Work"]
+            A4["💬 General"]
+        end
+    end
+    
+    VPN{"🔐 TAILSCALE VPN<br/>━━━━━━━━━━━━<br/>Secure Encrypted Tunnel"}
+    
+    subgraph PC["💻 YOUR WINDOWS PC - Local Environment"]
+        direction TB
+        Desktop["🖥️ DESKTOP CONTROL SERVER<br/>━━━━━━━━━━━━━━━━━━<br/>MCP Protocol Implementation<br/>FastAPI Server"]
+        
+        subgraph Tools["🎮 Control Tools"]
+            direction LR
+            T1["🖱️ Mouse"]
+            T2["⌨️ Keyboard"]
+            T3["📸 Screenshot"]
+            T4["🔄 Replay"]
+            T5["✅ Verifier"]
+        end
+        
+        subgraph Memory["🧠 Local Services"]
+            direction LR
+            M1["📚 Vector<br/>Memory"]
+            M2["🌐 Browser<br/>Automation"]
+        end
+        
+        subgraph Apps["📦 Physical Applications"]
+            direction LR
+            App1["📊 TradingView"]
+            App2["🔧 SolidWorks"]
+            App3["📋 J2 Tracker"]
+        end
+    end
+    
+    Start --> Web
+    Web --> Orch
+    Orch --> Agents
+    
+    Orch -.->|"API Request"| VPN
+    VPN -.->|"Local IP"| Desktop
+    
+    Desktop --> Tools
+    Desktop --> Memory
+    Tools --> Apps
+    
+    style Start fill:#e1f5fe,stroke:#01579b,stroke-width:3px,color:#000
+    style Cloud fill:#e3f2fd,stroke:#1976d2,stroke-width:4px
+    style PC fill:#fff3e0,stroke:#f57c00,stroke-width:4px
+    style VPN fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000
+    
+    style Web fill:#4fc3f7,stroke:#0277bd,stroke-width:3px,color:#000
+    style Orch fill:#81c784,stroke:#388e3c,stroke-width:3px,color:#000
+    style Desktop fill:#ffb74d,stroke:#e65100,stroke-width:3px,color:#000
+    
+    style Agents fill:#e1bee7,stroke:#6a1b9a,stroke-width:2px
+    style Tools fill:#ffcc80,stroke:#ef6c00,stroke-width:2px
+    style Memory fill:#ce93d8,stroke:#6a1b9a,stroke-width:2px
+    style Apps fill:#a5d6a7,stroke:#2e7d32,stroke-width:2px
 ```
 
 ---
@@ -498,19 +544,48 @@ The "Wrapper" is a bridge that allows the Cloud-based **Brain** to control your 
 
 ```mermaid
 sequenceDiagram
-    participant User
-    participant Cloud (Render)
-    participant VPN (Tailscale)
-    participant Wrapper (Local Server)
-    participant APP (SolidWorks/Trading)
+    autonumber
+    participant U as 👤 User<br/>(Mobile/Desktop)
+    participant C as ☁️ Cloud<br/>(Render)
+    participant V as 🔐 VPN<br/>(Tailscale)
+    participant W as 🖥️ Wrapper<br/>(Local Server)
+    participant A as 📦 APP<br/>(SolidWorks/Trading)
 
-    User->>Cloud: "Build this part"
-    Cloud->>VPN: Secure API Request
-    VPN->>Wrapper: Forward to local IP
-    Wrapper->>APP: win32com/pyautogui commands
-    APP-->>Wrapper: Action Successful + Screenshot
-    Wrapper-->>Cloud: JSON Response + Proof
-    Cloud-->>User: Streaming Confirmation ✅
+    rect rgb(230, 240, 255)
+        Note over U,C: User Request Phase
+        U->>+C: 💬 "Build this part"
+        Note right of C: Orchestrator processes<br/>natural language
+    end
+    
+    rect rgb(255, 245, 230)
+        Note over C,V: Cloud Processing
+        C->>C: 🤖 Generate clean API request<br/>from strategies.json
+        C->>+V: 📡 POST /cad/extrude<br/>{"shape": "circle", "dim": 2}
+        Note right of V: Secure tunnel<br/>through firewall
+    end
+    
+    rect rgb(240, 255, 240)
+        Note over V,W: Local Execution
+        V->>+W: 🔄 Forward to local IP<br/>(100.x.x.x:8000)
+        Note right of W: Thin adapter translates<br/>JSON to COM commands
+        W->>+A: 🔧 win32com/pyautogui<br/>Physical commands
+        Note right of A: SolidWorks executes<br/>actual CAD operations
+    end
+    
+    rect rgb(255, 240, 245)
+        Note over A,U: Response \u0026 Proof
+        A-->>-W: ✅ Action Successful<br/>+ Screenshot
+        W-->>-V: 📸 JSON Response<br/>+ Visual Proof
+        V-->>-C: 📦 Delivery to cloud
+        C-->>-U: 🎉 Streaming Confirmation<br/>with inline image
+        Note left of U: User sees result<br/>in real-time
+    end
+    
+    style U fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style C fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style V fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style W fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style A fill:#ffebee,stroke:#c62828,stroke-width:2px
 ```
 
 > [!IMPORTANT]

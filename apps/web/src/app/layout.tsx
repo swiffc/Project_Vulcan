@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { Navigation } from "@/components/layout/Navigation";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -36,17 +37,19 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
-          <Navigation />
-          <main className="flex-1">{children}</main>
-        </div>
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
-            className: "glass text-white text-sm",
-            duration: 3000,
-          }}
-        />
+        <ErrorBoundary>
+          <div className="min-h-screen flex flex-col">
+            <Navigation />
+            <main className="flex-1">{children}</main>
+          </div>
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              className: "glass text-white text-sm",
+              duration: 3000,
+            }}
+          />
+        </ErrorBoundary>
         <script
           dangerouslySetInnerHTML={{
             __html: `

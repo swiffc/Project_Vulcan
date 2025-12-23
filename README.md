@@ -28,32 +28,107 @@ All agents share a **Desktop Control Server** (MCP) that physically operates you
 
 ## Architecture
 
-```
-                         RENDER.COM (Cloud)
-  +----------------------------------------------------------+
-  |                                                          |
-  |    WEB CHATBOT (Next.js)                                |
-  |    Accessible from anywhere                              |
-  |                  |                                       |
-  |                  v                                       |
-  |    ORCHESTRATOR + AGENTS (Trading, CAD, Work, General)  |
-  |                                                          |
-  +----------------------------------------------------------+
-                         |
-                   TAILSCALE VPN
-                         |
-  +----------------------------------------------------------+
-  |                YOUR WINDOWS PC                           |
-  |                                                          |
-  |    DESKTOP CONTROL SERVER (MCP)                         |
-  |    Mouse | Keyboard | Screenshot | Replay | Verifier    |
-  |    Vector Memory | Browser Automation                    |
-  |                  |                                       |
-  |    +-------------+-------------+                         |
-  |    |             |             |                         |
-  |    v             v             v                         |
-  | TradingView  SolidWorks    J2 Tracker                   |
-  +----------------------------------------------------------+
+```mermaid
+flowchart TB
+    Start([👤 User Access])
+    
+    subgraph Cloud["☁️ RENDER.COM - Cloud Infrastructure"]
+        direction TB
+        Web["🌐 Web Chatbot<br/>━━━━━━━━━━━━<br/>Next.js + React<br/>Port: 3000<br/>Accessible Anywhere"]
+        
+        Orch["🎯 Orchestrator<br/>━━━━━━━━━━━━<br/>FastAPI + Python<br/>Port: 8080<br/>Agent Coordination"]
+        
+        subgraph Agents["🤖 AI Agent Layer"]
+            direction LR
+            Trading["📈 Trading Agent<br/>TradingView Analysis<br/>Paper Trading"]
+            CAD["📐 CAD Agent<br/>SolidWorks Control<br/>Drawing Validation"]
+            Work["💼 Work Hub<br/>Browser Automation<br/>J2 Integration"]
+            General["💬 General Agent<br/>Chat Assistant<br/>Knowledge Base"]
+        end
+        
+        subgraph CloudServices["⚙️ Cloud Services"]
+            direction LR
+            Redis["🔴 Redis<br/>━━━━━━<br/>Cache Layer<br/>Rate Limiting"]
+            Chroma["🧠 ChromaDB<br/>━━━━━━<br/>Vector Memory<br/>RAG System"]
+            Postgres["🐘 PostgreSQL<br/>━━━━━━<br/>Database<br/>Prisma ORM"]
+        end
+    end
+    
+    VPN{"🔐 Tailscale VPN<br/>━━━━━━━━━━━━<br/>Secure Tunnel<br/>Encrypted Connection"}
+    
+    subgraph Local["💻 YOUR WINDOWS PC - Local Environment"]
+        direction TB
+        Desktop["🖥️ Desktop Control Server<br/>━━━━━━━━━━━━━━━━<br/>MCP Protocol Server<br/>FastAPI + Python<br/>Port: 8765"]
+        
+        subgraph Controllers["🎮 Control Layer"]
+            direction LR
+            Mouse["🖱️ Mouse<br/>PyAutoGUI"]
+            Keyboard["⌨️ Keyboard<br/>Input Control"]
+            Screen["📸 Screenshot<br/>MSS Library"]
+            Browser["🌐 Browser<br/>Playwright"]
+        end
+        
+        subgraph LocalServices["🧠 Local Services"]
+            direction LR
+            Vector["📚 Vector Memory<br/>Local ChromaDB"]
+            Replay["🔄 Action Replay<br/>Verification"]
+        end
+        
+        subgraph PhysicalApps["📦 Physical Applications"]
+            direction LR
+            TV["📊 TradingView<br/>Chart Analysis<br/>Paper Trading"]
+            SW["🔧 SolidWorks<br/>3D CAD Modeling<br/>COM Automation"]
+            J2["📋 J2 Tracker<br/>Work Management<br/>Browser Control"]
+        end
+    end
+    
+    Start --> Web
+    Web --> Orch
+    Orch --> Agents
+    Orch <--> CloudServices
+    
+    Orch -.->|"HTTPS Request<br/>Secure API Call"| VPN
+    VPN -.->|"Local Network<br/>100.x.x.x:8765"| Desktop
+    
+    Desktop --> Controllers
+    Desktop --> LocalServices
+    Controllers --> PhysicalApps
+    
+    style Start fill:#e1f5fe,stroke:#01579b,stroke-width:3px,color:#000
+    style Cloud fill:#e3f2fd,stroke:#1976d2,stroke-width:4px
+    style Local fill:#fff3e0,stroke:#f57c00,stroke-width:4px
+    style VPN fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000
+    
+    style Web fill:#4fc3f7,stroke:#0277bd,stroke-width:3px,color:#000
+    style Orch fill:#81c784,stroke:#388e3c,stroke-width:3px,color:#000
+    style Desktop fill:#ffb74d,stroke:#e65100,stroke-width:3px,color:#000
+    
+    style Agents fill:#e1bee7,stroke:#6a1b9a,stroke-width:2px
+    style CloudServices fill:#90caf9,stroke:#1565c0,stroke-width:2px
+    style Controllers fill:#ffcc80,stroke:#ef6c00,stroke-width:2px
+    style LocalServices fill:#ce93d8,stroke:#6a1b9a,stroke-width:2px
+    style PhysicalApps fill:#a5d6a7,stroke:#2e7d32,stroke-width:2px
+    
+    style Trading fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    style CAD fill:#b2dfdb,stroke:#00695c,stroke-width:2px,color:#000
+    style Work fill:#d1c4e9,stroke:#4527a0,stroke-width:2px,color:#000
+    style General fill:#f8bbd0,stroke:#c2185b,stroke-width:2px,color:#000
+    
+    style Redis fill:#ffccbc,stroke:#bf360c,stroke-width:2px,color:#000
+    style Chroma fill:#c5cae9,stroke:#283593,stroke-width:2px,color:#000
+    style Postgres fill:#b2ebf2,stroke:#006064,stroke-width:2px,color:#000
+    
+    style Mouse fill:#ffe0b2,stroke:#e65100,stroke-width:2px,color:#000
+    style Keyboard fill:#ffe0b2,stroke:#e65100,stroke-width:2px,color:#000
+    style Screen fill:#ffe0b2,stroke:#e65100,stroke-width:2px,color:#000
+    style Browser fill:#ffe0b2,stroke:#e65100,stroke-width:2px,color:#000
+    
+    style Vector fill:#e1bee7,stroke:#6a1b9a,stroke-width:2px,color:#000
+    style Replay fill:#e1bee7,stroke:#6a1b9a,stroke-width:2px,color:#000
+    
+    style TV fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000
+    style SW fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000
+    style J2 fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000
 ```
 
 ---

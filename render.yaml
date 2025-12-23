@@ -68,7 +68,7 @@ services:
     runtime: docker
     region: ohio
     plan: free
-    dockerfilePath: ./Dockerfile.chroma
+    dockerfilePath: ./docker/Dockerfile.chroma
 
   # System Manager (Background Worker)
   - type: worker
@@ -76,7 +76,7 @@ services:
     runtime: docker
     region: ohio
     plan: free
-    dockerfilePath: ./Dockerfile.system-manager
+    dockerfilePath: ./docker/Dockerfile.system-manager
     envVars:
       - key: BACKUP_ENABLED
         value: "true"

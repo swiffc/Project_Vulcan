@@ -44,12 +44,42 @@ def get_rag_engine():
 
     return RAGEngine()
 
-sentry_sdk.init(
-    dsn=os.getenv("SENTRY_DSN"),
-    integrations=[FastApiIntegration()],
-    traces_sample_rate=1.0,
-    profiles_sample_rate=1.0,
-)
+
+# Environment configuration
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+RELEASE_VERSION = os.getenv("RELEASE_VERSION", "dev")
+
+
+def filter_sensitive_data(event, hint):
+    """Filter sensitive data from Sentry events."""
+    # Remove sensitive headers
+    if "request" in event and "headers" in event["request"]:
+        headers = event["request"]["headers"]
+        sensitive_headers = ["authorization", "x-api-key", "cookie"]
+        for header in sensitive_headers:
+            if header in headers:
+                headers[header] = "[Filtered]"
+    return event
+
+
+# Initialize Sentry if DSN is provided
+if os.getenv("SENTRY_DSN"):
+    sentry_sdk.init(
+        dsn=os.getenv("SENTRY_DSN"),
+        environment=ENVIRONMENT,
+        release=f"vulcan-orchestrator@{RELEASE_VERSION}",
+        integrations=[FastApiIntegration()],
+        # Sample rates: 100% in dev, 10% in production to reduce quota usage
+        traces_sample_rate=1.0 if ENVIRONMENT == "development" else 0.1,
+        profiles_sample_rate=1.0 if ENVIRONMENT == "development" else 0.1,
+        # Don't send personally identifiable information
+        send_default_pii=False,
+        # Filter sensitive data
+        before_send=filter_sensitive_data,
+    )
+    logger.info(f"Sentry initialized for environment: {ENVIRONMENT}")
+else:
+    logger.warning("SENTRY_DSN not set, error tracking disabled")
 
 
 app = FastAPI(
@@ -72,13 +102,37 @@ async def rate_limit_middleware(request: Request, call_next):
     request_times = rate_limiter[client_ip]
 
     # Remove old timestamps
-    while request_times and request_times[0] < time.time() - RATE_LIMIT_DURATION:
+    current_time = time.time()
+    while request_times and request_times[0] < current_time - RATE_LIMIT_DURATION:
         request_times.pop(0)
 
     if len(request_times) >= RATE_LIMIT_REQUESTS:
         raise HTTPException(status_code=429, detail="Too Many Requests")
 
     request_times.append(time.time())
+    response = await call_next(request)
+    return response
+
+
+@app.middleware("http")
+async def sentry_context_middleware(request: Request, call_next):
+    """Add context to Sentry events for better debugging."""
+    if os.getenv("SENTRY_DSN"):
+        with sentry_sdk.configure_scope() as scope:
+            # Add agent type tag if present
+            agent_type = request.headers.get("X-Agent-Type", "unknown")
+            scope.set_tag("agent_type", agent_type)
+
+            # Add request context
+            scope.set_context(
+                "request",
+                {
+                    "url": str(request.url),
+                    "method": request.method,
+                    "client_ip": request.client.host if request.client else "unknown",
+                },
+            )
+
     response = await call_next(request)
     return response
 
