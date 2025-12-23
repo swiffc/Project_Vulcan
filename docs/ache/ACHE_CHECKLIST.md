@@ -11,19 +11,30 @@
 ACHE (Fin Fan) uses AIR to cool process fluid, NOT water/shell.
 
 ## ACHE STRUCTURE:
-```
-        TUBE BUNDLE (Finned Tubes)
-               |
-    +----------v----------+
-    |   PLENUM CHAMBER    | <- S25139-5A IS THIS!
-    |  +------+ +------+  |
-    |  | FAN  | | FAN  |  |
-    |  +------+ +------+  |
-    +---------------------+
-               |
-        SUPPORT STRUCTURE
-               |
-    PLATFORMS, LADDERS, WALKWAYS
+
+```mermaid
+flowchart TB
+    Bundle["🔥 TUBE BUNDLE<br/>━━━━━━━━━━━━<br/>Finned Tubes"]
+    
+    subgraph Plenum["📦 PLENUM CHAMBER<br/>(S25139-5A IS THIS!)"]
+        Fan1["🌀 FAN 1"]
+        Fan2["🌀 FAN 2"]
+    end
+    
+    Support["🏗️ SUPPORT STRUCTURE"]
+    Access["🚶 PLATFORMS, LADDERS, WALKWAYS"]
+    
+    Bundle --> Plenum
+    Plenum --> Fan1 & Fan2
+    Plenum --> Support
+    Support --> Access
+    
+    style Bundle fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
+    style Plenum fill:#4dabf7,stroke:#1971c2,stroke-width:3px
+    style Support fill:#51cf66,stroke:#2f9e44,stroke-width:3px,color:#000
+    style Access fill:#ffd43b,stroke:#f59f00,stroke-width:2px,color:#000
+    style Fan1 fill:#a9e34b,stroke:#5c940d,stroke-width:2px,color:#000
+    style Fan2 fill:#a9e34b,stroke:#5c940d,stroke-width:2px,color:#000
 ```
 
 ---
