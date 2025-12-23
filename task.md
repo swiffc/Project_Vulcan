@@ -88,6 +88,13 @@ These are nice-to-have improvements that can be done after production deployment
 - [ ] **Enhance TROUBLESHOOTING.md** - Add Phase 19 sections (Sentry, PostgreSQL, logging) (30 min)
 - [ ] **Update SETUP.md** - Add PostgreSQL and Sentry setup sections (30 min)
 
-**Status**: All critical documentation is production-ready. These are quality-of-life improvements.
+### Code Enhancements
+- [ ] **Trading Journal API Integration** - Implement fetch/save trade endpoints (1-2 hours)
+  - `apps/web/src/app/trading/journal/[id]/page.tsx:70` - Fetch trade from API
+  - `apps/web/src/app/trading/journal/new/page.tsx:89` - Save trade to API/database
+- [ ] **CAD Validation Widget** - Add validation history and detail modal (1-2 hours)
+  - `apps/web/src/components/cad/dashboard/ValidationWidget.tsx:31` - Implement API to fetch recent validations
+  - `apps/web/src/components/cad/dashboard/ValidationWidget.tsx:195` - Show validation detail modal
 
+**Status**: All critical functionality is production-ready. These are quality-of-life improvements.
 
