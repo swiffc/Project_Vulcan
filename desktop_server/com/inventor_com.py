@@ -48,8 +48,53 @@ class PatternRequest(BaseModel):
 class FilletRequest(BaseModel):
     radius: float  # cm
 
+class LineRequest(BaseModel):
+    x1: float
+    y1: float
+    x2: float
+    y2: float
+
+class ArcRequest(BaseModel):
+    center_x: float
+    center_y: float
+    radius: float
+    start_angle: float  # degrees
+    end_angle: float  # degrees
+
+class LoftRequest(BaseModel):
+    profiles: list  # List of profile names or indices
+    guide_curves: Optional[list] = None
+
+class SweepRequest(BaseModel):
+    profile: str  # Profile name or index
+    path: str  # Path curve name or index
+
+class ShellRequest(BaseModel):
+    thickness: float  # cm
+    faces_to_remove: Optional[list] = None
+
 class SaveRequest(BaseModel):
     filepath: str
+
+class OpenRequest(BaseModel):
+    filepath: str
+
+class ExportRequest(BaseModel):
+    filepath: str
+    format: str  # "step", "iges", "stl", "pdf", etc.
+
+class InsertComponentRequest(BaseModel):
+    filepath: str
+    x: float = 0.0
+    y: float = 0.0
+    z: float = 0.0
+
+class JointRequest(BaseModel):
+    joint_type: str  # rigid, revolute, slider, cylindrical, planar, ball, etc.
+    component1: str
+    component2: str
+    geometry1: str  # Face or edge name
+    geometry2: str  # Face or edge name
 
 
 def get_app():
@@ -175,6 +220,72 @@ async def draw_rectangle(req: RectangleRequest):
     return {"status": "ok"}
 
 
+@router.post("/draw_line")
+async def draw_line(req: LineRequest):
+    """Draw a line in the active sketch."""
+    logger.info(f"Drawing line from ({req.x1}, {req.y1}) to ({req.x2}, {req.y2})")
+    app = get_app()
+    doc = _inv_doc or app.ActiveDocument
+
+    if not doc:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    sketches = doc.ComponentDefinition.Sketches
+    if sketches.Count == 0:
+        raise HTTPException(status_code=400, detail="No active sketch")
+
+    sketch = sketches.Item(sketches.Count)
+    tg = app.TransientGeometry
+
+    # Create points
+    p1 = tg.CreatePoint2d(req.x1, req.y1)
+    p2 = tg.CreatePoint2d(req.x2, req.y2)
+
+    # Draw line
+    sketch.SketchLines.AddByTwoPoints(p1, p2)
+
+    return {"status": "ok"}
+
+
+@router.post("/draw_arc")
+async def draw_arc(req: ArcRequest):
+    """Draw an arc in the active sketch."""
+    logger.info(f"Drawing arc at ({req.center_x}, {req.center_y}) r={req.radius}")
+    app = get_app()
+    doc = _inv_doc or app.ActiveDocument
+
+    if not doc:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    sketches = doc.ComponentDefinition.Sketches
+    if sketches.Count == 0:
+        raise HTTPException(status_code=400, detail="No active sketch")
+
+    sketch = sketches.Item(sketches.Count)
+    tg = app.TransientGeometry
+
+    import math
+    center = tg.CreatePoint2d(req.center_x, req.center_y)
+    start_angle_rad = math.radians(req.start_angle)
+    end_angle_rad = math.radians(req.end_angle)
+
+    # Calculate start and end points
+    start_x = req.center_x + req.radius * math.cos(start_angle_rad)
+    start_y = req.center_y + req.radius * math.sin(start_angle_rad)
+    end_x = req.center_x + req.radius * math.cos(end_angle_rad)
+    end_y = req.center_y + req.radius * math.sin(end_angle_rad)
+
+    start_point = tg.CreatePoint2d(start_x, start_y)
+    end_point = tg.CreatePoint2d(end_x, end_y)
+
+    # Draw arc
+    sketch.SketchArcs.AddByCenterStartEndPoint(
+        center, start_point, end_point
+    )
+
+    return {"status": "ok"}
+
+
 @router.post("/extrude")
 async def extrude(req: ExtrudeRequest):
     """Extrude the current sketch profile."""
@@ -274,6 +385,113 @@ async def save(req: SaveRequest):
     doc.SaveAs(req.filepath, False)
 
     return {"status": "ok", "filepath": req.filepath}
+
+
+@router.post("/new_assembly")
+async def new_assembly():
+    """Create a new assembly document."""
+    global _inv_doc
+    logger.info("Creating new Inventor assembly")
+    app = get_app()
+
+    # Create new assembly document
+    _inv_doc = app.Documents.Add(
+        12291,  # kAssemblyDocumentObject
+        "",  # Use default template
+        True  # Create visible
+    )
+
+    return {"status": "ok", "document_type": "assembly"}
+
+
+@router.post("/insert_component")
+async def insert_component(req: InsertComponentRequest):
+    """Insert a component into the current assembly."""
+    logger.info(f"Inserting component: {req.filepath}")
+    app = get_app()
+    doc = _inv_doc or app.ActiveDocument
+
+    if not doc:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Check if it's an assembly
+    if doc.DocumentType != 12291:  # kAssemblyDocumentObject
+        raise HTTPException(status_code=400, detail="Active document is not an assembly")
+
+    if not os.path.exists(req.filepath):
+        raise HTTPException(status_code=400, detail=f"File not found: {req.filepath}")
+
+    # Get assembly component definition
+    comp_def = doc.ComponentDefinition
+
+    # Create matrix for positioning
+    tg = app.TransientGeometry
+    matrix = tg.CreateMatrix()
+    matrix.SetTranslation(tg.CreateVector(req.x, req.y, req.z))
+
+    # Insert component
+    occurrence = comp_def.Occurrences.Add(
+        req.filepath,
+        matrix
+    )
+
+    return {
+        "status": "ok",
+        "filepath": req.filepath,
+        "position": {"x": req.x, "y": req.y, "z": req.z},
+        "occurrence_name": occurrence.Name
+    }
+
+
+@router.post("/add_joint")
+async def add_joint(req: JointRequest):
+    """Add a joint constraint between two components in an assembly."""
+    logger.info(f"Adding joint: {req.joint_type}")
+    app = get_app()
+    doc = _inv_doc or app.ActiveDocument
+
+    if not doc:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    if doc.DocumentType != 12291:  # kAssemblyDocumentObject
+        raise HTTPException(status_code=400, detail="Active document is not an assembly")
+
+    comp_def = doc.ComponentDefinition
+
+    # Joint type mapping
+    joint_types = {
+        "rigid": 12288,      # kRigidJointType
+        "revolute": 12289,   # kRevoluteJointType
+        "slider": 12290,     # kSliderJointType
+        "cylindrical": 12291, # kCylindricalJointType
+        "planar": 12292,     # kPlanarJointType
+        "ball": 12293,       # kBallJointType
+    }
+
+    joint_type_const = joint_types.get(req.joint_type.lower(), 12288)
+
+    # Get components
+    occ1 = comp_def.Occurrences.ItemByName(req.component1)
+    occ2 = comp_def.Occurrences.ItemByName(req.component2)
+
+    if not occ1 or not occ2:
+        raise HTTPException(status_code=400, detail="Component not found")
+
+    # Create joint
+    joints = comp_def.Joints
+    joint = joints.Add(
+        joint_type_const,
+        occ1,
+        occ2,
+        None  # Geometry will be set via selections
+    )
+
+    return {
+        "status": "ok",
+        "joint_type": req.joint_type,
+        "component1": req.component1,
+        "component2": req.component2
+    }
 
 
 @router.get("/status")

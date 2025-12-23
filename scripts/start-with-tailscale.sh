@@ -26,4 +26,4 @@ fi
 echo "Starting Vulcan Orchestrator..."
 
 # Start the orchestrator
-exec uvicorn agents.core.api:app --host 0.0.0.0 --port 8080
+exec uvicorn core.api:app --host 0.0.0.0 --port 8080

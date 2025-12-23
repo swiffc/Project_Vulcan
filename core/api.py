@@ -12,7 +12,6 @@ from collections import defaultdict
 from typing import List, Dict, Any, Optional
 from fastapi import FastAPI, HTTPException, Security, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from fastapi.security import APIKeyHeader
 
@@ -22,6 +21,7 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
 from core.trading_journal import router as trading_journal_router
 from core.validation_history import router as validation_history_router
+from core.orchestrator_adapter import get_orchestrator, TaskRequest, AgentType
 
 # Initialize logging
 from core.logging_config import setup_logging
@@ -31,20 +31,6 @@ logger = logging.getLogger(__name__)
 
 logger.info("Vulcan Orchestrator starting up...")
 
-
-# Lazy imports for heavy modules
-def get_llm_client():
-    from core.llm import LLMClient
-
-    return LLMClient()
-
-
-def get_rag_engine():
-    from core.memory.rag_engine import RAGEngine
-
-    return RAGEngine()
-
-
 # Environment configuration
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 RELEASE_VERSION = os.getenv("RELEASE_VERSION", "dev")
@@ -52,7 +38,6 @@ RELEASE_VERSION = os.getenv("RELEASE_VERSION", "dev")
 
 def filter_sensitive_data(event, hint):
     """Filter sensitive data from Sentry events."""
-    # Remove sensitive headers
     if "request" in event and "headers" in event["request"]:
         headers = event["request"]["headers"]
         sensitive_headers = ["authorization", "x-api-key", "cookie"]
@@ -62,90 +47,45 @@ def filter_sensitive_data(event, hint):
     return event
 
 
-# Initialize Sentry if DSN is provided
+# Initialize Sentry
 if os.getenv("SENTRY_DSN"):
     sentry_sdk.init(
         dsn=os.getenv("SENTRY_DSN"),
         environment=ENVIRONMENT,
         release=f"vulcan-orchestrator@{RELEASE_VERSION}",
         integrations=[FastApiIntegration()],
-        # Sample rates: 100% in dev, 10% in production to reduce quota usage
         traces_sample_rate=1.0 if ENVIRONMENT == "development" else 0.1,
         profiles_sample_rate=1.0 if ENVIRONMENT == "development" else 0.1,
-        # Don't send personally identifiable information
         send_default_pii=False,
-        # Filter sensitive data
         before_send=filter_sensitive_data,
     )
     logger.info(f"Sentry initialized for environment: {ENVIRONMENT}")
-else:
-    logger.warning("SENTRY_DSN not set, error tracking disabled")
-
 
 app = FastAPI(
     title="Vulcan Orchestrator",
     description="Cloud-hosted AI orchestrator for Project Vulcan",
-    version="1.0.0",
+    version="1.1.0",
 )
 
 app.add_middleware(SentryAsgiMiddleware)
 
 # Rate limiting
-RATE_LIMIT_DURATION = 60  # seconds
-RATE_LIMIT_REQUESTS = 100  # requests per duration
-rate_limiter = defaultdict(lambda: [])
+RATE_LIMIT_DURATION = 60
+RATE_LIMIT_REQUESTS = 100
+rate_limiter = defaultdict(list)
 
 
 @app.middleware("http")
 async def rate_limit_middleware(request: Request, call_next):
-    client_ip = request.client.host
+    client_ip = request.client.host if request.client else "unknown"
     request_times = rate_limiter[client_ip]
-
-    # Remove old timestamps
     current_time = time.time()
     while request_times and request_times[0] < current_time - RATE_LIMIT_DURATION:
         request_times.pop(0)
-
     if len(request_times) >= RATE_LIMIT_REQUESTS:
         raise HTTPException(status_code=429, detail="Too Many Requests")
-
     request_times.append(time.time())
-    response = await call_next(request)
-    return response
-
-
-@app.middleware("http")
-async def sentry_context_middleware(request: Request, call_next):
-    """Add context to Sentry events for better debugging."""
-    if os.getenv("SENTRY_DSN"):
-        with sentry_sdk.configure_scope() as scope:
-            # Add agent type tag if present
-            agent_type = request.headers.get("X-Agent-Type", "unknown")
-            scope.set_tag("agent_type", agent_type)
-
-            # Add request context
-            scope.set_context(
-                "request",
-                {
-                    "url": str(request.url),
-                    "method": request.method,
-                    "client_ip": request.client.host if request.client else "unknown",
-                },
-            )
-
-    response = await call_next(request)
-    return response
-
-
-@app.middleware("http")
-async def add_security_headers(request: Request, call_next):
-    response = await call_next(request)
-    response.headers["Content-Security-Policy"] = (
-        "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
-    )
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
-    return response
+    return await call_next(request)
 
 
 app.add_middleware(
@@ -164,19 +104,13 @@ app.include_router(validation_history_router, prefix="/api")
 
 DESKTOP_SERVER_URL = os.getenv("DESKTOP_SERVER_URL", "http://localhost:8765")
 API_KEY = os.getenv("API_KEY")
-API_KEY_NAME = "X-API-Key"
-
-api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=True)
 
 
 async def get_api_key(api_key: str = Security(api_key_header)):
     if api_key == API_KEY:
         return api_key
-    else:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid API Key",
-        )
+    raise HTTPException(status_code=401, detail="Invalid API Key")
 
 
 class ChatMessage(BaseModel):
@@ -196,76 +130,41 @@ class DesktopCommand(BaseModel):
 
 
 AGENT_PROMPTS = {
-    "trading": """You are a trading analysis agent for Project Vulcan.
-You specialize in ICT, BTMM, and Stacey Burke trading methodologies.
-Analyze setups, provide bias, and help with trade journaling.
-When the user wants to interact with TradingView, use desktop commands.""",
-    "cad": """You are a CAD automation agent for Project Vulcan.
-You help create 3D models in SolidWorks and Inventor via COM automation.
-Break down part creation into steps: sketch, extrude, pattern, etc.
-When ready to execute, use desktop commands to control the CAD software.""",
-    "general": """You are the general assistant for Project Vulcan.
-You help with life management, calendar, notes, and general queries.
-Route specialized tasks to trading or CAD agents when appropriate.""",
+    "trading": """You are the Trading Agent. Specialize in ICT, BTMM, and Stacey Burke.
+Analyze setups, bias, and journal lessons. Use desktop commands for TradingView.""",
+    "cad": """You are the CAD Agent. Automate SolidWorks/Inventor via COM.
+Break down design into sketch, extrude, pattern. Verify alignment (±1/16").""",
+    "sketch": """You are the Sketch Agent. Vision-to-CAD specialist.
+Interpret drawings/photos into 3D intent and generation parameters.""",
+    "work": """You are the Work Agent. Manage J2 Tracker, Outlook, and Teams.
+Generate status reports and track project deadlines via Microsoft API.""",
+    "general": """General Vulcan Orchestrator. Route to Trading, CAD, Sketch, or Work.""",
 }
 
 
-def detect_agent(message: str) -> str:
-    """Detect which agent should handle the request based on keywords."""
-    message_lower = message.lower()
-
-    trading_keywords = [
-        "trade",
-        "trading",
-        "forex",
-        "gbp",
-        "usd",
-        "eur",
-        "setup",
-        "bias",
-        "ict",
-        "btmm",
-        "order block",
-        "fvg",
-        "liquidity",
-    ]
-    cad_keywords = [
-        "cad",
-        "solidworks",
-        "inventor",
-        "part",
-        "sketch",
-        "extrude",
-        "flange",
-        "model",
-        "3d",
-        "drawing",
-        "assembly",
-    ]
-
-    if any(kw in message_lower for kw in trading_keywords):
-        return "trading"
-    elif any(kw in message_lower for kw in cad_keywords):
-        return "cad"
-    return "general"
+@app.on_event("startup")
+async def startup_event():
+    """Register agents and initialize resources."""
+    orchestrator = get_orchestrator()
+    # In a full deployment, we would instantiate and register actual agent classes here.
+    # For now, we use the OrchestratorAdapter's detection and routing logic.
+    logger.info("Orchestrator ready with agents: Trading, CAD, Sketch, Work")
 
 
 @app.get("/health")
 async def health():
-    """Health check endpoint."""
+    """Health check with desktop connectivity."""
     desktop_status = "unknown"
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             resp = await client.get(f"{DESKTOP_SERVER_URL}/health")
-            if resp.status_code == 200:
-                desktop_status = "connected"
-            else:
-                desktop_status = "error"
+            desktop_status = "connected" if resp.status_code == 200 else "error"
     except Exception:
         desktop_status = "unreachable"
 
     return {
         "status": "healthy",
+        "environment": ENVIRONMENT,
         "desktop_server": desktop_status,
         "desktop_url": DESKTOP_SERVER_URL,
     }
@@ -273,40 +172,58 @@ async def health():
 
 @app.post("/chat")
 async def chat(request: ChatRequest, api_key: str = Depends(get_api_key)):
-    """Process a chat message and return AI response."""
+    """Process chat via OrchestratorAdapter."""
     if not request.messages:
         raise HTTPException(status_code=400, detail="No messages provided")
 
     last_message = request.messages[-1].content
-    agent_type = request.agent or detect_agent(last_message)
-    system_prompt = AGENT_PROMPTS.get(agent_type, AGENT_PROMPTS["general"])
+    orchestrator = get_orchestrator()
 
-    # Augment with RAG context
+    # Use adapter to detect and route
     try:
-        rag = get_rag_engine()
+        agent_type = (
+            AgentType(request.agent)
+            if request.agent
+            else orchestrator.detect_agent(last_message)
+        )
+    except ValueError:
+        logger.warning(
+            f"Invalid agent type requested: {request.agent}, falling back to general"
+        )
+        agent_type = AgentType.GENERAL
+    system_prompt = AGENT_PROMPTS.get(agent_type.value, AGENT_PROMPTS["general"])
+
+    # Augment with RAG if available
+    try:
+        from core.memory.rag_engine import RAGEngine
+
+        rag = RAGEngine()
         context = rag.retrieve(last_message, top_k=3)
         if context:
-            system_prompt += f"\n\nRelevant context from memory:\n{context}"
+            system_prompt += f"\n\nRelevant Context:\n{context}"
     except Exception:
-        pass  # RAG not available, continue without it
+        pass
 
     # Generate response
     try:
-        llm = get_llm_client()
+        from core.llm import llm
+
         messages = [{"role": m.role, "content": m.content} for m in request.messages]
-        response = llm.generate(messages=messages, system=system_prompt)
-        return {"response": response, "agent": agent_type}
+        response = llm.generate(
+            messages=messages, system=system_prompt, agent_type=agent_type.value
+        )
+        return {"response": response, "agent": agent_type.value}
     except Exception as e:
+        logger.error(f"Chat generation failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/desktop/command")
 async def desktop_command(cmd: DesktopCommand, api_key: str = Depends(get_api_key)):
-    """Proxy a command to the local desktop server via Tailscale."""
+    """Bridge to the local desktop server."""
     url = f"{DESKTOP_SERVER_URL}{cmd.endpoint}"
-
     try:
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=60.0) as client:
             if cmd.method.upper() == "GET":
                 resp = await client.get(url)
             else:
@@ -316,29 +233,15 @@ async def desktop_command(cmd: DesktopCommand, api_key: str = Depends(get_api_ke
                 "status": resp.status_code,
                 "data": (
                     resp.json()
-                    if resp.headers.get("content-type", "").startswith(
-                        "application/json"
-                    )
+                    if "application/json" in resp.headers.get("content-type", "")
                     else resp.text
                 ),
             }
-    except httpx.TimeoutException:
-        raise HTTPException(status_code=504, detail="Desktop server timeout")
-    except httpx.ConnectError:
-        raise HTTPException(status_code=503, detail="Cannot connect to desktop server")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/desktop/health")
-async def desktop_health(api_key: str = Depends(get_api_key)):
-    """Check desktop server connectivity."""
-    try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            resp = await client.get(f"{DESKTOP_SERVER_URL}/health")
-            return resp.json()
-    except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Desktop unreachable: {str(e)}")
+        logger.error(f"Desktop command bridge failure: {e}")
+        raise HTTPException(
+            status_code=503, detail=f"Desktop communication failure: {str(e)}"
+        )
 
 
 if __name__ == "__main__":

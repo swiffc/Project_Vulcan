@@ -86,11 +86,22 @@ export default function NewTradePage() {
 
     setIsSubmitting(true);
     try {
-      // TODO: Save trade to API/database
-      console.log("Trade data:", formData);
+      const response = await fetch("/api/trading/journal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to save trade: ${response.statusText}`);
+      }
+
+      const savedTrade = await response.json();
+      console.log("Trade saved:", savedTrade);
       router.push("/trading/journal");
     } catch (error) {
       console.error("Error saving trade:", error);
+      alert("Failed to save trade. Please check if the database is running.");
     } finally {
       setIsSubmitting(false);
     }
@@ -190,11 +201,13 @@ function EntryDetailsTab({
 
         {/* Pair Selection */}
         <div>
-          <label className="block text-xs text-white/40 uppercase tracking-wider mb-2">Currency Pair</label>
+          <label htmlFor="currency-pair" className="block text-xs text-white/40 uppercase tracking-wider mb-2">Currency Pair</label>
           <select
+            id="currency-pair"
             value={formData.pair || "EUR/USD"}
             onChange={(e) => updateField("pair", e.target.value)}
             className="trading-input w-full"
+            title="Select a currency pair"
           >
             {TRADING_PAIRS.map((pair) => (
               <option key={pair.symbol} value={pair.symbol}>
@@ -256,12 +269,14 @@ function EntryDetailsTab({
 
         {/* Entry Time */}
         <div>
-          <label className="block text-xs text-white/40 uppercase tracking-wider mb-2">Entry Time</label>
+          <label htmlFor="entry-time" className="block text-xs text-white/40 uppercase tracking-wider mb-2">Entry Time</label>
           <input
+            id="entry-time"
             type="datetime-local"
             value={formData.entryTime?.slice(0, 16) || ""}
             onChange={(e) => updateField("entryTime", new Date(e.target.value).toISOString())}
             className="trading-input w-full"
+            title="Set the entry time"
           />
         </div>
       </div>
@@ -368,11 +383,13 @@ function BTMMSetupTab({
 
         {/* Setup Type */}
         <div>
-          <label className="block text-xs text-white/40 uppercase tracking-wider mb-2">Setup Type</label>
+          <label htmlFor="setup-type" className="block text-xs text-white/40 uppercase tracking-wider mb-2">Setup Type</label>
           <select
+            id="setup-type"
             value={formData.setupType || "1a"}
             onChange={(e) => updateField("setupType", e.target.value as SetupType)}
             className="trading-input w-full"
+            title="Select a setup type"
           >
             {Object.entries(SETUP_LABELS).map(([type, label]) => (
               <option key={type} value={type}>
@@ -478,11 +495,13 @@ function BTMMSetupTab({
 
         {/* MM Behavior */}
         <div>
-          <label className="block text-xs text-white/40 uppercase tracking-wider mb-2">MM Behavior</label>
+          <label htmlFor="mm-behavior" className="block text-xs text-white/40 uppercase tracking-wider mb-2">MM Behavior</label>
           <select
+            id="mm-behavior"
             value={formData.mmBehavior || "none"}
             onChange={(e) => updateField("mmBehavior", e.target.value as MMBehavior)}
             className="trading-input w-full"
+            title="Select market maker behavior"
           >
             <option value="none">None</option>
             <option value="trap_up">Trap Up</option>
@@ -529,11 +548,13 @@ function BTMMSetupTab({
 
         {/* TDI Signal */}
         <div>
-          <label className="block text-xs text-white/40 uppercase tracking-wider mb-2">TDI Signal</label>
+          <label htmlFor="tdi-signal" className="block text-xs text-white/40 uppercase tracking-wider mb-2">TDI Signal</label>
           <select
+            id="tdi-signal"
             value={formData.tdiSignal || "none"}
             onChange={(e) => updateField("tdiSignal", e.target.value as TDISignal)}
             className="trading-input w-full"
+            title="Select a TDI signal"
           >
             <option value="none">None</option>
             <option value="sharkfin">Sharkfin</option>
@@ -545,11 +566,13 @@ function BTMMSetupTab({
 
         {/* Candlestick Pattern */}
         <div>
-          <label className="block text-xs text-white/40 uppercase tracking-wider mb-2">Candlestick Pattern</label>
+          <label htmlFor="candlestick-pattern" className="block text-xs text-white/40 uppercase tracking-wider mb-2">Candlestick Pattern</label>
           <select
+            id="candlestick-pattern"
             value={formData.candlestickPattern || "none"}
             onChange={(e) => updateField("candlestickPattern", e.target.value as CandlestickPattern)}
             className="trading-input w-full"
+            title="Select a candlestick pattern"
           >
             <option value="none">None</option>
             <option value="morning_star">Morning Star</option>

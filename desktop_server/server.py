@@ -56,7 +56,13 @@ logger = logging.getLogger(__name__)
 
 # Import CAD COM adapters (optional - only if CAD software is installed)
 try:
-    from com import solidworks_router, solidworks_assembly_router, inventor_router
+    from com import (
+        solidworks_router, 
+        solidworks_assembly_router, 
+        inventor_router,
+        inventor_imates_router,
+        solidworks_mate_refs_router
+    )
 
     CAD_AVAILABLE = True
 except ImportError:
@@ -64,6 +70,8 @@ except ImportError:
     solidworks_router = None
     solidworks_assembly_router = None
     inventor_router = None
+    inventor_imates_router = None
+    solidworks_mate_refs_router = None
     logger.warning("CAD COM adapters not available")
 
 # Global state
@@ -273,6 +281,10 @@ if CAD_AVAILABLE:
         app.include_router(solidworks_assembly_router)
     if inventor_router:
         app.include_router(inventor_router)
+    if inventor_imates_router:
+        app.include_router(inventor_imates_router)
+    if solidworks_mate_refs_router:
+        app.include_router(solidworks_mate_refs_router)
     logger.info("CAD COM adapters loaded")
 
 # Include memory router if available

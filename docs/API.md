@@ -1,35 +1,76 @@
 # Project Vulcan - API Documentation
 
-This document provides a summary of the available API endpoints for the Project Vulcan orchestrator.
+This document provides a comprehensive reference for the Project Vulcan API.
 
-## Authentication
+## 🔐 Authentication
 
-All endpoints (except `/health`) require an API key to be passed in the `X-API-Key` header.
+All endpoints (except `/api/health`) require an API key to be passed in the `X-API-Key` header.
+For local development, use the `VULCAN_API_KEY` defined in your `.env` file.
 
-## Endpoints
+---
 
-### Health
+## 📡 Core Endpoints
 
--   **GET /health**: Health check endpoint.
+### Health & Metrics
 
-### Chat
+- `GET /api/health` - System health status.
+- `GET /api/metrics` - Performance metrics and token usage.
 
--   **POST /chat**: Process a chat message and return an AI response.
+### AI Chat & Orchestration
 
-### Desktop
+- `POST /api/chat` - Process a chat message.
+  - **Body**: `{ "messages": [...] }`
+  - **Returns**: SSE stream of agent responses and screenshots.
 
--   **POST /desktop/command**: Proxy a command to the local desktop server.
--   **GET /desktop/health**: Check desktop server connectivity.
+### Desktop Proxy
 
-### Trading Journal
+- `POST /api/desktop/command` - Proxy a raw command to the local desktop server.
+- `GET /api/desktop/health` - Check connectivity to the local node.
 
--   **POST /api/trading/journal**: Create a new trade.
--   **GET /api/trading/journal**: Get a list of all trades.
--   **GET /api/trading/journal/{trade_id}**: Get a single trade by ID.
--   **PUT /api/trading/journal/{trade_id}**: Update a trade by ID.
--   **DELETE /api/trading/journal/{trade_id}**: Delete a trade by ID.
+---
 
-### CAD Validation History
+## 🏗️ CAD Automation
 
--   **GET /api/cad/validations/recent**: Get a list of recent validations.
--   **GET /api/cad/validations/{validation_id}**: Get a single validation by ID.
+### Validations
+
+- `GET /api/cad/validations/recent` - Fetch latest validation results.
+- `GET /api/cad/validations/{id}` - Fetch detailed validation report.
+- `POST /api/cad/validate` - Start a new validation job.
+
+---
+
+## 📊 Trading Journal
+
+### Trades
+
+- `POST /api/trading/journal` - Create a new trade entry.
+- `GET /api/trading/journal` - List all trades.
+- `GET /api/trading/journal/{id}` - Get trade details.
+- `PUT /api/trading/journal/{id}` - Update a trade.
+- `DELETE /api/trading/journal/{id}` - Remove a trade.
+
+---
+
+## 💼 Work Hub & Integrations
+
+### J2 Tracker
+
+- `POST /api/work/j2/sync` - Sync local J2 tracking data to cloud.
+- `GET /api/work/j2/stats` - Fetch professional productivity stats.
+
+### Microsoft Suite
+
+- `GET /api/work/microsoft/auth` - Initiate OAuth flow.
+- `POST /api/work/microsoft/sync` - Sync Outlook/Calendar events.
+
+---
+
+## 🖥️ Desktop Server (Local Only)
+
+These endpoints are exposed by the `desktop_server` running on your local machine (`http://localhost:8000`).
+
+- `POST /mouse/click` - Perform a click.
+- `POST /keyboard/type` - Send keystrokes.
+- `POST /screen/screenshot` - Capture current screen.
+- `POST /window/focus` - Focus a specific application.
+- `POST /memory/rag/augment` - Get context-aware memory snippets.

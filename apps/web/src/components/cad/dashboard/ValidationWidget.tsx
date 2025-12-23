@@ -28,11 +28,14 @@ export function ValidationWidget({ maxItems = 5, showChart = true }: ValidationW
 
   async function loadValidations() {
     try {
-      // TODO: Implement API to fetch recent validations
-      // For now, showing empty state
-      setRecentValidations([]);
+      setLoading(true);
+      const response = await fetch("/api/cad/validations/recent");
+      if (!response.ok) throw new Error("Failed to fetch validations");
+      const data = await response.json();
+      setRecentValidations(data || []);
     } catch (error) {
       console.error("Failed to load validations:", error);
+      setRecentValidations([]);
     } finally {
       setLoading(false);
     }

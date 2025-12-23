@@ -3,9 +3,9 @@
 
 ---
 
-# ASSEMBLY STRUCTURE
+## ASSEMBLY STRUCTURE
 
-```
+```text
 S25139-5A (Sheet 1) <- MASTER ASSEMBLY
     |
     +-- Shows how ALL parts fit together
@@ -20,7 +20,7 @@ S25139-5A (Sheet 1) <- MASTER ASSEMBLY
 
 ---
 
-# ASSEMBLY VALIDATION WORKFLOW
+## ASSEMBLY VALIDATION WORKFLOW
 
 ```mermaid
 flowchart TB
@@ -47,17 +47,18 @@ flowchart TB
 
 ---
 
-# KEY INSIGHT
+## KEY INSIGHT
 
 **Sheet 1 (5A) = ASSEMBLY = Master reference for ALL mating relationships**
 
 The bot MUST understand:
+
 1. Parts shown touching in assembly = must have matching holes
 2. BOM shows QUANTITY - must check ALL instances
 
 ---
 
-# MATING RELATIONSHIP MATRIX
+## MATING RELATIONSHIP MATRIX
 
 | Part A | Part B | Interface Type | Holes to Check | Status |
 |--------|--------|----------------|----------------|--------|
@@ -73,9 +74,10 @@ The bot MUST understand:
 
 ---
 
-# MATING RELATIONSHIP EXAMPLE
+## MATING RELATIONSHIP EXAMPLE
 
 5A-X (FLOOR_EXTENSION-2) connects to:
+
 - 5A-R (FLOOR_SPLICE_PANEL) - splice at edges
 - 5A-W (FLOOR_STIFFENER) - bolts to underside  
 - 5A-Y (FLOOR_EXTENSION-3) - adjacent section
@@ -84,9 +86,9 @@ For each pair: VERIFY HOLES ALIGN!
 
 ---
 
-# BOM CROSS-REFERENCE EXAMPLE
+## BOM CROSS-REFERENCE EXAMPLE
 
-```
+```text
 MASTER BOM (Sheet 1):
 ┌─────────────────────────────────────────┐
 │ Item 10: FLOOR_EXTENSION-2              │
@@ -102,7 +104,8 @@ Detail Drawing 5A-X References:
 └── Weight: 125 lbs each, Total: 500 lbs ✅
 ```
 
-## Validation Checklist
+### Validation Checklist
+
 - [ ] Part number matches BOM (5A-X = Item 10) ✅
 - [ ] Quantity matches (4 instances) ✅
 - [ ] Material matches (A36, 1/4" plate) ✅
@@ -112,7 +115,7 @@ Detail Drawing 5A-X References:
 
 ---
 
-# BOT WORKFLOW
+## BOT WORKFLOW
 
 1. Find Assembly Drawing (Sheet 1)
 2. Extract Complete BOM
@@ -122,16 +125,16 @@ Detail Drawing 5A-X References:
 
 ---
 
-# OLD vs NEW APPROACH
+## OLD vs NEW APPROACH
 
 **OLD (Single Part):**
-```
+```text
 Check 5A-X alone -> "Looks good!" 
 ```
 WRONG! Doesn't verify it fits!
 
 **NEW (Assembly-Aware):**
-```
+```text
 Check 5A-X against 5A-W, 5A-R, 5A-Y
 -> "Holes align? YES/NO"
 ```
@@ -139,7 +142,7 @@ CORRECT! Verified it fits in assembly
 
 ---
 
-# ASSEMBLY TREE VISUALIZATION
+## ASSEMBLY TREE VISUALIZATION
 
 ```mermaid
 flowchart TB

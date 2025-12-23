@@ -7,6 +7,7 @@ Requires: SolidWorks installed and licensed on the machine
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from typing import List, Optional
 import win32com.client
 import pythoncom
 import logging
@@ -60,6 +61,13 @@ class DimensionRequest(BaseModel):
 class SaveRequest(BaseModel):
     filepath: str
 
+class OpenRequest(BaseModel):
+    filepath: str
+
+class ExportRequest(BaseModel):
+    filepath: str
+    format: str  # "step", "iges", "stl", "pdf", etc.
+
 
 class LineRequest(BaseModel):
     x1: float
@@ -85,6 +93,22 @@ class SelectRequest(BaseModel):
 
 class ViewRequest(BaseModel):
     view: str = "isometric"  # front, back, top, bottom, left, right, isometric, trimetric
+
+class LoftRequest(BaseModel):
+    profiles: List[str]  # List of sketch names or indices
+    guide_curves: Optional[List[str]] = None
+
+class SweepRequest(BaseModel):
+    profile: str  # Profile sketch name
+    path: str  # Path sketch name
+
+class ShellRequest(BaseModel):
+    thickness: float  # meters
+    faces_to_remove: Optional[List[str]] = None
+
+class MirrorRequest(BaseModel):
+    plane: str  # "Front", "Top", "Right", or custom plane name
+    features: Optional[List[str]] = None  # Feature names to mirror
 
 
 def get_app():
@@ -307,6 +331,48 @@ async def add_dimension(req: DimensionRequest):
     return {"status": "ok", "value": req.value}
 
 
+@router.post("/open")
+async def open_document(req: OpenRequest):
+    """Open an existing SolidWorks document."""
+    logger.info(f"Opening document: {req.filepath}")
+    global _sw_model
+    app = get_app()
+
+    if not os.path.exists(req.filepath):
+        raise HTTPException(status_code=400, detail=f"File not found: {req.filepath}")
+
+    # Determine document type
+    if req.filepath.endswith('.sldprt'):
+        doc_type = 1  # swDocPART
+    elif req.filepath.endswith('.sldasm'):
+        doc_type = 2  # swDocASSEMBLY
+    elif req.filepath.endswith('.slddrw'):
+        doc_type = 3  # swDocDRAWING
+    else:
+        raise HTTPException(status_code=400, detail="Unsupported file type")
+
+    errors = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 0)
+    warnings = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 0)
+
+    _sw_model = app.OpenDoc6(
+        req.filepath,
+        doc_type,
+        0,  # swOpenDocOptions_Silent
+        "",
+        errors,
+        warnings
+    )
+
+    if not _sw_model:
+        raise HTTPException(status_code=400, detail="Failed to open document")
+
+    return {
+        "status": "ok",
+        "filepath": req.filepath,
+        "document_type": "part" if doc_type == 1 else "assembly" if doc_type == 2 else "drawing"
+    }
+
+
 @router.post("/save")
 async def save(req: SaveRequest):
     """Save the current document."""
@@ -325,6 +391,39 @@ async def save(req: SaveRequest):
     model.Extension.SaveAs(req.filepath, 0, 0, None, errors, warnings)
 
     return {"status": "ok", "filepath": req.filepath}
+
+
+@router.post("/export")
+async def export_document(req: ExportRequest):
+    """Export the current document to another format."""
+    logger.info(f"Exporting to {req.format}: {req.filepath}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Format mapping for SolidWorks
+    format_map = {
+        "step": 6,    # swSaveAsVersion_STEP214
+        "iges": 5,    # swSaveAsVersion_IGES
+        "stl": 7,     # swSaveAsVersion_STL
+        "pdf": 1,     # swSaveAsVersion_PDF
+        "dwg": 2,     # swSaveAsVersion_DWG
+        "dxf": 3,     # swSaveAsVersion_DXF
+    }
+
+    format_type = format_map.get(req.format.lower())
+    if not format_type:
+        raise HTTPException(status_code=400, detail=f"Unsupported format: {req.format}")
+
+    errors = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 0)
+    warnings = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 0)
+
+    # Export
+    model.Extension.SaveAs(req.filepath, format_type, 0, None, errors, warnings)
+
+    return {"status": "ok", "filepath": req.filepath, "format": req.format}
 
 
 @router.get("/status")
@@ -492,3 +591,115 @@ async def set_view(req: ViewRequest):
     model.ViewZoomtofit2()
 
     return {"status": "ok", "view": req.view}
+
+
+@router.post("/loft")
+async def loft(req: LoftRequest):
+    """Create a loft feature between multiple profiles."""
+    logger.info(f"Creating loft with {len(req.profiles)} profiles")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Get sketches for profiles
+    feature_mgr = model.FeatureManager
+    
+    # Select profiles
+    for i, profile_name in enumerate(req.profiles):
+        model.Extension.SelectByID2(profile_name, "SKETCH", 0, 0, 0, i > 0, 0, None, 0)
+
+    # Create loft
+    guide_curves = req.guide_curves if req.guide_curves else []
+    
+    feature = feature_mgr.FeatureLoft2(
+        False, None, guide_curves, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0
+    )
+
+    return {"status": "ok", "profiles": len(req.profiles)}
+
+
+@router.post("/sweep")
+async def sweep(req: SweepRequest):
+    """Create a sweep feature along a path."""
+    logger.info(f"Creating sweep: profile={req.profile}, path={req.path}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Select profile and path sketches
+    model.Extension.SelectByID2(req.profile, "SKETCH", 0, 0, 0, False, 0, None, 0)
+    model.Extension.SelectByID2(req.path, "SKETCH", 0, 0, 0, True, 0, None, 0)
+
+    # Create sweep
+    feature_mgr = model.FeatureManager
+    feature = feature_mgr.FeatureSweep2(
+        False, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    )
+
+    return {"status": "ok"}
+
+
+@router.post("/shell")
+async def shell(req: ShellRequest):
+    """Create a shell feature."""
+    logger.info(f"Creating shell: thickness={req.thickness}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Select faces to remove if specified
+    if req.faces_to_remove:
+        for face_name in req.faces_to_remove:
+            model.Extension.SelectByID2(face_name, "FACE", 0, 0, 0, True, 0, None, 0)
+
+    # Create shell
+    feature_mgr = model.FeatureManager
+    feature = feature_mgr.FeatureShell2(
+        req.thickness,
+        0,
+        len(req.faces_to_remove) if req.faces_to_remove else 0,
+        False,
+        req.faces_to_remove is None or len(req.faces_to_remove) == 0
+    )
+
+    return {"status": "ok", "thickness": req.thickness}
+
+
+@router.post("/mirror")
+async def mirror(req: MirrorRequest):
+    """Mirror features or bodies."""
+    logger.info(f"Creating mirror: plane={req.plane}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Select mirror plane
+    plane_name = f"{req.plane} Plane" if req.plane in ["Front", "Top", "Right"] else req.plane
+    model.Extension.SelectByID2(plane_name, "PLANE", 0, 0, 0, False, 0, None, 0)
+
+    # Select features to mirror if specified
+    if req.features:
+        for feature_name in req.features:
+            model.Extension.SelectByID2(feature_name, "BODYFEATURE", 0, 0, 0, True, 0, None, 0)
+
+    # Create mirror
+    feature_mgr = model.FeatureManager
+    feature = feature_mgr.FeatureMirror2(
+        0, True, False, False, False, False,
+        req.features is None or len(req.features) == 0,
+        req.features is None or len(req.features) == 0,
+        False
+    )
+
+    return {"status": "ok", "plane": req.plane}

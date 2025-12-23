@@ -752,9 +752,7 @@ This document outlines **ALL recommended checks** for a comprehensive engineerin
 
 ---
 
----
-
-# CATEGORY 24: IMPLEMENTATION CODE EXAMPLES
+### CATEGORY 24: IMPLEMENTATION CODE EXAMPLES
 
 ## 1. GD&T Symbol Recognition (Python + OpenCV)
 

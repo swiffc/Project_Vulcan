@@ -8,7 +8,7 @@ This guide covers setting up Project Vulcan for local development, including all
 
 ## Table of Contents
 
-1. [Prerequisites](#prerequisites)
+1. [Prerequisites](#prerequisites-system--services)
 2. [Quick Start](#quick-start)
 3. [Environment Configuration](#environment-configuration)
 4. [Standards Database Setup](#standards-database-setup)
@@ -20,28 +20,21 @@ This guide covers setting up Project Vulcan for local development, including all
 
 ---
 
-## Prerequisites
+## Prerequisites (System & Services)
 
-### Required Software
+### Local System Requirements
 
 - **Python 3.11+** - Core backend language
 - **Node.js 18+** - Frontend and Next.js
-- **Git** - Version control
-- **Docker** (optional) - For containerized deployment
-
-### Optional Software
-
-- **SolidWorks 2020+** - For CAD automation features
-- **Autodesk Inventor 2020+** - Alternative CAD platform
-- **Tailscale** - For secure remote desktop control
-- **PostgreSQL** - For persistent database (optional, can use SQLite)
-
-### System Requirements
-
-- **OS**: Windows 10/11 (for CAD integration), Linux/macOS (for orchestrator only)
+- **SolidWorks/Inventor 2020+** - For CAD integration (Windows only)
 - **RAM**: 8GB minimum, 16GB recommended
-- **Disk**: 10GB free space
-- **Network**: Internet connection for API calls and package downloads
+
+### ☁️ Mandatory Cloud & External Services
+
+1. **PostgreSQL 16+**: Used for persistence (Trades, Validations).
+2. **Tailscale VPN**: Required for Cloud-to-Local connectivity.
+3. **Sentry Account**: For project-wide monitoring and error tracking.
+4. **Anthropic/OpenAI API Keys**: For LLM orchestration.
 
 ---
 

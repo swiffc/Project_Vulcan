@@ -17,8 +17,11 @@ logger = logging.getLogger("core.orchestrator")
 
 class AgentType(Enum):
     """Available agent types."""
+
     TRADING = "trading"
     CAD = "cad"
+    SKETCH = "sketch"
+    WORK = "work"
     INSPECTOR = "inspector"
     SYSTEM = "system"
     GENERAL = "general"
@@ -27,6 +30,7 @@ class AgentType(Enum):
 @dataclass
 class TaskResult:
     """Result from an agent task execution."""
+
     agent: AgentType
     success: bool
     output: Any
@@ -37,6 +41,7 @@ class TaskResult:
 @dataclass
 class TaskRequest:
     """Request to be routed to an agent."""
+
     message: str
     context: Dict[str, Any] = field(default_factory=dict)
     preferred_agent: Optional[AgentType] = None
@@ -58,23 +63,89 @@ class OrchestratorAdapter:
     # Keywords for agent detection
     AGENT_KEYWORDS = {
         AgentType.TRADING: [
-            "trade", "trading", "forex", "gbp", "usd", "eur", "jpy",
-            "setup", "bias", "ict", "btmm", "quarterly", "stacey",
-            "order block", "fvg", "liquidity", "manipulation",
-            "tradingview", "chart", "analysis", "journal"
+            "trade",
+            "trading",
+            "forex",
+            "gbp",
+            "usd",
+            "eur",
+            "jpy",
+            "setup",
+            "bias",
+            "ict",
+            "btmm",
+            "quarterly",
+            "stacey",
+            "order block",
+            "fvg",
+            "liquidity",
+            "manipulation",
+            "tradingview",
+            "chart",
+            "analysis",
+            "journal",
         ],
         AgentType.CAD: [
-            "cad", "solidworks", "inventor", "autocad", "bentley",
-            "part", "sketch", "extrude", "flange", "model", "3d",
-            "drawing", "assembly", "ecn", "revision", "pdf"
+            "cad",
+            "solidworks",
+            "inventor",
+            "autocad",
+            "bentley",
+            "part",
+            "sketch",
+            "extrude",
+            "flange",
+            "model",
+            "3d",
+            "drawing",
+            "assembly",
+            "ecn",
+            "revision",
+            "pdf",
+        ],
+        AgentType.SKETCH: [
+            "photo",
+            "sketch",
+            "hand-drawn",
+            "napkin",
+            "ocr",
+            "vision",
+            "geometry extraction",
+            "image to cad",
+            "convert image",
+        ],
+        AgentType.WORK: [
+            "teams",
+            "outlook",
+            "email",
+            "meeting",
+            "calendar",
+            "j2",
+            "tracker",
+            "work",
+            "job",
+            "microsoft",
+            "task",
         ],
         AgentType.INSPECTOR: [
-            "audit", "review", "grade", "inspect", "judge",
-            "report", "performance", "analyze results"
+            "audit",
+            "review",
+            "grade",
+            "inspect",
+            "judge",
+            "report",
+            "performance",
+            "analyze results",
         ],
         AgentType.SYSTEM: [
-            "backup", "health", "status", "metrics", "schedule",
-            "system", "maintenance", "uptime"
+            "backup",
+            "health",
+            "status",
+            "metrics",
+            "schedule",
+            "system",
+            "maintenance",
+            "uptime",
         ],
     }
 
@@ -130,7 +201,9 @@ class OrchestratorAdapter:
 
         # Check if agent is registered
         if agent_type not in self.agents and agent_type != AgentType.GENERAL:
-            logger.warning(f"Agent {agent_type.value} not registered, falling back to general")
+            logger.warning(
+                f"Agent {agent_type.value} not registered, " "falling back to general"
+            )
             agent_type = AgentType.GENERAL
 
         # Execute task
@@ -147,23 +220,29 @@ class OrchestratorAdapter:
         except Exception as e:
             logger.error(f"Task execution failed: {e}")
             return TaskResult(
-                agent=agent_type,
-                success=False,
-                output=None,
-                error=str(e)
+                agent=agent_type, success=False, output=None, error=str(e)
             )
 
-    async def _execute_task(self, agent_type: AgentType, request: TaskRequest) -> TaskResult:
+    async def _execute_task(
+        self, agent_type: AgentType, request: TaskRequest
+    ) -> TaskResult:
         """Execute task on specific agent."""
         agent = self.agents.get(agent_type)
 
         if agent is None:
-            # Return mock result for unregistered agents
+            # Check if this is a general request
+            if agent_type == AgentType.GENERAL:
+                return TaskResult(
+                    agent=agent_type,
+                    success=True,
+                    output=f"Processing general request: {request.message[:100]}",
+                )
+
             return TaskResult(
                 agent=agent_type,
-                success=True,
-                output=f"[{agent_type.value}] Processed: {request.message[:50]}...",
-                metadata={"mock": True}
+                success=False,
+                output=None,
+                error=f"Agent category '{agent_type.value}' is offline.",
             )
 
         # Call agent's process method if available
@@ -174,13 +253,11 @@ class OrchestratorAdapter:
         else:
             output = f"Agent {agent_type.value} has no process/run method"
 
-        return TaskResult(
-            agent=agent_type,
-            success=True,
-            output=output
-        )
+        return TaskResult(agent=agent_type, success=True, output=output)
 
-    async def _review_result(self, result: TaskResult, request: TaskRequest) -> TaskResult:
+    async def _review_result(
+        self, result: TaskResult, request: TaskRequest
+    ) -> TaskResult:
         """
         Apply Producer-Reviewer pattern (Rule 11).
 
@@ -214,11 +291,7 @@ class OrchestratorAdapter:
     def get_task_history(self, limit: int = 10) -> List[Dict]:
         """Get recent task history."""
         return [
-            {
-                "agent": r.agent.value,
-                "success": r.success,
-                "error": r.error
-            }
+            {"agent": r.agent.value, "success": r.success, "error": r.error}
             for r in self.task_history[-limit:]
         ]
 

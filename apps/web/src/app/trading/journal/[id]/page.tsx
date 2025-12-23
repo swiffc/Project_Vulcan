@@ -66,15 +66,69 @@ export default function TradeDetailPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "analysis" | "review">("details");
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    // TODO: Fetch trade from API
-    setTrade(mockTrade);
+    async function fetchTrade() {
+      if (!params.id) return;
+      
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/trading/journal/${params.id}`);
+        if (!response.ok) {
+          if (response.status === 404) throw new Error("Trade not found");
+          throw new Error("Failed to fetch trade");
+        }
+        const data = await response.json();
+        
+        // Map Prisma DB snake_case fields back to frontend camelCase expectations
+        const mappedTrade: Trade = {
+          ...data,
+          pair: data.symbol,
+          entryPrice: data.entry_price,
+          exitPrice: data.exit_price,
+          positionSize: data.quantity,
+          riskPercent: data.risk_percent || 1,
+          setupType: data.setup,
+          entryTime: data.created_at,
+          exitTime: data.updated_at,
+          stopLoss: data.stop,
+          takeProfit1: data.target,
+        };
+        
+        setTrade(mappedTrade);
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTrade();
   }, [params.id]);
 
-  if (!trade) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-vulcan-darker flex items-center justify-center">
-        <div className="text-white/50">Loading trade...</div>
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-vulcan-accent"></div>
+          <div className="text-white/50">Loading trade details...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !trade) {
+    return (
+      <div className="min-h-screen bg-vulcan-darker flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-400 mb-4 font-bold">🛑 {error || "Trade not found"}</div>
+          <Link href="/trading/journal" className="text-vulcan-accent hover:underline">
+            Return to Journal
+          </Link>
+        </div>
       </div>
     );
   }

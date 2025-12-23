@@ -18,7 +18,7 @@ export interface ChatRequest {
 }
 
 export interface AgentType {
-  id: "trading" | "cad" | "life" | "general";
+  id: "trading" | "cad" | "life" | "general" | "sketch" | "work";
   name: string;
   description: string;
   keywords: string[];

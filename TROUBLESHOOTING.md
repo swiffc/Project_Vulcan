@@ -2,47 +2,68 @@
 
 This document lists common errors and their solutions.
 
-## Docker
+---
 
-### Error: `unable to get image 'postgres:13-alpine'`
+## Infrastructure
 
-**Cause:** The Docker daemon is not running or is not responsive.
+### PostgreSQL Connection Issues
 
-**Solution:**
-1.  Make sure Docker Desktop is running.
-2.  Run `docker info` to check if the Docker daemon is responsive.
-3.  If the issue persists, try restarting Docker Desktop.
+**Error:** `Environment variable not found: DATABASE_URL` or `Authentication failed`
 
-### Error: `no configuration file provided: not found`
+- **Cause:** Database server not running or incorrect credentials in `.env`.
+- **Solution:** 
+  1. Ensure PostgreSQL is installed and running.
+  2. Check `DATABASE_URL` in `.env`. It should look like: `postgresql://postgres:password@localhost:5432/vulcan`.
+  3. Run `npx prisma db push` to synchronize the schema.
 
-**Cause:** The `docker-compose` command is being run from a directory that does not contain a `docker-compose.yml` file.
+### Sentry Monitoring
 
-**Solution:**
--   Run the `docker-compose` command from the root of the project, where the `docker-compose.yml` file is located.
+**Error:** `Sentry is not initialized`
 
-## Prisma
+- **Cause:** Missing `SENTRY_DSN` in `.env`.
+- **Solution:** 
+  1. Get your DSN from [sentry.io](https://sentry.io).
+  2. Add `NEXT_PUBLIC_SENTRY_DSN` for the frontend and `SENTRY_DSN` for the backend server.
 
-### Error: `Environment variable not found: DATABASE_URL`
+### Tailscale VPN Tunneling
 
-**Cause:** The `DATABASE_URL` environment variable is not set.
+**Error:** `Cannot connect to desktop server (100.x.x.x)`
 
-**Solution:**
-1.  Create a `.env` file in the `apps/web` directory.
-2.  Add the `DATABASE_URL` to the `.env` file. For local development, it should be `DATABASE_URL="postgresql://vulcan:vulcan@localhost:5432/vulcan"`.
+- **Cause:** Tailscale not authenticated or node is offline.
+- **Solution:**
+  1. Run `tailscale status` on both machines.
+  2. Ensure the firewall on the host machine allows inbound traffic on port 8000.
+  3. Test connectivity with `curl http://[Tailscale-IP]:8000/health`.
 
-### Error: `P1000: Authentication failed against database server`
+---
 
-**Cause:** The PostgreSQL container is not running, or the credentials in the `DATABASE_URL` are incorrect.
+## Application Modules
 
-**Solution:**
-1.  Make sure the PostgreSQL container is running by running `docker-compose up -d`.
-2.  Verify that the username, password, and database name in the `DATABASE_URL` match the values in the `docker-compose.yml` file.
+### CAD Automation
 
-## Pytest
+**Error:** `SolidWorks/Inventor COM connection failed`
 
-### Error: `TypeError: AsyncClient.__init__() got an unexpected keyword argument 'app'`
+- **Cause:** Software is closed or running with different permissions.
+- **Solution:**
+  1. Open the CAD application manually first.
+  2. Run the Desktop Control Server and CAD application as the *same* user (preferably not Administrator unless both are).
 
-**Cause:** This can be caused by an old version of `httpx` or a dependency conflict.
+### Trading Journal
 
-**Solution:**
--   Use `fastapi.testclient.TestClient` instead of `httpx.AsyncClient` for testing FastAPI applications.
+**Error:** `Failed to save trade: 500 Internal Server Error`
+
+- **Cause:** Prisma client or database sync error.
+- **Solution:** 
+  1. Check terminal logs for specific database constraints.
+  2. Run `npx prisma generate` if you've recently updated the schema.
+
+---
+
+## Development Tools
+
+### Pytest Failure (FastAPI)
+
+**Error:** `TypeError: AsyncClient.__init__() got an unexpected keyword argument 'app'`
+
+- **Cause:** Incompatible `httpx` version.
+- **Solution:** Use `fastapi.testclient.TestClient` for synchronous testing or update `httpx` and `pytest-asyncio`.

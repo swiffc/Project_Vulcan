@@ -25,7 +25,27 @@ const AGENTS: AgentType[] = [
     keywords: [
       "cad", "solidworks", "inventor", "autocad", "bentley", "flange",
       "part", "assembly", "drawing", "sketch", "extrude", "revolve",
-      "dimension", "tolerance", "asme", "ansi", "bolt", "design", "build"
+      "dimension", "tolerance", "asme", "ansi", "bolt", "design", "build",
+      "imate", "mate reference", "mate ref", "hole alignment", "composite imate",
+      "constraint", "automation", "ache", "plenum", "i-r-o plate"
+    ],
+  },
+  {
+    id: "sketch",
+    name: "Sketch Agent",
+    description: "Vision-to-CAD: Interprets images/sketches into 3D models",
+    keywords: [
+      "photo", "sketch", "image", "vision", "interpret", "ocr", "geometry",
+      "hand-drawn", "capture", "scan-drawn"
+    ],
+  },
+  {
+    id: "work",
+    name: "Work Agent",
+    description: "Manages professional tasks, J2 Tracker, and Microsoft integration",
+    keywords: [
+      "work", "j2", "tracker", "excel", "outlook", "meeting", "task",
+      "project", "schedule", "deadline", "professional"
     ],
   },
   {
@@ -72,41 +92,41 @@ IMPORTANT RULES:
   const agentPrompts: Record<string, string> = {
     trading: `${basePrompt}
 You are the Trading Agent specialized in:
-- ICT (Inner Circle Trader) concepts: Order Blocks, FVG, OTE, Kill Zones
-- BTMM (Beat The Market Maker): Three-day cycles, TDI, Stop Hunts
-- Quarterly Theory: AMDX model, True Opens
-- Stacey Burke: ACB setups, Session trading
+- ICT concepts (Order Blocks, FVG) and BTMM cycles.
+- Quarterly Theory and Stacey Burke session setups.
 
-When analyzing setups:
-1. Identify the current market phase (Q1-Q4)
-2. Check for confluence across ICT, BTMM, and Burke
-3. Only suggest trades when multiple confirmations align
-4. Always specify entry, stop loss, and take profit levels
-5. Log lessons learned after each trade
-6. Current session times (EST):
-- Asian: 7PM - 12AM
-- London: 2AM - 5AM
-- NY: 7AM - 10AM`,
+When analyzing setups, follow checking steps for confluence and log lessons.`,
 
     cad: `${basePrompt}
 You are the CAD Agent specialized in:
-- SolidWorks automation via COM API
-- Inventor automation via COM API
-- ASME Y14.5 dimensioning standards
-- Part creation, sketching, features (extrude, revolve, pattern)
+- SolidWorks/Inventor automation via COM API.
+- ASME Y14.5 standards and technical drawing validation.
+- iMate and Mate Reference automation for hole alignment.
 
-When building parts:
-1. Reference strategy.json for design parameters
-2. Take screenshots after each major operation
-3. Save files with proper naming: {PART_NAME}_v{N}.sldprt
-4. Log all operations for traceability`,
+Reference strategy files for dimensions and take screenshots for every operation.
+
+IMATE/MATE REFERENCE AUTOMATION:
+- "add iMates for assembly <filepath>" - Auto-create Insert, Mate, and Composite iMates for hole alignment in Inventor
+- "create mate references for assembly <filepath>" - Auto-create Concentric + Coincident Mate References in SolidWorks
+- "verify hole alignment for assembly <filepath>" - Check alignment and report mis-aligned holes (±1/16" tolerance)
+- Supports both Inventor (iMates) and SolidWorks (Mate References)
+- Composite iMates group multiple hole iMates for bolt patterns`,
+
+    sketch: `${basePrompt}
+You are the Sketch Agent specialized in:
+- Vision-to-CAD interpretation.
+- Extracting geometric intent from hand-drawn sketches or engineering photos.
+- Generating structural logic for automation based on visual input.`,
+
+    work: `${basePrompt}
+You are the Work Agent specialized in:
+- J2 Tracker automation and professional task management.
+- Integration with Microsoft suite (Excel, Outlook).
+- Tracking deadlines and generating project status reports.`,
 
     general: `${basePrompt}
-You are the General Assistant. Help route requests to the appropriate specialized agent or answer general questions about the system.
-
-Available agents:
-- Trading Agent: Chart analysis, paper trading, ICT/BTMM/Quarterly Theory
-- CAD Agent: SolidWorks, Inventor automation`,
+You are the General Assistant. Help route requests or answer general questions.
+Available agents: Trading, CAD, Sketch, Work.`,
   };
 
   return agentPrompts[agent.id] || agentPrompts.general;
@@ -125,7 +145,7 @@ export function orchestrate(message: string): OrchestratorResult {
   // Determine if this request likely needs desktop control
   const desktopKeywords = [
     "screenshot", "click", "scan", "build", "open", "close",
-    "navigate", "type", "window", "tradingview", "solidworks", "inventor"
+    "navigate", "type", "window", "tradingview", "solidworks", "inventor", "excel", "outlook"
   ];
   const requiresDesktop = desktopKeywords.some((k) =>
     message.toLowerCase().includes(k)
@@ -144,21 +164,26 @@ export function orchestrate(message: string): OrchestratorResult {
  */
 export async function augmentSystemPrompt(
   prompt: string,
-  userMessage: string
+  userMessage: string,
+  agentId: string
 ): Promise<string> {
   try {
     const desktopUrl = process.env.DESKTOP_SERVER_URL || "http://localhost:8000";
     
-    // Only augment for Trading agent queries usually, but General might benefit too.
-    // We'll augment for everything to allow "recall" queries.
-    
-    console.log("[Orchestrator] Fetching RAG context...");
+    // Determine context type based on agent
+    let context_type = "general";
+    if (agentId === "trading") context_type = "trades";
+    if (agentId === "cad") context_type = "cad_standards";
+    if (agentId === "sketch") context_type = "cad_geometry";
+    if (agentId === "work") context_type = "user_docs";
+
+    console.log(`[Orchestrator] Fetching RAG context for ${context_type}...`);
     const response = await fetch(`${desktopUrl}/memory/rag/augment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         query: userMessage,
-        context_type: "trades", // Prioritize trade history/lessons
+        context_type: context_type,
       }),
     });
 
@@ -169,20 +194,6 @@ export async function augmentSystemPrompt(
 
     const data = await response.json();
     if (data.augmented_prompt) {
-       // Ideally we append the context to the system prompt, not replace it
-       // The endpoint returns a full prompt? No, usually just context or augmented query.
-       // Let's assume it returns context we should append.
-       // Inspecting previous `journal.ts`, it expects `augmented_prompt` field.
-       // But usually `rag_engine.augment_prompt` returns the *user query* augmented.
-       // Here we want to augment the *system prompt* with context, or the user query.
-       // Let's modify: we'll append the context to the system prompt instead.
-       
-       // If the server returns just the context, we append.
-       // If it returns a full prompt, we use it. 
-       // Let's assume the server returns `context_str` or similar? 
-       // `journal.ts` called it `augmented_prompt`. 
-       // Let's stick to what's likely implemented: returns a string with context.
-       
        return `${prompt}\n\n### RELEVANT MEMORY CONTEXT:\n${data.augmented_prompt}`;
     }
   } catch (error) {
