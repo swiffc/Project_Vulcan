@@ -248,20 +248,58 @@ Background daemon for automated operations:
 
 Air-Cooled Heat Exchanger drawing verification (in progress):
 
-```
-                    TUBE BUNDLE (Finned Tubes)
-                           |
-+----------------------------------------------------------+
-|                    PLENUM CHAMBER                         |
-|              +----------+    +----------+                 |
-|              | FAN RING |    | FAN RING |                 |
-|              +----------+    +----------+                 |
-|     Floor panels, stiffeners, wall panels, corner angles  |
-+----------------------------------------------------------+
-                           |
-              STRUCTURAL SUPPORT FRAME
-                           |
-              PLATFORMS, LADDERS, WALKWAYS
+### ACHE Assembly Structure
+
+```mermaid
+flowchart TB
+    TubeBundle["🔥 TUBE BUNDLE<br/>━━━━━━━━━━━━━━<br/>Finned Tubes<br/>Heat Exchange Core"]
+    
+    subgraph Plenum["📦 PLENUM CHAMBER"]
+        direction TB
+        FanRing1["🌀 FAN RING 1<br/>Motor Assembly"]
+        FanRing2["🌀 FAN RING 2<br/>Motor Assembly"]
+        
+        subgraph Components["🔧 Chamber Components"]
+            direction LR
+            Floor["⬜ Floor Panels"]
+            Stiff["📏 Stiffeners"]
+            Walls["🧱 Wall Panels"]
+            Corners["📐 Corner Angles"]
+        end
+    end
+    
+    Frame["🏗️ STRUCTURAL SUPPORT FRAME<br/>━━━━━━━━━━━━━━━━━━<br/>Main Load-Bearing Structure"]
+    
+    subgraph Access["🚶 ACCESS SYSTEMS"]
+        direction LR
+        Platform["🔲 Platforms"]
+        Ladder["🪜 Ladders"]
+        Walkway["🚶 Walkways"]
+    end
+    
+    TubeBundle --> Plenum
+    Plenum --> FanRing1 & FanRing2
+    Plenum --> Components
+    Plenum --> Frame
+    Frame --> Access
+    
+    style TubeBundle fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px,color:#fff
+    style Plenum fill:#4dabf7,stroke:#1971c2,stroke-width:3px
+    style Frame fill:#51cf66,stroke:#2f9e44,stroke-width:3px,color:#000
+    style Access fill:#ffd43b,stroke:#f59f00,stroke-width:2px
+    style Components fill:#74c0fc,stroke:#1864ab,stroke-width:2px
+    
+    style FanRing1 fill:#a9e34b,stroke:#5c940d,stroke-width:2px,color:#000
+    style FanRing2 fill:#a9e34b,stroke:#5c940d,stroke-width:2px,color:#000
+    
+    style Floor fill:#91a7ff,stroke:#364fc7,stroke-width:2px,color:#000
+    style Stiff fill:#91a7ff,stroke:#364fc7,stroke-width:2px,color:#000
+    style Walls fill:#91a7ff,stroke:#364fc7,stroke-width:2px,color:#000
+    style Corners fill:#91a7ff,stroke:#364fc7,stroke-width:2px,color:#000
+    
+    style Platform fill:#ffc078,stroke:#e67700,stroke-width:2px,color:#000
+    style Ladder fill:#ffc078,stroke:#e67700,stroke-width:2px,color:#000
+    style Walkway fill:#ffc078,stroke:#e67700,stroke-width:2px,color:#000
 ```
 
 **Key Standards:**
