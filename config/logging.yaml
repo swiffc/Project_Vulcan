@@ -1,79 +1,36 @@
 version: 1
 disable_existing_loggers: false
-
 formatters:
-  standard:
-    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    datefmt: '%Y-%m-%d %H:%M:%S'
-  
-  detailed:
-    format: '%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(funcName)s() - %(message)s'
-    datefmt: '%Y-%m-%d %H:%M:%S'
-  
+  simple:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
   json:
     class: pythonjsonlogger.jsonlogger.JsonFormatter
-    format: '%(asctime)s %(name)s %(levelname)s %(filename)s %(lineno)d %(funcName)s %(message)s'
+    format: "%(asctime)s %(name)s %(levelname)s %(message)s"
 
 handlers:
   console:
     class: logging.StreamHandler
-    level: INFO
-    formatter: standard
+    level: DEBUG
+    formatter: simple
     stream: ext://sys.stdout
 
   file:
     class: logging.handlers.RotatingFileHandler
-    level: DEBUG
-    formatter: detailed
-    filename: logs/vulcan.log
-    maxBytes: 10485760  # 10MB
-    backupCount: 5
-    encoding: utf-8
-
-  error_file:
-    class: logging.handlers.RotatingFileHandler
-    level: ERROR
-    formatter: detailed
-    filename: logs/error.log
-    maxBytes: 10485760  # 10MB
-    backupCount: 5
-    encoding: utf-8
-
-  json_file:
-    class: logging.handlers.RotatingFileHandler
     level: INFO
     formatter: json
-    filename: logs/vulcan.json
-    maxBytes: 10485760  # 10MB
-    backupCount: 3
-    encoding: utf-8
-
-loggers:
-  core:
-    level: DEBUG
-    handlers: [console, file, error_file]
-    propagate: false
-
-  agents:
-    level: DEBUG
-    handlers: [console, file, error_file]
-    propagate: false
-
-  desktop_server:
-    level: DEBUG
-    handlers: [console, file, error_file]
-    propagate: false
-
-  uvicorn:
-    level: INFO
-    handlers: [console, file]
-    propagate: false
-
-  fastapi:
-    level: INFO
-    handlers: [console, file]
-    propagate: false
+    filename: storage/logs/vulcan.log
+    maxBytes: 10485760 # 10MB
+    backupCount: 5
+    encoding: utf8
 
 root:
   level: INFO
   handlers: [console, file]
+
+loggers:
+  uvicorn:
+    level: INFO
+  fastapi:
+    level: INFO
+  httpx:
+    level: WARNING

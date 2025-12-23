@@ -14,6 +14,7 @@
     "@azure/msal-node": "^3.8.4",
     "@mathieuc/tradingview": "^3.5.2",
     "@prisma/client": "^5.13.0",
+    "@sentry/nextjs": "^7.100.0",
     "@tanstack/react-table": "^8.21.3",
     "axios": "^1.7.0",
     "clsx": "^2.1.0",

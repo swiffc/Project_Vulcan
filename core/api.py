@@ -16,6 +16,10 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from fastapi.security import APIKeyHeader
 
+import sentry_sdk
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
+
 from core.trading_journal import router as trading_journal_router
 from core.validation_history import router as validation_history_router
 
@@ -40,12 +44,21 @@ def get_rag_engine():
 
     return RAGEngine()
 
+sentry_sdk.init(
+    dsn=os.getenv("SENTRY_DSN"),
+    integrations=[FastApiIntegration()],
+    traces_sample_rate=1.0,
+    profiles_sample_rate=1.0,
+)
+
 
 app = FastAPI(
     title="Vulcan Orchestrator",
     description="Cloud-hosted AI orchestrator for Project Vulcan",
     version="1.0.0",
 )
+
+app.add_middleware(SentryAsgiMiddleware)
 
 # Rate limiting
 RATE_LIMIT_DURATION = 60  # seconds
