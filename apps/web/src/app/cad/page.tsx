@@ -121,7 +121,7 @@ export default function CADPage() {
       </div>
 
       {/* AI Assistant Sidebar */}
-      <div className="border-l border-white/10">
+      <div className="border-l border-white/10 h-full">
         <Sidebar agentContext="cad" defaultCollapsed={false} />
       </div>
     </div>

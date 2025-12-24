@@ -196,6 +196,18 @@ class VoiceAdapter:
                     return {"intent": "cad_measure_selection", "features": features}
                 if any(kw in text_lower for kw in ["validate", "check", "standard"]):
                     return {"intent": "cad_validate_selection", "features": features}
+                if any(
+                    kw in text_lower for kw in ["gd&t", "tolerance", "check drawing"]
+                ):
+                    return {"intent": "cad_validate_selection", "features": features}
+                if any(
+                    kw in text_lower for kw in ["change", "modify", "set", "update"]
+                ):
+                    return {
+                        "intent": "cad_modify_selection",
+                        "features": features,
+                        "raw": text,
+                    }
 
         # Trading commands
         if any(kw in text_lower for kw in ["analyze", "analysis", "chart"]):
@@ -203,6 +215,8 @@ class VoiceAdapter:
             return {"intent": "trading_analyze", "pair": pair}
 
         if any(kw in text_lower for kw in ["journal", "log trade", "record"]):
+            if "on" in text_lower:
+                return {"intent": "trading_journal_quick", "raw": text}
             return {"intent": "trading_journal", "raw": text}
 
         # CAD commands (General)
@@ -213,10 +227,12 @@ class VoiceAdapter:
             return {"intent": "cad_open", "raw": text}
 
         # System commands
-        if any(kw in text_lower for kw in ["status", "health", "check"]):
+        if any(
+            kw in text_lower for kw in ["status", "health", "check", "how's the system"]
+        ):
             return {"intent": "system_status"}
 
-        if "backup" in text_lower:
+        if any(kw in text_lower for kw in ["backup", "github sync", "save all"]):
             return {"intent": "system_backup"}
 
         # Default: general query

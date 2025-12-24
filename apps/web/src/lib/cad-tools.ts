@@ -139,6 +139,48 @@ export const CAD_TOOLS: Anthropic.Tool[] = [
     },
   },
   {
+    name: "sw_edit_sketch",
+    description: "Open an existing sketch for editing by name. Returns sketch info including segments and dimensions.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        sketch_name: {
+          type: "string",
+          description: "Name of the sketch to edit, e.g., 'Sketch1', 'Base-Sketch'",
+        },
+      },
+      required: ["sketch_name"],
+    },
+  },
+  {
+    name: "sw_get_sketch_info",
+    description: "Get detailed information about a sketch including all segments (lines, arcs, circles), dimensions, and constraints.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        sketch_name: {
+          type: "string",
+          description: "Name of the sketch to inspect. If not provided, returns info for the active sketch.",
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "sw_open_component",
+    description: "Open a component from the current assembly for editing. Opens the part/sub-assembly in a separate window.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        component_name: {
+          type: "string",
+          description: "Name of the component to open, e.g., 'InletFlange-1', 'Housing<1>'",
+        },
+      },
+      required: ["component_name"],
+    },
+  },
+  {
     name: "sw_draw_circle",
     description: "Draw a circle in the active sketch. Units are in meters.",
     input_schema: {
@@ -544,6 +586,42 @@ export const CAD_TOOLS: Anthropic.Tool[] = [
         },
       },
       required: ["mate_type"],
+    },
+  },
+  {
+    name: "sw_get_bom",
+    description: "Extract the Bill of Materials (BOM) from the current SolidWorks assembly. Returns a list of all parts with quantities, part numbers, and file paths.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "sw_get_bom_pdf",
+    description: "Generate a PDF Bill of Materials for the current SolidWorks assembly.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "sw_get_spatial_positions",
+    description: "Get 3D spatial positions and relationships of all components in the assembly. Returns X/Y/Z coordinates, distances between parts, and identifies adjacent/nearby components. Useful for analyzing seal-to-ring relationships, axial alignments, and component proximity.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "sw_analyze_assembly",
+    description: "Run AI-powered design analysis on the current assembly. Analyzes each part's function, suggests proper naming, provides design recommendations, identifies potential issues, and learns from design patterns. Returns geometry, material, features, and mates data.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
     },
   },
   {
@@ -2276,6 +2354,9 @@ export async function executeCADTool(
     sw_export: { method: "POST", endpoint: "/com/solidworks/export" },
     sw_create_sketch: { method: "POST", endpoint: "/com/solidworks/create_sketch" },
     sw_close_sketch: { method: "POST", endpoint: "/com/solidworks/close_sketch" },
+    sw_edit_sketch: { method: "POST", endpoint: "/com/solidworks/edit_sketch" },
+    sw_get_sketch_info: { method: "GET", endpoint: "/com/solidworks/get_sketch_info" },
+    sw_open_component: { method: "POST", endpoint: "/com/solidworks/open_component" },
     sw_draw_circle: { method: "POST", endpoint: "/com/solidworks/draw_circle" },
     sw_draw_rectangle: { method: "POST", endpoint: "/com/solidworks/draw_rectangle" },
     sw_draw_line: { method: "POST", endpoint: "/com/solidworks/draw_line" },
@@ -2311,6 +2392,10 @@ export async function executeCADTool(
     sw_add_drawing_dimension: { method: "POST", endpoint: "/com/solidworks/drawings/add_dimension" },
     sw_add_drawing_note: { method: "POST", endpoint: "/com/solidworks/drawings/add_note" },
     sw_add_bom: { method: "POST", endpoint: "/com/solidworks/drawings/add_bom" },
+    sw_get_bom: { method: "GET", endpoint: "/com/solidworks/get_bom" },
+    sw_get_bom_pdf: { method: "GET", endpoint: "/com/solidworks/get_bom_pdf" },
+    sw_get_spatial_positions: { method: "GET", endpoint: "/com/solidworks/get_spatial_positions" },
+    sw_analyze_assembly: { method: "GET", endpoint: "/com/solidworks/analysis/analyze" },
     sw_edit_title_block: { method: "POST", endpoint: "/com/solidworks/drawings/edit_title_block" },
     sw_add_revision_table: { method: "POST", endpoint: "/com/solidworks/drawings/add_revision_table" },
     sw_add_revision: { method: "POST", endpoint: "/com/solidworks/drawings/add_revision" },

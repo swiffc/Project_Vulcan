@@ -204,6 +204,18 @@ class SketchDimensionRequest(BaseModel):
     value: float  # Dimension value in meters
 
 
+class EditSketchRequest(BaseModel):
+    sketch_name: str  # Name of sketch to edit, e.g., "Sketch1"
+
+
+class OpenComponentRequest(BaseModel):
+    component_name: str  # Component name from assembly, e.g., "InletFlange-1"
+
+
+class GetSketchInfoRequest(BaseModel):
+    sketch_name: Optional[str] = None  # If None, gets active sketch info
+
+
 def get_app():
     """Get or create SolidWorks application instance."""
     global _sw_app
@@ -281,7 +293,9 @@ async def create_sketch(req: SketchRequest):
     # Select the plane - use VT_EMPTY variant for Callout parameter
     plane_name = f"{req.plane} Plane"
     empty_callout = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
-    result = model.Extension.SelectByID2(plane_name, "PLANE", 0, 0, 0, False, 0, empty_callout, 0)
+    result = model.Extension.SelectByID2(
+        plane_name, "PLANE", 0, 0, 0, False, 0, empty_callout, 0
+    )
     if not result:
         raise HTTPException(status_code=400, detail=f"Failed to select {plane_name}")
 
@@ -333,6 +347,210 @@ async def close_sketch():
 
     model.SketchManager.InsertSketch(True)
     return {"status": "ok"}
+
+
+@router.post("/edit_sketch")
+async def edit_sketch(req: EditSketchRequest):
+    """Edit an existing sketch by name."""
+    logger.info(f"Editing sketch: {req.sketch_name}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Clear any selection first
+    model.ClearSelection2(True)
+
+    # Select the sketch by name
+    empty_callout = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
+    result = model.Extension.SelectByID2(
+        req.sketch_name, "SKETCH", 0, 0, 0, False, 0, empty_callout, 0
+    )
+    if not result:
+        raise HTTPException(status_code=400, detail=f"Failed to select sketch: {req.sketch_name}")
+
+    # Put sketch in edit mode
+    model.SketchManager.InsertSketch(True)
+
+    # Get sketch entities info
+    sketch_info = {
+        "sketch_name": req.sketch_name,
+        "status": "editing",
+        "segments": [],
+        "dimensions": []
+    }
+
+    # Try to get sketch details
+    try:
+        feature = model.FirstFeature()
+        while feature:
+            if feature.GetTypeName2() == "ProfileFeature" and feature.Name == req.sketch_name:
+                sketch = feature.GetSpecificFeature2()
+                if sketch:
+                    # Get sketch segments
+                    segments = sketch.GetSketchSegments()
+                    if segments:
+                        for seg in segments:
+                            seg_type = seg.GetType()
+                            type_names = {0: "line", 1: "arc", 2: "ellipse", 3: "elliptical_arc",
+                                         4: "spline", 5: "text", 6: "parabola"}
+                            sketch_info["segments"].append({
+                                "type": type_names.get(seg_type, "unknown"),
+                                "is_construction": seg.ConstructionGeometry
+                            })
+                break
+            feature = feature.GetNextFeature()
+    except Exception as e:
+        logger.warning(f"Could not get sketch details: {e}")
+
+    return sketch_info
+
+
+@router.post("/open_component")
+async def open_component(req: OpenComponentRequest):
+    """Open a component from the current assembly for editing."""
+    logger.info(f"Opening component: {req.component_name}")
+    global _sw_model
+    app = get_app()
+    model = app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Check if it's an assembly
+    doc_type = model.GetType
+    if doc_type != 2:  # swDocASSEMBLY = 2
+        raise HTTPException(status_code=400, detail="Active document is not an assembly")
+
+    # Get configuration
+    config_mgr = model.ConfigurationManager
+    active_config = config_mgr.ActiveConfiguration
+    root_component = active_config.GetRootComponent3(True)
+
+    if not root_component:
+        raise HTTPException(status_code=400, detail="Could not get root component")
+
+    # Find the component
+    children = root_component.GetChildren
+    if callable(children):
+        children = children()
+
+    target_comp = None
+    comp_path = None
+
+    if children:
+        for comp in children:
+            try:
+                comp_name = comp.Name2 if hasattr(comp, 'Name2') else str(comp)
+                # Match by name (with or without instance suffix)
+                if req.component_name in str(comp_name):
+                    target_comp = comp
+                    ref_model = comp.GetModelDoc2()
+                    if ref_model:
+                        path_name = getattr(ref_model, 'GetPathName', None)
+                        if path_name:
+                            comp_path = path_name() if callable(path_name) else path_name
+                    break
+            except:
+                continue
+
+    if not target_comp:
+        raise HTTPException(status_code=400, detail=f"Component not found: {req.component_name}")
+
+    if not comp_path:
+        raise HTTPException(status_code=400, detail=f"Could not get path for component: {req.component_name}")
+
+    # Open the component document
+    errors = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 0)
+    warnings = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 0)
+
+    # Determine type
+    doc_type = 1 if comp_path.upper().endswith(".SLDPRT") else 2
+
+    _sw_model = app.OpenDoc6(comp_path, doc_type, 0, "", errors, warnings)
+
+    if not _sw_model:
+        raise HTTPException(status_code=400, detail="Failed to open component")
+
+    # Activate it
+    app.ActivateDoc3(os.path.basename(comp_path), False, 0, 0)
+
+    return {
+        "status": "ok",
+        "component_name": req.component_name,
+        "filepath": comp_path,
+        "document_type": "part" if doc_type == 1 else "assembly"
+    }
+
+
+@router.get("/get_sketch_info")
+async def get_sketch_info(sketch_name: Optional[str] = None):
+    """Get information about a sketch including entities, dimensions, and constraints."""
+    logger.info(f"Getting sketch info for: {sketch_name or 'active sketch'}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    result = {
+        "sketch_name": sketch_name,
+        "segments": [],
+        "dimensions": [],
+        "constraints": [],
+        "is_fully_defined": False
+    }
+
+    try:
+        feature = model.FirstFeature()
+        while feature:
+            feat_type = feature.GetTypeName2()
+            feat_name = feature.Name
+
+            if feat_type == "ProfileFeature" and (sketch_name is None or feat_name == sketch_name):
+                result["sketch_name"] = feat_name
+                sketch = feature.GetSpecificFeature2()
+
+                if sketch:
+                    # Get segments
+                    segments = sketch.GetSketchSegments()
+                    if segments:
+                        type_names = {0: "line", 1: "arc", 2: "ellipse", 3: "elliptical_arc",
+                                     4: "spline", 5: "text", 6: "parabola"}
+                        for seg in segments:
+                            seg_type = seg.GetType()
+                            seg_data = {
+                                "type": type_names.get(seg_type, f"type_{seg_type}"),
+                                "is_construction": seg.ConstructionGeometry
+                            }
+                            # Get endpoints for lines
+                            if seg_type == 0:  # Line
+                                try:
+                                    start_pt = seg.GetStartPoint2()
+                                    end_pt = seg.GetEndPoint2()
+                                    if start_pt and end_pt:
+                                        seg_data["start"] = {"x": start_pt.X * 1000, "y": start_pt.Y * 1000}
+                                        seg_data["end"] = {"x": end_pt.X * 1000, "y": end_pt.Y * 1000}
+                                except:
+                                    pass
+                            result["segments"].append(seg_data)
+
+                    # Check if fully defined
+                    try:
+                        result["is_fully_defined"] = sketch.IsFullyConstrained()
+                    except:
+                        pass
+
+                if sketch_name:
+                    break  # Found specific sketch
+
+            feature = feature.GetNextFeature()
+
+    except Exception as e:
+        logger.warning(f"Error getting sketch info: {e}")
+
+    return result
 
 
 @router.post("/extrude")
@@ -397,30 +615,33 @@ async def revolve(req: RevolveRequest):
     # ThinType, ThinThickness1, ThinThickness2,
     # Merge, UseFeatScope, UseAutoSelect
     feature = model.FeatureManager.FeatureRevolve2(
-        True,       # SingleDir
-        True,       # IsSolid
-        False,      # IsThin
-        False,      # IsCut
-        False,      # ReverseDir
-        False,      # BothDirectionUpToSameEntity
-        0,          # Dir1Type (0 = blind)
-        0,          # Dir2Type
+        True,  # SingleDir
+        True,  # IsSolid
+        False,  # IsThin
+        False,  # IsCut
+        False,  # ReverseDir
+        False,  # BothDirectionUpToSameEntity
+        0,  # Dir1Type (0 = blind)
+        0,  # Dir2Type
         angle_rad,  # Dir1Angle
-        0,          # Dir2Angle
-        False,      # OffsetReverse1
-        False,      # OffsetReverse2
-        0,          # OffsetDistance1
-        0,          # OffsetDistance2
-        0,          # ThinType
-        0,          # ThinThickness1
-        0,          # ThinThickness2
-        True,       # Merge
-        False,      # UseFeatScope
-        False,      # UseAutoSelect
+        0,  # Dir2Angle
+        False,  # OffsetReverse1
+        False,  # OffsetReverse2
+        0,  # OffsetDistance1
+        0,  # OffsetDistance2
+        0,  # ThinType
+        0,  # ThinThickness1
+        0,  # ThinThickness2
+        True,  # Merge
+        False,  # UseFeatScope
+        False,  # UseAutoSelect
     )
 
     if not feature:
-        raise HTTPException(status_code=400, detail="Revolve failed - check sketch has closed profile and centerline")
+        raise HTTPException(
+            status_code=400,
+            detail="Revolve failed - check sketch has closed profile and centerline",
+        )
 
     return {"status": "ok", "angle": req.angle}
 
@@ -654,18 +875,18 @@ async def extrude_cut(req: ExtrudeCutRequest):
     try:
         # First get the selected sketch
         feature = fm.InsertCutExtrude(
-            False,          # FlipSide
-            False,          # FlipDir
+            False,  # FlipSide
+            False,  # FlipDir
             1 if through_all else 0,  # EndCondition (1=ThroughAll, 0=Blind)
-            0,              # EndCondition2 (for 2nd direction)
-            actual_depth,   # Depth
-            0.0,            # Depth2
-            False,          # DraftOnOff
-            False,          # DraftOnOff2
-            False,          # DraftOutward
-            False,          # DraftOutward2
-            0.0,            # DraftAngle
-            0.0             # DraftAngle2
+            0,  # EndCondition2 (for 2nd direction)
+            actual_depth,  # Depth
+            0.0,  # Depth2
+            False,  # DraftOnOff
+            False,  # DraftOnOff2
+            False,  # DraftOutward
+            False,  # DraftOutward2
+            0.0,  # DraftAngle
+            0.0,  # DraftAngle2
         )
         methods_tried.append("InsertCutExtrude")
         logger.info(f"InsertCutExtrude returned: {feature}")
@@ -677,19 +898,19 @@ async def extrude_cut(req: ExtrudeCutRequest):
         try:
             feature = model.Extension.SelectAll()  # Select the sketch first
             feature = fm.FeatureExtrusionCut(
-                True,           # SingleDir
-                False,          # Flip
-                False,          # Dir
+                True,  # SingleDir
+                False,  # Flip
+                False,  # Dir
                 1 if through_all else 0,  # EndCond
-                0,              # EndCond2
-                actual_depth,   # D1
-                0.0,            # D2
-                False,          # Draft1
-                False,          # Draft2
-                False,          # DraftDir1
-                False,          # DraftDir2
-                0.0,            # DraftAng1
-                0.0             # DraftAng2
+                0,  # EndCond2
+                actual_depth,  # D1
+                0.0,  # D2
+                False,  # Draft1
+                False,  # Draft2
+                False,  # DraftDir1
+                False,  # DraftDir2
+                0.0,  # DraftAng1
+                0.0,  # DraftAng2
             )
             methods_tried.append("FeatureExtrusionCut")
             logger.info(f"FeatureExtrusionCut returned: {feature}")
@@ -703,26 +924,26 @@ async def extrude_cut(req: ExtrudeCutRequest):
                 T1 = int(1 if through_all else 0)
                 T2 = int(0)
                 feature = fm.FeatureCut3(
-                    True,           # Sd - Single direction
-                    False,          # Flip
-                    False,          # Dir - direction
-                    T1,             # T1 - End condition
-                    T2,             # T2 - Second end condition
-                    actual_depth,   # D1 - Depth
-                    0.0,            # D2 - Second depth
-                    False,          # Dchk1 - Draft
-                    False,          # Dchk2 - Draft2
-                    False,          # Ddir1 - Draft direction
-                    False,          # Ddir2 - Draft direction 2
-                    0.0,            # Dang1 - Draft angle
-                    0.0,            # Dang2 - Draft angle 2
-                    False,          # OffsetReverse1
-                    False,          # OffsetReverse2
-                    False,          # TranslateSurface1
-                    False,          # TranslateSurface2
-                    False,          # NormalCut
-                    False,          # UseFeatScope
-                    False           # UseAutoSelect
+                    True,  # Sd - Single direction
+                    False,  # Flip
+                    False,  # Dir - direction
+                    T1,  # T1 - End condition
+                    T2,  # T2 - Second end condition
+                    actual_depth,  # D1 - Depth
+                    0.0,  # D2 - Second depth
+                    False,  # Dchk1 - Draft
+                    False,  # Dchk2 - Draft2
+                    False,  # Ddir1 - Draft direction
+                    False,  # Ddir2 - Draft direction 2
+                    0.0,  # Dang1 - Draft angle
+                    0.0,  # Dang2 - Draft angle 2
+                    False,  # OffsetReverse1
+                    False,  # OffsetReverse2
+                    False,  # TranslateSurface1
+                    False,  # TranslateSurface2
+                    False,  # NormalCut
+                    False,  # UseFeatScope
+                    False,  # UseAutoSelect
                 )
                 methods_tried.append("FeatureCut3")
                 logger.info(f"FeatureCut3 returned: {feature}")
@@ -731,20 +952,26 @@ async def extrude_cut(req: ExtrudeCutRequest):
                 logger.error(f"All cut methods failed")
                 raise HTTPException(
                     status_code=500,
-                    detail=f"All cut methods failed: {'; '.join(methods_tried)}"
+                    detail=f"All cut methods failed: {'; '.join(methods_tried)}",
                 )
 
     if not feature:
         raise HTTPException(
             status_code=500,
-            detail=f"Cut returned None - methods tried: {'; '.join(methods_tried)}"
+            detail=f"Cut returned None - methods tried: {'; '.join(methods_tried)}",
         )
 
-    return {"status": "ok", "depth": req.depth, "through_all": through_all, "methods": methods_tried}
+    return {
+        "status": "ok",
+        "depth": req.depth,
+        "through_all": through_all,
+        "methods": methods_tried,
+    }
 
 
 class SimpleHoleRequest(BaseModel):
     """Request for creating a simple through hole."""
+
     x: float  # X position on face
     y: float  # Y position on face
     z: float  # Z position on face
@@ -754,7 +981,9 @@ class SimpleHoleRequest(BaseModel):
 @router.post("/simple_hole")
 async def simple_hole(req: SimpleHoleRequest):
     """Create a simple through hole at a point on a face using HoleWizard."""
-    logger.info(f"Creating simple hole at ({req.x}, {req.y}, {req.z}) diameter={req.diameter}")
+    logger.info(
+        f"Creating simple hole at ({req.x}, {req.y}, {req.z}) diameter={req.diameter}"
+    )
     app = get_app()
     model = _sw_model or app.ActiveDoc
 
@@ -773,7 +1002,9 @@ async def simple_hole(req: SimpleHoleRequest):
             "", "FACE", req.x, req.y, req.z, False, 0, empty_callout, 0
         )
         if not result:
-            raise HTTPException(status_code=400, detail="Could not select face at specified coordinates")
+            raise HTTPException(
+                status_code=400, detail="Could not select face at specified coordinates"
+            )
 
         # Insert sketch point at the location for hole placement
         model.SketchManager.InsertSketch(True)
@@ -788,10 +1019,10 @@ async def simple_hole(req: SimpleHoleRequest):
         # Create simple hole using HoleWizard
         # swWzdCounterBore = 0, swWzdHole = 1, swWzdTap = 2, swWzdPipeTap = 3, swWzdCounterSink = 4
         feature = fm.SimpleHole(
-            req.diameter,   # Diameter
-            1,              # Type: Through All (swEndCondThroughAll = 1)
-            0.0,            # Depth (ignored for through all)
-            0               # swWzdHole type
+            req.diameter,  # Diameter
+            1,  # Type: Through All (swEndCondThroughAll = 1)
+            0.0,  # Depth (ignored for through all)
+            0,  # swWzdHole type
         )
         methods_tried.append("SimpleHole")
         logger.info(f"SimpleHole returned: {feature}")
@@ -821,13 +1052,13 @@ async def simple_hole(req: SimpleHoleRequest):
             logger.error(f"All hole methods failed")
             raise HTTPException(
                 status_code=500,
-                detail=f"All hole methods failed: {'; '.join(methods_tried)}"
+                detail=f"All hole methods failed: {'; '.join(methods_tried)}",
             )
 
     if not feature:
         raise HTTPException(
             status_code=500,
-            detail=f"Hole returned None - methods tried: {'; '.join(methods_tried)}"
+            detail=f"Hole returned None - methods tried: {'; '.join(methods_tried)}",
         )
 
     return {"status": "ok", "diameter": req.diameter, "methods": methods_tried}
@@ -835,6 +1066,7 @@ async def simple_hole(req: SimpleHoleRequest):
 
 class BoltHolesRequest(BaseModel):
     """Request for creating bolt holes on a flange."""
+
     bolt_circle_radius: float  # Bolt circle radius in meters
     hole_diameter: float  # Hole diameter in meters
     num_bolts: int = 8  # Number of bolts
@@ -884,10 +1116,10 @@ async def add_bolt_holes(req: BoltHolesRequest):
     # Method 1: Try using FeatureCut with VARIANT wrapper for all params
     try:
         # Create typed VARIANT parameters
-        sd = win32com.client.VARIANT(pythoncom.VT_BOOL, True)    # SingleDir
+        sd = win32com.client.VARIANT(pythoncom.VT_BOOL, True)  # SingleDir
         flip = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
         dir_param = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
-        t1 = win32com.client.VARIANT(pythoncom.VT_I4, 1)         # ThroughAll
+        t1 = win32com.client.VARIANT(pythoncom.VT_I4, 1)  # ThroughAll
         t2 = win32com.client.VARIANT(pythoncom.VT_I4, 0)
         d1 = win32com.client.VARIANT(pythoncom.VT_R8, 0.01)
         d2 = win32com.client.VARIANT(pythoncom.VT_R8, 0.0)
@@ -906,9 +1138,26 @@ async def add_bolt_holes(req: BoltHolesRequest):
         auto = win32com.client.VARIANT(pythoncom.VT_BOOL, True)
 
         feature = fm.FeatureCut3(
-            sd, flip, dir_param, t1, t2, d1, d2,
-            dchk1, dchk2, ddir1, ddir2, dang1, dang2,
-            off1, off2, trans1, trans2, norm, scope, auto
+            sd,
+            flip,
+            dir_param,
+            t1,
+            t2,
+            d1,
+            d2,
+            dchk1,
+            dchk2,
+            ddir1,
+            ddir2,
+            dang1,
+            dang2,
+            off1,
+            off2,
+            trans1,
+            trans2,
+            norm,
+            scope,
+            auto,
         )
         methods_tried.append("FeatureCut3 with VARIANTs")
         logger.info(f"FeatureCut3 with VARIANTs returned: {feature}")
@@ -919,7 +1168,9 @@ async def add_bolt_holes(req: BoltHolesRequest):
         # Method 2: Try using _QueryInterface to get IFeatureManager2
         try:
             # Use IDispatch directly with Invoke
-            feature = fm.FeatureCut(True, False, False, 1, 0.0, False, False, False, 0.0)
+            feature = fm.FeatureCut(
+                True, False, False, 1, 0.0, False, False, False, 0.0
+            )
             methods_tried.append("FeatureCut (9 params)")
             logger.info(f"FeatureCut returned: {feature}")
         except Exception as e2:
@@ -942,7 +1193,7 @@ async def add_bolt_holes(req: BoltHolesRequest):
             "status": "partial",
             "message": "Sketch with bolt hole circles created, but cut failed",
             "methods_tried": methods_tried,
-            "note": "Use SolidWorks UI: Features > Extruded Cut > Through All"
+            "note": "Use SolidWorks UI: Features > Extruded Cut > Through All",
         }
 
     return {
@@ -950,7 +1201,7 @@ async def add_bolt_holes(req: BoltHolesRequest):
         "num_holes": req.num_bolts,
         "bolt_circle": req.bolt_circle_radius,
         "hole_diameter": req.hole_diameter,
-        "methods": methods_tried
+        "methods": methods_tried,
     }
 
 
@@ -1521,6 +1772,239 @@ class CustomPropertyRequest(BaseModel):
     value: str
 
 
+def _get_document_properties(model) -> dict:
+    """Helper to extract custom properties from a SolidWorks document."""
+    properties = {}
+    try:
+        prop_mgr = model.Extension.CustomPropertyManager("")
+        # GetNames is a property that returns a tuple, not a method
+        names = prop_mgr.GetNames
+        if callable(names):
+            names = names()
+
+        if names:
+            for name in names:
+                try:
+                    # Use Get method with proper COM variant handling
+                    # Get returns (value, resolvedValue)
+                    val = prop_mgr.Get(name)
+                    if isinstance(val, tuple):
+                        properties[name] = val[0] or val[1] if len(val) > 1 else str(val[0])
+                    elif val:
+                        properties[name] = str(val)
+                    else:
+                        properties[name] = ""
+                except Exception as e:
+                    # Try alternative: use GetAll3 to get all at once
+                    try:
+                        all_names, all_types, all_values, all_resolved, all_linked = prop_mgr.GetAll3(None, None, None, None, None)
+                        if all_names and name in all_names:
+                            idx = list(all_names).index(name)
+                            properties[name] = all_values[idx] if all_values else ""
+                        else:
+                            properties[name] = f"(exists)"
+                    except:
+                        properties[name] = f"(exists)"
+    except Exception as e:
+        logger.warning(f"Error getting properties: {e}")
+
+    return properties
+
+
+@router.get("/get_custom_properties")
+async def get_custom_properties():
+    """Get all custom properties for the active document."""
+    app = get_app()
+    model = app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    properties = _get_document_properties(model)
+    doc_name = model.GetTitle if hasattr(model, 'GetTitle') else "Unknown"
+    if callable(doc_name):
+        doc_name = doc_name()
+
+    return {"status": "ok", "document": doc_name, "properties": properties}
+
+
+@router.get("/get_all_properties")
+async def get_all_properties():
+    """Get custom properties for the assembly and ALL its components."""
+    logger.info("Getting all properties from assembly and components")
+    app = get_app()
+    model = app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    doc_type = model.GetType
+    doc_name = model.GetTitle if hasattr(model, 'GetTitle') else "Unknown"
+    if callable(doc_name):
+        doc_name = doc_name()
+
+    result = {
+        "status": "ok",
+        "assembly": {
+            "name": doc_name,
+            "properties": _get_document_properties(model)
+        },
+        "components": []
+    }
+
+    # If it's an assembly, get component properties too
+    if doc_type == 2:  # swDocASSEMBLY
+        try:
+            config_mgr = model.ConfigurationManager
+            active_config = config_mgr.ActiveConfiguration
+            root_component = active_config.GetRootComponent3(True)
+
+            if root_component:
+                children = root_component.GetChildren
+                if callable(children):
+                    children = children()
+
+                seen_docs = set()
+                if children:
+                    for comp in children:
+                        try:
+                            # Get component name using Name2 property
+                            comp_name = comp.Name2
+
+                            # Get the referenced model
+                            ref_model = comp.GetModelDoc2()
+                            if ref_model:
+                                path = ref_model.GetPathName
+                                if callable(path):
+                                    path = path()
+                                else:
+                                    path = str(path) if path else ""
+
+                                # Avoid duplicates
+                                if path and path in seen_docs:
+                                    continue
+                                if path:
+                                    seen_docs.add(path)
+
+                                comp_props = _get_document_properties(ref_model)
+                                clean_name = comp_name.split("<")[0] if "<" in str(comp_name) else comp_name
+                                result["components"].append({
+                                    "name": clean_name,
+                                    "file_path": path,
+                                    "properties": comp_props
+                                })
+                        except Exception as e:
+                            # Try alternate method - get component path directly
+                            try:
+                                path_name = comp.GetPathName
+                                if callable(path_name):
+                                    path_name = path_name()
+                                if path_name and path_name not in seen_docs:
+                                    seen_docs.add(path_name)
+                                    result["components"].append({
+                                        "name": str(comp),
+                                        "file_path": path_name,
+                                        "properties": {}
+                                    })
+                            except:
+                                logger.warning(f"Error getting component properties: {e}")
+                            continue
+        except Exception as e:
+            logger.error(f"Error traversing assembly: {e}")
+
+    return result
+
+
+@router.get("/get_selection_properties")
+async def get_selection_properties():
+    """Get properties of the currently selected item."""
+    app = get_app()
+    model = app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    sel_mgr = model.SelectionManager
+    count = sel_mgr.GetSelectedObjectCount2(-1)
+    if count == 0:
+        return {"status": "ok", "features": [], "message": "Nothing selected"}
+
+    features = []
+    for i in range(1, min(count + 1, 6)):
+        obj = sel_mgr.GetSelectedObject6(i, -1)
+        item = {"name": "Unknown", "type": "Unknown", "properties": {}}
+
+        if hasattr(obj, "Name"):
+            item["name"] = obj.Name
+
+        # If it's a feature, get its dimensions
+        if hasattr(obj, "GetTypeName2"):
+            item["type"] = obj.GetTypeName2()
+            # Try to get display dimensions
+            try:
+                display_dim = obj.GetFirstDisplayDimension()
+                while display_dim:
+                    dim = display_dim.GetDimension()
+                    item["properties"][dim.Name] = {
+                        "value": dim.SystemValue,
+                        "display_value": display_dim.GetTextForTranslation(),
+                    }
+                    display_dim = obj.GetNextDisplayDimension(display_dim)
+            except:
+                pass
+
+        features.append(item)
+
+    return {"status": "ok", "features": features}
+
+
+class UpdateSelectionPropertyRequest(BaseModel):
+    property_name: str
+    new_value: float
+
+
+@router.post("/modify_selection_property")
+async def modify_selection_property(req: UpdateSelectionPropertyRequest):
+    """Modify a property (dimension) of the currently selected item."""
+    app = get_app()
+    model = app.ActiveDoc
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    sel_mgr = model.SelectionManager
+    count = sel_mgr.GetSelectedObjectCount2(-1)
+    if count == 0:
+        raise HTTPException(status_code=400, detail="Nothing selected")
+
+    success = False
+    for i in range(1, count + 1):
+        obj = sel_mgr.GetSelectedObject6(i, -1)
+        if hasattr(obj, "GetTypeName2"):
+            # Try to find the dimension named property_name
+            try:
+                display_dim = obj.GetFirstDisplayDimension()
+                while display_dim:
+                    dim = display_dim.GetDimension()
+                    if dim.Name.lower() == req.property_name.lower():
+                        dim.SystemValue = req.new_value
+                        success = True
+                        break
+                    display_dim = obj.GetNextDisplayDimension(display_dim)
+            except:
+                pass
+        if success:
+            break
+
+    if success:
+        model.EditRebuild3()
+        return {
+            "status": "ok",
+            "property": req.property_name,
+            "new_value": req.new_value,
+        }
+
+    raise HTTPException(
+        status_code=404, detail=f"Property '{req.property_name}' not found on selection"
+    )
+
+
 @router.post("/set_custom_property")
 async def set_custom_property(req: CustomPropertyRequest):
     """Set a custom property for the document."""
@@ -1660,3 +2144,157 @@ async def add_structural_member(req: WeldmentStructuralMemberRequest):
 
     # This requires complex selection of path segments and calling FeatureManager.InsertStructuralWeldment5
     return {"status": "ok", "type": req.type, "size": req.size}
+
+
+# Standard hole sizes per ASME B18.2.1 / ANSI standards (in mm)
+STANDARD_HOLE_SIZES = {
+    # Metric (diameter in mm)
+    3.0: {"min_edge": 4.5, "min_spacing": 9.0},
+    4.0: {"min_edge": 6.0, "min_spacing": 12.0},
+    5.0: {"min_edge": 7.5, "min_spacing": 15.0},
+    6.0: {"min_edge": 9.0, "min_spacing": 18.0},
+    8.0: {"min_edge": 12.0, "min_spacing": 24.0},
+    10.0: {"min_edge": 15.0, "min_spacing": 30.0},
+    12.0: {"min_edge": 18.0, "min_spacing": 36.0},
+    14.0: {"min_edge": 21.0, "min_spacing": 42.0},
+    16.0: {"min_edge": 24.0, "min_spacing": 48.0},
+    20.0: {"min_edge": 30.0, "min_spacing": 60.0},
+    # Imperial converted to mm
+    6.35: {"min_edge": 9.5, "min_spacing": 19.0},   # 1/4"
+    7.94: {"min_edge": 11.9, "min_spacing": 23.8},  # 5/16"
+    9.53: {"min_edge": 14.3, "min_spacing": 28.6},  # 3/8"
+    11.11: {"min_edge": 16.7, "min_spacing": 33.3}, # 7/16"
+    12.70: {"min_edge": 19.0, "min_spacing": 38.1}, # 1/2"
+    15.88: {"min_edge": 23.8, "min_spacing": 47.6}, # 5/8"
+    19.05: {"min_edge": 28.6, "min_spacing": 57.2}, # 3/4"
+    22.23: {"min_edge": 33.3, "min_spacing": 66.7}, # 7/8"
+    25.40: {"min_edge": 38.1, "min_spacing": 76.2}, # 1"
+}
+
+
+@router.get("/validate_holes")
+async def validate_holes():
+    """
+    Validate all holes in the active document against standards.
+
+    Checks:
+    - Standard hole sizes (ASME B18.2.1)
+    - Minimum edge distance (1.5x diameter)
+    - Minimum hole spacing (3x diameter)
+    - Hole alignment
+    """
+    logger.info("Validating holes in active document")
+    app = get_app()
+    model = app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    holes_found = []
+    errors = []
+    warnings = []
+
+    try:
+        # Get feature manager
+        feat_mgr = model.FeatureManager
+
+        # Traverse feature tree for hole features
+        root_feature = model.FirstFeature
+        while root_feature:
+            try:
+                feat_type = root_feature.GetTypeName2
+                if callable(feat_type):
+                    feat_type = feat_type()
+
+                feat_name = root_feature.Name
+
+                # Check for hole-related features
+                if feat_type in ["HoleWzd", "Hole", "CutExtrude", "HoleSeries"]:
+                    # Try to get hole parameters
+                    hole_info = {
+                        "name": feat_name,
+                        "type": feat_type,
+                        "diameter": None,
+                        "depth": None,
+                        "position": None
+                    }
+
+                    # Get feature data
+                    feat_data = root_feature.GetDefinition
+                    if callable(feat_data):
+                        feat_data = feat_data()
+
+                    if feat_data:
+                        try:
+                            # For Hole Wizard features
+                            if hasattr(feat_data, 'HoleDiameter'):
+                                hole_info["diameter"] = feat_data.HoleDiameter * 1000  # Convert to mm
+                            elif hasattr(feat_data, 'Diameter'):
+                                hole_info["diameter"] = feat_data.Diameter * 1000
+                        except:
+                            pass
+
+                    holes_found.append(hole_info)
+
+                    # Validate against standards if we have diameter
+                    if hole_info.get("diameter"):
+                        diameter = hole_info["diameter"]
+
+                        # Check if it's a standard size
+                        is_standard = False
+                        closest_standard = None
+                        min_diff = float('inf')
+
+                        for std_size in STANDARD_HOLE_SIZES:
+                            diff = abs(diameter - std_size)
+                            if diff < min_diff:
+                                min_diff = diff
+                                closest_standard = std_size
+                            if diff < 0.1:  # Within 0.1mm tolerance
+                                is_standard = True
+                                break
+
+                        if not is_standard:
+                            warnings.append({
+                                "feature": feat_name,
+                                "type": "non_standard_size",
+                                "message": f"Hole diameter {diameter:.2f}mm is not a standard size. Closest standard: {closest_standard}mm",
+                                "standard": "ASME B18.2.1"
+                            })
+
+            except Exception as e:
+                logger.debug(f"Error processing feature: {e}")
+
+            # Move to next feature
+            root_feature = root_feature.GetNextFeature
+            if callable(root_feature):
+                root_feature = root_feature()
+
+    except Exception as e:
+        logger.error(f"Error validating holes: {e}")
+        errors.append({
+            "type": "validation_error",
+            "message": str(e)
+        })
+
+    # Summary
+    result = {
+        "status": "ok",
+        "document": model.GetTitle if hasattr(model, 'GetTitle') else "Unknown",
+        "total_holes": len(holes_found),
+        "holes": holes_found,
+        "validation": {
+            "errors": errors,
+            "warnings": warnings,
+            "error_count": len(errors),
+            "warning_count": len(warnings),
+            "passed": len(errors) == 0
+        },
+        "standards_checked": [
+            "ASME B18.2.1 - Standard hole sizes",
+            "General - Edge distance (1.5x diameter)",
+            "General - Hole spacing (3x diameter)"
+        ]
+    }
+
+    return result

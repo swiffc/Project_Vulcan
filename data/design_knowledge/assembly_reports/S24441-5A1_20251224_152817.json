@@ -1,0 +1,922 @@
+{
+  "assembly_name": "S24441-5A1",
+  "analyzed_at": "2025-12-24T15:28:17.195518",
+  "part_count": 40,
+  "analyses": [
+    {
+      "part_number": "S24441-5A-FAN RING-42",
+      "part_type": "ring",
+      "purpose": "Provides circumferential support or sealing. S24441-5A-FAN RING-42 distributes loads or creates a sealed interface around a circular feature.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3",
+        "S24441-5A-WELDMENT_4-4"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A-FAN RING-44",
+      "part_type": "ring",
+      "purpose": "Provides circumferential support or sealing. S24441-5A-FAN RING-44 distributes loads or creates a sealed interface around a circular feature.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3",
+        "S24441-5A-WELDMENT_4-4"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A-SHOP LIFTING LUG-4",
+      "part_type": "lifting",
+      "purpose": "Enables safe handling during assembly and maintenance. S24441-5A-SHOP LIFTING LUG-4 provides attachment points for lifting equipment.",
+      "recommendations": [
+        "Position lifting points to balance load",
+        "Use safety factor of 4:1 minimum for lifting lugs",
+        "Ensure lifting points are accessible with rigging"
+      ],
+      "potential_issues": [
+        "Lifting points not aligned with center of gravity",
+        "Insufficient weld size for lifting loads"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3",
+        "S24441-5A-WELDMENT_4-4"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A-FAN RING-43",
+      "part_type": "ring",
+      "purpose": "Provides circumferential support or sealing. S24441-5A-FAN RING-43 distributes loads or creates a sealed interface around a circular feature.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-WELDMENT_4-3",
+        "S24441-5A-WELDMENT_4-4"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A-WELDMENT_4-3",
+      "part_type": "weldment",
+      "purpose": "Pre-fabricated welded sub-assembly. S24441-5A-WELDMENT_4-3 combines multiple structural elements into a single manufacturable unit.",
+      "recommendations": [
+        "Group welds by position (flat, horizontal, vertical)",
+        "Minimize weld distortion with proper sequencing",
+        "Add weld symbols with full specifications"
+      ],
+      "potential_issues": [
+        "Weld access blocked by adjacent components",
+        "Distortion affecting mating surfaces"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-4"
+      ],
+      "confidence": 0.82
+    },
+    {
+      "part_number": "S24441-5A-WELDMENT_4-4",
+      "part_type": "weldment",
+      "purpose": "Pre-fabricated welded sub-assembly. S24441-5A-WELDMENT_4-4 combines multiple structural elements into a single manufacturable unit.",
+      "recommendations": [
+        "Group welds by position (flat, horizontal, vertical)",
+        "Minimize weld distortion with proper sequencing",
+        "Add weld symbols with full specifications"
+      ],
+      "potential_issues": [
+        "Weld access blocked by adjacent components",
+        "Distortion affecting mating surfaces"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.82
+    },
+    {
+      "part_number": "S24441-5A-SHOP LIFTING LUG-3",
+      "part_type": "lifting",
+      "purpose": "Enables safe handling during assembly and maintenance. S24441-5A-SHOP LIFTING LUG-3 provides attachment points for lifting equipment.",
+      "recommendations": [
+        "Position lifting points to balance load",
+        "Use safety factor of 4:1 minimum for lifting lugs",
+        "Ensure lifting points are accessible with rigging"
+      ],
+      "potential_issues": [
+        "Lifting points not aligned with center of gravity",
+        "Insufficient weld size for lifting loads"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A-WELDMENT_4-2",
+      "part_type": "weldment",
+      "purpose": "Pre-fabricated welded sub-assembly. S24441-5A-WELDMENT_4-2 combines multiple structural elements into a single manufacturable unit.",
+      "recommendations": [
+        "Group welds by position (flat, horizontal, vertical)",
+        "Minimize weld distortion with proper sequencing",
+        "Add weld symbols with full specifications"
+      ],
+      "potential_issues": [
+        "Weld access blocked by adjacent components",
+        "Distortion affecting mating surfaces"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.82
+    },
+    {
+      "part_number": "S24441-5A-T-1",
+      "part_type": "unknown",
+      "purpose": "S24441-5A-T-1 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.0
+    },
+    {
+      "part_number": "S24441-5A-AIR SEAL-1A-1",
+      "part_type": "seal",
+      "purpose": "Creates an environmental barrier. S24441-5A-AIR SEAL-1A-1 prevents air, water, or contaminant infiltration between mating components.",
+      "recommendations": [
+        "Ensure continuous seal path around perimeter",
+        "Verify compression ratio is within seal specs (typically 15-25%)",
+        "Add seal retainers where vibration is present"
+      ],
+      "potential_issues": [
+        "Gaps at corners due to improper mitering",
+        "Over-compression causing seal extrusion"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.835
+    },
+    {
+      "part_number": "S24441-5A-AIR SEAL-1C-1",
+      "part_type": "seal",
+      "purpose": "Creates an environmental barrier. S24441-5A-AIR SEAL-1C-1 prevents air, water, or contaminant infiltration between mating components.",
+      "recommendations": [
+        "Ensure continuous seal path around perimeter",
+        "Verify compression ratio is within seal specs (typically 15-25%)",
+        "Add seal retainers where vibration is present"
+      ],
+      "potential_issues": [
+        "Gaps at corners due to improper mitering",
+        "Over-compression causing seal extrusion"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.835
+    },
+    {
+      "part_number": "S24441-5A-AIR SEAL-11AA-1",
+      "part_type": "seal",
+      "purpose": "Creates an environmental barrier. S24441-5A-AIR SEAL-11AA-1 prevents air, water, or contaminant infiltration between mating components.",
+      "recommendations": [
+        "Ensure continuous seal path around perimeter",
+        "Verify compression ratio is within seal specs (typically 15-25%)",
+        "Add seal retainers where vibration is present"
+      ],
+      "potential_issues": [
+        "Gaps at corners due to improper mitering",
+        "Over-compression causing seal extrusion"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.835
+    },
+    {
+      "part_number": "S24441-5A-TT-2",
+      "part_type": "unknown",
+      "purpose": "S24441-5A-TT-2 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.0
+    },
+    {
+      "part_number": "S24441-5A-U-1",
+      "part_type": "unknown",
+      "purpose": "S24441-5A-U-1 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.0
+    },
+    {
+      "part_number": "S24441-5A-UU-5",
+      "part_type": "unknown",
+      "purpose": "S24441-5A-UU-5 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.0
+    },
+    {
+      "part_number": "S24441-5A-AIR SEAL-1B-1",
+      "part_type": "seal",
+      "purpose": "Creates an environmental barrier. S24441-5A-AIR SEAL-1B-1 prevents air, water, or contaminant infiltration between mating components.",
+      "recommendations": [
+        "Ensure continuous seal path around perimeter",
+        "Verify compression ratio is within seal specs (typically 15-25%)",
+        "Add seal retainers where vibration is present"
+      ],
+      "potential_issues": [
+        "Gaps at corners due to improper mitering",
+        "Over-compression causing seal extrusion"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.835
+    },
+    {
+      "part_number": "S24441-5A-AIR SEAL-11BBB-1",
+      "part_type": "seal",
+      "purpose": "Creates an environmental barrier. S24441-5A-AIR SEAL-11BBB-1 prevents air, water, or contaminant infiltration between mating components.",
+      "recommendations": [
+        "Ensure continuous seal path around perimeter",
+        "Verify compression ratio is within seal specs (typically 15-25%)",
+        "Add seal retainers where vibration is present"
+      ],
+      "potential_issues": [
+        "Gaps at corners due to improper mitering",
+        "Over-compression causing seal extrusion"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.835
+    },
+    {
+      "part_number": "S24441-5A_VERTICAL PANNEL_1-1",
+      "part_type": "unknown",
+      "purpose": "S24441-5A_VERTICAL PANNEL_1-1 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.0
+    },
+    {
+      "part_number": "S24441-5A_ENDPANNEL_WELDMENT_2-1",
+      "part_type": "weldment",
+      "purpose": "Pre-fabricated welded sub-assembly. S24441-5A_ENDPANNEL_WELDMENT_2-1 combines multiple structural elements into a single manufacturable unit.",
+      "recommendations": [
+        "Group welds by position (flat, horizontal, vertical)",
+        "Minimize weld distortion with proper sequencing",
+        "Add weld symbols with full specifications"
+      ],
+      "potential_issues": [
+        "Weld access blocked by adjacent components",
+        "Distortion affecting mating surfaces"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.82
+    },
+    {
+      "part_number": "S24441-5A-R_R-1",
+      "part_type": "unknown",
+      "purpose": "S24441-5A-R_R-1 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.0
+    },
+    {
+      "part_number": "S24441-5A-M-1",
+      "part_type": "unknown",
+      "purpose": "S24441-5A-M-1 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.0
+    },
+    {
+      "part_number": "S24441-5A-FRAME1-2",
+      "part_type": "structural_frame",
+      "purpose": "Provides structural support and load-bearing capacity. S24441-5A-FRAME1-2 forms part of the main framework that maintains assembly geometry and transfers loads.",
+      "recommendations": [
+        "Ensure adequate weld access for all joints",
+        "Consider modular sub-assemblies for easier fabrication",
+        "Verify load paths are continuous through connections"
+      ],
+      "potential_issues": [
+        "Insufficient clearance for welding equipment",
+        "Missing gussets at high-stress joints"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.7749999999999999
+    },
+    {
+      "part_number": "S24441-5A-SHOP LIFTING LUG-1",
+      "part_type": "lifting",
+      "purpose": "Enables safe handling during assembly and maintenance. S24441-5A-SHOP LIFTING LUG-1 provides attachment points for lifting equipment.",
+      "recommendations": [
+        "Position lifting points to balance load",
+        "Use safety factor of 4:1 minimum for lifting lugs",
+        "Ensure lifting points are accessible with rigging"
+      ],
+      "potential_issues": [
+        "Lifting points not aligned with center of gravity",
+        "Insufficient weld size for lifting loads"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A-FRAME1-1",
+      "part_type": "structural_frame",
+      "purpose": "Provides structural support and load-bearing capacity. S24441-5A-FRAME1-1 forms part of the main framework that maintains assembly geometry and transfers loads.",
+      "recommendations": [
+        "Ensure adequate weld access for all joints",
+        "Consider modular sub-assemblies for easier fabrication",
+        "Verify load paths are continuous through connections"
+      ],
+      "potential_issues": [
+        "Insufficient clearance for welding equipment",
+        "Missing gussets at high-stress joints"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.7749999999999999
+    },
+    {
+      "part_number": "S24441-5A-RR_RR-1",
+      "part_type": "unknown",
+      "purpose": "S24441-5A-RR_RR-1 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.0
+    },
+    {
+      "part_number": "S24441-5A-M-2",
+      "part_type": "unknown",
+      "purpose": "S24441-5A-M-2 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.0
+    },
+    {
+      "part_number": "S24441-5A-AIR SEAL-11CC-1",
+      "part_type": "seal",
+      "purpose": "Creates an environmental barrier. S24441-5A-AIR SEAL-11CC-1 prevents air, water, or contaminant infiltration between mating components.",
+      "recommendations": [
+        "Ensure continuous seal path around perimeter",
+        "Verify compression ratio is within seal specs (typically 15-25%)",
+        "Add seal retainers where vibration is present"
+      ],
+      "potential_issues": [
+        "Gaps at corners due to improper mitering",
+        "Over-compression causing seal extrusion"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.835
+    },
+    {
+      "part_number": "S24441-5A_ENDPANNEL_WELDMENT_1-1",
+      "part_type": "weldment",
+      "purpose": "Pre-fabricated welded sub-assembly. S24441-5A_ENDPANNEL_WELDMENT_1-1 combines multiple structural elements into a single manufacturable unit.",
+      "recommendations": [
+        "Group welds by position (flat, horizontal, vertical)",
+        "Minimize weld distortion with proper sequencing",
+        "Add weld symbols with full specifications"
+      ],
+      "potential_issues": [
+        "Weld access blocked by adjacent components",
+        "Distortion affecting mating surfaces"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.82
+    },
+    {
+      "part_number": "S24441-5A_VERTICAL PANNEL_2-1",
+      "part_type": "unknown",
+      "purpose": "S24441-5A_VERTICAL PANNEL_2-1 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.0
+    },
+    {
+      "part_number": "S24441-5A-R-1",
+      "part_type": "unknown",
+      "purpose": "S24441-5A-R-1 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.0
+    },
+    {
+      "part_number": "S24441-5A-RR-1",
+      "part_type": "unknown",
+      "purpose": "S24441-5A-RR-1 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.0
+    },
+    {
+      "part_number": "S24441-5A-FAN RING-2",
+      "part_type": "ring",
+      "purpose": "Provides circumferential support or sealing. S24441-5A-FAN RING-2 distributes loads or creates a sealed interface around a circular feature.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A-WELDMENT_4-1",
+      "part_type": "weldment",
+      "purpose": "Pre-fabricated welded sub-assembly. S24441-5A-WELDMENT_4-1 combines multiple structural elements into a single manufacturable unit.",
+      "recommendations": [
+        "Group welds by position (flat, horizontal, vertical)",
+        "Minimize weld distortion with proper sequencing",
+        "Add weld symbols with full specifications"
+      ],
+      "potential_issues": [
+        "Weld access blocked by adjacent components",
+        "Distortion affecting mating surfaces"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.82
+    },
+    {
+      "part_number": "S24441-5A_FANDECK PANNEL_3-1",
+      "part_type": "panel",
+      "purpose": "Serves as an enclosure or barrier element. S24441-5A_FANDECK PANNEL_3-1 provides protection, containment, or aesthetic coverage for the assembly.",
+      "recommendations": [
+        "Use consistent hole patterns for interchangeability",
+        "Add stiffening features for large unsupported areas",
+        "Consider thermal expansion in panel sizing"
+      ],
+      "potential_issues": [
+        "Panel flutter in high-wind applications",
+        "Insufficient edge distance causing tear-out"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A_FANDECK PANNEL_1-1",
+      "part_type": "panel",
+      "purpose": "Serves as an enclosure or barrier element. S24441-5A_FANDECK PANNEL_1-1 provides protection, containment, or aesthetic coverage for the assembly.",
+      "recommendations": [
+        "Use consistent hole patterns for interchangeability",
+        "Add stiffening features for large unsupported areas",
+        "Consider thermal expansion in panel sizing"
+      ],
+      "potential_issues": [
+        "Panel flutter in high-wind applications",
+        "Insufficient edge distance causing tear-out"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A_FANDECK PANNEL_2-1",
+      "part_type": "panel",
+      "purpose": "Serves as an enclosure or barrier element. S24441-5A_FANDECK PANNEL_2-1 provides protection, containment, or aesthetic coverage for the assembly.",
+      "recommendations": [
+        "Use consistent hole patterns for interchangeability",
+        "Add stiffening features for large unsupported areas",
+        "Consider thermal expansion in panel sizing"
+      ],
+      "potential_issues": [
+        "Panel flutter in high-wind applications",
+        "Insufficient edge distance causing tear-out"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A_FANDECK PANNEL_4-1",
+      "part_type": "panel",
+      "purpose": "Serves as an enclosure or barrier element. S24441-5A_FANDECK PANNEL_4-1 provides protection, containment, or aesthetic coverage for the assembly.",
+      "recommendations": [
+        "Use consistent hole patterns for interchangeability",
+        "Add stiffening features for large unsupported areas",
+        "Consider thermal expansion in panel sizing"
+      ],
+      "potential_issues": [
+        "Panel flutter in high-wind applications",
+        "Insufficient edge distance causing tear-out"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A_FANDECK PANNEL_5-6",
+      "part_type": "panel",
+      "purpose": "Serves as an enclosure or barrier element. S24441-5A_FANDECK PANNEL_5-6 provides protection, containment, or aesthetic coverage for the assembly.",
+      "recommendations": [
+        "Use consistent hole patterns for interchangeability",
+        "Add stiffening features for large unsupported areas",
+        "Consider thermal expansion in panel sizing"
+      ],
+      "potential_issues": [
+        "Panel flutter in high-wind applications",
+        "Insufficient edge distance causing tear-out"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A-SHOP LIFTING LUG-2",
+      "part_type": "lifting",
+      "purpose": "Enables safe handling during assembly and maintenance. S24441-5A-SHOP LIFTING LUG-2 provides attachment points for lifting equipment.",
+      "recommendations": [
+        "Position lifting points to balance load",
+        "Use safety factor of 4:1 minimum for lifting lugs",
+        "Ensure lifting points are accessible with rigging"
+      ],
+      "potential_issues": [
+        "Lifting points not aligned with center of gravity",
+        "Insufficient weld size for lifting loads"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.76
+    },
+    {
+      "part_number": "S24441-5A_FANDECK PANNEL_5-5",
+      "part_type": "panel",
+      "purpose": "Serves as an enclosure or barrier element. S24441-5A_FANDECK PANNEL_5-5 provides protection, containment, or aesthetic coverage for the assembly.",
+      "recommendations": [
+        "Use consistent hole patterns for interchangeability",
+        "Add stiffening features for large unsupported areas",
+        "Consider thermal expansion in panel sizing"
+      ],
+      "potential_issues": [
+        "Panel flutter in high-wind applications",
+        "Insufficient edge distance causing tear-out"
+      ],
+      "related_parts": [
+        "S24441-5A-FAN RING-42",
+        "S24441-5A-FAN RING-44",
+        "S24441-5A-SHOP LIFTING LUG-4",
+        "S24441-5A-FAN RING-43",
+        "S24441-5A-WELDMENT_4-3"
+      ],
+      "confidence": 0.76
+    }
+  ],
+  "insights": {
+    "assembly_category": "fabricated_assembly",
+    "part_type_distribution": {
+      "ring": 4,
+      "lifting": 4,
+      "weldment": 6,
+      "unknown": 12,
+      "seal": 6,
+      "structural_frame": 2,
+      "panel": 6
+    },
+    "dominant_types": [
+      [
+        "unknown",
+        12
+      ],
+      [
+        "weldment",
+        6
+      ],
+      [
+        "seal",
+        6
+      ]
+    ],
+    "recommendations": [
+      "Optimize weld sequence to minimize distortion",
+      "Group similar weld positions together",
+      "Verify weld access for all joints",
+      "Add machining allowances where required",
+      "Consider shipping and handling constraints"
+    ],
+    "suggested_improvements": [],
+    "complexity_score": 4.0
+  }
+}

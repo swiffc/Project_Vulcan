@@ -1,0 +1,103 @@
+{
+  "assembly_name": "S25181-61A-1",
+  "analyzed_at": "2025-12-24T15:39:48.664985",
+  "part_count": 2,
+  "analyses": [
+    {
+      "part_number": "S25181-61A-InletExtension-1",
+      "suggested_name": "PART-001",
+      "part_type": "unknown",
+      "purpose": "S25181-61A-InletExtension-1 serves a functional role in the assembly. Further analysis of geometry and relationships needed to determine specific purpose.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S25181-61A-InletFlange-1"
+      ],
+      "confidence": 0.0,
+      "geometry": {
+        "mass_kg": 0,
+        "volume_m3": 0,
+        "surface_area_m2": 0,
+        "bounding_box": {}
+      },
+      "material": {},
+      "features": {
+        "total": 0,
+        "holes": 0,
+        "fillets": 0,
+        "chamfers": 0,
+        "patterns": 0,
+        "hole_details": []
+      },
+      "mates": []
+    },
+    {
+      "part_number": "S25181-61A-InletFlange-1",
+      "suggested_name": "RING-001",
+      "part_type": "ring",
+      "purpose": "Provides circumferential support or sealing. S25181-61A-InletFlange-1 distributes loads or creates a sealed interface around a circular feature.",
+      "recommendations": [
+        "Review part for compliance with assembly requirements",
+        "Verify all mating surfaces are properly defined",
+        "Check for interference with adjacent components"
+      ],
+      "potential_issues": [
+        "Verify clearances for assembly and maintenance",
+        "Check material compatibility with environment"
+      ],
+      "related_parts": [
+        "S25181-61A-InletExtension-1"
+      ],
+      "confidence": 0.7899999999999999,
+      "geometry": {
+        "mass_kg": 0,
+        "volume_m3": 0,
+        "surface_area_m2": 0,
+        "bounding_box": {}
+      },
+      "material": {},
+      "features": {
+        "total": 0,
+        "holes": 0,
+        "fillets": 0,
+        "chamfers": 0,
+        "patterns": 0,
+        "hole_details": []
+      },
+      "mates": []
+    }
+  ],
+  "insights": {
+    "assembly_category": "general",
+    "part_type_distribution": {
+      "unknown": 1,
+      "ring": 1
+    },
+    "dominant_types": [
+      [
+        "unknown",
+        1
+      ],
+      [
+        "ring",
+        1
+      ]
+    ],
+    "recommendations": [
+      "Review overall assembly for interference",
+      "Verify maintenance access to all serviceable components",
+      "Check fastener standardization across assembly",
+      "Ensure proper documentation for fabrication",
+      "Verify assembly sequence is achievable"
+    ],
+    "suggested_improvements": [],
+    "complexity_score": 0.2
+  }
+}

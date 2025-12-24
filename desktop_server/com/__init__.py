@@ -52,6 +52,13 @@ except ImportError:
     inventor_drawings_router = None
     INVENTOR_DRAWINGS_AVAILABLE = False
 
+try:
+    from .assembly_analyzer import router as assembly_analyzer_router
+    ASSEMBLY_ANALYZER_AVAILABLE = True
+except ImportError:
+    assembly_analyzer_router = None
+    ASSEMBLY_ANALYZER_AVAILABLE = False
+
 __all__ = [
     "solidworks_router",
     "solidworks_assembly_router",
@@ -60,6 +67,7 @@ __all__ = [
     "solidworks_mate_refs_router",
     "solidworks_drawings_router",
     "inventor_drawings_router",
+    "assembly_analyzer_router",
     "SOLIDWORKS_AVAILABLE",
     "SOLIDWORKS_ASSEMBLY_AVAILABLE",
     "INVENTOR_AVAILABLE",
@@ -67,4 +75,5 @@ __all__ = [
     "SOLIDWORKS_MATE_REFS_AVAILABLE",
     "SOLIDWORKS_DRAWINGS_AVAILABLE",
     "INVENTOR_DRAWINGS_AVAILABLE",
+    "ASSEMBLY_ANALYZER_AVAILABLE",
 ]

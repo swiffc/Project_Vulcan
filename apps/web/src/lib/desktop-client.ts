@@ -121,6 +121,14 @@ export const system = {
 
 // CAD control (SolidWorks)
 export const solidworks = {
+  status: () =>
+    desktopFetch<{
+      connected: boolean;
+      version: string;
+      has_document: boolean;
+      document_name: string | null;
+    }>("/com/solidworks/status", "GET"),
+
   connect: () => desktopFetch("/com/solidworks/connect", "POST"),
 
   newPart: () => desktopFetch("/com/solidworks/new_part", "POST"),

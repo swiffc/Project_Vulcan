@@ -109,7 +109,7 @@ app.include_router(validation_history_router, prefix="/api")
 # API Key Authentication
 # =============================================================================
 
-DESKTOP_SERVER_URL = os.getenv("DESKTOP_SERVER_URL", "http://localhost:8765")
+DESKTOP_SERVER_URL = os.getenv("DESKTOP_SERVER_URL", "http://localhost:8000")
 API_KEY = os.getenv("API_KEY")
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=True)
 
@@ -161,6 +161,18 @@ async def list_strategies(
     return {"strategies": strategies, "count": len(strategies)}
 
 
+@app.get("/api/strategies/rankings")
+async def get_strategy_rankings(
+    product_type: Optional[str] = None,
+    limit: int = 10,
+    api_key: str = Depends(get_api_key),
+):
+    """Get ranked list of strategies by score."""
+    scorer = get_strategy_scorer()
+    rankings = scorer.rank_strategies(product_type=product_type, limit=limit)
+    return {"rankings": rankings}
+
+
 @app.get("/api/strategies/{strategy_id}")
 async def get_strategy(strategy_id: int, api_key: str = Depends(get_api_key)):
     """Get a single strategy by ID."""
@@ -178,12 +190,13 @@ async def get_strategy(strategy_id: int, api_key: str = Depends(get_api_key)):
 async def create_strategy(data: StrategyCreate, api_key: str = Depends(get_api_key)):
     """Create a new strategy."""
     db = get_db_adapter()
-    strategy_id = db.save_strategy(
-        name=data.name,
-        product_type=data.product_type,
-        schema=data.schema_json,
-        is_experimental=data.is_experimental,
-    )
+    strategy_data = {
+        "name": data.name,
+        "product_type": data.product_type,
+        "schema_json": data.schema_json,
+        "is_experimental": data.is_experimental,
+    }
+    strategy_id = db.save_strategy(strategy_data)
     get_audit_logger().log_strategy_action(
         "create", strategy_id=strategy_id, strategy_name=data.name
     )
@@ -206,17 +219,18 @@ async def update_strategy(
     )
     updated_name = data.name if data.name else existing.get("name")
 
-    db.save_strategy(
-        name=updated_name,
-        product_type=existing.get("product_type"),
-        schema=updated_schema,
-        is_experimental=(
+    update_data = {
+        "id": strategy_id,
+        "name": updated_name,
+        "product_type": existing.get("product_type"),
+        "schema_json": updated_schema,
+        "is_experimental": (
             data.is_experimental
             if data.is_experimental is not None
             else existing.get("is_experimental")
         ),
-        strategy_id=strategy_id,
-    )
+    }
+    db.save_strategy(update_data)
     get_audit_logger().log_strategy_action("update", strategy_id=strategy_id)
     return {"id": strategy_id, "message": "Strategy updated"}
 
@@ -276,18 +290,6 @@ async def get_strategy_score(
     scorer = get_strategy_scorer()
     score = scorer.calculate_score(strategy_id, days=days)
     return {"strategy_id": strategy_id, **score}
-
-
-@app.get("/api/strategies/rankings")
-async def get_strategy_rankings(
-    product_type: Optional[str] = None,
-    limit: int = 10,
-    api_key: str = Depends(get_api_key),
-):
-    """Get ranked list of strategies by score."""
-    scorer = get_strategy_scorer()
-    rankings = scorer.rank_strategies(product_type=product_type, limit=limit)
-    return {"rankings": rankings}
 
 
 @app.post("/api/strategies/{strategy_id}/evolve")
@@ -359,7 +361,10 @@ AGENT_PROMPTS = {
     "trading": """You are the Trading Agent. Specialize in ICT, BTMM, and Stacey Burke.
 Analyze setups, bias, and journal lessons. Use desktop commands for TradingView.""",
     "cad": """You are the CAD Agent. Automate SolidWorks/Inventor via COM.
-Break down design into sketch, extrude, pattern. Verify alignment (±1/16").""",
+Break down design into sketch, extrude, pattern. Verify alignment (±1/16").
+You can read and modify CAD properties. To modify a dimension or custom property, 
+respond with: [ACTION: com.solidworks.modify_selection_property(property_name='DIM_NAME', new_value=VALUE_IN_METERS)]
+Dimensions provided in context use 'display_value' (e.g. 50mm) and 'value' (meters).""",
     "sketch": """You are the Sketch Agent. Vision-to-CAD specialist.
 Interpret drawings/photos into 3D intent and generation parameters.""",
     "work": """You are the Work Agent. Manage J2 Tracker, Outlook, and Teams.
@@ -371,9 +376,17 @@ Generate status reports and track project deadlines via Microsoft API.""",
 @app.on_event("startup")
 async def startup_event():
     """Register agents and initialize resources."""
-    orchestrator = get_orchestrator()
-    # In a full deployment, we would instantiate and register actual agent classes here.
-    # For now, we use the OrchestratorAdapter's detection and routing logic.
+    # Start Hands-Free Loop if enabled
+    if os.getenv("ENABLE_HANDS_FREE") == "true":
+        try:
+            from core.hands_free import get_hands_free_loop
+
+            hf = get_hands_free_loop(desktop_url=DESKTOP_SERVER_URL)
+            await hf.start()
+            logger.info("Hands-Free Voice System ACTIVE")
+        except Exception as e:
+            logger.error(f"Failed to start Hands-Free system: {e}")
+
     logger.info("Orchestrator ready with agents: Trading, CAD, Sketch, Work")
 
 
@@ -419,6 +432,35 @@ async def chat(request: ChatRequest, api_key: str = Depends(get_api_key)):
         agent_type = AgentType.GENERAL
     system_prompt = AGENT_PROMPTS.get(agent_type.value, AGENT_PROMPTS["general"])
 
+    # Augment with Active Desktop Context if CAD agent
+    desktop_context = ""
+    if agent_type == AgentType.CAD:
+        try:
+            async with httpx.AsyncClient(timeout=2.0) as client:
+                resp = await client.get(
+                    f"{DESKTOP_SERVER_URL}/com/solidworks/get_selection_properties"
+                )
+                if resp.status_code == 200:
+                    result = resp.json()
+                    if result.get("features"):
+                        feat = result["features"][0]
+                        props = feat.get("properties", {})
+                        prop_details = "\n".join(
+                            [
+                                f"  - {k}: {v.get('display_value')}"
+                                for k, v in props.items()
+                            ]
+                        )
+                        desktop_context = (
+                            f"\n\nCURRENT SOLIDWORKS CONTEXT:\n"
+                            f"- Selected Item: {feat.get('name', 'Unknown')}\n"
+                            f"- Item Type: {feat.get('type', 'Unknown')}\n"
+                            f"- Dimensions:\n{prop_details if prop_details else '  - No dimensions found'}\n"
+                        )
+                        logger.info(f"Injected rich CAD context: {feat.get('name')}")
+        except Exception as e:
+            logger.warning(f"Failed to fetch desktop context: {e}")
+
     # Augment with RAG if available
     try:
         from core.memory.rag_engine import RAGEngine
@@ -430,6 +472,9 @@ async def chat(request: ChatRequest, api_key: str = Depends(get_api_key)):
     except Exception:
         pass
 
+    if desktop_context:
+        system_prompt += desktop_context
+
     # Generate response
     try:
         from core.llm import llm
@@ -438,6 +483,35 @@ async def chat(request: ChatRequest, api_key: str = Depends(get_api_key)):
         response = llm.generate(
             messages=messages, system=system_prompt, agent_type=agent_type.value
         )
+
+        # Handle Actions in response
+        if "[ACTION:" in response:
+            import re
+
+            match = re.search(r"\[ACTION:\s*([\w\.]+)\((.*)\)\]", response)
+            if match:
+                action_name = match.group(1)
+                args_str = match.group(2)
+                logger.info(f"Detected ACTION: {action_name}({args_str})")
+
+                # Execute action via desktop bridge
+                if action_name == "com.solidworks.modify_selection_property":
+                    # Simple parse for (property_name='...', new_value=...)
+                    p_name = re.search(r"property_name=['\"](.*?)['\"]", args_str)
+                    p_val = re.search(r"new_value=(.*?)(?:,|$|\s)", args_str)
+                    if p_name and p_val:
+                        endpoint = "/com/solidworks/modify_selection_property"
+                        payload = {
+                            "property_name": p_name.group(1),
+                            "new_value": float(p_val.group(1)),
+                        }
+                        async with httpx.AsyncClient(timeout=10.0) as client:
+                            action_resp = await client.post(
+                                f"{DESKTOP_SERVER_URL}{endpoint}", json=payload
+                            )
+                            logger.info(f"Action executed: {action_resp.status_code}")
+                            response += f"\n\n[System: Action {action_name} executed with status {action_resp.status_code}]"
+
         return {"response": response, "agent": agent_type.value}
     except Exception as e:
         logger.error(f"Chat generation failed: {e}")

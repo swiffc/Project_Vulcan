@@ -76,6 +76,7 @@ try:
         inventor_imates_router,
         inventor_drawings_router,
         solidworks_mate_refs_router,
+        assembly_analyzer_router,
     )
 
     CAD_AVAILABLE = True
@@ -88,6 +89,7 @@ except ImportError:
     inventor_imates_router = None
     inventor_drawings_router = None
     solidworks_mate_refs_router = None
+    assembly_analyzer_router = None
     logger.warning("CAD COM adapters not available")
 
 # Global state
@@ -329,6 +331,9 @@ if CAD_AVAILABLE:
         app.include_router(inventor_drawings_router)
     if solidworks_mate_refs_router:
         app.include_router(solidworks_mate_refs_router)
+    if assembly_analyzer_router:
+        app.include_router(assembly_analyzer_router)
+        logger.info("Assembly analyzer loaded")
     logger.info("CAD COM adapters loaded")
 
 # Include Events router if available

@@ -7,6 +7,7 @@ import { ChatInput } from "./ChatInput";
 import { FileUpload, UploadedFile } from "./FileUpload";
 import { parseValidationIntent, formatValidationResponse } from "@/lib/cad/validation-intent";
 import { validateDrawing, formatValidationReport } from "@/lib/cad/validation-client";
+import { BOMPreview } from "./BOMPreview";
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000;
@@ -73,9 +74,10 @@ const QUICK_COMMANDS = {
     { label: "Session Times", command: "What are the key session times today?" },
   ],
   cad: [
+    { label: "View BOM", command: "__OPEN_BOM_PREVIEW__" },
+    { label: "Analyze Assembly", command: "analyze assembly" },
     { label: "Validate Drawing", command: "Check this drawing for errors" },
     { label: "GD&T Check", command: "Validate GD&T on this drawing" },
-    { label: "ACHE Validation", command: "Run comprehensive ACHE validation" },
     { label: "Weld Check", command: "Check welds for AWS D1.1 compliance" },
   ],
   general: [
@@ -101,6 +103,8 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
   const [isStreaming, setIsStreaming] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [showBOMPreview, setShowBOMPreview] = useState(false);
+  const [autoAnalyze, setAutoAnalyze] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Load from localStorage after mount (client-side only)
@@ -232,9 +236,26 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
   );
 
   const handleSendMessage = async (content: string) => {
+    // Check for BOM preview trigger
+    if (content === "__OPEN_BOM_PREVIEW__" ||
+        /\b(show|view|print|preview|display)\b.*\b(bom|bill of materials)\b/i.test(content) ||
+        /\bbom\b.*\b(pdf|print|preview|popup)\b/i.test(content)) {
+      setShowBOMPreview(true);
+      setAutoAnalyze(false);
+      return;
+    }
+
+    // Check for analyze assembly trigger
+    if (/\b(analyze|analyse|review|inspect)\b.*\b(assembly|design|parts|components)\b/i.test(content) ||
+        /\b(design|assembly)\b.*\b(analysis|review|recommendations)\b/i.test(content)) {
+      setShowBOMPreview(true);
+      setAutoAnalyze(true);
+      return;
+    }
+
     // Check for validation intent
     const validationIntent = parseValidationIntent(content);
-    
+
     if (validationIntent && validationIntent.confidence > 0.7) {
       // Handle validation request
       await handleValidationRequest(content, validationIntent);
@@ -406,9 +427,9 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
   }
 
   return (
-    <div className="flex flex-col flex-1 gap-4">
+    <div className="flex flex-col h-full flex-1 min-h-0 gap-4">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto space-y-4 pb-4">
+      <div className="flex-1 overflow-y-auto space-y-4 pb-4 min-h-0">
         {messages.map((message) => (
           <ChatMessage key={message.id} message={message} />
         ))}
@@ -466,13 +487,27 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
       {/* Input */}
       <ChatInput onSend={handleSendMessage} disabled={isStreaming} />
 
-      {/* Model indicator */}
-      <div className="flex items-center justify-center gap-2 text-xs text-white/30">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-        <span>Cost-optimized routing active</span>
-        <span className="text-white/20">|</span>
-        <span>Haiku for simple, Sonnet for complex</span>
+      {/* Model indicator & Clear button */}
+      <div className="flex items-center justify-between text-xs text-white/30 px-1">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          <span>Cost-optimized routing</span>
+        </div>
+        <button
+          onClick={clearHistory}
+          className="text-white/40 hover:text-white/70 transition-colors px-2 py-1 rounded hover:bg-white/5"
+          title="Clear chat history"
+        >
+          Clear Chat
+        </button>
       </div>
+
+      {/* BOM Preview Modal */}
+      <BOMPreview
+        isOpen={showBOMPreview}
+        onClose={() => { setShowBOMPreview(false); setAutoAnalyze(false); }}
+        autoAnalyze={autoAnalyze}
+      />
     </div>
   );
 }

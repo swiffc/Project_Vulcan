@@ -52,6 +52,15 @@ except ImportError:
 from .recorder import router as recorder_router
 from .verifier import router as verifier_router
 
+# Events controller
+try:
+    from .events_controller import router as events_router
+
+    EVENTS_AVAILABLE = True
+except ImportError:
+    EVENTS_AVAILABLE = False
+    events_router = None
+
 __all__ = [
     "mouse_router",
     "keyboard_router",

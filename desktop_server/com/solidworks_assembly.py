@@ -642,9 +642,633 @@ async def check_interference(req: InterferenceDetectionRequest):
     # Check interference
     interference_results = []
     # Implementation would check component overlaps
-    
+
     return {
         "status": "ok",
         "interferences": interference_results,
         "has_interference": len(interference_results) > 0
     }
+
+
+def _get_custom_properties(model):
+    """Extract custom properties from a SolidWorks model."""
+    properties = {}
+    try:
+        if not model:
+            return properties
+
+        # Get custom property manager
+        ext = model.Extension
+        if not ext:
+            return properties
+
+        cpm = ext.CustomPropertyManager("")
+        if not cpm:
+            return properties
+
+        # Get property names
+        prop_names = cpm.GetNames
+        if callable(prop_names):
+            prop_names = prop_names()
+
+        if prop_names:
+            for name in prop_names:
+                try:
+                    # Get3 returns (value, resolved_value, was_resolved, link_to_property)
+                    result = cpm.Get3(name, False)
+                    if result:
+                        val = result[0] if result[0] else result[1]
+                        if val:
+                            properties[name] = str(val)
+                except:
+                    continue
+
+        # Also try to get configuration-specific properties
+        try:
+            config_mgr = model.ConfigurationManager
+            if config_mgr:
+                active_config = config_mgr.ActiveConfiguration
+                if active_config:
+                    config_name = active_config.Name
+                    config_cpm = ext.CustomPropertyManager(config_name)
+                    if config_cpm:
+                        config_prop_names = config_cpm.GetNames
+                        if callable(config_prop_names):
+                            config_prop_names = config_prop_names()
+                        if config_prop_names:
+                            for name in config_prop_names:
+                                if name not in properties:
+                                    try:
+                                        result = config_cpm.Get3(name, False)
+                                        if result:
+                                            val = result[0] if result[0] else result[1]
+                                            if val:
+                                                properties[name] = str(val)
+                                    except:
+                                        continue
+        except:
+            pass
+
+    except Exception as e:
+        logger.warning(f"Error getting custom properties: {e}")
+
+    return properties
+
+
+def _process_component(comp, level=0, item_counter=None, max_depth=10):
+    """Recursively process a component and its children."""
+    if item_counter is None:
+        item_counter = {"value": 0}
+
+    if level > max_depth:
+        return None
+
+    try:
+        # Get component name
+        comp_name = None
+        for attr in ['Name2', 'Name', 'GetName']:
+            try:
+                val = getattr(comp, attr, None)
+                if val is not None:
+                    comp_name = val() if callable(val) else val
+                    if comp_name:
+                        break
+            except:
+                continue
+
+        if not comp_name:
+            comp_name = str(comp)
+
+        # Get referenced model and file path
+        ref_model = None
+        file_path = ""
+        custom_props = {}
+
+        try:
+            ref_model = comp.GetModelDoc2()
+            if ref_model:
+                path_name = getattr(ref_model, 'GetPathName', None)
+                if path_name:
+                    file_path = path_name() if callable(path_name) else path_name
+                # Get custom properties
+                custom_props = _get_custom_properties(ref_model)
+        except:
+            pass
+
+        # Extract part number - remove instance suffix like <1>, <2>
+        part_number = comp_name
+        if "<" in str(part_number):
+            part_number = str(part_number).split("<")[0]
+
+        # Determine component type
+        is_sub_assembly = file_path and (".SLDASM" in file_path.upper())
+        comp_type = "Sub-Assembly" if is_sub_assembly else "Part"
+
+        # Check if suppressed
+        is_suppressed = False
+        try:
+            suppress_state = comp.GetSuppression2
+            if callable(suppress_state):
+                suppress_state = suppress_state()
+            is_suppressed = suppress_state == 0  # swComponentSuppressed = 0
+        except:
+            pass
+
+        item_counter["value"] += 1
+
+        result = {
+            "item": item_counter["value"],
+            "part_number": part_number,
+            "description": custom_props.get("Description", comp_name),
+            "type": comp_type,
+            "qty": 1,
+            "file_path": file_path,
+            "level": level,
+            "suppressed": is_suppressed,
+            "properties": custom_props,
+            "children": []
+        }
+
+        # Process children if this is a sub-assembly
+        if is_sub_assembly and ref_model:
+            try:
+                config_mgr = ref_model.ConfigurationManager
+                if config_mgr:
+                    active_config = config_mgr.ActiveConfiguration
+                    if active_config:
+                        root_comp = active_config.GetRootComponent3(True)
+                        if root_comp:
+                            children = root_comp.GetChildren
+                            if callable(children):
+                                children = children()
+                            if children:
+                                child_parts = {}
+                                for child in children:
+                                    child_result = _process_component(child, level + 1, item_counter, max_depth)
+                                    if child_result:
+                                        child_pn = child_result["part_number"]
+                                        if child_pn in child_parts:
+                                            child_parts[child_pn]["qty"] += 1
+                                        else:
+                                            child_parts[child_pn] = child_result
+                                result["children"] = list(child_parts.values())
+            except Exception as e:
+                logger.warning(f"Error processing sub-assembly children: {e}")
+
+        return result
+
+    except Exception as e:
+        logger.warning(f"Error processing component {comp}: {e}")
+        return None
+
+
+def _get_bom_sync():
+    """Synchronous BOM extraction - runs in COM thread context."""
+    pythoncom.CoInitialize()
+    try:
+        app = win32com.client.Dispatch("SldWorks.Application")
+        model = app.ActiveDoc
+
+        if not model:
+            return {"error": "No active document", "status_code": 400}
+
+        doc_type = model.GetType
+        if doc_type != 2:  # swDocASSEMBLY = 2
+            return {"error": "Active document is not an assembly", "status_code": 400}
+
+        # Get assembly-level custom properties
+        assembly_props = _get_custom_properties(model)
+
+        # Get assembly configuration
+        config_mgr = model.ConfigurationManager
+        active_config = config_mgr.ActiveConfiguration
+        root_component = active_config.GetRootComponent3(True)
+
+        hierarchical_bom = []
+        flat_bom = []
+        seen_parts = {}
+        item_counter = {"value": 0}
+        total_parts = 0
+        total_sub_assemblies = 0
+
+        if root_component:
+            children = root_component.GetChildren
+            if callable(children):
+                children = children()
+            if children:
+                for comp in children:
+                    result = _process_component(comp, level=0, item_counter=item_counter)
+                    if result:
+                        pn = result["part_number"]
+                        if pn in seen_parts:
+                            seen_parts[pn]["qty"] += 1
+                        else:
+                            seen_parts[pn] = result
+                            if result["type"] == "Sub-Assembly":
+                                total_sub_assemblies += 1
+                            else:
+                                total_parts += 1
+
+        # Build hierarchical BOM (with children)
+        hierarchical_bom = list(seen_parts.values())
+        hierarchical_bom.sort(key=lambda x: x["part_number"])
+
+        # Re-number items sequentially
+        def renumber_items(items, counter=None):
+            if counter is None:
+                counter = {"value": 0}
+            for item in items:
+                counter["value"] += 1
+                item["item"] = counter["value"]
+                if item.get("children"):
+                    renumber_items(item["children"], counter)
+
+        renumber_items(hierarchical_bom)
+
+        # Build flat BOM (no children, just top-level with counts)
+        flat_bom = []
+        for item in hierarchical_bom:
+            flat_item = {k: v for k, v in item.items() if k != "children"}
+            flat_bom.append(flat_item)
+
+        # Get assembly name
+        assembly_name = model.GetTitle if hasattr(model, 'GetTitle') else "Unknown"
+        if callable(assembly_name):
+            assembly_name = assembly_name()
+
+        return {
+            "status": "ok",
+            "assembly_name": assembly_name,
+            "assembly_properties": assembly_props,
+            "total_unique_parts": len(hierarchical_bom),
+            "total_parts": total_parts,
+            "total_sub_assemblies": total_sub_assemblies,
+            "bom": flat_bom,  # Flat for backward compatibility
+            "hierarchical_bom": hierarchical_bom  # New hierarchical structure
+        }
+    except Exception as e:
+        logger.error(f"Error extracting BOM: {e}")
+        return {"error": f"Failed to extract BOM: {e}", "status_code": 500}
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.get("/get_bom")
+async def get_bom():
+    """Extract Bill of Materials from the active assembly."""
+    import asyncio
+    import concurrent.futures
+
+    logger.info("Extracting BOM from assembly")
+
+    # Run COM operations in a thread pool to ensure proper COM initialization
+    loop = asyncio.get_event_loop()
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        result = await loop.run_in_executor(pool, _get_bom_sync)
+
+    if "error" in result:
+        raise HTTPException(status_code=result.get("status_code", 500), detail=result["error"])
+
+    return result
+
+
+@router.get("/get_bom_pdf")
+async def get_bom_pdf():
+    """Generate a PDF of the Bill of Materials and return as base64."""
+    import base64
+    from io import BytesIO
+    from datetime import datetime
+
+    # First get the BOM data
+    bom_response = await get_bom()
+    bom_items = bom_response["bom"]
+    assembly_name = bom_response["assembly_name"]
+
+    try:
+        from reportlab.lib import colors
+        from reportlab.lib.pagesizes import letter, landscape
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import inch
+        from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+        from reportlab.lib.enums import TA_CENTER, TA_LEFT
+    except ImportError:
+        # Fallback: generate simple HTML-based response
+        raise HTTPException(
+            status_code=500,
+            detail="PDF generation requires reportlab. Install with: pip install reportlab"
+        )
+
+    # Create PDF in memory
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=landscape(letter),
+        rightMargin=0.5*inch,
+        leftMargin=0.5*inch,
+        topMargin=0.5*inch,
+        bottomMargin=0.5*inch
+    )
+
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Title
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=18,
+        alignment=TA_CENTER,
+        spaceAfter=12
+    )
+    elements.append(Paragraph(f"Bill of Materials", title_style))
+
+    # Assembly name and date
+    subtitle_style = ParagraphStyle(
+        'Subtitle',
+        parent=styles['Normal'],
+        fontSize=12,
+        alignment=TA_CENTER,
+        spaceAfter=6
+    )
+    elements.append(Paragraph(f"Assembly: {assembly_name}", subtitle_style))
+    elements.append(Paragraph(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}", subtitle_style))
+    elements.append(Spacer(1, 20))
+
+    # Table header
+    table_data = [["Item", "Part Number", "Description", "Type", "Qty"]]
+
+    # Add BOM rows
+    for item in bom_items:
+        table_data.append([
+            str(item.get("item", "")),
+            item.get("part_number", "")[:40],  # Truncate long names
+            item.get("description", "")[:50],
+            item.get("type", "Part"),
+            str(item.get("qty", 1))
+        ])
+
+    # Create table with styling
+    col_widths = [0.5*inch, 2.5*inch, 3.5*inch, 1*inch, 0.5*inch]
+    table = Table(table_data, colWidths=col_widths)
+
+    table.setStyle(TableStyle([
+        # Header styling
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2563eb')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('TOPPADDING', (0, 0), (-1, 0), 8),
+
+        # Body styling
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('ALIGN', (0, 1), (0, -1), 'CENTER'),  # Item column centered
+        ('ALIGN', (-1, 1), (-1, -1), 'CENTER'),  # Qty column centered
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
+        ('TOPPADDING', (0, 1), (-1, -1), 6),
+
+        # Alternating row colors
+        *[('BACKGROUND', (0, i), (-1, i), colors.HexColor('#f3f4f6'))
+          for i in range(2, len(table_data), 2)],
+
+        # Grid
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#d1d5db')),
+        ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#9ca3af')),
+    ]))
+
+    elements.append(table)
+
+    # Footer with total count
+    elements.append(Spacer(1, 20))
+    footer_style = ParagraphStyle(
+        'Footer',
+        parent=styles['Normal'],
+        fontSize=10,
+        alignment=TA_LEFT
+    )
+    elements.append(Paragraph(f"Total Unique Parts: {len(bom_items)}", footer_style))
+
+    # Build PDF
+    doc.build(elements)
+
+    # Get PDF bytes and encode as base64
+    pdf_bytes = buffer.getvalue()
+    pdf_base64 = base64.b64encode(pdf_bytes).decode('utf-8')
+
+    return {
+        "status": "ok",
+        "assembly_name": assembly_name,
+        "total_parts": len(bom_items),
+        "pdf_base64": pdf_base64,
+        "filename": f"BOM_{assembly_name}_{datetime.now().strftime('%Y%m%d')}.pdf"
+    }
+
+
+def _get_spatial_data_sync():
+    """Get spatial positioning data for all components."""
+    pythoncom.CoInitialize()
+    try:
+        app = win32com.client.Dispatch("SldWorks.Application")
+        model = app.ActiveDoc
+
+        if not model:
+            return {"error": "No active document", "status_code": 400}
+
+        doc_type = model.GetType
+        if doc_type != 2:
+            return {"error": "Active document is not an assembly", "status_code": 400}
+
+        config_mgr = model.ConfigurationManager
+        active_config = config_mgr.ActiveConfiguration
+        root_component = active_config.GetRootComponent3(True)
+
+        components = []
+        relationships = []
+
+        if root_component:
+            children = root_component.GetChildren
+            if callable(children):
+                children = children()
+
+            if children:
+                comp_positions = {}
+
+                for comp in children:
+                    try:
+                        comp_name = None
+                        for attr in ['Name2', 'Name']:
+                            try:
+                                val = getattr(comp, attr, None)
+                                if val:
+                                    comp_name = val() if callable(val) else val
+                                    break
+                            except:
+                                continue
+
+                        if not comp_name:
+                            continue
+
+                        # Get transform matrix (position and orientation)
+                        transform = comp.Transform2
+                        position = {"x": 0, "y": 0, "z": 0}
+                        if transform:
+                            try:
+                                # Transform matrix: 16 values, last 3 before scale are translation
+                                arr = transform.ArrayData
+                                if arr and len(arr) >= 12:
+                                    position = {
+                                        "x": round(arr[9] * 1000, 2),   # Convert to mm
+                                        "y": round(arr[10] * 1000, 2),
+                                        "z": round(arr[11] * 1000, 2)
+                                    }
+                            except:
+                                pass
+
+                        # Get bounding box for size
+                        bbox = {"x": 0, "y": 0, "z": 0}
+                        try:
+                            ref_model = comp.GetModelDoc2()
+                            if ref_model:
+                                box = ref_model.GetPartBox() if hasattr(ref_model, 'GetPartBox') else None
+                                if box and len(box) >= 6:
+                                    bbox = {
+                                        "x": round(abs(box[3] - box[0]) * 1000, 2),
+                                        "y": round(abs(box[4] - box[1]) * 1000, 2),
+                                        "z": round(abs(box[5] - box[2]) * 1000, 2)
+                                    }
+                        except:
+                            pass
+
+                        # Extract part type from name
+                        part_type = "unknown"
+                        name_lower = comp_name.lower()
+                        if "seal" in name_lower or "gasket" in name_lower:
+                            part_type = "seal"
+                        elif "ring" in name_lower:
+                            part_type = "ring"
+                        elif "fan" in name_lower:
+                            part_type = "fan"
+                        elif "frame" in name_lower or "struct" in name_lower:
+                            part_type = "frame"
+                        elif "panel" in name_lower or "plate" in name_lower:
+                            part_type = "panel"
+
+                        comp_data = {
+                            "name": comp_name,
+                            "part_type": part_type,
+                            "position": position,
+                            "size": bbox,
+                            "center": {
+                                "x": position["x"],
+                                "y": position["y"],
+                                "z": position["z"]
+                            }
+                        }
+                        components.append(comp_data)
+                        comp_positions[comp_name] = position
+
+                    except Exception as e:
+                        logger.warning(f"Error getting spatial data for component: {e}")
+                        continue
+
+                # Analyze spatial relationships
+                for i, comp1 in enumerate(components):
+                    for comp2 in components[i+1:]:
+                        # Calculate distance between components
+                        dx = comp1["position"]["x"] - comp2["position"]["x"]
+                        dy = comp1["position"]["y"] - comp2["position"]["y"]
+                        dz = comp1["position"]["z"] - comp2["position"]["z"]
+                        distance = (dx**2 + dy**2 + dz**2) ** 0.5
+
+                        # Determine relationship type
+                        relationship = "distant"
+                        if distance < 50:  # Within 50mm
+                            relationship = "adjacent"
+                        elif distance < 150:
+                            relationship = "nearby"
+
+                        # Check for axial alignment (same X-Y, different Z)
+                        axial_aligned = abs(dx) < 20 and abs(dy) < 20 and abs(dz) > 20
+                        radial_aligned = abs(dz) < 20 and (abs(dx) > 20 or abs(dy) > 20)
+
+                        if relationship in ["adjacent", "nearby"]:
+                            rel_data = {
+                                "component1": comp1["name"],
+                                "component2": comp2["name"],
+                                "distance_mm": round(distance, 2),
+                                "relationship": relationship,
+                                "axial_aligned": axial_aligned,
+                                "radial_aligned": radial_aligned
+                            }
+                            relationships.append(rel_data)
+
+        # Group components by type
+        type_groups = {}
+        for comp in components:
+            pt = comp["part_type"]
+            if pt not in type_groups:
+                type_groups[pt] = []
+            type_groups[pt].append(comp["name"])
+
+        # Find seal-to-ring relationships specifically
+        seal_ring_pairs = []
+        for rel in relationships:
+            name1_lower = rel["component1"].lower()
+            name2_lower = rel["component2"].lower()
+            is_seal_ring = (("seal" in name1_lower and "ring" in name2_lower) or
+                           ("ring" in name1_lower and "seal" in name2_lower))
+            if is_seal_ring:
+                seal_ring_pairs.append(rel)
+
+        try:
+            title_attr = getattr(model, 'GetTitle', None)
+            if title_attr:
+                assembly_name = title_attr() if callable(title_attr) else title_attr
+            else:
+                assembly_name = "Unknown"
+        except:
+            assembly_name = "Unknown"
+
+        return {
+            "status": "ok",
+            "assembly_name": assembly_name,
+            "total_components": len(components),
+            "components": components,
+            "relationships": relationships[:50],  # Limit to 50 most relevant
+            "type_groups": type_groups,
+            "seal_ring_pairs": seal_ring_pairs,
+            "analysis": {
+                "seals_count": len(type_groups.get("seal", [])),
+                "rings_count": len(type_groups.get("ring", [])),
+                "fans_count": len(type_groups.get("fan", [])),
+                "adjacent_pairs": len([r for r in relationships if r["relationship"] == "adjacent"])
+            }
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting spatial data: {e}")
+        return {"error": str(e), "status_code": 500}
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.get("/get_spatial_positions")
+async def get_spatial_positions():
+    """Get spatial positions and relationships of all components."""
+    import asyncio
+    import concurrent.futures
+
+    logger.info("Getting component spatial positions")
+
+    loop = asyncio.get_event_loop()
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        result = await loop.run_in_executor(pool, _get_spatial_data_sync)
+
+    if "error" in result:
+        raise HTTPException(status_code=result.get("status_code", 500), detail=result["error"])
+
+    return result

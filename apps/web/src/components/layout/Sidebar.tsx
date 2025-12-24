@@ -104,7 +104,7 @@ export function Sidebar({ agentContext, defaultCollapsed = false }: SidebarProps
 
       {/* Chat Content */}
       {!isCollapsed && (
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-0 p-3">
           <Chat agentContext={agentContext} welcomeMessage={config.welcomeMessage} />
         </div>
       )}
