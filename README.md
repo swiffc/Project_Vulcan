@@ -8,6 +8,10 @@
 
 **Personal AI Operating System** - A unified web chatbot that physically controls your Windows PC for Trading, CAD, and Work workflows.
 
+> **Vulcan is a personal AI Operating System that bridges cloud intelligence and desktop control to automate engineering and trading workflows.**
+
+![Vulcan Demo](docs/demo.gif)
+
 ---
 
 ## What This Is
@@ -21,8 +25,18 @@ One chat interface that controls your entire digital life, powered by LLM-driven
 | **Inspector Bot** | LLM-as-Judge auditing, grades outputs, generates improvement reports | ✅ Active |
 | **System Manager** | Background daemon: scheduling, backups, health monitoring, metrics | ✅ Active |
 | **Validation System** | Natural language validation commands (GD&T, welding, material, ACHE) | ✅ Complete |
+| **Strategy Learning** | Autonomous learning loop that evolves CAD strategies based on performance | ✅ **NEW** |
 
 All agents share a **Desktop Control Server** (MCP) that physically operates your Windows PC + **Memory Brain** for persistent RAG knowledge.
+
+### Phase 20 Complete: Autonomous Learning System
+
+The bot now **learns and evolves** without user intervention:
+- **Strategy Builder**: LLM-powered strategy creation from prompts
+- **Performance Tracking**: Records success/failure of every validation
+- **Pattern Analysis**: Weekly analysis identifies what works
+- **Strategy Evolution**: LLM improves failing strategies automatically
+- **Feedback Loop**: Runs weekly (Sunday 00:00 UTC)
 
 ---
 
@@ -176,13 +190,36 @@ Project_Vulcan/
 ├── agents/                   # Specialized Agents
 │   ├── trading_agent/        # Trading analysis & journaling
 │   ├── cad_agent/            # CAD automation & drawing analysis
-│   │   └── adapters/         # standards_db, drawing_analyzer, weight_calculator
+│   │   ├── adapters/         # standards_db, drawing_analyzer, weight_calculator
+│   │   ├── strategy_builder.py   # LLM-powered strategy creation
+│   │   ├── strategy_evolution.py # LLM-powered strategy improvement
+│   │   ├── drawing_parser.py     # PDF/DWG extraction
+│   │   └── cost_estimator.py     # Material cost calculation
+│   ├── review_agent/         # Weekly review & strategy analysis
+│   │   └── src/strategy_analyzer.py
 │   ├── inspector_bot/        # LLM-as-Judge auditing
 │   └── system-manager/       # Background daemon (scheduler, backup, health)
 │
+├── strategies/               # Strategy Management (Phase 20)
+│   ├── product_models.py     # Digital Twin schemas
+│   └── templates/            # Pre-built strategy templates (JSON)
+│
 ├── core/                     # Shared Root Libraries
 │   ├── llm.py               # Anthropic client with cost optimization
-│   └── memory.py            # RAG memory system
+│   ├── memory.py            # RAG memory system
+│   ├── feedback_loop.py     # Autonomous learning scheduler
+│   ├── context_manager.py   # Cross-domain recall
+│   ├── audit_logger.py      # System action tracking
+│   ├── crypto_wrapper.py    # Secret encryption
+│   ├── export_adapter.py    # Export strategies/plans
+│   ├── workflows/engine.py  # Custom workflow automation
+│   ├── metrics/             # Telemetry & scoring
+│   │   ├── telemetry.py     # Token/cost tracking
+│   │   └── strategy_scoring.py  # Performance scoring
+│   ├── memory/              # Memory systems
+│   │   └── knowledge_graph.py   # Long-term memory consolidation
+│   └── system_manager/      # Backup & maintenance
+│       └── backup_strategies.py
 │
 ├── docs/                     # Documentation
 │   ├── ache/                # ACHE Standards Checker docs
@@ -378,6 +415,24 @@ GOOGLE_DRIVE_CREDENTIALS=./config/drive-credentials.json
 
 ---
 
+## Strategy API Endpoints (Phase 20)
+
+Endpoints secured via JWT (Authorization: Bearer `<token>`).
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/strategies` | GET | List all strategies (with filters) |
+| `/api/strategies` | POST | Create new strategy |
+| `/api/strategies/{id}` | GET/PUT/DELETE | CRUD operations |
+| `/api/strategies/{id}/performance` | GET/POST | Performance tracking |
+| `/api/strategies/{id}/score` | GET | Calculate strategy score |
+| `/api/strategies/rankings` | GET | Ranked leaderboard |
+| `/api/strategies/{id}/evolve` | POST | Trigger LLM evolution |
+
+**Scoring Formula**: `score = (accuracy × 0.6) + (speed × 0.2) + (quality × 0.2)`
+
+---
+
 ## Success Criteria
 
 | Metric | Target | Status |
@@ -392,14 +447,131 @@ GOOGLE_DRIVE_CREDENTIALS=./config/drive-credentials.json
 | CAD Validation System | 130+ checks | ✅ Complete |
 | Natural Language Validation | Working | ✅ Complete |
 | Advanced Validators | GD&T, Welding, Material, ACHE | ✅ Complete |
-| Production Ready | Yes | ⚠️ 2-3 weeks (Phase 19) |
+| **Phase 20 Learning System** | Autonomous evolution | ✅ **Complete** |
+| Production Ready | Yes | ✅ **Complete** |
 
 ---
 
-## License
-
-Private project. All rights reserved.
 
 ---
 
-**Built with Vulcan Team**
+## 🚀 Getting Started (The "Happy Path")
+
+Follow this exact order to bring Vulcan online:
+
+### 1. Prerequisites & Environment
+- **OS**: Windows 10/11 Professional (Required for Hyper-V/Docker)
+- **CAD**: SolidWorks 2023+ or Inventor 2024+
+- **Runtime**: Python 3.11+, Node.js 20+ (LTS)
+- **Database**: Redis & PostgreSQL (running via Docker)
+- **Network**: Tailscale VPN (must be active for remote access)
+
+### 2. Startup Sequence
+
+#### Step A: Infrastructure (Docker)
+```bash
+docker-compose up -d redis postgres chroma
+```
+
+#### Step B: Desktop Control Server (Local PC)
+```bash
+# In a new terminal (Admin):
+cd desktop_server
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r requirements.txt
+python server.py
+# ✅ Expected: "Serving on 0.0.0.0:8000"
+```
+
+#### Step C: Web Orchestrator
+```bash
+# In a new terminal:
+cd apps/web
+npm install
+npm run dev
+# ✅ Expected: "Ready on http://localhost:3000"
+```
+
+#### Step D: Verify Connectivity
+Log in to `http://localhost:3000` and type `/health`.
+- VPN: Connected 🟢
+- Desktop: Online 🟢
+- Memory: Ready 🟢
+
+---
+
+## 🧪 Testing & Validation
+
+### Run Unit Tests
+```bash
+# PyTest (Backend Agents)
+cd agents
+pytest -v
+# or specific agent
+pytest cad_agent/tests/
+
+# Jest (Frontend)
+cd apps/web
+npm run test
+```
+
+### CLI Fallback
+```bash
+python core/cli.py --task "build 6 inch flange"
+```
+
+*Note: CI/CD runs automatically on GitHub Actions push.*
+
+---
+
+## 🔒 Security & Privacy
+
+- **Data Storage**: Client data lives in `storage/` and `data/` (local only).
+- **Credentials**:
+  - API Keys are encrypted at rest using `core/crypto_wrapper.py`.
+  - Token store: `data/tokens.enc`.
+  - **Recommendation**: Rotate `VULCAN_SECRET_KEY` monthly.
+- **Audit Logs**: All sensitive actions logged to `storage/logs/audit.jsonl`.
+
+---
+
+## ⚠️ Known Issues
+
+| Issue | Status | Workaround |
+|-------|--------|------------|
+| **Flatter Files API** | 🛑 Blocked | Using offline standards DB (658 entries) |
+| **PDF Parsing** | ⚠️ Beta | Complex tables sometimes misread |
+| **SolidWorks COM** | ⚠️ Flaky | Restart SolidWorks if "RPC Error" occurs |
+
+---
+
+## 🗺️ Roadmap Summary
+
+- **Phase 19-20 (Complete)**: Strategy Learning System, Cost Estimator, Backups.
+- **Phase 21 (Complete)**: Enhanced CAD Validation, Testing, Voice, Analytics.
+- **Phase 22**: Workflow Automation Engine.
+- **Phase 23**: Mobile PWA & Voice Interface.
+- **Phase 24**: Enterprise features (Skipped for personal use).
+
+---
+
+## 🛠️ Maintenance & Operations
+
+- **Backups**: Strategies archived to `storage/backups/*.zip` daily.
+- **Logs**:
+  - System logs: `storage/logs/system.log`
+  - Learning logs: `data/learning_logs/history.jsonl`
+- **Updates**: Run `scripts/update_standards.py` monthly to pull new AISC/ASME data.
+
+---
+
+## License & Contact
+
+**© 2025 D. Cornealius — Internal Use Only. Redistribution prohibited.**
+Maintained by **DCornealius** — For questions, connect on LinkedIn.
+- Contact via LinkedIn for inquiries.
+- CI/CD Status: [GitHub Actions](https://github.com/DCornealius/Project_Vulcan_Fresh/actions)
+
+---
+**Built with Vulcan Team** 🖖

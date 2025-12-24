@@ -1,14 +1,20 @@
 /**
- * CAD Chat API with Tool Calling
+ * CAD Chat API with Tool Calling + RULES.md Integration
  *
  * This endpoint enables Claude to directly control SolidWorks via tool use.
  * User says "Build me a flange" -> Claude calls sw_new_part, sw_create_sketch, etc.
+ *
+ * Now loads RULES.md for rule-aware behavior:
+ * - Section 0: Mandatory Pre-Work Check
+ * - Section 7: Mechanical Engineering Mindset
+ * - Section 10: Plan Creation Process
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { CAD_TOOLS, executeCADTool, formatToolResult } from "@/lib/cad-tools";
 import { formatRecipesForPrompt } from "@/lib/cad-recipes";
+import { getCADRulesPrompt, getRulesSummary } from "@/lib/rules-loader";
 
 export const runtime = "nodejs";
 export const maxDuration = 120; // 2 minute timeout for complex builds
@@ -17,10 +23,37 @@ const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// Build dynamic system prompt with recipes
+// Load rules from RULES.md
+let rulesPrompt = "";
+try {
+  rulesPrompt = getCADRulesPrompt();
+  const summary = getRulesSummary();
+  console.log(`[CAD Chat] Loaded ${summary.totalRules} rules (${summary.criticalRules} critical)`);
+} catch (error) {
+  console.warn("[CAD Chat] Could not load RULES.md, using fallback rules");
+  rulesPrompt = ""; // Will use embedded rules below
+}
+
+// Build dynamic system prompt with recipes AND rules from RULES.md
 const getCADSystemPrompt = () => `You are Vulcan CAD Agent, specialized in automating SolidWorks and Inventor via direct tool calls.
 
-CRITICAL RULES:
+${rulesPrompt ? rulesPrompt + "\n\n---\n\n" : ""}
+
+## CAD-SPECIFIC OPERATIONAL RULES
+
+**PLAN BEFORE BUILD (MANDATORY)**:
+Before creating ANY part or assembly, you MUST:
+1. Create a PLAN file: output/PLAN_{part_name}.md
+2. Show the plan to the user
+3. WAIT for user approval ("approved", "proceed", "go ahead")
+4. Only then start building
+
+**DATA SOURCING (NO APPROXIMATIONS)**:
+- Use verified data from: pipe_schedules.json, engineering_standards.json, fluids package
+- If data not found, ASK the user - NEVER guess or approximate
+- Mark all dimensions with source citations
+
+**TOOL USAGE RULES**:
 1. You have TOOLS that directly control SolidWorks and Inventor - USE THEM, don't just describe what to do
 2. Always call sw_connect or inv_connect FIRST before any other CAD operations
 3. After creating a sketch, you MUST call sw_close_sketch (SolidWorks) before extrude/revolve

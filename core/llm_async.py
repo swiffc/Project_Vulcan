@@ -17,7 +17,7 @@ from dataclasses import dataclass
 
 from .model_router import get_model_router, RoutingDecision
 from .redis_adapter import get_cache
-from .token_optimizer import get_token_optimizer
+from .token_optimizer_v2 import get_token_optimizer_v2
 
 logger = logging.getLogger("core.llm")
 
@@ -25,6 +25,7 @@ logger = logging.getLogger("core.llm")
 @dataclass
 class LLMResponse:
     """Response from LLM with metadata."""
+
     content: str
     model: str
     cached: bool
@@ -64,6 +65,7 @@ class LLMClient:
         """Lazy load Anthropic client."""
         if self._client is None:
             import anthropic
+
             self._client = anthropic.Anthropic(api_key=self.api_key)
         return self._client
 
@@ -104,7 +106,7 @@ class LLMClient:
                     cached=True,
                     input_tokens=0,
                     output_tokens=0,
-                    cost_estimate=0.0
+                    cost_estimate=0.0,
                 )
 
         # Route to model
@@ -114,7 +116,7 @@ class LLMClient:
                 max_tokens=4096,
                 temperature=0.7,
                 complexity="forced",
-                reason="Model override"
+                reason="Model override",
             )
         else:
             routing = self.router.route(user_message, agent_type)
@@ -127,13 +129,15 @@ class LLMClient:
             messages=messages,
             system_prompt=system_prompt,
             task_type=task_type,
-            complexity=routing.complexity
+            complexity=routing.complexity,
         )
 
         # Build API request
         api_messages = optimized.messages
         if optimized.system_prompt:
-            api_messages = [{"role": "system", "content": optimized.system_prompt}] + api_messages
+            api_messages = [
+                {"role": "system", "content": optimized.system_prompt}
+            ] + api_messages
 
         # Call API
         try:
@@ -141,7 +145,7 @@ class LLMClient:
                 model=routing.model,
                 max_tokens=min(routing.max_tokens, optimized.max_tokens),
                 temperature=routing.temperature,
-                messages=api_messages
+                messages=api_messages,
             )
 
             content = response.content[0].text
@@ -150,14 +154,15 @@ class LLMClient:
 
             # Calculate cost
             costs = self.COSTS.get(routing.model, self.COSTS["claude-3-haiku-20240307"])
-            cost = (input_tokens * costs["input"] + output_tokens * costs["output"]) / 1_000_000
+            cost = (
+                input_tokens * costs["input"] + output_tokens * costs["output"]
+            ) / 1_000_000
 
             # Cache response
             if use_cache and len(content) < 10000:
-                self.cache.set(cache_key, {
-                    "content": content,
-                    "model": routing.model
-                }, ttl=3600)
+                self.cache.set(
+                    cache_key, {"content": content, "model": routing.model}, ttl=3600
+                )
 
             return LLMResponse(
                 content=content,
@@ -165,7 +170,7 @@ class LLMClient:
                 cached=False,
                 input_tokens=input_tokens,
                 output_tokens=output_tokens,
-                cost_estimate=cost
+                cost_estimate=cost,
             )
 
         except Exception as e:
@@ -195,7 +200,7 @@ class LLMClient:
             model=routing.model,
             max_tokens=routing.max_tokens,
             temperature=routing.temperature,
-            messages=api_messages
+            messages=api_messages,
         ) as stream:
             for text in stream.text_stream:
                 yield text
@@ -203,6 +208,7 @@ class LLMClient:
 
 # Singleton
 _llm: Optional[LLMClient] = None
+
 
 def get_llm() -> LLMClient:
     global _llm

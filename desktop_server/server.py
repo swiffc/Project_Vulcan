@@ -21,10 +21,19 @@ from typing import Dict, Any
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+import httpx
 import yaml
 import pyautogui
 import sys
 from pathlib import Path
+
+# Windows COM imports for CAD status checking
+try:
+    import win32com.client
+    import pythoncom
+    COM_AVAILABLE = True
+except ImportError:
+    COM_AVAILABLE = False
 
 sys.path.append(str(Path(__file__).parent.parent))
 
@@ -360,15 +369,63 @@ async def root():
     }
 
 
+def check_cad_status() -> dict:
+    """Check CAD application connection status."""
+    cad_status = {
+        "solidworks": {"connected": False, "version": ""},
+        "inventor": {"connected": False, "version": ""},
+    }
+
+    if not COM_AVAILABLE:
+        return cad_status
+
+    # Check SolidWorks
+    try:
+        pythoncom.CoInitialize()
+        sw = win32com.client.GetActiveObject("SldWorks.Application")
+        if sw:
+            cad_status["solidworks"]["connected"] = True
+            try:
+                cad_status["solidworks"]["version"] = str(sw.RevisionNumber)[:4]
+            except:
+                cad_status["solidworks"]["version"] = "Unknown"
+    except:
+        pass
+
+    # Check Inventor
+    try:
+        inv = win32com.client.GetActiveObject("Inventor.Application")
+        if inv:
+            cad_status["inventor"]["connected"] = True
+            try:
+                cad_status["inventor"]["version"] = inv.SoftwareVersion.DisplayVersion
+            except:
+                cad_status["inventor"]["version"] = "Unknown"
+    except:
+        pass
+
+    try:
+        pythoncom.CoUninitialize()
+    except:
+        pass
+
+    return cad_status
+
+
 @app.get("/health")
 async def health():
-    """Health check endpoint."""
+    """Health check endpoint with CAD status."""
     tailscale_ip = get_tailscale_ip()
+    cad_status = check_cad_status()
+
     return {
         "status": "ok" if not KILL_SWITCH_ACTIVE else "kill_switch_active",
         "tailscale_ip": tailscale_ip,
         "timestamp": datetime.now().isoformat(),
         "actions_logged": len(ACTION_LOG),
+        "solidworks": cad_status["solidworks"],
+        "inventor": cad_status["inventor"],
+        "queue_depth": COMMAND_QUEUE.qsize(),
     }
 
 

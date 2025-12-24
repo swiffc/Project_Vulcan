@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "vulcan-cad": {
+      "command": "C:\\Users\\DCornealius\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+      "args": ["c:\\Users\\DCornealius\\Documents\\GitHub\\Project_Vulcan_Fresh\\mcp-servers\\cad-mcp\\server.py"]
+    },
+    "vulcan-gdrive": {
+      "command": "C:\\Users\\DCornealius\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+      "args": ["c:\\Users\\DCornealius\\Documents\\GitHub\\Project_Vulcan_Fresh\\mcp-servers\\google-drive\\server.py"]
+    },
+    "vulcan-memory": {
+      "command": "C:\\Users\\DCornealius\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+      "args": ["c:\\Users\\DCornealius\\Documents\\GitHub\\Project_Vulcan_Fresh\\mcp-servers\\memory-vec\\server.py"]
+    },
+    "vulcan-web-search": {
+      "command": "C:\\Users\\DCornealius\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+      "args": ["c:\\Users\\DCornealius\\Documents\\GitHub\\Project_Vulcan_Fresh\\mcp-servers\\web-search\\server.py"],
+      "env": {
+        "TAVILY_API_KEY": "tvly-..."
+      }
+    }
+  }
+}

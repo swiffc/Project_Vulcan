@@ -8,6 +8,7 @@ import asyncio
 import os
 import sys
 from pathlib import Path
+import pytest
 
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
@@ -19,6 +20,7 @@ from agents.cad_agent.validators import (
 )
 
 
+@pytest.mark.asyncio
 async def test_validation_orchestrator():
     """Test the validation orchestrator."""
     print("=" * 60)
@@ -45,6 +47,7 @@ async def test_validation_orchestrator():
     print("\n✓ Progress callback registered")
 
 
+@pytest.mark.asyncio
 async def test_drawing_analyzer():
     """Test the drawing analyzer."""
     print("\n" + "=" * 60)
@@ -63,6 +66,7 @@ async def test_drawing_analyzer():
     print("\n✓ Ready to analyze PDFs")
 
 
+@pytest.mark.asyncio
 async def test_pdf_annotator():
     """Test PDF annotation."""
     print("\n" + "=" * 60)
@@ -92,6 +96,7 @@ async def test_pdf_annotator():
         print(f"  Severity: {annotation.severity}")
 
 
+@pytest.mark.asyncio
 async def test_validation_models():
     """Test validation data models."""
     print("\n" + "=" * 60)
@@ -154,6 +159,7 @@ async def test_validation_models():
     print(f"  Issues: {len(report.all_issues)}")
 
 
+@pytest.mark.asyncio
 async def test_validation_endpoints():
     """Test validation API endpoints (requires running desktop server)."""
     print("\n" + "=" * 60)
@@ -182,6 +188,7 @@ async def test_validation_endpoints():
         print("   Start with: cd desktop_server && python server.py")
 
 
+@pytest.mark.asyncio
 async def test_integration():
     """Test complete validation integration."""
     print("\n" + "=" * 60)

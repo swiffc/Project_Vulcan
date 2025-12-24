@@ -1,0 +1,74 @@
+{
+  "strategies": [
+    {
+      "name": "flange_rfwn",
+      "description": "ASME B16.5 Raised Face Weld Neck Flange (Recycled from Repo)",
+      "type": "standard_part",
+      "source": {
+        "type": "wrapper",
+        "repo_alias": "bolt",
+        "file_pattern": "ASME_B16.5_Flange_{size}_{class}.step"
+      },
+      "workflow": [
+        "fetch_step_file",
+        "open_part",
+        "save_as_sldprt"
+      ]
+    },
+    {
+      "name": "pipe_segment",
+      "description": "Standard Pipe Segment (Extruded or Fetched)",
+      "type": "standard_part",
+      "source": {
+        "type": "hybrid",
+        "repo_alias": "bolt",
+        "fallback": "extrude_strategy"
+      },
+      "workflow": [
+        "check_standard_db",
+        "fetch_or_model",
+        "cut_length",
+        "add_weld_preps"
+      ]
+    },
+    {
+      "name": "pressure_vessel_shell",
+      "description": "Multi-body Revolve for Vessel Shell + Heads",
+      "type": "manufacturing_strategy",
+      "source": {
+        "type": "parametric"
+      },
+      "workflow": [
+        "create_sketch_layout",
+        "revolve_main_body",
+        "revolve_heads",
+        "combine_optionally"
+      ],
+      "rules": [
+        "Rule 32: Assign Material SA-516-70",
+        "Rule 24: Validate Design Pressure"
+      ]
+    },
+    {
+      "name": "repad_curved",
+      "description": "Reinforcement Pad on Curved Surface using Offset/Thicken",
+      "type": "feature_strategy",
+      "source": {
+        "type": "parametric"
+      },
+      "workflow": [
+        "select_shell_face",
+        "offset_surface_0",
+        "sketch_repad_od",
+        "trim_surface",
+        "thicken_outwards",
+        "cut_weep_hole"
+      ]
+    }
+  ],
+  "meta": {
+    "version": "1.0",
+    "created_at": "2025-12-24",
+    "description": "Initial seed strategies for CAD Agent bootstrapping"
+  }
+}

@@ -22,11 +22,14 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from core.trading_journal import router as trading_journal_router
 from core.validation_history import router as validation_history_router
 from core.orchestrator_adapter import get_orchestrator, TaskRequest, AgentType
+from core.database_adapter import get_db_adapter
+from core.metrics.strategy_scoring import get_strategy_scorer
+from core.audit_logger import get_audit_logger
 
 # Initialize logging
 from core.logging_config import setup_logging
 
-setup_logging(log_level=os.getenv("LOG_LEVEL", "INFO"))
+setup_logging()
 logger = logging.getLogger(__name__)
 
 logger.info("Vulcan Orchestrator starting up...")
@@ -102,6 +105,10 @@ app.add_middleware(
 app.include_router(trading_journal_router, prefix="/api")
 app.include_router(validation_history_router, prefix="/api")
 
+# =============================================================================
+# API Key Authentication
+# =============================================================================
+
 DESKTOP_SERVER_URL = os.getenv("DESKTOP_SERVER_URL", "http://localhost:8765")
 API_KEY = os.getenv("API_KEY")
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=True)
@@ -111,6 +118,225 @@ async def get_api_key(api_key: str = Security(api_key_header)):
     if api_key == API_KEY:
         return api_key
     raise HTTPException(status_code=401, detail="Invalid API Key")
+
+
+# =============================================================================
+# Strategy Management Endpoints (Phase 20)
+# =============================================================================
+
+
+class StrategyCreate(BaseModel):
+    name: str
+    product_type: str
+    schema_json: Dict[str, Any]
+    is_experimental: bool = True
+
+
+class StrategyUpdate(BaseModel):
+    name: Optional[str] = None
+    schema_json: Optional[Dict[str, Any]] = None
+    is_experimental: Optional[bool] = None
+
+
+class PerformanceRecord(BaseModel):
+    validation_passed: bool
+    error_count: int = 0
+    errors_json: Optional[List[Dict]] = None
+    execution_time: Optional[float] = None
+    user_rating: Optional[int] = None
+
+
+@app.get("/api/strategies")
+async def list_strategies(
+    product_type: Optional[str] = None,
+    is_experimental: Optional[bool] = None,
+    api_key: str = Depends(get_api_key),
+):
+    """List all strategies with optional filters."""
+    db = get_db_adapter()
+    strategies = db.list_strategies(
+        product_type=product_type, is_experimental=is_experimental
+    )
+    get_audit_logger().log_api_call("/api/strategies", "GET", "api_user", 200)
+    return {"strategies": strategies, "count": len(strategies)}
+
+
+@app.get("/api/strategies/{strategy_id}")
+async def get_strategy(strategy_id: int, api_key: str = Depends(get_api_key)):
+    """Get a single strategy by ID."""
+    db = get_db_adapter()
+    strategy = db.load_strategy(strategy_id)
+    if not strategy:
+        raise HTTPException(status_code=404, detail="Strategy not found")
+    get_audit_logger().log_api_call(
+        f"/api/strategies/{strategy_id}", "GET", "api_user", 200
+    )
+    return strategy
+
+
+@app.post("/api/strategies")
+async def create_strategy(data: StrategyCreate, api_key: str = Depends(get_api_key)):
+    """Create a new strategy."""
+    db = get_db_adapter()
+    strategy_id = db.save_strategy(
+        name=data.name,
+        product_type=data.product_type,
+        schema=data.schema_json,
+        is_experimental=data.is_experimental,
+    )
+    get_audit_logger().log_strategy_action(
+        "create", strategy_id=strategy_id, strategy_name=data.name
+    )
+    return {"id": strategy_id, "message": "Strategy created"}
+
+
+@app.put("/api/strategies/{strategy_id}")
+async def update_strategy(
+    strategy_id: int, data: StrategyUpdate, api_key: str = Depends(get_api_key)
+):
+    """Update an existing strategy."""
+    db = get_db_adapter()
+    existing = db.load_strategy(strategy_id)
+    if not existing:
+        raise HTTPException(status_code=404, detail="Strategy not found")
+
+    # Merge updates
+    updated_schema = (
+        data.schema_json if data.schema_json else existing.get("schema_json")
+    )
+    updated_name = data.name if data.name else existing.get("name")
+
+    db.save_strategy(
+        name=updated_name,
+        product_type=existing.get("product_type"),
+        schema=updated_schema,
+        is_experimental=(
+            data.is_experimental
+            if data.is_experimental is not None
+            else existing.get("is_experimental")
+        ),
+        strategy_id=strategy_id,
+    )
+    get_audit_logger().log_strategy_action("update", strategy_id=strategy_id)
+    return {"id": strategy_id, "message": "Strategy updated"}
+
+
+@app.delete("/api/strategies/{strategy_id}")
+async def delete_strategy(strategy_id: int, api_key: str = Depends(get_api_key)):
+    """Delete a strategy."""
+    db = get_db_adapter()
+    success = db.delete_strategy(strategy_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Strategy not found")
+    get_audit_logger().log_strategy_action("delete", strategy_id=strategy_id)
+    return {"message": "Strategy deleted"}
+
+
+@app.get("/api/strategies/{strategy_id}/performance")
+async def get_strategy_performance(
+    strategy_id: int, days: int = 30, api_key: str = Depends(get_api_key)
+):
+    """Get performance history for a strategy."""
+    db = get_db_adapter()
+    performance = db.get_strategy_performance(strategy_id, days=days)
+    return {"strategy_id": strategy_id, "days": days, "records": performance}
+
+
+@app.post("/api/strategies/{strategy_id}/performance")
+async def record_performance(
+    strategy_id: int, data: PerformanceRecord, api_key: str = Depends(get_api_key)
+):
+    """Record a performance execution for a strategy."""
+    db = get_db_adapter()
+    existing = db.load_strategy(strategy_id)
+    if not existing:
+        raise HTTPException(status_code=404, detail="Strategy not found")
+
+    db.record_performance(
+        strategy_id=strategy_id,
+        validation_passed=data.validation_passed,
+        error_count=data.error_count,
+        errors=data.errors_json or [],
+        execution_time=data.execution_time,
+        user_rating=data.user_rating,
+    )
+    get_audit_logger().log_strategy_action(
+        "record_performance",
+        strategy_id=strategy_id,
+        details={"passed": data.validation_passed},
+    )
+    return {"message": "Performance recorded"}
+
+
+@app.get("/api/strategies/{strategy_id}/score")
+async def get_strategy_score(
+    strategy_id: int, days: int = 30, api_key: str = Depends(get_api_key)
+):
+    """Calculate and return strategy score."""
+    scorer = get_strategy_scorer()
+    score = scorer.calculate_score(strategy_id, days=days)
+    return {"strategy_id": strategy_id, **score}
+
+
+@app.get("/api/strategies/rankings")
+async def get_strategy_rankings(
+    product_type: Optional[str] = None,
+    limit: int = 10,
+    api_key: str = Depends(get_api_key),
+):
+    """Get ranked list of strategies by score."""
+    scorer = get_strategy_scorer()
+    rankings = scorer.rank_strategies(product_type=product_type, limit=limit)
+    return {"rankings": rankings}
+
+
+@app.post("/api/strategies/{strategy_id}/evolve")
+async def evolve_strategy(strategy_id: int, api_key: str = Depends(get_api_key)):
+    """Trigger LLM-powered evolution for a strategy."""
+    try:
+        from agents.cad_agent.strategy_evolution import get_evolution_engine
+
+        engine = get_evolution_engine()
+        result = await engine.evolve_strategy(strategy_id, force=True)
+        if result:
+            get_audit_logger().log_strategy_action(
+                "evolve", strategy_id=strategy_id, details={"success": True}
+            )
+            return {"message": "Strategy evolved", "new_version": result}
+        else:
+            return {"message": "Evolution not needed or failed"}
+    except Exception as e:
+        logger.error(f"Evolution failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# =============================================================================
+# Explain Layer (Phase 21 Gap 16)
+# =============================================================================
+
+
+class ExplanationResponse(BaseModel):
+    strategy_id: int
+    summary: str
+    key_factors: List[str]
+    confidence_score: float
+
+
+@app.get("/api/explain/{strategy_id}")
+async def explain_strategy_decision(
+    strategy_id: int, api_key: str = Depends(get_api_key)
+) -> ExplanationResponse:
+    """Generate LLM-based explanation for a strategy's recent performance."""
+    # V1: Mock explanation until phase 22 fully connects the LLM-as-Judge
+    return ExplanationResponse(
+        strategy_id=strategy_id,
+        summary=f"Strategy {strategy_id} works well for standard bolt circles but struggles with irregular patterns.",
+        key_factors=["Geometry Complexity", "Material Hardness", "Tolerance Stackup"],
+        confidence_score=0.92,
+    )
+
+
+# =============================================================================
 
 
 class ChatMessage(BaseModel):

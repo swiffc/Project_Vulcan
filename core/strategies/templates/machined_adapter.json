@@ -1,0 +1,94 @@
+{
+  "name": "Machined Flange Adapter",
+  "product_type": "machining",
+  "description": "CNC machined adapter plate for pipe flange connections",
+  "material": {
+    "name": "6061-T6 Aluminum",
+    "grade": "T6",
+    "density": 2700,
+    "yield_strength": 276,
+    "tensile_strength": 310
+  },
+  "stock_size": {
+    "x": 200,
+    "y": 200,
+    "z": 50
+  },
+  "stock_material": "6061-T6 Aluminum",
+  "operations": [
+    {
+      "name": "Face Top",
+      "type": "face_mill",
+      "sequence": 1,
+      "tool": "50mm Face Mill",
+      "cycle_time": 2.5,
+      "volume_removed": 20000
+    },
+    {
+      "name": "Rough Profile",
+      "type": "contour",
+      "sequence": 2,
+      "tool": "20mm End Mill",
+      "cycle_time": 8.0,
+      "volume_removed": 150000
+    },
+    {
+      "name": "Center Bore",
+      "type": "bore",
+      "sequence": 3,
+      "tool": "Boring Bar",
+      "parameters": {"diameter": 100, "depth": 30},
+      "cycle_time": 5.0,
+      "volume_removed": 235619
+    },
+    {
+      "name": "Bolt Holes",
+      "type": "drill",
+      "sequence": 4,
+      "tool": "10mm Drill",
+      "parameters": {"diameter": 10.5, "count": 8, "pattern": "bolt_circle", "bcd": 150},
+      "cycle_time": 3.0,
+      "volume_removed": 4158
+    },
+    {
+      "name": "Tap Holes",
+      "type": "tap",
+      "sequence": 5,
+      "tool": "M10x1.5 Tap",
+      "cycle_time": 2.0
+    },
+    {
+      "name": "Finish Profile",
+      "type": "contour",
+      "sequence": 6,
+      "tool": "10mm End Mill",
+      "cycle_time": 4.0
+    }
+  ],
+  "tooling": [
+    {"name": "50mm Face Mill", "type": "face_mill"},
+    {"name": "20mm End Mill", "type": "end_mill"},
+    {"name": "10mm End Mill", "type": "end_mill"},
+    {"name": "Boring Bar", "type": "boring"},
+    {"name": "10mm Drill", "type": "drill"},
+    {"name": "M10x1.5 Tap", "type": "tap"}
+  ],
+  "setup_count": 1,
+  "estimated_cycle_time": 24.5,
+  "constraints": [
+    {
+      "name": "Bore Tolerance",
+      "type": "dimensional",
+      "value": 0.05,
+      "standard": "ISO 2768-m",
+      "is_critical": true
+    },
+    {
+      "name": "Surface Finish",
+      "type": "process",
+      "value": 1.6,
+      "is_critical": false
+    }
+  ],
+  "tags": ["adapter", "flange", "machined", "cnc"]
+}

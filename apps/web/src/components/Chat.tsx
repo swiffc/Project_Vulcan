@@ -10,6 +10,7 @@ import { validateDrawing, formatValidationReport } from "@/lib/cad/validation-cl
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000;
+const STORAGE_KEY_PREFIX = "vulcan-chat-";
 
 const DEFAULT_WELCOME =
   "Welcome to **Project Vulcan**. I'm your AI operating system for CAD automation and paper trading.\n\n" +
@@ -18,6 +19,50 @@ const DEFAULT_WELCOME =
   "- `Scan GBP/USD` - Analyze trading setups\n" +
   "- `Weekly review` - Generate performance summary\n\n" +
   "How can I help you today?";
+
+// Helper functions for localStorage persistence
+function getStorageKey(context: string): string {
+  return `${STORAGE_KEY_PREFIX}${context}`;
+}
+
+function loadMessagesFromStorage(context: string, defaultWelcome: string): Message[] {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const stored = localStorage.getItem(getStorageKey(context));
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Restore Date objects from ISO strings
+      return parsed.map((m: any) => ({
+        ...m,
+        timestamp: new Date(m.timestamp),
+      }));
+    }
+  } catch (e) {
+    console.error("Failed to load chat history:", e);
+  }
+
+  // Return default welcome message if no stored messages
+  return [{
+    id: "welcome",
+    role: "assistant" as const,
+    content: defaultWelcome,
+    timestamp: new Date(),
+    status: "complete" as const,
+  }];
+}
+
+function saveMessagesToStorage(context: string, messages: Message[]): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    // Only save the last 100 messages to avoid storage limits
+    const toSave = messages.slice(-100);
+    localStorage.setItem(getStorageKey(context), JSON.stringify(toSave));
+  } catch (e) {
+    console.error("Failed to save chat history:", e);
+  }
+}
 
 // Quick command suggestions based on context
 const QUICK_COMMANDS = {
@@ -47,18 +92,30 @@ interface ChatProps {
 }
 
 export function Chat({ agentContext, welcomeMessage }: ChatProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content: welcomeMessage || DEFAULT_WELCOME,
-      timestamp: new Date(),
-      status: "complete",
-    },
-  ]);
+  const context = agentContext || "general";
+  const welcome = welcomeMessage || DEFAULT_WELCOME;
+
+  // Initialize with empty array to avoid hydration mismatch
+  // localStorage is loaded after mount in useEffect
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Load from localStorage after mount (client-side only)
+  useEffect(() => {
+    const stored = loadMessagesFromStorage(context, welcome);
+    setMessages(stored);
+    setIsHydrated(true);
+  }, [context, welcome]);
+
+  // Save to localStorage whenever messages change
+  useEffect(() => {
+    if (isHydrated && messages.length > 0) {
+      saveMessagesToStorage(context, messages);
+    }
+  }, [messages, context, isHydrated]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -67,6 +124,19 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Clear chat history function (can be exposed via button later)
+  const clearHistory = useCallback(() => {
+    const defaultMessages: Message[] = [{
+      id: "welcome",
+      role: "assistant",
+      content: welcome,
+      timestamp: new Date(),
+      status: "complete",
+    }];
+    setMessages(defaultMessages);
+    saveMessagesToStorage(context, defaultMessages);
+  }, [context, welcome]);
 
   const streamWithRetry = useCallback(
     async (
@@ -317,9 +387,23 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
     setIsStreaming(false);
   };
 
-  const context = agentContext || "general";
   const quickCommands = QUICK_COMMANDS[context];
-  const showQuickCommands = messages.length <= 2 && !isStreaming;
+  const showQuickCommands = isHydrated && messages.length <= 2 && !isStreaming;
+
+  // Show loading state before hydration
+  if (!isHydrated) {
+    return (
+      <div className="flex flex-col flex-1 gap-4">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex items-center gap-2 text-white/40">
+            <div className="w-2 h-2 bg-indigo-400 rounded-full animate-pulse" />
+            <span className="text-sm">Loading chat...</span>
+          </div>
+        </div>
+        <ChatInput onSend={handleSendMessage} disabled={true} />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col flex-1 gap-4">

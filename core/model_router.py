@@ -17,19 +17,24 @@ from dataclasses import dataclass
 logger = logging.getLogger("core.model-router")
 
 
+class ModelProvider(str, Enum):
+    ANTHROPIC = "anthropic"
+    OPENAI = "openai"
+
+
 class ModelTier(Enum):
-    HAIKU = "claude-3-haiku-20240307"      # Fast, cheap ($0.25/M)
-    SONNET = "claude-sonnet-4-20250514"     # Balanced ($3/M)
-
-
-class TaskComplexity(Enum):
-    SIMPLE = "simple"
-    MODERATE = "moderate"
-    COMPLEX = "complex"
+    # Engineering / Code Specialist
+    SONNET = "claude-3-5-sonnet-20240620"
+    # General Reasoning / Finance Specialist
+    GPT4O = "gpt-4o"
+    # Fast / Cheap
+    GPT4O_MINI = "gpt-4o-mini"
+    HAIKU = "claude-3-haiku-20240307"
 
 
 @dataclass
 class RoutingDecision:
+    provider: ModelProvider
     model: str
     max_tokens: int
     temperature: float
@@ -39,112 +44,134 @@ class RoutingDecision:
 
 class ModelRouter:
     """
-    Routes queries to the most cost-effective model.
-    
-    Usage:
-        router = ModelRouter()
-        decision = router.route("What time does London session open?")
-        # decision.model = "claude-3-haiku-20240307" (12x cheaper!)
-        
-        decision = router.route("Analyze GBP/USD for Q2 manipulation with ICT confluence")
-        # decision.model = "claude-sonnet-4-20250514" (full power)
+    Routes queries to the most effective model based on Domain and Complexity.
+
+    Strategies:
+    1. CAD/Engineering/Code -> Claude 3.5 Sonnet (Best spatial/coding)
+    2. Trading/Finance/Strategy -> GPT-4o (Best general reasoning)
+    3. Simple/Chat -> GPT-4o-mini (Cheapest/Fastest)
     """
-    
-    # Patterns indicating SIMPLE queries (use Haiku)
-    SIMPLE_PATTERNS = [
-        r"what time", r"when does", r"when is", r"what day",
-        r"^(hi|hello|hey|good morning|good afternoon|good evening)",
-        r"^thanks", r"^thank you", r"^ok\b", r"^okay\b",
-        r"status", r"health check",
-        r"^(is|are|can|do|does|will|should) \w+ ",
-        r"list my", r"show me my", r"what are my",
-        r"define ", r"what is (a |an |the )?\w+\?*$",
+
+    # Patterns for Domain Detection
+    CAD_PATTERNS = [
+        r"cad",
+        r"solidworks",
+        r"inventor",
+        r"model",
+        r"geometry",
+        r"dimension",
+        r"tolerance",
+        r"drawing",
+        r"part number",
+        r"assembly",
+        r"bom",
+        r"material",
+        r"weld",
+        r"gdt",
+        r"gd&t",
     ]
-    
-    # Patterns indicating COMPLEX queries (use Sonnet)
-    COMPLEX_PATTERNS = [
-        r"analyze", r"analysis", r"analyse",
-        r"confluence", r"multiple.*(factor|confirmation|signal)",
-        r"ict.*(btmm|concept|setup)", r"btmm.*(ict|cycle)",
-        r"quarterly.theory", r"manipulation.phase",
-        r"step.by.step", r"walk.*through", r"explain.*detail",
-        r"comprehensive", r"in.depth", r"thorough",
-        r"review.*(trade|performance|week)", r"audit",
-        r"grade", r"evaluate", r"assess",
-        r"create.*(plan|strategy)", r"build.*(strategy|system)",
-        r"compare.*contrast", r"trade.?off",
-        r"complex.*(assembly|geometry|part)",
-        r"multi.*(part|step|factor)",
+
+    TRADING_PATTERNS = [
+        r"trade",
+        r"finance",
+        r"market",
+        r"price",
+        r"chart",
+        r"ict",
+        r"fvg",
+        r"liquidity",
+        r"bias",
+        r"trend",
+        r"forex",
+        r"crypto",
+        r"stock",
+        r"quarterly",
+        r"manipulation",
     ]
-    
-    # Keywords that boost complexity score
-    COMPLEXITY_BOOSTERS = [
-        "why", "how does", "implications", "consequences",
-        "relationship between", "optimize", "best approach",
-        "recommend", "should i", "trade-off"
-    ]
-    
+
     def __init__(self):
-        self._simple_re = [re.compile(p, re.IGNORECASE) for p in self.SIMPLE_PATTERNS]
-        self._complex_re = [re.compile(p, re.IGNORECASE) for p in self.COMPLEX_PATTERNS]
-        
-    def assess_complexity(self, message: str) -> TaskComplexity:
-        """Assess query complexity."""
-        message_lower = message.lower()
-        
-        # Score patterns
-        complex_score = sum(1 for p in self._complex_re if p.search(message))
-        simple_score = sum(1 for p in self._simple_re if p.search(message))
-        booster_score = sum(1 for kw in self.COMPLEXITY_BOOSTERS if kw in message_lower)
-        
-        # Length factor
-        word_count = len(message.split())
-        length_bonus = 1 if word_count > 30 else 0
-        
-        total_complex = complex_score + booster_score + length_bonus
-        
-        if total_complex >= 2:
-            return TaskComplexity.COMPLEX
-        elif simple_score >= 1 and total_complex == 0:
-            return TaskComplexity.SIMPLE
-        return TaskComplexity.MODERATE
-        
+        self._cad_re = [re.compile(p, re.IGNORECASE) for p in self.CAD_PATTERNS]
+        self._trade_re = [re.compile(p, re.IGNORECASE) for p in self.TRADING_PATTERNS]
+
+    def detect_domain(self, message: str) -> str:
+        """Detect domain: 'cad', 'trading', or 'general'."""
+        cad_score = sum(1 for p in self._cad_re if p.search(message))
+        trade_score = sum(1 for p in self._trade_re if p.search(message))
+
+        if cad_score > trade_score:
+            return "cad"
+        elif trade_score > cad_score:
+            return "trading"
+        return "general"
+
     def route(self, message: str, agent_type: str = "general") -> RoutingDecision:
         """Route message to appropriate model."""
-        complexity = self.assess_complexity(message)
-        
-        # Agent overrides
-        if agent_type == "inspector":
-            complexity = TaskComplexity.COMPLEX  # Audits need full reasoning
-            
-        if complexity == TaskComplexity.SIMPLE:
+        domain = self.detect_domain(message)
+
+        # Override based on explicit agent type
+        if agent_type == "cad_agent":
+            return self._route_engineering(message)
+        elif agent_type == "trading_agent":
+            return self._route_trading(message)
+
+        # Domain-based routing
+        if domain == "cad":
+            return self._route_engineering(message)
+        elif domain == "trading":
+            return self._route_trading(message)
+        else:
+            return self._route_general(message)
+
+    def _route_engineering(self, message: str) -> RoutingDecision:
+        """Engineering tasks go to Claude 3.5 Sonnet."""
+        return RoutingDecision(
+            provider=ModelProvider.ANTHROPIC,
+            model=ModelTier.SONNET.value,
+            max_tokens=8192,
+            temperature=0.2,  # Low temp for precision
+            complexity="complex",
+            reason="Engineering task → Claude 3.5 Sonnet (Best Spatial/Code)",
+        )
+
+    def _route_trading(self, message: str) -> RoutingDecision:
+        """Trading logic goes to GPT-4o."""
+        return RoutingDecision(
+            provider=ModelProvider.OPENAI,
+            model=ModelTier.GPT4O.value,
+            max_tokens=4096,
+            temperature=0.7,
+            complexity="complex",
+            reason="Trading analysis → GPT-4o (Best General Reasoning)",
+        )
+
+    def _route_general(self, message: str) -> RoutingDecision:
+        """General chat goes to GPT-4o-mini (unless complex)."""
+        # Simple heuristic for complexity
+        is_complex = len(message.split()) > 30 or "analyze" in message.lower()
+
+        if is_complex:
             return RoutingDecision(
-                model=ModelTier.HAIKU.value,
-                max_tokens=512,
-                temperature=0.3,
-                complexity="simple",
-                reason="Simple query → Haiku (12x cheaper)"
-            )
-        elif complexity == TaskComplexity.COMPLEX:
-            return RoutingDecision(
-                model=ModelTier.SONNET.value,
-                max_tokens=4096,
+                provider=ModelProvider.OPENAI,
+                model=ModelTier.GPT4O.value,
+                max_tokens=2048,
                 temperature=0.7,
-                complexity="complex",
-                reason="Complex analysis → Sonnet (full power)"
+                complexity="moderate",
+                reason="Complex general query → GPT-4o",
             )
         else:
             return RoutingDecision(
-                model=ModelTier.HAIKU.value,
+                provider=ModelProvider.OPENAI,
+                model=ModelTier.GPT4O_MINI.value,
                 max_tokens=1024,
-                temperature=0.5,
-                complexity="moderate",
-                reason="Moderate query → Haiku (extended tokens)"
+                temperature=0.6,
+                complexity="simple",
+                reason="Simple query → GPT-4o-mini (Cost Optimized)",
             )
 
 
 # Singleton
 _router: Optional[ModelRouter] = None
+
 
 def get_model_router() -> ModelRouter:
     global _router

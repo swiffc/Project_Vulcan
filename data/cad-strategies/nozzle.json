@@ -1,0 +1,250 @@
+{
+  "part_type": "nozzle",
+  "assembly_type": "ASSEMBLY",
+  "description": "A nozzle is an ASSEMBLY consisting of a weld neck flange welded to a pipe section. Used for vessel/tank connections. NOT a single revolved part.",
+
+  "engineering_analysis": {
+    "what_is_this": "Pipe fitting for vessel penetrations - allows piping connection to pressure vessels/tanks",
+    "real_world_construction": "Weld neck flange shop-welded to pipe section, then field-welded to vessel shell",
+    "why_assembly": "Flange is a PURCHASED standard part (forged per ASME B16.5), pipe is cut from stock (per ASME B36.10). They are separate items joined by welding.",
+    "manufacturing_method": "Flange: forged and machined. Pipe: seamless or welded tube. Joint: full penetration weld."
+  },
+
+  "components": [
+    {
+      "name": "weld_neck_flange",
+      "type": "STANDARD",
+      "standard": "ASME B16.5",
+      "source_strategy": "weld_neck_flange.json",
+      "description": "Weld neck flange - forged steel with integral hub for pipe welding",
+      "procurement": "Purchase from flange manufacturer (Bonney Forge, Merit, etc.)",
+      "notes": "Has bolt holes, raised face, and tapered hub that transitions to pipe OD"
+    },
+    {
+      "name": "pipe_section",
+      "type": "STANDARD",
+      "standard": "ASME B36.10",
+      "source_strategy": "pipe.json",
+      "description": "Carbon steel pipe section - cut to length from pipe stock",
+      "procurement": "Cut from pipe inventory or order specific length",
+      "notes": "Schedule determines wall thickness. Sch 40 is common for general service."
+    }
+  ],
+
+  "standard_configurations": {
+    "6in_150lb_wn_nozzle": {
+      "description": "6 inch 150# ASME B16.5 Weld Neck Flange with 10in pipe",
+      "flange": {
+        "size": "6 inch",
+        "class": "150",
+        "type": "Weld Neck",
+        "facing": "Raised Face",
+        "od": 0.2794,
+        "rf_od": 0.2159,
+        "rf_height": 0.0016,
+        "thickness": 0.0254,
+        "hub_od_at_base_X": 0.1920,
+        "hub_od_at_weld_A": 0.1683,
+        "hub_length_Y": 0.0874,
+        "straight_section_at_weld": 0.006,
+        "bore_id": 0.1541,
+        "bolt_circle": 0.2413,
+        "num_bolts": 8,
+        "bolt_hole_dia": 0.022,
+        "weld_prep_bevel_deg": 37.5,
+        "units": "meters",
+        "source": "ASME B16.5-2020",
+        "verified": true,
+        "imperial": {
+          "od": "11.00 in",
+          "rf_od": "8.50 in",
+          "hub_od_at_base_X": "7.56 in",
+          "hub_od_at_weld_A": "6.625 in",
+          "hub_length_Y": "3.44 in",
+          "straight_section": "0.236 in",
+          "bore_id": "6.065 in"
+        }
+      },
+      "pipe": {
+        "size": "6 inch",
+        "schedule": "40",
+        "od": 0.1683,
+        "id": 0.1541,
+        "wall": 0.0071,
+        "length": 0.1905,
+        "units": "meters"
+      },
+      "assembly_length": 0.254,
+      "units_imperial": {
+        "flange_od": "11 in",
+        "pipe_od": "6.625 in",
+        "pipe_id": "6.065 in",
+        "pipe_length": "7.5 in",
+        "total_length": "10 in"
+      }
+    }
+  },
+
+  "assembly_steps": [
+    {
+      "phase": "components",
+      "order": 1,
+      "description": "Create or load the weld neck flange part",
+      "endpoint": "/com/solidworks/assembly/load_or_create_part",
+      "body": {
+        "part_type": "weld_neck_flange",
+        "strategy": "weld_neck_flange.json",
+        "config": "${flange}"
+      }
+    },
+    {
+      "phase": "components",
+      "order": 2,
+      "description": "Create or load the pipe section part",
+      "endpoint": "/com/solidworks/assembly/load_or_create_part",
+      "body": {
+        "part_type": "pipe_section",
+        "strategy": "pipe.json",
+        "config": "${pipe}"
+      }
+    },
+    {
+      "phase": "assembly",
+      "order": 3,
+      "description": "Create new assembly document",
+      "endpoint": "/com/solidworks/new_assembly",
+      "body": {}
+    },
+    {
+      "phase": "assembly",
+      "order": 4,
+      "description": "Insert flange as first (fixed) component",
+      "endpoint": "/com/solidworks/assembly/insert_component",
+      "body": {
+        "part_path": "${flange_part_path}",
+        "fixed": true,
+        "position": {"x": 0, "y": 0, "z": 0}
+      }
+    },
+    {
+      "phase": "assembly",
+      "order": 5,
+      "description": "Insert pipe component",
+      "endpoint": "/com/solidworks/assembly/insert_component",
+      "body": {
+        "part_path": "${pipe_part_path}",
+        "fixed": false,
+        "position": {"x": 0, "y": -0.1, "z": 0}
+      }
+    },
+    {
+      "phase": "mates",
+      "order": 6,
+      "description": "Add concentric mate - align pipe OD to flange hub bore",
+      "endpoint": "/com/solidworks/assembly/add_mate",
+      "body": {
+        "mate_type": "concentric",
+        "entity1": {"component": "pipe_section", "face": "outer_cylinder"},
+        "entity2": {"component": "weld_neck_flange", "face": "hub_inner_bore"}
+      }
+    },
+    {
+      "phase": "mates",
+      "order": 7,
+      "description": "Add coincident mate - pipe end to flange hub end",
+      "endpoint": "/com/solidworks/assembly/add_mate",
+      "body": {
+        "mate_type": "coincident",
+        "entity1": {"component": "pipe_section", "face": "top_end"},
+        "entity2": {"component": "weld_neck_flange", "face": "hub_bottom"}
+      }
+    }
+  ],
+
+  "weld_joint": {
+    "type": "Full penetration butt weld",
+    "standard": "AWS D1.1 / ASME B31.3",
+    "location": "Junction of pipe OD to flange hub ID",
+    "prep": "V-groove or J-groove depending on wall thickness",
+    "notes": "In CAD, can be represented as a weld bead feature or annotation"
+  },
+
+  "drawing_steps": [
+    {
+      "order": 1,
+      "endpoint": "/com/solidworks/save",
+      "body": {"filepath": "${assembly_path}"},
+      "description": "Save assembly file"
+    },
+    {
+      "order": 2,
+      "endpoint": "/com/solidworks/drawings/new_drawing",
+      "body": {"template": "assembly"},
+      "description": "Create assembly drawing"
+    },
+    {
+      "order": 3,
+      "endpoint": "/com/solidworks/drawings/create_view",
+      "body": {"view_type": "front", "model_path": "${assembly_path}", "x": 0.12, "y": 0.15},
+      "description": "Front view showing flange face"
+    },
+    {
+      "order": 4,
+      "endpoint": "/com/solidworks/drawings/create_view",
+      "body": {"view_type": "right", "model_path": "${assembly_path}", "x": 0.30, "y": 0.15},
+      "description": "Right/side view showing length and profile"
+    },
+    {
+      "order": 5,
+      "endpoint": "/com/solidworks/drawings/create_view",
+      "body": {"view_type": "isometric", "model_path": "${assembly_path}", "x": 0.22, "y": 0.27},
+      "description": "Isometric view"
+    },
+    {
+      "order": 6,
+      "endpoint": "/com/solidworks/drawings/add_bom",
+      "body": {"x": 0.35, "y": 0.05},
+      "description": "Add Bill of Materials showing flange and pipe as separate items"
+    }
+  ],
+
+  "bom_structure": [
+    {"item": 1, "part_number": "FLG-6-150-WN-RF", "description": "6\" 150# WN RF Flange", "qty": 1, "material": "A105"},
+    {"item": 2, "part_number": "PIPE-6-SCH40", "description": "6\" Sch 40 Pipe x 7.5\" Lg", "qty": 1, "material": "A106 Gr.B"}
+  ],
+
+  "notes": [
+    "NOZZLE = ASSEMBLY (Flange + Pipe), not a single revolved part",
+    "Flange is a PURCHASED standard part per ASME B16.5",
+    "Pipe is cut from stock per ASME B36.10 dimensions",
+    "They are joined by welding - represented in CAD by mating faces",
+    "BOM should show both components separately",
+    "For pressure vessels, also need reinforcing pad calculations per ASME VIII",
+    "Bolt holes are part of the flange, not cut into a monolithic shape"
+  ],
+
+  "common_errors": [
+    {
+      "error": "Creating nozzle as single revolved part",
+      "why_wrong": "Ignores real-world construction - flange and pipe are separate components",
+      "correct_approach": "Create assembly with flange part + pipe part + mates"
+    },
+    {
+      "error": "Cutting bolt holes into revolved shape",
+      "why_wrong": "Bolt holes are part of the flange forging, not a secondary operation on a nozzle",
+      "correct_approach": "Flange part already has bolt holes from its own modeling strategy"
+    }
+  ],
+
+  "legacy_single_part_approach": {
+    "deprecated": true,
+    "reason": "Does not represent actual construction - use assembly approach",
+    "when_acceptable": "Only for quick visualization/concept, never for fabrication drawings"
+  },
+
+  "created": "2025-12-23",
+  "updated": "2025-12-23",
+  "tested": false,
+  "solidworks_version": "2025",
+  "version": "2.0"
+}

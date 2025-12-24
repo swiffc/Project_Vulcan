@@ -1,0 +1,95 @@
+{
+  "name": "Tube Frame Structure",
+  "product_type": "weldment",
+  "description": "Square/rectangular tube weldment frame for equipment support",
+  "material": {
+    "name": "ASTM A500 Grade B",
+    "grade": "B",
+    "density": 7850,
+    "yield_strength": 290,
+    "tensile_strength": 400
+  },
+  "structural_members": [
+    {
+      "name": "Top Rail Front",
+      "profile": "HSS 2x2x0.188",
+      "length": 1200,
+      "cross_section_area": 1394,
+      "orientation": "horizontal"
+    },
+    {
+      "name": "Top Rail Back",
+      "profile": "HSS 2x2x0.188",
+      "length": 1200,
+      "cross_section_area": 1394,
+      "orientation": "horizontal"
+    },
+    {
+      "name": "Top Rail Left",
+      "profile": "HSS 2x2x0.188",
+      "length": 800,
+      "cross_section_area": 1394,
+      "orientation": "horizontal"
+    },
+    {
+      "name": "Top Rail Right",
+      "profile": "HSS 2x2x0.188",
+      "length": 800,
+      "cross_section_area": 1394,
+      "orientation": "horizontal"
+    },
+    {
+      "name": "Leg FL",
+      "profile": "HSS 2x2x0.188",
+      "length": 900,
+      "cross_section_area": 1394,
+      "orientation": "vertical"
+    },
+    {
+      "name": "Leg FR",
+      "profile": "HSS 2x2x0.188",
+      "length": 900,
+      "cross_section_area": 1394,
+      "orientation": "vertical"
+    },
+    {
+      "name": "Leg BL",
+      "profile": "HSS 2x2x0.188",
+      "length": 900,
+      "cross_section_area": 1394,
+      "orientation": "vertical"
+    },
+    {
+      "name": "Leg BR",
+      "profile": "HSS 2x2x0.188",
+      "length": 900,
+      "cross_section_area": 1394,
+      "orientation": "vertical"
+    }
+  ],
+  "weld_joints": [
+    {"name": "Corner Joints", "type": "fillet", "size": 5, "count": 8, "standard": "AWS D1.1"}
+  ],
+  "cut_list": [
+    {"profile": "HSS 2x2x0.188", "length": 1200, "quantity": 2, "cut_angle": 45},
+    {"profile": "HSS 2x2x0.188", "length": 800, "quantity": 2, "cut_angle": 45},
+    {"profile": "HSS 2x2x0.188", "length": 900, "quantity": 4, "cut_angle": 0}
+  ],
+  "constraints": [
+    {
+      "name": "Squareness",
+      "type": "geometric",
+      "value": 1.0,
+      "is_critical": true
+    },
+    {
+      "name": "Diagonal Tolerance",
+      "type": "dimensional",
+      "value": 3.0,
+      "is_critical": true
+    }
+  ],
+  "weld_standard": "AWS D1.1",
+  "structural_standard": "AISC",
+  "tags": ["frame", "tube", "weldment", "equipment"]
+}

@@ -1,0 +1,70 @@
+{
+  "name": "I-Beam Weldment Frame",
+  "product_type": "weldment",
+  "description": "Structural I-beam weldment for support frames and structures",
+  "material": {
+    "name": "ASTM A36",
+    "grade": "A36",
+    "density": 7850,
+    "yield_strength": 250,
+    "tensile_strength": 400
+  },
+  "structural_members": [
+    {
+      "name": "Main Beam",
+      "profile": "W8x31",
+      "length": 3000,
+      "cross_section_area": 5890,
+      "orientation": "horizontal"
+    },
+    {
+      "name": "Support Column Left",
+      "profile": "W6x15",
+      "length": 1500,
+      "cross_section_area": 2840,
+      "orientation": "vertical"
+    },
+    {
+      "name": "Support Column Right",
+      "profile": "W6x15",
+      "length": 1500,
+      "cross_section_area": 2840,
+      "orientation": "vertical"
+    }
+  ],
+  "weld_joints": [
+    {
+      "name": "Beam-Column Left",
+      "type": "fillet",
+      "size": 6,
+      "length": 200,
+      "standard": "AWS D1.1"
+    },
+    {
+      "name": "Beam-Column Right",
+      "type": "fillet",
+      "size": 6,
+      "length": 200,
+      "standard": "AWS D1.1"
+    }
+  ],
+  "constraints": [
+    {
+      "name": "Minimum Weld Size",
+      "type": "process",
+      "value": 5,
+      "standard": "AWS D1.1",
+      "is_critical": true
+    },
+    {
+      "name": "Column Verticality",
+      "type": "geometric",
+      "value": 0.5,
+      "standard": "AISC",
+      "is_critical": true
+    }
+  ],
+  "weld_standard": "AWS D1.1",
+  "structural_standard": "AISC",
+  "tags": ["structural", "weldment", "frame", "support"]
+}

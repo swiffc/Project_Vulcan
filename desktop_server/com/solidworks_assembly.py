@@ -99,9 +99,10 @@ async def new_assembly():
     if not template_path or not os.path.exists(template_path):
         # Fallback to common paths
         common_paths = [
+            r"C:\ProgramData\SolidWorks\SOLIDWORKS 2025\templates\Assembly.asmdot",
+            r"C:\ProgramData\SolidWorks\SOLIDWORKS 2025\templates\MBD\assembly 0051mm to 0250mm.asmdot",
             r"C:\ProgramData\SolidWorks\SOLIDWORKS 2024\templates\Assembly.asmdot",
             r"C:\ProgramData\SolidWorks\SOLIDWORKS 2023\templates\Assembly.asmdot",
-            r"C:\ProgramData\SolidWorks\SOLIDWORKS 2022\templates\Assembly.asmdot",
         ]
         for path in common_paths:
             if os.path.exists(path):
@@ -125,33 +126,116 @@ async def insert_component(req: InsertComponentRequest):
     if not model:
         raise HTTPException(status_code=400, detail="No active document")
 
-    # Check if it's an assembly
-    doc_type = model.GetType()
+    # Check model type - handle case where ActiveDoc might return int or None
+    try:
+        doc_type = model.GetType
+        logger.info(f"Document type: {doc_type}")
+    except Exception as e:
+        logger.error(f"Error getting doc type: {e}, model is: {type(model)}")
+        raise HTTPException(status_code=400, detail=f"Cannot get document type: model is {type(model)}")
+
     if doc_type != 2:  # 2 = swDocASSEMBLY
-        raise HTTPException(status_code=400, detail="Active document is not an assembly")
+        raise HTTPException(status_code=400, detail=f"Active document is not an assembly (type={doc_type})")
 
-    if not os.path.exists(req.filepath):
-        raise HTTPException(status_code=400, detail=f"File not found: {req.filepath}")
+    # Normalize file path - SolidWorks COM prefers backslashes on Windows
+    filepath = os.path.normpath(os.path.abspath(req.filepath))
+    logger.info(f"Normalized filepath: {filepath}")
 
-    # Insert the component
-    # AddComponent5(filepath, config, x, y, z)
-    component = model.AddComponent5(
-        req.filepath,
-        0,  # swAddComponentConfigOptions_CurrentSelectedConfig
-        "",  # Configuration name (empty = default)
-        False,  # UseConfigForPartSize
-        "",  # ConfigName for size
-        req.x, req.y, req.z
-    )
+    if not os.path.exists(filepath):
+        raise HTTPException(status_code=400, detail=f"File not found: {filepath}")
 
-    if component:
+    # Get component count before
+    components_before = model.GetComponents(True)
+    count_before = len(components_before) if components_before else 0
+    logger.info(f"Components before insert: {count_before}")
+
+    # Try multiple methods to insert component
+    component = None
+    error_msgs = []
+
+    # Method 1: AddComponent5 with full path (most reliable)
+    try:
+        logger.info("Trying AddComponent5...")
+        component = model.AddComponent5(
+            filepath,
+            0,  # swAddComponentConfigOptions_CurrentSelectedConfig
+            "",  # Configuration name (empty = default)
+            False,  # UseConfigForPartSize
+            "",  # ConfigName for size
+            req.x, req.y, req.z
+        )
+        logger.info(f"AddComponent5 returned: {component}")
+    except Exception as e:
+        error_msgs.append(f"AddComponent5: {e}")
+        logger.warning(f"AddComponent5 failed: {e}")
+
+    # Method 2: If Method 1 failed, try AddComponent4
+    if not component:
+        try:
+            logger.info("Trying AddComponent4...")
+            component = model.AddComponent4(
+                filepath,
+                "",  # Configuration name (empty = default)
+                req.x, req.y, req.z
+            )
+            logger.info(f"AddComponent4 returned: {component}")
+        except Exception as e:
+            error_msgs.append(f"AddComponent4: {e}")
+            logger.warning(f"AddComponent4 failed: {e}")
+
+    # Method 3: Use Extension.SelectByID2 + Insert approach
+    if not component:
+        try:
+            logger.info("Trying Extension approach...")
+            # Open the part first if not already open
+            part_doc = app.OpenDoc6(filepath, 1, 0, "", 0, 0)  # 1 = swDocPART
+            if part_doc:
+                # Activate the assembly
+                app.ActivateDoc3(model.GetTitle(), False, 0, 0)
+                # Now try insert again
+                component = model.AddComponent5(
+                    filepath, 0, "", False, "",
+                    req.x, req.y, req.z
+                )
+                logger.info(f"Extension approach returned: {component}")
+        except Exception as e:
+            error_msgs.append(f"Extension approach: {e}")
+            logger.warning(f"Extension approach failed: {e}")
+
+    # Force rebuild to ensure component is registered
+    try:
+        model.ForceRebuild3(True)
+    except:
+        pass
+
+    # Check component count after
+    components_after = model.GetComponents(True)
+    count_after = len(components_after) if components_after else 0
+    logger.info(f"Components after insert: {count_after}")
+
+    if count_after > count_before:
         return {
             "status": "ok",
-            "filepath": req.filepath,
-            "position": {"x": req.x, "y": req.y, "z": req.z}
+            "filepath": filepath,
+            "position": {"x": req.x, "y": req.y, "z": req.z},
+            "component_count": count_after
+        }
+    elif component:
+        return {
+            "status": "ok",
+            "filepath": filepath,
+            "position": {"x": req.x, "y": req.y, "z": req.z},
+            "note": "Component object returned but count unchanged"
         }
     else:
-        return {"status": "warning", "message": "Component may not have been inserted correctly"}
+        return {
+            "status": "error",
+            "message": "Failed to insert component",
+            "filepath": filepath,
+            "count_before": count_before,
+            "count_after": count_after,
+            "errors": error_msgs
+        }
 
 
 @router.post("/add_mate")
@@ -165,7 +249,7 @@ async def add_mate(req: MateRequest):
         raise HTTPException(status_code=400, detail="No active document")
 
     # Check if it's an assembly
-    doc_type = model.GetType()
+    doc_type = model.GetType
     if doc_type != 2:
         raise HTTPException(status_code=400, detail="Active document is not an assembly")
 
@@ -240,7 +324,7 @@ async def assembly_info():
     if not model:
         return {"status": "error", "message": "No active document"}
 
-    doc_type = model.GetType()
+    doc_type = model.GetType
     if doc_type != 2:
         return {"status": "error", "message": "Active document is not an assembly"}
 
@@ -275,7 +359,7 @@ async def pattern_component(req: ComponentPatternRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 2:
+    if not model or model.GetType != 2:
         raise HTTPException(
             status_code=400,
             detail="Active document is not an assembly"
@@ -326,7 +410,7 @@ async def create_exploded_view(req: ExplodedViewRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 2:
+    if not model or model.GetType != 2:
         raise HTTPException(
             status_code=400,
             detail="Active document is not an assembly"
@@ -347,7 +431,7 @@ async def move_component(req: ComponentMoveRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 2:
+    if not model or model.GetType != 2:
         raise HTTPException(
             status_code=400,
             detail="Active document is not an assembly"
@@ -380,7 +464,7 @@ async def suppress_component(req: ComponentSuppressRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 2:
+    if not model or model.GetType != 2:
         raise HTTPException(
             status_code=400,
             detail="Active document is not an assembly"
@@ -410,7 +494,7 @@ async def set_component_visibility(req: ComponentVisibilityRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 2:
+    if not model or model.GetType != 2:
         raise HTTPException(
             status_code=400,
             detail="Active document is not an assembly"
@@ -440,7 +524,7 @@ async def replace_component(req: ComponentReplaceRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 2:
+    if not model or model.GetType != 2:
         raise HTTPException(
             status_code=400,
             detail="Active document is not an assembly"
@@ -476,7 +560,7 @@ async def add_advanced_mate(req: AdvancedMateRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 2:
+    if not model or model.GetType != 2:
         raise HTTPException(
             status_code=400,
             detail="Active document is not an assembly"
@@ -523,7 +607,7 @@ async def add_assembly_feature(req: AssemblyFeatureRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 2:
+    if not model or model.GetType != 2:
         raise HTTPException(
             status_code=400,
             detail="Active document is not an assembly"
@@ -549,7 +633,7 @@ async def check_interference(req: InterferenceDetectionRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 2:
+    if not model or model.GetType != 2:
         raise HTTPException(
             status_code=400,
             detail="Active document is not an assembly"

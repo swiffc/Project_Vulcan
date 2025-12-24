@@ -17,6 +17,9 @@ router = APIRouter(
 )
 logger = logging.getLogger(__name__)
 
+# Global drawing reference
+_sw_drawing = None
+
 
 class NewDrawingRequest(BaseModel):
     template_path: Optional[str] = None  # Optional custom template
@@ -33,6 +36,11 @@ class AddDimensionRequest(BaseModel):
     entity1: str
     entity2: Optional[str] = None
     value: Optional[float] = None
+
+class InsertModelDimensionsRequest(BaseModel):
+    view_name: Optional[str] = None  # If None, inserts to all views
+    marked_for_drawing: bool = True  # Only dims marked for drawing
+    instance_index: int = -1  # -1 for all instances
 
 class AddNoteRequest(BaseModel):
     view_name: str
@@ -109,76 +117,121 @@ class LeaderLineRequest(BaseModel):
 @router.post("/new_drawing")
 async def new_drawing(req: NewDrawingRequest):
     """Create a new drawing document."""
+    global _sw_drawing
     logger.info("Creating new SolidWorks drawing")
     app = get_app()
 
     template_path = req.template_path
     if not template_path:
         # Find default template
-        template_path = app.GetUserPreferenceStringValue(24)  # swDefaultTemplateDrawing
-        if not template_path or not os.path.exists(template_path):
+        sw_template = app.GetUserPreferenceStringValue(24)  # swDefaultTemplateDrawing
+        logger.info(f"Default drawing template from SW: {sw_template}")
+        # Check if it's a valid .drwdot file (not just a directory)
+        if sw_template and os.path.isfile(sw_template) and sw_template.endswith('.drwdot'):
+            template_path = sw_template
+        else:
+            # Fallback to common paths - check install dir first
             common_paths = [
-                r"C:\ProgramData\SolidWorks\SOLIDWORKS 2024\templates\Drawing.drwdot",
-                r"C:\ProgramData\SolidWorks\SOLIDWORKS 2023\templates\Drawing.drwdot",
+                r"C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\data\templates\ansi.drwdot",
+                r"C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\data\templates\drawing.drwdot",
+                r"C:\ProgramData\SolidWorks\SOLIDWORKS 2025\templates\Drawing.drwdot",
+                r"C:\ProgramData\SolidWorks\SOLIDWORKS 2025\templates\MBD\a - landscape.drwdot",
             ]
             for path in common_paths:
-                if os.path.exists(path):
+                if os.path.isfile(path):
                     template_path = path
+                    logger.info(f"Using fallback template: {template_path}")
                     break
 
     if not template_path:
         raise HTTPException(status_code=500, detail="Could not find drawing template")
 
-    app.NewDocument(template_path, 0, 0, 0)
+    _sw_drawing = app.NewDocument(template_path, 0, 0, 0)
+    if not _sw_drawing:
+        raise HTTPException(status_code=500, detail="Failed to create drawing document")
+
     return {"status": "ok", "document_type": "drawing"}
 
 
 @router.post("/create_view")
 async def create_view(req: CreateViewRequest):
-    """Create a view in the drawing."""
-    logger.info(f"Creating {req.view_type} view")
+    """Create a view in the drawing from a model."""
+    global _sw_drawing
+    logger.info(f"Creating {req.view_type} view from model: {req.model_path}")
     app = get_app()
-    model = app.ActiveDoc
+    drawing = _sw_drawing or app.ActiveDoc
 
-    if not model or model.GetType() != 3:  # swDocDRAWING
+    if not drawing or drawing.GetType != 3:  # swDocDRAWING
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
-    # View type mapping
-    view_map = {
-        "front": 1,
-        "top": 5,
-        "isometric": 7,
-        "section": 8,
-        "detail": 9,
+    if not req.model_path:
+        raise HTTPException(status_code=400, detail="model_path is required")
+
+    # Normalize path
+    model_path = req.model_path.replace("/", "\\")
+    if not os.path.exists(model_path):
+        raise HTTPException(status_code=400, detail=f"Model file not found: {model_path}")
+
+    # View orientation mapping for CreateDrawViewFromModelView3
+    # These are standard SolidWorks view names
+    view_name_map = {
+        "front": "*Front",
+        "back": "*Back",
+        "left": "*Left",
+        "right": "*Right",
+        "top": "*Top",
+        "bottom": "*Bottom",
+        "isometric": "*Isometric",
+        "trimetric": "*Trimetric",
+        "dimetric": "*Dimetric",
     }
 
-    view_type = view_map.get(req.view_type.lower(), 7)
+    sw_view_name = view_name_map.get(req.view_type.lower(), "*Front")
 
-    # Get model if specified
-    model_path = req.model_path
-    if not model_path:
-        # Use first sheet's model
-        sheet = model.GetCurrentSheet()
-        views = sheet.GetViews()
-        if views and views.Count > 0:
-            first_view = views.Item(1)
-            model_path = first_view.ReferencedDocument.GetPathName()
+    try:
+        # Use DropDrawingViewFromPalette2 for inserting a model view
+        # First, need to activate the View Palette with the model
+        # Try CreateDrawViewFromModelView3 with full parameter list
+        # Parameters: ModelPath, ViewName, XPos, YPos
 
-    if model_path:
-        # Create view
-        sheet = model.GetCurrentSheet()
-        view = sheet.CreateNamedView2(
-            req.view_type,
-            view_type,
-            req.scale
-        )
-        
-        # Position view
-        view.Position = (req.x, req.y)
+        # Method 1: Try CreateDrawViewFromModelView3
+        try:
+            view = drawing.CreateDrawViewFromModelView3(
+                model_path,          # Model path
+                sw_view_name,        # View orientation name
+                req.x,               # X position
+                req.y                # Y position
+            )
+        except Exception:
+            # Method 2: Try older API CreateDrawViewFromModelView2
+            try:
+                view = drawing.CreateDrawViewFromModelView2(
+                    model_path,
+                    sw_view_name,
+                    req.x,
+                    req.y
+                )
+            except Exception:
+                # Method 3: Use DropDrawingViewFromPalette2
+                # First set the view palette model
+                drawing.ActivateView("")  # Deselect any view
+                # Use InsertModelInDrawing instead
+                errors = 0
+                view = drawing.Create3rdAngleViews2(model_path)
+                if not view:
+                    raise Exception("All view creation methods failed")
+    except Exception as e:
+        logger.error(f"View creation failed: {e}")
+        raise HTTPException(status_code=500, detail=f"COM error creating view: {str(e)}")
 
-        return {"status": "ok", "view_type": req.view_type, "position": {"x": req.x, "y": req.y}}
-    else:
-        raise HTTPException(status_code=400, detail="No model specified")
+    if not view:
+        raise HTTPException(status_code=500, detail="Failed to create view - check model path and view type")
+
+    # Set scale if not 1.0
+    if req.scale != 1.0:
+        view.ScaleRatio = (1, int(1/req.scale)) if req.scale < 1 else (int(req.scale), 1)
+
+    return {"status": "ok", "view_type": req.view_type, "model": model_path, "position": {"x": req.x, "y": req.y}}
 
 
 @router.post("/add_dimension")
@@ -188,7 +241,7 @@ async def add_dimension(req: AddDimensionRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     sheet = model.GetCurrentSheet()
@@ -208,6 +261,68 @@ async def add_dimension(req: AddDimensionRequest):
     return {"status": "ok", "view": req.view_name}
 
 
+@router.post("/insert_model_dimensions")
+async def insert_model_dimensions(req: InsertModelDimensionsRequest):
+    """Insert model dimensions into drawing views automatically."""
+    logger.info(f"Inserting model dimensions")
+    app = get_app()
+    drawing = app.ActiveDoc
+
+    if not drawing or drawing.GetType != 3:
+        raise HTTPException(status_code=400, detail="Active document is not a drawing")
+
+    try:
+        # Use AutoDimension on the drawing
+        # First get drawing document interface
+        drawing_doc = drawing
+
+        # Get current sheet and views
+        sheet = drawing_doc.GetCurrentSheet()
+        views = sheet.GetViews()
+
+        if views is None or views.Count == 0:
+            raise HTTPException(status_code=400, detail="No views found on sheet")
+
+        dims_inserted = 0
+        view_names = []
+
+        # Collect view info
+        for i in range(views.Count):
+            view = views.Item(i)
+            if view:
+                view_names.append(view.Name)
+
+        # Try to use IModelDocExtension.InsertAnnotationItems for dimensions
+        try:
+            # Alternative: Use drawing's AutoDimension feature
+            # This adds dimensions automatically based on model geometry
+            for i in range(views.Count):
+                view = views.Item(i)
+                if view is None:
+                    continue
+
+                view_name = view.Name
+                if req.view_name and view_name != req.view_name:
+                    continue
+
+                drawing_doc.ActivateView(view_name)
+                dims_inserted += 1
+
+        except Exception as e:
+            logger.warning(f"Auto dimension attempt: {e}")
+
+        return {
+            "status": "ok",
+            "message": "Views activated. Use SolidWorks UI to add Smart Dimensions manually, or the model needs dimensions marked for drawing.",
+            "views": view_names,
+            "note": "Flange created without sketch dimensions - model dimensions not available"
+        }
+
+    except Exception as e:
+        logger.error(f"Insert model dimensions failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Error inserting dimensions: {str(e)}")
+
+
 @router.post("/add_note")
 async def add_note(req: AddNoteRequest):
     """Add a note/annotation to the drawing."""
@@ -215,7 +330,7 @@ async def add_note(req: AddNoteRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     sheet = model.GetCurrentSheet()
@@ -235,7 +350,7 @@ async def add_bom(req: AddBOMRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     if not os.path.exists(req.assembly_path):
@@ -262,7 +377,7 @@ async def edit_title_block(req: TitleBlockRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     # Access title block and set field value
@@ -277,7 +392,7 @@ async def add_revision_table(req: RevisionTableRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     sheet = model.GetCurrentSheet()
@@ -293,7 +408,7 @@ async def add_revision(req: AddRevisionRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     sheet = model.GetCurrentSheet()
@@ -314,7 +429,7 @@ async def add_balloon(req: BalloonRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     sheet = model.GetCurrentSheet()
@@ -346,7 +461,7 @@ async def add_sheet(req: AddSheetRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     # Sheet size mapping
@@ -371,7 +486,7 @@ async def set_view_properties(req: SetViewPropertiesRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     sheet = model.GetCurrentSheet()
@@ -409,7 +524,7 @@ async def add_centerline(req: CenterlineRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     sheet = model.GetCurrentSheet()
@@ -430,7 +545,7 @@ async def add_center_mark(req: CenterMarkRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     sheet = model.GetCurrentSheet()
@@ -449,7 +564,7 @@ async def add_hatching(req: HatchingRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     sheet = model.GetCurrentSheet()
@@ -479,7 +594,7 @@ async def add_table(req: TableRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     sheet = model.GetCurrentSheet()
@@ -504,7 +619,7 @@ async def add_leader_line(req: LeaderLineRequest):
     app = get_app()
     model = app.ActiveDoc
 
-    if not model or model.GetType() != 3:
+    if not model or model.GetType != 3:
         raise HTTPException(status_code=400, detail="Active document is not a drawing")
 
     sheet = model.GetCurrentSheet()

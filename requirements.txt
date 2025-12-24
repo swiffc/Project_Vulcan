@@ -13,7 +13,15 @@ httpx>=0.28.0
 aiohttp>=3.13.0
 
 # LLM
+# LLM
 anthropic>=0.75.0
+openai>=1.0.0
+
+# AI Agent SDK & Web Research (Section 11 capabilities)
+claude-agent-sdk>=0.1.0  # Claude Agent SDK (official)
+tavily-python>=0.5.0  # Web search API (requires TAVILY_API_KEY)
+duckduckgo_search>=8.0.0  # Free web search fallback
+langchain-anthropic>=1.2.0  # LangChain + Claude integration
 
 # Vector Memory & RAG
 chromadb>=1.3.0
@@ -61,3 +69,7 @@ python-json-logger>=4.0.0  # JSON logging formatter
 
 # Monitoring
 sentry-sdk>=2.48.0
+
+# MCP Servers
+mcp>=1.0.0
+google-auth-oauthlib>=1.2.0

@@ -1,103 +1,129 @@
 "use client";
 
-import { useState } from "react";
-import { Tabs, TabList, TabTrigger, TabContent } from "@/components/ui/Tabs";
+import { useState, useCallback } from "react";
+import { ValidationUploader } from "@/components/cad/ValidationUploader";
+import { ValidationResults } from "@/components/cad/ValidationResults";
+import { CADStatusBar } from "@/components/cad/CADStatusBar";
+import { QuickStats } from "@/components/cad/QuickStats";
+import { RecentValidations } from "@/components/cad/RecentValidations";
+import { ToolsPanel } from "@/components/cad/ToolsPanel";
 import { Sidebar } from "@/components/layout/Sidebar";
-import { Dashboard } from "@/components/cad/Dashboard";
-import { Projects } from "@/components/cad/Projects";
-import { PartsLibrary } from "@/components/cad/PartsLibrary";
-import { DesignTools } from "@/components/cad/DesignTools";
-import { ECNTracker } from "@/components/cad/ECNTracker";
-import { ExportDrive } from "@/components/cad/ExportDrive";
+
+export interface ValidationResult {
+  id: string;
+  filename: string;
+  timestamp: Date;
+  status: "passed" | "failed" | "warnings";
+  passRate: number;
+  totalChecks: number;
+  issues: ValidationIssue[];
+  categories: CategoryResult[];
+}
+
+export interface ValidationIssue {
+  id: string;
+  severity: "critical" | "error" | "warning" | "info";
+  category: string;
+  title: string;
+  description: string;
+  location?: string;
+  standard?: string;
+}
+
+export interface CategoryResult {
+  name: string;
+  passed: number;
+  failed: number;
+  total: number;
+}
 
 export default function CADPage() {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeView, setActiveView] = useState<"validate" | "tools" | "history">("validate");
+  const [currentValidation, setCurrentValidation] = useState<ValidationResult | null>(null);
+  const [isValidating, setIsValidating] = useState(false);
+
+  const handleValidationComplete = useCallback((result: ValidationResult) => {
+    setCurrentValidation(result);
+    setIsValidating(false);
+  }, []);
+
+  const handleValidationStart = useCallback(() => {
+    setIsValidating(true);
+    setCurrentValidation(null);
+  }, []);
+
+  const handleClearResults = useCallback(() => {
+    setCurrentValidation(null);
+  }, []);
 
   return (
     <div className="flex h-[calc(100vh-64px)]">
       {/* Main Content */}
-      <div className="flex-1 overflow-auto p-4 md:p-6">
-        {/* Page Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-white">ACHE Design Center</h1>
-            <p className="text-white/50">Air Cooled Heat Exchanger Engineering</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-sm text-white/70">SolidWorks Connected</span>
-            </div>
-            <div className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-500/30">
-              <span className="text-sm text-indigo-300 font-medium">Chart Industries</span>
-            </div>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Status Bar */}
+        <CADStatusBar />
+
+        {/* View Tabs */}
+        <div className="border-b border-white/10 px-6">
+          <div className="flex gap-1">
+            {[
+              { id: "validate", label: "Validate Drawing", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
+              { id: "tools", label: "CAD Tools", icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
+              { id: "history", label: "History", icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveView(tab.id as typeof activeView)}
+                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 -mb-px ${
+                  activeView === tab.id
+                    ? "text-white border-vulcan-accent"
+                    : "text-white/50 border-transparent hover:text-white/80"
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
+                </svg>
+                {tab.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabList>
-            <TabTrigger value="dashboard">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-              </svg>
-              Dashboard
-            </TabTrigger>
-            <TabTrigger value="projects">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-              Projects
-            </TabTrigger>
-            <TabTrigger value="library">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-              </svg>
-              Parts Library
-            </TabTrigger>
-            <TabTrigger value="design">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
-              Design Tools
-            </TabTrigger>
-            <TabTrigger value="ecn">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-              </svg>
-              ECN Tracker
-            </TabTrigger>
-            <TabTrigger value="export">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-              </svg>
-              Export / BOM
-            </TabTrigger>
-          </TabList>
+        {/* Content Area */}
+        <div className="flex-1 overflow-auto p-6">
+          {activeView === "validate" && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left: Upload & Stats */}
+              <div className="lg:col-span-1 space-y-6">
+                <ValidationUploader
+                  onValidationStart={handleValidationStart}
+                  onValidationComplete={handleValidationComplete}
+                  isValidating={isValidating}
+                />
+                <QuickStats />
+              </div>
 
-          <TabContent value="dashboard">
-            <Dashboard />
-          </TabContent>
-          <TabContent value="projects">
-            <Projects />
-          </TabContent>
-          <TabContent value="library">
-            <PartsLibrary />
-          </TabContent>
-          <TabContent value="design">
-            <DesignTools />
-          </TabContent>
-          <TabContent value="ecn">
-            <ECNTracker />
-          </TabContent>
-          <TabContent value="export">
-            <ExportDrive />
-          </TabContent>
-        </Tabs>
+              {/* Right: Results */}
+              <div className="lg:col-span-2">
+                <ValidationResults
+                  result={currentValidation}
+                  isValidating={isValidating}
+                  onClear={handleClearResults}
+                />
+              </div>
+            </div>
+          )}
+
+          {activeView === "tools" && <ToolsPanel />}
+
+          {activeView === "history" && <RecentValidations />}
+        </div>
       </div>
 
-      {/* CAD Chat Sidebar */}
-      <Sidebar agentContext="cad" />
+      {/* AI Assistant Sidebar */}
+      <div className="border-l border-white/10">
+        <Sidebar agentContext="cad" defaultCollapsed={false} />
+      </div>
     </div>
   );
 }

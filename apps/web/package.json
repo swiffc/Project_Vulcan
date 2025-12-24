@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "echo 'No JS unit tests yet - see Python UI tests'"
   },
   "dependencies": {
     "@anthropic-ai/claude-code": "^2.0.75",

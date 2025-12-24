@@ -20,9 +20,11 @@ try:
         JSON,
         Integer,
         Text,
+        Boolean,
+        ForeignKey,
     )
     from sqlalchemy.ext.declarative import declarative_base
-    from sqlalchemy.orm import sessionmaker
+    from sqlalchemy.orm import sessionmaker, relationship
 
     HAS_SQLALCHEMY = True
 except ImportError:
@@ -62,10 +64,60 @@ class ValidationModel(Base):
         file_path = Column(String)
         report_path = Column(String)
         errors = Column(JSON)
-        metadata = Column(JSON)
+        validation_meta = Column(JSON)  # Renamed from 'metadata' (reserved in SQLAlchemy)
         created_at = Column(DateTime, default=datetime.utcnow)
         completed_at = Column(DateTime)
         updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class StrategyModel(Base):
+    """Digital Twin Strategy - Phase 20 Task 17"""
+    __tablename__ = "strategies"
+    if HAS_SQLALCHEMY:
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        name = Column(String, nullable=False, index=True)
+        product_type = Column(String, nullable=False)  # weldment, sheet_metal, machining, etc.
+        description = Column(Text)
+        schema_json = Column(JSON)  # Serialized product model
+        version = Column(Integer, default=1)
+        is_experimental = Column(Boolean, default=False)  # Sandbox flag
+        performance_score = Column(Float, default=0.0)  # 0-100 based on validation pass rate
+        usage_count = Column(Integer, default=0)
+        tags = Column(JSON)  # List of tags
+        created_at = Column(DateTime, default=datetime.utcnow)
+        updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+        created_by = Column(String, default="system")
+
+
+class StrategyPerformance(Base):
+    """Track strategy execution results - Phase 20 Task 21"""
+    __tablename__ = "strategy_performance"
+    if HAS_SQLALCHEMY:
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        strategy_id = Column(Integer, ForeignKey("strategies.id"), index=True)
+        execution_date = Column(DateTime, default=datetime.utcnow)
+        part_name = Column(String)
+        validation_passed = Column(Boolean, default=False)
+        error_count = Column(Integer, default=0)
+        errors_json = Column(JSON)  # Which checks failed
+        execution_time = Column(Float)  # Seconds
+        user_rating = Column(Integer)  # 1-5 stars (optional)
+        notes = Column(Text)
+
+
+class StrategyVersion(Base):
+    """Version history for evolved strategies - Rollback support"""
+    __tablename__ = "strategy_versions"
+    if HAS_SQLALCHEMY:
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        strategy_id = Column(Integer, ForeignKey("strategies.id"), index=True)
+        version = Column(Integer, nullable=False)
+        schema_json = Column(JSON)  # Snapshot of strategy at this version
+        change_reason = Column(Text)  # Why was it evolved?
+        performance_before = Column(Float)
+        performance_after = Column(Float)
+        created_at = Column(DateTime, default=datetime.utcnow)
+        created_by = Column(String, default="system")
 
 
 class DatabaseAdapter:
@@ -152,6 +204,306 @@ class DatabaseAdapter:
     def _to_dict(self, model_obj) -> Dict:
         """Convert SQLAlchemy model to dictionary."""
         return {c.name: getattr(model_obj, c.name) for c in model_obj.__table__.columns}
+
+    # ===== STRATEGY CRUD OPERATIONS (Phase 20) =====
+
+    def save_strategy(self, strategy_data: Dict[str, Any]) -> int:
+        """Save a new strategy or update existing one."""
+        session = self.get_session()
+        try:
+            strategy_id = strategy_data.get("id")
+            if strategy_id:
+                # Update existing
+                strategy = session.query(StrategyModel).filter_by(id=strategy_id).first()
+                if strategy:
+                    for key, value in strategy_data.items():
+                        if hasattr(strategy, key) and key != "id":
+                            setattr(strategy, key, value)
+                    strategy.updated_at = datetime.utcnow()
+                    session.commit()
+                    return strategy.id
+
+            # Create new
+            strategy = StrategyModel(
+                name=strategy_data.get("name"),
+                product_type=strategy_data.get("product_type"),
+                description=strategy_data.get("description"),
+                schema_json=strategy_data.get("schema_json"),
+                version=strategy_data.get("version", 1),
+                is_experimental=strategy_data.get("is_experimental", False),
+                tags=strategy_data.get("tags", []),
+                created_by=strategy_data.get("created_by", "system"),
+            )
+            session.add(strategy)
+            session.commit()
+            return strategy.id
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Failed to save strategy: {e}")
+            raise
+        finally:
+            session.close()
+
+    def load_strategy(self, strategy_id: int) -> Optional[Dict]:
+        """Load a strategy by ID."""
+        session = self.get_session()
+        try:
+            strategy = session.query(StrategyModel).filter_by(id=strategy_id).first()
+            if strategy:
+                return self._to_dict(strategy)
+            return None
+        finally:
+            session.close()
+
+    def load_strategy_by_name(self, name: str) -> Optional[Dict]:
+        """Load a strategy by name."""
+        session = self.get_session()
+        try:
+            strategy = session.query(StrategyModel).filter_by(name=name).first()
+            if strategy:
+                return self._to_dict(strategy)
+            return None
+        finally:
+            session.close()
+
+    def list_strategies(
+        self,
+        product_type: Optional[str] = None,
+        is_experimental: Optional[bool] = None,
+        limit: int = 100
+    ) -> List[Dict]:
+        """List strategies with optional filters."""
+        session = self.get_session()
+        try:
+            query = session.query(StrategyModel)
+            if product_type:
+                query = query.filter_by(product_type=product_type)
+            if is_experimental is not None:
+                query = query.filter_by(is_experimental=is_experimental)
+            strategies = query.order_by(StrategyModel.updated_at.desc()).limit(limit).all()
+            return [self._to_dict(s) for s in strategies]
+        finally:
+            session.close()
+
+    def delete_strategy(self, strategy_id: int) -> bool:
+        """Delete a strategy by ID."""
+        session = self.get_session()
+        try:
+            strategy = session.query(StrategyModel).filter_by(id=strategy_id).first()
+            if strategy:
+                session.delete(strategy)
+                session.commit()
+                return True
+            return False
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Failed to delete strategy: {e}")
+            raise
+        finally:
+            session.close()
+
+    def update_strategy_score(self, strategy_id: int, score: float) -> bool:
+        """Update a strategy's performance score."""
+        session = self.get_session()
+        try:
+            strategy = session.query(StrategyModel).filter_by(id=strategy_id).first()
+            if strategy:
+                strategy.performance_score = score
+                strategy.updated_at = datetime.utcnow()
+                session.commit()
+                return True
+            return False
+        finally:
+            session.close()
+
+    def increment_strategy_usage(self, strategy_id: int) -> bool:
+        """Increment usage count for a strategy."""
+        session = self.get_session()
+        try:
+            strategy = session.query(StrategyModel).filter_by(id=strategy_id).first()
+            if strategy:
+                strategy.usage_count += 1
+                strategy.updated_at = datetime.utcnow()
+                session.commit()
+                return True
+            return False
+        finally:
+            session.close()
+
+    # ===== STRATEGY PERFORMANCE TRACKING (Phase 20 Task 21) =====
+
+    def record_performance(self, perf_data: Dict[str, Any]) -> int:
+        """Record a strategy execution performance."""
+        session = self.get_session()
+        try:
+            perf = StrategyPerformance(
+                strategy_id=perf_data.get("strategy_id"),
+                part_name=perf_data.get("part_name"),
+                validation_passed=perf_data.get("validation_passed", False),
+                error_count=perf_data.get("error_count", 0),
+                errors_json=perf_data.get("errors_json"),
+                execution_time=perf_data.get("execution_time"),
+                user_rating=perf_data.get("user_rating"),
+                notes=perf_data.get("notes"),
+            )
+            session.add(perf)
+            session.commit()
+
+            # Update strategy score
+            self._recalculate_strategy_score(session, perf_data.get("strategy_id"))
+
+            return perf.id
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Failed to record performance: {e}")
+            raise
+        finally:
+            session.close()
+
+    def get_strategy_performance(
+        self,
+        strategy_id: int,
+        days: int = 30
+    ) -> List[Dict]:
+        """Get performance records for a strategy."""
+        session = self.get_session()
+        try:
+            from datetime import timedelta
+            cutoff = datetime.utcnow() - timedelta(days=days)
+            records = (
+                session.query(StrategyPerformance)
+                .filter(StrategyPerformance.strategy_id == strategy_id)
+                .filter(StrategyPerformance.execution_date >= cutoff)
+                .order_by(StrategyPerformance.execution_date.desc())
+                .all()
+            )
+            return [self._to_dict(r) for r in records]
+        finally:
+            session.close()
+
+    def _recalculate_strategy_score(self, session, strategy_id: int):
+        """Recalculate strategy score based on recent performance."""
+        if not strategy_id:
+            return
+        from datetime import timedelta
+        cutoff = datetime.utcnow() - timedelta(days=30)
+        records = (
+            session.query(StrategyPerformance)
+            .filter(StrategyPerformance.strategy_id == strategy_id)
+            .filter(StrategyPerformance.execution_date >= cutoff)
+            .all()
+        )
+        if records:
+            passed = sum(1 for r in records if r.validation_passed)
+            score = (passed / len(records)) * 100
+            strategy = session.query(StrategyModel).filter_by(id=strategy_id).first()
+            if strategy:
+                strategy.performance_score = score
+                session.commit()
+
+    # ===== STRATEGY VERSIONING (Rollback Support) =====
+
+    def save_strategy_version(
+        self,
+        strategy_id: int,
+        version: int,
+        schema_json: Dict,
+        change_reason: str = None,
+        perf_before: float = None,
+        perf_after: float = None
+    ) -> int:
+        """Save a version snapshot for rollback."""
+        session = self.get_session()
+        try:
+            version_record = StrategyVersion(
+                strategy_id=strategy_id,
+                version=version,
+                schema_json=schema_json,
+                change_reason=change_reason,
+                performance_before=perf_before,
+                performance_after=perf_after,
+            )
+            session.add(version_record)
+            session.commit()
+            return version_record.id
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Failed to save strategy version: {e}")
+            raise
+        finally:
+            session.close()
+
+    def get_strategy_versions(self, strategy_id: int) -> List[Dict]:
+        """Get all versions of a strategy."""
+        session = self.get_session()
+        try:
+            versions = (
+                session.query(StrategyVersion)
+                .filter_by(strategy_id=strategy_id)
+                .order_by(StrategyVersion.version.desc())
+                .all()
+            )
+            return [self._to_dict(v) for v in versions]
+        finally:
+            session.close()
+
+    def rollback_strategy(self, strategy_id: int, to_version: int) -> bool:
+        """Rollback a strategy to a previous version."""
+        session = self.get_session()
+        try:
+            version = (
+                session.query(StrategyVersion)
+                .filter_by(strategy_id=strategy_id, version=to_version)
+                .first()
+            )
+            if version and version.schema_json:
+                strategy = session.query(StrategyModel).filter_by(id=strategy_id).first()
+                if strategy:
+                    strategy.schema_json = version.schema_json
+                    strategy.version = to_version
+                    strategy.updated_at = datetime.utcnow()
+                    session.commit()
+                    logger.info(f"Rolled back strategy {strategy_id} to version {to_version}")
+                    return True
+            return False
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Failed to rollback strategy: {e}")
+            raise
+        finally:
+            session.close()
+
+    def get_top_strategies(self, limit: int = 5, product_type: str = None) -> List[Dict]:
+        """Get top performing strategies."""
+        session = self.get_session()
+        try:
+            query = session.query(StrategyModel).filter(StrategyModel.is_experimental == False)
+            if product_type:
+                query = query.filter_by(product_type=product_type)
+            strategies = (
+                query.order_by(StrategyModel.performance_score.desc())
+                .limit(limit)
+                .all()
+            )
+            return [self._to_dict(s) for s in strategies]
+        finally:
+            session.close()
+
+    def get_low_performing_strategies(self, threshold: float = 50.0, min_usage: int = 3) -> List[Dict]:
+        """Get strategies with low performance scores (candidates for evolution)."""
+        session = self.get_session()
+        try:
+            strategies = (
+                session.query(StrategyModel)
+                .filter(StrategyModel.performance_score < threshold)
+                .filter(StrategyModel.usage_count >= min_usage)
+                .filter(StrategyModel.is_experimental == False)
+                .order_by(StrategyModel.performance_score.asc())
+                .all()
+            )
+            return [self._to_dict(s) for s in strategies]
+        finally:
+            session.close()
 
 
 # Singleton

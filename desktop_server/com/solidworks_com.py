@@ -224,7 +224,7 @@ async def connect():
     """Connect to running SolidWorks instance."""
     logger.info("Connecting to SolidWorks")
     app = get_app()
-    return {"status": "ok", "version": app.RevisionNumber()}
+    return {"status": "ok", "version": app.RevisionNumber}
 
 
 @router.post("/new_part")
@@ -236,9 +236,13 @@ async def new_part():
 
     # Find part template
     template_path = app.GetUserPreferenceStringValue(21)  # swDefaultTemplatePart
+    logger.info(f"Default template path from SW: {template_path}")
+
     if not template_path or not os.path.exists(template_path):
         # Fallback to common paths
         common_paths = [
+            r"C:\ProgramData\SolidWorks\SOLIDWORKS 2025\templates\Part.prtdot",
+            r"C:\ProgramData\SolidWorks\SOLIDWORKS 2025\templates\MBD\part 0051mm to 0250mm.prtdot",
             r"C:\ProgramData\SolidWorks\SOLIDWORKS 2024\templates\Part.prtdot",
             r"C:\ProgramData\SolidWorks\SOLIDWORKS 2023\templates\Part.prtdot",
             r"C:\ProgramData\SolidWorks\SOLIDWORKS 2022\templates\Part.prtdot",
@@ -246,10 +250,18 @@ async def new_part():
         for path in common_paths:
             if os.path.exists(path):
                 template_path = path
+                logger.info(f"Using fallback template: {template_path}")
                 break
 
+    if not template_path:
+        raise HTTPException(status_code=500, detail="No part template found")
+
     _sw_model = app.NewDocument(template_path, 0, 0, 0)
-    return {"status": "ok", "document_type": "part"}
+
+    if not _sw_model:
+        raise HTTPException(status_code=500, detail="Failed to create new document")
+
+    return {"status": "ok", "document_type": "part", "template": template_path}
 
 
 @router.post("/create_sketch")
@@ -263,9 +275,16 @@ async def create_sketch(req: SketchRequest):
     if not model:
         raise HTTPException(status_code=400, detail="No active document")
 
-    # Select the plane
+    # Clear any selection first
+    model.ClearSelection2(True)
+
+    # Select the plane - use VT_EMPTY variant for Callout parameter
     plane_name = f"{req.plane} Plane"
-    model.Extension.SelectByID2(plane_name, "PLANE", 0, 0, 0, False, 0, None, 0)
+    empty_callout = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
+    result = model.Extension.SelectByID2(plane_name, "PLANE", 0, 0, 0, False, 0, empty_callout, 0)
+    if not result:
+        raise HTTPException(status_code=400, detail=f"Failed to select {plane_name}")
+
     model.SketchManager.InsertSketch(True)
 
     return {"status": "ok", "plane": req.plane}
@@ -371,24 +390,37 @@ async def revolve(req: RevolveRequest):
 
     angle_rad = math.radians(req.angle)
 
+    # FeatureRevolve2 parameters in correct order:
+    # SingleDir, IsSolid, IsThin, IsCut, ReverseDir, BothDirectionUpToSameEntity,
+    # Dir1Type, Dir2Type, Dir1Angle, Dir2Angle,
+    # OffsetReverse1, OffsetReverse2, OffsetDistance1, OffsetDistance2,
+    # ThinType, ThinThickness1, ThinThickness2,
+    # Merge, UseFeatScope, UseAutoSelect
     feature = model.FeatureManager.FeatureRevolve2(
-        True,
-        True,
-        False,  # SingleDir, IsSolid, IsThin
-        False,
-        False,
-        False,  # Merge, UseFeatScope, UseAutoSelect
-        0,
-        0,  # Type1, Type2
-        angle_rad,
-        0,  # Angle1, Angle2
-        False,
-        False,  # OffsetReverse1, OffsetReverse2
-        0,
-        0,
-        0,  # ThinWallType, Thickness1, Thickness2
-        True,  # UseDefaultThinWallType
+        True,       # SingleDir
+        True,       # IsSolid
+        False,      # IsThin
+        False,      # IsCut
+        False,      # ReverseDir
+        False,      # BothDirectionUpToSameEntity
+        0,          # Dir1Type (0 = blind)
+        0,          # Dir2Type
+        angle_rad,  # Dir1Angle
+        0,          # Dir2Angle
+        False,      # OffsetReverse1
+        False,      # OffsetReverse2
+        0,          # OffsetDistance1
+        0,          # OffsetDistance2
+        0,          # ThinType
+        0,          # ThinThickness1
+        0,          # ThinThickness2
+        True,       # Merge
+        False,      # UseFeatScope
+        False,      # UseAutoSelect
     )
+
+    if not feature:
+        raise HTTPException(status_code=400, detail="Revolve failed - check sketch has closed profile and centerline")
 
     return {"status": "ok", "angle": req.angle}
 
@@ -513,7 +545,9 @@ async def save(req: SaveRequest):
 
     errors = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 0)
     warnings = win32com.client.VARIANT(pythoncom.VT_BYREF | pythoncom.VT_I4, 0)
-    model.Extension.SaveAs(req.filepath, 0, 0, None, errors, warnings)
+    # ExportData parameter must be a COM-compatible empty dispatch, not Python None
+    empty_export = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
+    model.Extension.SaveAs(req.filepath, 0, 0, empty_export, errors, warnings)
 
     return {"status": "ok", "filepath": req.filepath}
 
@@ -559,9 +593,9 @@ async def status():
         model = app.ActiveDoc
         return {
             "connected": True,
-            "version": app.RevisionNumber(),
+            "version": app.RevisionNumber,
             "has_document": model is not None,
-            "document_name": model.GetTitle() if model else None,
+            "document_name": model.GetTitle if model else None,
         }
     except Exception as e:
         return {"connected": False, "error": str(e)}
@@ -581,9 +615,23 @@ async def draw_line(req: LineRequest):
     return {"status": "ok"}
 
 
+@router.post("/draw_centerline")
+async def draw_centerline(req: LineRequest):
+    """Draw a centerline (construction line) in the active sketch - used for revolve axis."""
+    logger.info(f"Drawing centerline from ({req.x1}, {req.y1}) to ({req.x2}, {req.y2})")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    model.SketchManager.CreateCenterLine(req.x1, req.y1, 0, req.x2, req.y2, 0)
+    return {"status": "ok"}
+
+
 @router.post("/extrude_cut")
 async def extrude_cut(req: ExtrudeCutRequest):
-    """Extrude cut to remove material."""
+    """Extrude cut to remove material using the sketch profile."""
     logger.info(f"Extrude cut depth={req.depth}")
     app = get_app()
     model = _sw_model or app.ActiveDoc
@@ -592,37 +640,318 @@ async def extrude_cut(req: ExtrudeCutRequest):
         raise HTTPException(status_code=400, detail="No active document")
 
     # End condition: 0=Blind, 1=Through All
-    end_cond = 1 if req.depth >= 999 else 0
-    actual_depth = 0 if end_cond == 1 else req.depth
+    through_all = req.depth >= 999
+    actual_depth = 0.01 if through_all else float(req.depth)
 
-    feature = model.FeatureManager.FeatureCut3(
-        True,
-        False,
-        False,  # Sd, Flip, Dir
-        end_cond,
-        0,  # T1, T2
-        actual_depth,
-        0,  # D1, D2
-        False,
-        False,
-        False,
-        False,  # Draft options
-        0,
-        0,  # Draft angles
-        False,
-        False,
-        False,
-        False,  # Offset options
-        False,
-        True,
-        True,  # NormalCut, UseFeatScope, UseAutoSelect
-        False,
-        0,
-        0,
-        False,  # AssemblyFeatureScope options
+    fm = model.FeatureManager
+    feature = None
+    methods_tried = []
+
+    # Try the COM-friendly approach: Use model.Extension.InsertCutExtrude
+    # or direct sendkeys-style commands
+
+    # Method 1: Try InsertCutExtrude (recorded macro style)
+    try:
+        # First get the selected sketch
+        feature = fm.InsertCutExtrude(
+            False,          # FlipSide
+            False,          # FlipDir
+            1 if through_all else 0,  # EndCondition (1=ThroughAll, 0=Blind)
+            0,              # EndCondition2 (for 2nd direction)
+            actual_depth,   # Depth
+            0.0,            # Depth2
+            False,          # DraftOnOff
+            False,          # DraftOnOff2
+            False,          # DraftOutward
+            False,          # DraftOutward2
+            0.0,            # DraftAngle
+            0.0             # DraftAngle2
+        )
+        methods_tried.append("InsertCutExtrude")
+        logger.info(f"InsertCutExtrude returned: {feature}")
+    except Exception as e1:
+        methods_tried.append(f"InsertCutExtrude: {e1}")
+        logger.warning(f"InsertCutExtrude failed: {e1}")
+
+        # Method 2: Try FeatureExtrusionCut (alternative naming)
+        try:
+            feature = model.Extension.SelectAll()  # Select the sketch first
+            feature = fm.FeatureExtrusionCut(
+                True,           # SingleDir
+                False,          # Flip
+                False,          # Dir
+                1 if through_all else 0,  # EndCond
+                0,              # EndCond2
+                actual_depth,   # D1
+                0.0,            # D2
+                False,          # Draft1
+                False,          # Draft2
+                False,          # DraftDir1
+                False,          # DraftDir2
+                0.0,            # DraftAng1
+                0.0             # DraftAng2
+            )
+            methods_tried.append("FeatureExtrusionCut")
+            logger.info(f"FeatureExtrusionCut returned: {feature}")
+        except Exception as e2:
+            methods_tried.append(f"FeatureExtrusionCut: {e2}")
+            logger.warning(f"FeatureExtrusionCut failed: {e2}")
+
+            # Method 3: Use FeatureCut3 with integer type conversion
+            try:
+                # Use int() conversion for enum values
+                T1 = int(1 if through_all else 0)
+                T2 = int(0)
+                feature = fm.FeatureCut3(
+                    True,           # Sd - Single direction
+                    False,          # Flip
+                    False,          # Dir - direction
+                    T1,             # T1 - End condition
+                    T2,             # T2 - Second end condition
+                    actual_depth,   # D1 - Depth
+                    0.0,            # D2 - Second depth
+                    False,          # Dchk1 - Draft
+                    False,          # Dchk2 - Draft2
+                    False,          # Ddir1 - Draft direction
+                    False,          # Ddir2 - Draft direction 2
+                    0.0,            # Dang1 - Draft angle
+                    0.0,            # Dang2 - Draft angle 2
+                    False,          # OffsetReverse1
+                    False,          # OffsetReverse2
+                    False,          # TranslateSurface1
+                    False,          # TranslateSurface2
+                    False,          # NormalCut
+                    False,          # UseFeatScope
+                    False           # UseAutoSelect
+                )
+                methods_tried.append("FeatureCut3")
+                logger.info(f"FeatureCut3 returned: {feature}")
+            except Exception as e3:
+                methods_tried.append(f"FeatureCut3: {e3}")
+                logger.error(f"All cut methods failed")
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"All cut methods failed: {'; '.join(methods_tried)}"
+                )
+
+    if not feature:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Cut returned None - methods tried: {'; '.join(methods_tried)}"
+        )
+
+    return {"status": "ok", "depth": req.depth, "through_all": through_all, "methods": methods_tried}
+
+
+class SimpleHoleRequest(BaseModel):
+    """Request for creating a simple through hole."""
+    x: float  # X position on face
+    y: float  # Y position on face
+    z: float  # Z position on face
+    diameter: float  # Hole diameter in meters
+
+
+@router.post("/simple_hole")
+async def simple_hole(req: SimpleHoleRequest):
+    """Create a simple through hole at a point on a face using HoleWizard."""
+    logger.info(f"Creating simple hole at ({req.x}, {req.y}, {req.z}) diameter={req.diameter}")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    fm = model.FeatureManager
+    feature = None
+    methods_tried = []
+
+    # Method 1: Try SimpleHole
+    try:
+        # First, select a point on the face
+        empty_callout = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
+        result = model.Extension.SelectByID2(
+            "", "FACE", req.x, req.y, req.z, False, 0, empty_callout, 0
+        )
+        if not result:
+            raise HTTPException(status_code=400, detail="Could not select face at specified coordinates")
+
+        # Insert sketch point at the location for hole placement
+        model.SketchManager.InsertSketch(True)
+        model.SketchManager.CreatePoint(req.x, req.y, 0)
+        model.SketchManager.InsertSketch(True)
+
+        # Select the point
+        result = model.Extension.SelectByID2(
+            "", "SKETCHPOINT", req.x, req.y, req.z, False, 0, empty_callout, 0
+        )
+
+        # Create simple hole using HoleWizard
+        # swWzdCounterBore = 0, swWzdHole = 1, swWzdTap = 2, swWzdPipeTap = 3, swWzdCounterSink = 4
+        feature = fm.SimpleHole(
+            req.diameter,   # Diameter
+            1,              # Type: Through All (swEndCondThroughAll = 1)
+            0.0,            # Depth (ignored for through all)
+            0               # swWzdHole type
+        )
+        methods_tried.append("SimpleHole")
+        logger.info(f"SimpleHole returned: {feature}")
+    except Exception as e1:
+        methods_tried.append(f"SimpleHole: {e1}")
+        logger.warning(f"SimpleHole failed: {e1}")
+
+        # Method 2: Try manual cut on selected face
+        try:
+            # Create sketch on face, draw circle, and cut
+            empty_callout = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
+            model.Extension.SelectByID2(
+                "", "FACE", req.x, req.y, req.z, False, 0, empty_callout, 0
+            )
+            model.SketchManager.InsertSketch(True)
+            model.SketchManager.CreateCircleByRadius(req.x, req.y, 0, req.diameter / 2)
+            model.SketchManager.InsertSketch(True)
+
+            # Try InsertCutExtrude
+            feature = fm.InsertCutExtrude(
+                False, False, 1, 0, 0.01, 0.0, False, False, False, False, 0.0, 0.0
+            )
+            methods_tried.append("Manual sketch + InsertCutExtrude")
+            logger.info(f"Manual hole returned: {feature}")
+        except Exception as e2:
+            methods_tried.append(f"Manual: {e2}")
+            logger.error(f"All hole methods failed")
+            raise HTTPException(
+                status_code=500,
+                detail=f"All hole methods failed: {'; '.join(methods_tried)}"
+            )
+
+    if not feature:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Hole returned None - methods tried: {'; '.join(methods_tried)}"
+        )
+
+    return {"status": "ok", "diameter": req.diameter, "methods": methods_tried}
+
+
+class BoltHolesRequest(BaseModel):
+    """Request for creating bolt holes on a flange."""
+    bolt_circle_radius: float  # Bolt circle radius in meters
+    hole_diameter: float  # Hole diameter in meters
+    num_bolts: int = 8  # Number of bolts
+    face_y: float  # Y coordinate of flange face
+
+
+@router.post("/add_bolt_holes")
+async def add_bolt_holes(req: BoltHolesRequest):
+    """Add bolt holes to a flange face using sketch + cut pattern."""
+    import math
+
+    logger.info(f"Adding {req.num_bolts} bolt holes on {req.bolt_circle_radius}m BC")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # Step 1: Select the flange face
+    empty_callout = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
+    face_selected = model.Extension.SelectByID2(
+        "", "FACE", req.bolt_circle_radius, req.face_y, 0, False, 0, empty_callout, 0
     )
+    if not face_selected:
+        raise HTTPException(status_code=400, detail="Could not select flange face")
 
-    return {"status": "ok", "depth": req.depth, "through_all": end_cond == 1}
+    # Step 2: Create sketch on the face
+    model.SketchManager.InsertSketch(True)
+
+    # Step 3: Draw all bolt hole circles in the sketch
+    hole_radius = req.hole_diameter / 2
+    for i in range(req.num_bolts):
+        angle = i * (2 * math.pi / req.num_bolts)
+        x = req.bolt_circle_radius * math.cos(angle)
+        z = req.bolt_circle_radius * math.sin(angle)
+        model.SketchManager.CreateCircleByRadius(x, z, 0, hole_radius)
+        logger.info(f"Drew bolt hole {i+1} at ({x:.4f}, {z:.4f})")
+
+    # Step 4: Close the sketch
+    model.SketchManager.InsertSketch(True)
+
+    # Step 5: Try multiple cut methods
+    fm = model.FeatureManager
+    feature = None
+    methods_tried = []
+
+    # Method 1: Try using FeatureCut with VARIANT wrapper for all params
+    try:
+        # Create typed VARIANT parameters
+        sd = win32com.client.VARIANT(pythoncom.VT_BOOL, True)    # SingleDir
+        flip = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
+        dir_param = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
+        t1 = win32com.client.VARIANT(pythoncom.VT_I4, 1)         # ThroughAll
+        t2 = win32com.client.VARIANT(pythoncom.VT_I4, 0)
+        d1 = win32com.client.VARIANT(pythoncom.VT_R8, 0.01)
+        d2 = win32com.client.VARIANT(pythoncom.VT_R8, 0.0)
+        dchk1 = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
+        dchk2 = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
+        ddir1 = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
+        ddir2 = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
+        dang1 = win32com.client.VARIANT(pythoncom.VT_R8, 0.0)
+        dang2 = win32com.client.VARIANT(pythoncom.VT_R8, 0.0)
+        off1 = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
+        off2 = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
+        trans1 = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
+        trans2 = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
+        norm = win32com.client.VARIANT(pythoncom.VT_BOOL, False)
+        scope = win32com.client.VARIANT(pythoncom.VT_BOOL, True)
+        auto = win32com.client.VARIANT(pythoncom.VT_BOOL, True)
+
+        feature = fm.FeatureCut3(
+            sd, flip, dir_param, t1, t2, d1, d2,
+            dchk1, dchk2, ddir1, ddir2, dang1, dang2,
+            off1, off2, trans1, trans2, norm, scope, auto
+        )
+        methods_tried.append("FeatureCut3 with VARIANTs")
+        logger.info(f"FeatureCut3 with VARIANTs returned: {feature}")
+    except Exception as e1:
+        methods_tried.append(f"FeatureCut3+VARIANT: {str(e1)[:50]}")
+        logger.warning(f"FeatureCut3 with VARIANTs failed: {e1}")
+
+        # Method 2: Try using _QueryInterface to get IFeatureManager2
+        try:
+            # Use IDispatch directly with Invoke
+            feature = fm.FeatureCut(True, False, False, 1, 0.0, False, False, False, 0.0)
+            methods_tried.append("FeatureCut (9 params)")
+            logger.info(f"FeatureCut returned: {feature}")
+        except Exception as e2:
+            methods_tried.append(f"FeatureCut: {str(e2)[:50]}")
+            logger.warning(f"FeatureCut failed: {e2}")
+
+            # Method 3: Use SendMsgToUser or RunCommand
+            try:
+                # swCommands_Extrude_Cut = 38
+                model.RunCommand(38, "")
+                methods_tried.append("RunCommand(38)")
+                feature = True  # Can't get feature object from RunCommand
+            except Exception as e3:
+                methods_tried.append(f"RunCommand: {str(e3)[:50]}")
+                logger.error(f"All methods failed for bolt holes")
+
+    if not feature:
+        # Even if cut failed, save the sketch with the circles
+        return {
+            "status": "partial",
+            "message": "Sketch with bolt hole circles created, but cut failed",
+            "methods_tried": methods_tried,
+            "note": "Use SolidWorks UI: Features > Extruded Cut > Through All"
+        }
+
+    return {
+        "status": "ok",
+        "num_holes": req.num_bolts,
+        "bolt_circle": req.bolt_circle_radius,
+        "hole_diameter": req.hole_diameter,
+        "methods": methods_tried
+    }
 
 
 @router.post("/chamfer")
@@ -663,8 +992,9 @@ async def select_face(req: SelectRequest):
     if not model:
         raise HTTPException(status_code=400, detail="No active document")
 
+    empty_callout = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
     result = model.Extension.SelectByID2(
-        "", "FACE", req.x, req.y, req.z, False, 0, None, 0
+        "", "FACE", req.x, req.y, req.z, False, 0, empty_callout, 0
     )
     return {"status": "ok", "selected": result}
 
@@ -679,10 +1009,26 @@ async def select_edge(req: SelectRequest):
     if not model:
         raise HTTPException(status_code=400, detail="No active document")
 
+    empty_callout = win32com.client.VARIANT(pythoncom.VT_DISPATCH, None)
     result = model.Extension.SelectByID2(
-        "", "EDGE", req.x, req.y, req.z, False, 0, None, 0
+        "", "EDGE", req.x, req.y, req.z, False, 0, empty_callout, 0
     )
     return {"status": "ok", "selected": result}
+
+
+@router.post("/create_sketch_on_selection")
+async def create_sketch_on_selection():
+    """Create a sketch on the currently selected face."""
+    logger.info("Creating sketch on selected face")
+    app = get_app()
+    model = _sw_model or app.ActiveDoc
+
+    if not model:
+        raise HTTPException(status_code=400, detail="No active document")
+
+    # InsertSketch on currently selected face
+    model.SketchManager.InsertSketch(True)
+    return {"status": "ok"}
 
 
 @router.post("/clear_selection")

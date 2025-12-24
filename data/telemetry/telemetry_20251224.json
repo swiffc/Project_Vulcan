@@ -1,0 +1,71 @@
+{
+  "date": "2025-12-24",
+  "calls": [
+    {
+      "timestamp": "2025-12-24T17:08:25.030406",
+      "model": "claude-sonnet-4-20250514",
+      "endpoint": "/api/chat",
+      "input_tokens": 1000,
+      "output_tokens": 500,
+      "latency_ms": 1500.0,
+      "success": true,
+      "error": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-24T17:09:56.857407",
+      "model": "claude-sonnet-4-20250514",
+      "endpoint": "/api/chat",
+      "input_tokens": 1000,
+      "output_tokens": 500,
+      "latency_ms": 1500.0,
+      "success": true,
+      "error": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-24T17:15:24.271280",
+      "model": "claude-sonnet-4-20250514",
+      "endpoint": "/api/chat",
+      "input_tokens": 1000,
+      "output_tokens": 500,
+      "latency_ms": 1500.0,
+      "success": true,
+      "error": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-24T17:19:25.529069",
+      "model": "claude-sonnet-4-20250514",
+      "endpoint": "/api/chat",
+      "input_tokens": 1000,
+      "output_tokens": 500,
+      "latency_ms": 1500.0,
+      "success": true,
+      "error": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-24T17:22:30.227451",
+      "model": "claude-sonnet-4-20250514",
+      "endpoint": "/api/chat",
+      "input_tokens": 1000,
+      "output_tokens": 500,
+      "latency_ms": 1500.0,
+      "success": true,
+      "error": null,
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-24T17:37:48.653667",
+      "model": "claude-sonnet-4-20250514",
+      "endpoint": "/api/chat",
+      "input_tokens": 1000,
+      "output_tokens": 500,
+      "latency_ms": 1500.0,
+      "success": true,
+      "error": null,
+      "metadata": {}
+    }
+  ]
+}
