@@ -19,8 +19,15 @@
 | Phase 19 (Foundation) | 24/25 | 1 (blocked) | 96% |
 | Phase 20 (Strategy System) | 12/12 | 0 | 100% |
 | Phase 21 (Enhancements) | 12/12 | 0 | 100% |
+| Phase 22 (CAD Events) | 0/3 | 3 | 0% |
 
-**Current Focus**: Phase 21 - Enhanced CAD Validation & Testing
+**Current Focus**: Phase 22 - Active CAD Event Listening
+
+## Phase 22: Active CAD Event Listening (WIP)
+
+- [x] Implement COM Event Listener (`desktop_server/com/events.py`)
+- [x] Create Event Stream Endpoint (`/api/solidworks/events`)
+- [ ] Connect Orchestrator to Desktop Events
 
 ---
 

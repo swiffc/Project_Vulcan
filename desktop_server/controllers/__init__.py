@@ -63,6 +63,8 @@ __all__ = [
     "BROWSER_AVAILABLE",
     "j2_tracker_router",
     "J2_AVAILABLE",
+    "events_router",
+    "EVENTS_AVAILABLE",
     "memory_router",
     "MEMORY_AVAILABLE",
     "cad_validation_router",

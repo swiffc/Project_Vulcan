@@ -31,6 +31,7 @@ from pathlib import Path
 try:
     import win32com.client
     import pythoncom
+
     COM_AVAILABLE = True
 except ImportError:
     COM_AVAILABLE = False
@@ -61,6 +62,8 @@ from controllers import (
     CAD_VALIDATION_AVAILABLE,
     recorder_router,
     verifier_router,
+    events_router,
+    EVENTS_AVAILABLE,
 )
 
 # Import CAD COM adapters (optional - only if CAD software is installed)
@@ -327,6 +330,11 @@ if CAD_AVAILABLE:
     if solidworks_mate_refs_router:
         app.include_router(solidworks_mate_refs_router)
     logger.info("CAD COM adapters loaded")
+
+# Include Events router if available
+if EVENTS_AVAILABLE:
+    app.include_router(events_router)
+    logger.info("Events controller loaded")
 
 # Include memory router if available
 if MEMORY_AVAILABLE:

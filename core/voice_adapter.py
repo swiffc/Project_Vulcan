@@ -18,6 +18,7 @@ logger = logging.getLogger("core.voice")
 @dataclass
 class TranscriptionResult:
     """Result from voice transcription."""
+
     text: str
     language: str
     confidence: float
@@ -50,16 +51,20 @@ class VoiceAdapter:
         if self._model is None:
             try:
                 import whisper
+
                 self._model = whisper.load_model("base")
                 logger.info("Loaded local Whisper model")
             except ImportError:
-                raise RuntimeError("whisper not installed. Run: pip install openai-whisper")
+                raise RuntimeError(
+                    "whisper not installed. Run: pip install openai-whisper"
+                )
 
     def _init_api(self):
         """Lazy load OpenAI client."""
         if self._client is None:
             try:
                 from openai import OpenAI
+
                 self._client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
                 logger.info("Initialized OpenAI Whisper API client")
             except ImportError:
@@ -94,7 +99,7 @@ class VoiceAdapter:
             text=result["text"].strip(),
             language=result.get("language", "en"),
             confidence=1.0,  # Local model doesn't provide confidence
-            duration_seconds=result.get("duration", 0.0)
+            duration_seconds=result.get("duration", 0.0),
         )
 
     async def _transcribe_api(self, path: Path) -> TranscriptionResult:
@@ -103,22 +108,18 @@ class VoiceAdapter:
 
         with open(path, "rb") as audio_file:
             response = self._client.audio.transcriptions.create(
-                model="whisper-1",
-                file=audio_file,
-                response_format="verbose_json"
+                model="whisper-1", file=audio_file, response_format="verbose_json"
             )
 
         return TranscriptionResult(
             text=response.text.strip(),
             language=getattr(response, "language", "en"),
             confidence=1.0,
-            duration_seconds=getattr(response, "duration", 0.0)
+            duration_seconds=getattr(response, "duration", 0.0),
         )
 
     async def record_and_transcribe(
-        self,
-        duration_seconds: int = 5,
-        sample_rate: int = 16000
+        self, duration_seconds: int = 5, sample_rate: int = 16000
     ) -> TranscriptionResult:
         """
         Record from microphone and transcribe.
@@ -146,7 +147,7 @@ class VoiceAdapter:
             int(duration_seconds * sample_rate),
             samplerate=sample_rate,
             channels=1,
-            dtype="float32"
+            dtype="float32",
         )
         sd.wait()
 
@@ -162,17 +163,39 @@ class VoiceAdapter:
             # Cleanup temp file
             Path(temp_path).unlink(missing_ok=True)
 
-    def parse_command(self, text: str) -> Dict[str, Any]:
+    def parse_command(
+        self, text: str, context: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
         """
         Parse transcribed text into command structure.
 
         Args:
             text: Transcribed voice input
+            context: Optional context from desktop events (e.g. selected part)
 
         Returns:
             Dict with intent and parameters.
         """
         text_lower = text.lower().strip()
+
+        # Context-Aware CAD Commands
+        if context and context.get("event_type") == "selection":
+            features = context.get("features", [])
+            if features:
+                # User is talking about the selected item
+                if any(
+                    kw in text_lower
+                    for kw in ["explain", "what is this", "tell me about"]
+                ):
+                    return {
+                        "intent": "cad_explain_selection",
+                        "features": features,
+                        "query": text,
+                    }
+                if any(kw in text_lower for kw in ["measure", "dimension", "size"]):
+                    return {"intent": "cad_measure_selection", "features": features}
+                if any(kw in text_lower for kw in ["validate", "check", "standard"]):
+                    return {"intent": "cad_validate_selection", "features": features}
 
         # Trading commands
         if any(kw in text_lower for kw in ["analyze", "analysis", "chart"]):
@@ -182,7 +205,7 @@ class VoiceAdapter:
         if any(kw in text_lower for kw in ["journal", "log trade", "record"]):
             return {"intent": "trading_journal", "raw": text}
 
-        # CAD commands
+        # CAD commands (General)
         if any(kw in text_lower for kw in ["create", "build", "model", "sketch"]):
             return {"intent": "cad_create", "raw": text}
 
@@ -202,8 +225,14 @@ class VoiceAdapter:
     def _extract_pair(self, text: str) -> Optional[str]:
         """Extract currency pair from text."""
         pairs = [
-            "eurusd", "gbpusd", "usdjpy", "gbpjpy",
-            "eurjpy", "audusd", "usdcad", "nzdusd"
+            "eurusd",
+            "gbpusd",
+            "usdjpy",
+            "gbpjpy",
+            "eurjpy",
+            "audusd",
+            "usdcad",
+            "nzdusd",
         ]
         for pair in pairs:
             if pair in text.replace(" ", "").replace("/", ""):

@@ -12,3 +12,4 @@
 {"timestamp": "2025-12-24T17:22:31.964330", "action": "create", "category": "strategy", "user": "system", "resource": "strategy:1", "details": {}, "success": true, "error": null, "ip_address": null, "session_id": null}
 {"timestamp": "2025-12-24T17:37:49.164532", "action": "GET /api/test", "category": "api", "user": "test_user", "resource": "/api/test", "details": {"method": "GET", "status_code": 200}, "success": true, "error": null, "ip_address": null, "session_id": null}
 {"timestamp": "2025-12-24T17:37:49.168069", "action": "create", "category": "strategy", "user": "system", "resource": "strategy:1", "details": {}, "success": true, "error": null, "ip_address": null, "session_id": null}
+{"timestamp": "2025-12-24T17:44:42.637685", "action": "GET /api/strategies", "category": "api", "user": "api_user", "resource": "/api/strategies", "details": {"method": "GET", "status_code": 200}, "success": true, "error": null, "ip_address": null, "session_id": null}
