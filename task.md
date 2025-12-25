@@ -217,11 +217,10 @@ PDF Input
     ▼
 ┌─────────────────────────────────────────────────────┐
 │  Standards Database (data/standards/)               │
-│  - api_661_data.json (existing - enhanced)          │
-│  - materials.json (existing - used)                 │
-│  - asme_flanges_b16_5.json (existing)               │
-│  - aws_d1_1_welds.json (PENDING)                    │
-│  - osha_1910.json (PENDING)                         │
+│  - api_661_data.json ✅ (existing - used)           │
+│  - materials.json ✅ (existing - used)              │
+│  - asme_flanges_b16_5.json ✅ (existing)            │
+│  - Standards embedded in validators ✅              │
 └─────────────────────────────────────────────────────┘
     │
     ▼
@@ -234,9 +233,11 @@ PDF Input
     │
     ▼
 ┌─────────────────────────────────────────────────────┐
-│  Report Generator (PENDING)                         │
-│  - validation_report.py                             │
-│  - error_annotator.py (mark up PDF)                 │
+│  Report Generator                                   │
+│  - to_dict() ✅ JSON output                         │
+│  - generate_report_summary() ✅ Text report         │
+│  - PDF annotation (PENDING)                         │
+│  - Excel export (PENDING)                           │
 └─────────────────────────────────────────────────────┘
 ```
 
