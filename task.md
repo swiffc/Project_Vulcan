@@ -207,11 +207,11 @@ PDF Input
 │  - api_661_validator.py ✅ (12 checks)              │
 │  - asme_validator.py ✅ (10 checks)                 │
 │  - aws_d1_1_validator.py ✅ (10 checks)             │
+│  - osha_validator.py ✅ (8 checks)                  │
+│  - bom_validator.py ✅ (8 checks)                   │
+│  - dimension_validator.py ✅ (8 checks)             │
+│  - drawing_completeness_validator.py ✅ (10 checks) │
 │  - pdf_validation_engine.py ✅ (unified orchestrator)│
-│  - osha_validator.py (PENDING)                      │
-│  - bom_validator.py (PENDING)                       │
-│  - dimension_validator.py (PENDING)                 │
-│  - drawing_completeness_validator.py (PENDING)      │
 └─────────────────────────────────────────────────────┘
     │
     ▼
