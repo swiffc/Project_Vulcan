@@ -66,6 +66,17 @@ from controllers import (
     EVENTS_AVAILABLE,
 )
 
+# Import Phase 24 components
+try:
+    from watchers import get_watcher
+    from extractors import PropertiesExtractor, HolePatternExtractor
+    from analyzers import BendRadiusAnalyzer
+
+    PHASE24_AVAILABLE = True
+except ImportError:
+    PHASE24_AVAILABLE = False
+    logger.warning("Phase 24 components not available")
+
 # Import CAD COM adapters (optional - only if CAD software is installed)
 try:
     from com import (
@@ -251,7 +262,25 @@ async def lifespan(app: FastAPI):
     QUEUE_WORKER_TASK = asyncio.create_task(process_command_queue())
     logger.info("Background Queue Worker initialized")
 
+    # Start SolidWorks Watcher (Phase 24)
+    watcher_task = None
+    if PHASE24_AVAILABLE:
+        try:
+            watcher = get_watcher()
+            watcher_task = asyncio.create_task(watcher.start())
+            logger.info("SolidWorks watcher started (Phase 24)")
+        except Exception as e:
+            logger.warning(f"Could not start SolidWorks watcher: {e}")
+
     yield
+
+    # Cleanup watcher
+    if watcher_task:
+        try:
+            get_watcher().stop()
+            watcher_task.cancel()
+        except Exception:
+            pass
 
     # Cleanup
     if QUEUE_WORKER_TASK:
@@ -471,6 +500,19 @@ async def health():
     tailscale_ip = get_tailscale_ip()
     cad_status = check_cad_status()
 
+    # Get watcher state if available
+    watcher_state = None
+    if PHASE24_AVAILABLE:
+        try:
+            watcher = get_watcher()
+            watcher_state = {
+                "is_running": watcher.state.is_running,
+                "document_name": watcher.state.document_name,
+                "document_type": watcher.state.document_type.value,
+            }
+        except Exception:
+            pass
+
     return {
         "status": "ok" if not KILL_SWITCH_ACTIVE else "kill_switch_active",
         "tailscale_ip": tailscale_ip,
@@ -479,7 +521,98 @@ async def health():
         "solidworks": cad_status["solidworks"],
         "inventor": cad_status["inventor"],
         "queue_depth": COMMAND_QUEUE.qsize(),
+        "watcher": watcher_state,
     }
+
+
+# =============================================================================
+# Phase 24 Endpoints
+# =============================================================================
+
+
+@app.get("/phase24/model-overview")
+async def get_model_overview():
+    """Get comprehensive model overview (Phase 24.2)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        props_extractor = PropertiesExtractor()
+        holes_extractor = HolePatternExtractor()
+        bend_analyzer = BendRadiusAnalyzer()
+
+        return {
+            "properties": props_extractor.get_all_properties(),
+            "hole_analysis": holes_extractor.to_dict(),
+            "bend_analysis": bend_analyzer.to_dict(),
+        }
+    except Exception as e:
+        logger.error(f"Model overview error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase24/properties")
+async def get_properties():
+    """Get all properties from active document (Phase 24.3)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        extractor = PropertiesExtractor()
+        return extractor.get_all_properties()
+    except Exception as e:
+        logger.error(f"Properties extraction error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase24/hole-analysis")
+async def get_hole_analysis():
+    """Analyze hole patterns (Phase 24.7)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        extractor = HolePatternExtractor()
+        return extractor.to_dict()
+    except Exception as e:
+        logger.error(f"Hole analysis error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase24/bend-analysis")
+async def get_bend_analysis():
+    """Analyze sheet metal bends (Phase 24.6)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        analyzer = BendRadiusAnalyzer()
+        return analyzer.to_dict()
+    except Exception as e:
+        logger.error(f"Bend analysis error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase24/watcher-state")
+async def get_watcher_state():
+    """Get current SolidWorks watcher state (Phase 24.1)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        watcher = get_watcher()
+        state = watcher.state
+        return {
+            "is_running": state.is_running,
+            "process_id": state.process_id,
+            "document_path": state.document_path,
+            "document_name": state.document_name,
+            "document_type": state.document_type.value,
+            "last_change": state.last_change,
+        }
+    except Exception as e:
+        logger.error(f"Watcher state error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/kill")
