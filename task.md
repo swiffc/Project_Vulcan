@@ -426,64 +426,64 @@
 
 ---
 
-### 24.25 Louver System Analysis (20 tasks)
+### 24.25 Louver System Analysis (20 tasks) ✅
 
 #### Inlet Louvers (Below Bundle - Forced Draft)
-- [ ] Louver frame material (aluminum, galvanized steel)
-- [ ] Louver blade material (extruded aluminum typical)
-- [ ] Louver blade type (parallel action, opposed action)
-- [ ] Louver blade width and spacing
-- [ ] Louver frame dimensions
-- [ ] TFE/Teflon bushing verification
-- [ ] Torque tube diameter (2" typical)
+- [x] Louver frame material (aluminum, galvanized steel)
+- [x] Louver blade material (extruded aluminum typical)
+- [x] Louver blade type (parallel action, opposed action)
+- [x] Louver blade width and spacing
+- [x] Louver frame dimensions
+- [x] TFE/Teflon bushing verification
+- [x] Torque tube diameter (2" typical)
 
 #### Outlet Louvers (Above Bundle - Induced Draft)
-- [ ] Outlet louver location
-- [ ] Outlet louver sizing
-- [ ] Weather protection design
+- [x] Outlet louver location
+- [x] Outlet louver sizing
+- [x] Weather protection design
 
 #### Louver Actuators
-- [ ] Manual operator (spring-loaded)
-- [ ] Pneumatic actuator (diaphragm type)
-- [ ] Electric actuator (rotary)
-- [ ] Actuator linkage verification
-- [ ] Bolted connection (blade horn to actuator rod)
-- [ ] Clamp connection (linkage to torque tube)
-- [ ] Fail-safe position (open/closed)
-- [ ] Control signal (4-20mA, on/off, pneumatic)
-- [ ] Actuator enclosure rating (IP67, IP69K)
-- [ ] Position feedback verification
+- [x] Manual operator (spring-loaded)
+- [x] Pneumatic actuator (diaphragm type)
+- [x] Electric actuator (rotary)
+- [x] Actuator linkage verification
+- [x] Bolted connection (blade horn to actuator rod)
+- [x] Clamp connection (linkage to torque tube)
+- [x] Fail-safe position (open/closed)
+- [x] Control signal (4-20mA, on/off, pneumatic)
+- [x] Actuator enclosure rating (IP67, IP69K)
+- [x] Position feedback verification
 
 ---
 
-### 24.26 Screens &amp; Guards Analysis (18 tasks)
+### 24.26 Screens &amp; Guards Analysis (18 tasks) ✅
 
 #### Hail Guards
-- [ ] Hail guard material (galvanized steel, aluminum)
-- [ ] Hail guard mesh size/opening
-- [ ] Hail guard frame construction
-- [ ] Hail guard mounting method
-- [ ] Hail guard pressure drop allowance
-- [ ] Hail guard location (above bundle - induced draft)
+- [x] Hail guard material (galvanized steel, aluminum)
+- [x] Hail guard mesh size/opening
+- [x] Hail guard frame construction
+- [x] Hail guard mounting method
+- [x] Hail guard pressure drop allowance
+- [x] Hail guard location (above bundle - induced draft)
 
 #### Bug/Insect Screens
-- [ ] Bug screen material (stainless steel, aluminum mesh)
-- [ ] Bug screen mesh size (typically 16-20 mesh)
-- [ ] Bug screen frame construction
-- [ ] Bug screen mounting (removable for cleaning)
-- [ ] Bug screen pressure drop allowance (2× clean per API 661)
+- [x] Bug screen material (stainless steel, aluminum mesh)
+- [x] Bug screen mesh size (typically 16-20 mesh)
+- [x] Bug screen frame construction
+- [x] Bug screen mounting (removable for cleaning)
+- [x] Bug screen pressure drop allowance (2× clean per API 661)
 
 #### Lint/Cottonwood Screens
-- [ ] Lint screen material
-- [ ] Lint screen mesh size
-- [ ] Lint screen cleaning access
-- [ ] Lint screen pressure drop allowance
+- [x] Lint screen material
+- [x] Lint screen mesh size
+- [x] Lint screen cleaning access
+- [x] Lint screen pressure drop allowance
 
 #### Fan Guards
-- [ ] Fan guard material (aluminum, steel)
-- [ ] Fan guard design (OSHA compliant)
-- [ ] Fan guard opening size (personnel protection)
-- [ ] Fan guard mounting
+- [x] Fan guard material (aluminum, steel)
+- [x] Fan guard design (OSHA compliant)
+- [x] Fan guard opening size (personnel protection)
+- [x] Fan guard mounting
 
 ---
 
