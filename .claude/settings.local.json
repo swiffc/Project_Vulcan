@@ -64,7 +64,8 @@
       "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(xargs:*)",
-      "Bash(git fetch:*)"
+      "Bash(git fetch:*)",
+      "Bash(wc:*)"
     ]
   }
 }
