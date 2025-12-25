@@ -581,9 +581,76 @@ class OSHASafetyStandards:
 
 ---
 
-### 25.5-25.13 (Remaining sections same as original)
+### 25.5 Machining/Shaft Analysis (12 tasks)
 
-See original task.md for complete Phase 25 task breakdown.
+- [x] Diameter tolerances achievable ✅ shaft_validator.py
+- [x] Length tolerances specified ✅ shaft_validator.py
+- [x] Keyway dimensions per ANSI B17.1 ✅ shaft_validator.py
+- [x] Keyway angular location specified ✅ shaft_validator.py
+- [x] Surface finish Ra specified ✅ shaft_validator.py
+- [x] Runout/TIR specification ✅ shaft_validator.py
+- [x] Concentricity specification ✅ shaft_validator.py
+- [x] Retaining ring groove dimensions ✅ shaft_validator.py
+- [x] Chamfers on shaft ends ✅ shaft_validator.py
+- [ ] Heat treatment requirements
+- [ ] Thread callouts (UNC, UNF)
+- [ ] Thread engagement verification
+
+---
+
+### 25.6 Materials & Finishing (8 tasks)
+
+- [ ] Material specification complete (ASTM)
+- [ ] Material test reports required (MTR)
+- [ ] Surface preparation (SSPC-SP)
+- [ ] Coating system specified (DFT)
+- [ ] Touch-up paint requirements
+- [ ] Masking requirements
+- [ ] Special finishes (galvanizing, etc.)
+- [ ] Corrosion allowance
+
+---
+
+### 25.7 Hardware & Fasteners (10 tasks)
+
+- [ ] Bolt grade specification (A325, A490)
+- [ ] Bolt length verification
+- [ ] Nut type specification
+- [ ] Washer requirements (F436)
+- [ ] Thread engagement (min 1.5d)
+- [ ] Lock washer/prevailing torque
+- [ ] Torque specifications
+- [ ] Hardware BOM complete
+- [ ] Special fasteners noted
+- [ ] Anchor bolt specification
+
+---
+
+### 25.8 Handling & Erection (12 tasks)
+
+- [x] Lifting lugs provided (>500 lbs) ✅ handling_validator.py
+- [x] Lifting lug capacity adequate ✅ handling_validator.py
+- [x] Number of lifting lugs (min 2) ✅ handling_validator.py
+- [x] Center of gravity marked (>1000 lbs) ✅ handling_validator.py
+- [x] CG location dimensioned ✅ handling_validator.py
+- [x] Rigging diagram provided (>2000 lbs) ✅ handling_validator.py
+- [x] Shipping dimensions checked ✅ handling_validator.py
+- [x] Tie-down points shown ✅ handling_validator.py
+- [x] Shop vs field assembly scope ✅ handling_validator.py
+- [x] Match marks for field assembly ✅ handling_validator.py
+- [ ] Shimming/grouting requirements
+- [ ] Erection sequence notes
+
+---
+
+### 25.9-25.13 (Remaining sections)
+
+See original task.md for complete Phase 25 task breakdown covering:
+- 25.9 Inspection & QC
+- 25.10 Documentation
+- 25.11 Safety & Code
+- 25.12 Cross-Part Reference Analysis
+- 25.13 Report Generation
 
 ---
 
