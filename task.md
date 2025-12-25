@@ -292,8 +292,8 @@
 #### AWS D1.1 Checks (8 total)
 | # | Check | Reference | Current Status |
 |---|-------|-----------|----------------|
-| 1 | Min fillet weld size vs thickness | Table 5.8 | ⚠️ General note only |
-| 2 | Max fillet weld size at edge | Table 2.1 | ❌ MISSING |
+| 1 | Min fillet weld size vs thickness | Table 5.8 | ✅ structural_capacity_validator.py |
+| 2 | Max fillet weld size at edge | Table 2.1 | ✅ structural_capacity_validator.py |
 | 3 | Weld code referenced | - | ✅ Have |
 | 4 | Prequalified joint details | Figs 5.1-5.5 | ❌ MISSING |
 | 5 | Matching filler metal | Table 5.4 | ❌ MISSING |
@@ -371,6 +371,27 @@
 - `structural_capacity_validator.py` - Bolt shear/bearing, weld capacity, net section
 - `shaft_validator.py` - Tolerances, keyways (ANSI B17.1), surface finish, runout
 - `handling_validator.py` - Lifting lugs, CG, shipping dimensions, rigging
+
+---
+
+### Phase 25 API Endpoints (12 total)
+
+All endpoints available via `desktop_server/server.py`:
+
+| Endpoint | Validator | Status |
+|----------|-----------|--------|
+| `/phase25/validate-pdf` | PDFValidationEngine | ✅ Live |
+| `/phase25/check-api661` | API661Validator | ✅ Live |
+| `/phase25/check-asme` | ASMEValidator | ✅ Live |
+| `/phase25/check-holes` | AISCHoleValidator | ✅ NEW |
+| `/phase25/check-structural` | StructuralCapacityValidator | ✅ NEW |
+| `/phase25/check-shaft` | ShaftValidator | ✅ NEW |
+| `/phase25/check-handling` | HandlingValidator | ✅ NEW |
+| `/phase25/check-weld` | AWSD11Validator | ✅ NEW |
+| `/phase25/check-bom` | BOMValidator | ✅ NEW |
+| `/phase25/check-dimensions` | DimensionValidator | ✅ NEW |
+| `/phase25/check-osha` | OSHAValidator | ✅ NEW |
+| `/phase25/check-completeness` | DrawingCompletenessValidator | ✅ NEW |
 
 ---
 
