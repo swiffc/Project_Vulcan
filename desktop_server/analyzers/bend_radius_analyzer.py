@@ -333,18 +333,25 @@ class BendRadiusAnalyzer:
         return result
 
     def to_dict(self) -> Dict[str, Any]:
-        """Analyze and return results as dictionary."""
+        """Analyze and return results as dictionary (Phase 24.11)."""
         result = self.analyze()
         return {
             "total_bends": result.total_bends,
             "k_factor_used": result.k_factor_used,
             "grain_direction_warning": result.grain_direction_warning,
+            "total_bend_allowance_mm": round(result.total_bend_allowance_m * 1000, 3),
+            "total_bend_deduction_mm": round(result.total_bend_deduction_m * 1000, 3),
             "bends": [
                 {
                     "name": b.feature_name,
                     "radius_m": b.radius_m,
+                    "radius_mm": round(b.radius_m * 1000, 2),
                     "angle_deg": b.angle_deg,
                     "thickness_m": b.thickness_m,
+                    "bend_allowance_mm": round(b.bend_allowance_m * 1000, 3),
+                    "bend_deduction_mm": round(b.bend_deduction_m * 1000, 3),
+                    "springback_angle_deg": round(b.springback_angle_deg, 2),
+                    "sequence_order": b.sequence_order,
                 }
                 for b in result.bends
             ],
@@ -352,11 +359,15 @@ class BendRadiusAnalyzer:
                 {
                     "name": v.feature_name,
                     "actual_radius_m": v.actual_radius_m,
+                    "actual_radius_mm": round(v.actual_radius_m * 1000, 2),
                     "minimum_radius_m": v.minimum_radius_m,
+                    "minimum_radius_mm": round(v.minimum_radius_m * 1000, 2),
                     "material": v.material,
                     "suggested_radius_m": v.suggested_radius_m,
                 }
                 for v in result.violations
             ],
+            "recommended_sequence": result.recommended_sequence,
+            "springback_notes": result.springback_notes,
             "warnings": result.warnings,
         }

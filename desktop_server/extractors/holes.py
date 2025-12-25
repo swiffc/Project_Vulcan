@@ -39,12 +39,14 @@ class HolePattern:
 
 @dataclass
 class HoleAnalysisResult:
-    """Complete hole analysis for a document."""
+    """Complete hole analysis for a document (Phase 24.12)."""
     total_holes: int = 0
     patterns: List[HolePattern] = field(default_factory=list)
     edge_distance_violations: List[Dict] = field(default_factory=list)
     ligament_violations: List[Dict] = field(default_factory=list)
     alignment_issues: List[Dict] = field(default_factory=list)
+    bolt_circle_verification: List[Dict] = field(default_factory=list)
+    mating_hole_misalignments: List[Dict] = field(default_factory=list)
 
 
 class HolePatternExtractor:
