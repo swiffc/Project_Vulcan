@@ -13,11 +13,11 @@
 | Phase 19-23 (Foundation) | 57/58 | 1 (blocked) | 98% |
 | Phase 24 (ACHE Design Assistant) | 0/340 | 340 | 0% |
 | Phase 25 (Drawing Checker) | 68/150 | 82 | 45% |
-| **Standards Database** | **91/117** | **26** | **78%** |
+| **Standards Database** | **105/117** | **12** | **90%** |
 
 ---
 
-## Completed Validators (91/117 checks)
+## Completed Validators (105/117 checks)
 
 | Validator | Checks | Status |
 |-----------|--------|--------|
@@ -27,6 +27,8 @@
 | `osha_validator.py` | 12 | ✅ Complete |
 | `nema_motor_validator.py` | 5 | ✅ Complete |
 | `sspc_coating_validator.py` | 6 | ✅ Complete |
+| `asme_viii_validator.py` | 8 | ✅ Complete |
+| `tema_validator.py` | 6 | ✅ Complete |
 | `structural_capacity_validator.py` | - | ✅ Complete |
 | `shaft_validator.py` | - | ✅ Complete |
 | `handling_validator.py` | - | ✅ Complete |
@@ -35,33 +37,7 @@
 
 ---
 
-## Remaining Tasks (26 standards checks)
-
-### ASME VIII Pressure Vessel (8 checks) - NOT STARTED
-
-| # | Check | Reference | Priority |
-|---|-------|-----------|----------|
-| 1 | Minimum wall thickness calculation | UG-27 | High |
-| 2 | Nozzle reinforcement | UG-37 | High |
-| 3 | Flange rating verification | Appendix 2 | High |
-| 4 | Weld joint efficiency | UW-12 | Medium |
-| 5 | Hydrostatic test pressure | UG-99 | Medium |
-| 6 | MAWP calculation | UG-98 | Medium |
-| 7 | Corrosion allowance | UG-25 | Low |
-| 8 | Material traceability | UG-93 | Low |
-
-### TEMA Heat Exchanger (6 checks) - NOT STARTED
-
-| # | Check | Reference | Priority |
-|---|-------|-----------|----------|
-| 1 | Tubesheet thickness | RCB-7 | High |
-| 2 | Tube-to-tubesheet joint | RCB-7.4 | High |
-| 3 | Baffle spacing | RCB-4.5 | Medium |
-| 4 | Tube pitch | RCB-2.2 | Medium |
-| 5 | Shell-side velocity | - | Low |
-| 6 | Tube-side velocity | - | Low |
-
-### Other Gaps (12 checks)
+## Remaining Standards Gaps (12 checks)
 
 | Category | Missing Checks |
 |----------|----------------|
@@ -122,7 +98,7 @@ Major feature areas:
 
 ---
 
-## Quick Reference Tables (Keep)
+## Quick Reference Tables
 
 ### AISC J3.3 - Hole Dimensions
 | Bolt | Std | Oversized | Short-Slot | Long-Slot |
@@ -153,8 +129,23 @@ Major feature areas:
 | 10-11.5 ft | 1/4" | 5/8" |
 | >11.5 ft | 1/4" | 3/4" |
 
+### ASME VIII - Wall Thickness (UG-27)
+| Material | Max Allowable Stress (psi) at 650°F |
+|----------|-------------------------------------|
+| SA-516-70 | 17,500 |
+| SA-516-60 | 15,000 |
+| SA-240-304 | 15,600 |
+| SA-240-316 | 16,300 |
+
+### TEMA Tubesheet Thickness Factor
+| Class | Factor × Tube OD |
+|-------|------------------|
+| R (Petroleum) | 0.75 |
+| C (Commercial) | 0.625 |
+| B (Chemical) | 0.50 |
+
 ---
 
-**Next Priority**: Create ASME VIII and TEMA validators to reach 100% standards coverage
+**Next Priority**: Complete remaining 12 geometry/tolerance validators to reach 100% standards coverage
 
 **Last Updated**: Dec 25, 2025
