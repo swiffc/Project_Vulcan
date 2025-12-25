@@ -134,47 +134,47 @@
 
 ---
 
-### 24.7 Properties Extraction - Additional Properties (12 tasks)
+### 24.7 Properties Extraction - Additional Properties (12 tasks) ✅
 
 #### Structural Data
-- [ ] Tube Sheet Material
-- [ ] Tube Sheet Thickness
-- [ ] Tube-to-Tubesheet Joint Type (rolled, welded, strength welded)
-- [ ] Side Frame Material
-- [ ] Tube Support Material
-- [ ] Tube Support Quantity
-- [ ] Tube Support Spacing (max 1.83m per API 661)
+- [x] Tube Sheet Material
+- [x] Tube Sheet Thickness
+- [x] Tube-to-Tubesheet Joint Type (rolled, welded, strength welded)
+- [x] Side Frame Material
+- [x] Tube Support Material
+- [x] Tube Support Quantity
+- [x] Tube Support Spacing (max 1.83m per API 661)
 
 #### Drawing Information
-- [ ] Drawing Number
-- [ ] Revision
-- [ ] Revision Date
-- [ ] Revision Description
-- [ ] Drawn By / Checked By / Approved By
+- [x] Drawing Number
+- [x] Revision
+- [x] Revision Date
+- [x] Revision Description
+- [x] Drawn By / Checked By / Approved By
 
 ---
 
-### 24.8 Component Analysis (10 tasks)
-- [ ] BOM extraction with quantities (auto-aggregate)
-- [ ] Weight Breakdown by component type (visual bar chart)
-- [ ] Fastener Summary (bolts, nuts, plugs by size/material/qty)
-- [ ] Material Summary (by spec, total weight, components list)
-- [ ] Revision Comparison (Rev A vs Rev B changes)
-- [ ] Component count by type (plates, tubes, fasteners, etc.)
-- [ ] Duplicate part detection
-- [ ] Missing part number detection
-- [ ] Orphan component detection (not in BOM)
-- [ ] Configuration-specific BOM comparison
+### 24.8 Component Analysis (10 tasks) ✅
+- [x] BOM extraction with quantities (auto-aggregate)
+- [x] Weight Breakdown by component type (visual bar chart)
+- [x] Fastener Summary (bolts, nuts, plugs by size/material/qty)
+- [x] Material Summary (by spec, total weight, components list)
+- [x] Revision Comparison (Rev A vs Rev B changes)
+- [x] Component count by type (plates, tubes, fasteners, etc.)
+- [x] Duplicate part detection
+- [x] Missing part number detection
+- [x] Orphan component detection (not in BOM)
+- [x] Configuration-specific BOM comparison
 
 ---
 
-### 24.9 Mates &amp; Constraints Analysis (6 tasks)
-- [ ] Mate Status summary (satisfied, over-defined, broken)
-- [ ] Broken mate identification with component names
-- [ ] Over-defined mate detection
-- [ ] Fix suggestions for broken mates
-- [ ] Mate count by type (coincident, concentric, distance, etc.)
-- [ ] Redundant mate detection
+### 24.9 Mates &amp; Constraints Analysis (6 tasks) ✅
+- [x] Mate Status summary (satisfied, over-defined, broken)
+- [x] Broken mate identification with component names
+- [x] Over-defined mate detection
+- [x] Fix suggestions for broken mates
+- [x] Mate count by type (coincident, concentric, distance, etc.)
+- [x] Redundant mate detection
 
 ---
 
