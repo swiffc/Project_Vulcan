@@ -17,6 +17,7 @@ from .report_generator import ReportGenerator
 from .drawing_analyzer import DrawingAnalyzer
 from .cost_estimator import CostEstimator
 from .component_analyzer import ComponentAnalyzer
+from .structural_analyzer import StructuralAnalyzer
 
 __all__ = [
     "BendRadiusAnalyzer",
@@ -31,4 +32,5 @@ __all__ = [
     "DrawingAnalyzer",
     "CostEstimator",
     "ComponentAnalyzer",
+    "StructuralAnalyzer",
 ]
