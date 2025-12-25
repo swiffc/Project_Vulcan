@@ -70,7 +70,13 @@ from controllers import (
 try:
     from watchers import get_watcher
     from extractors import PropertiesExtractor, HolePatternExtractor
-    from analyzers import BendRadiusAnalyzer
+    from analyzers import (
+        BendRadiusAnalyzer,
+        InterferenceAnalyzer,
+        WeldAnalyzer,
+        NozzleAnalyzer,
+        ASMECalculator,
+    )
 
     PHASE24_AVAILABLE = True
 except ImportError:
@@ -612,6 +618,95 @@ async def get_watcher_state():
         }
     except Exception as e:
         logger.error(f"Watcher state error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase24/interference-check")
+async def get_interference_check():
+    """Run interference detection (Phase 24.10)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        analyzer = InterferenceAnalyzer()
+        return analyzer.to_dict()
+    except Exception as e:
+        logger.error(f"Interference check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase24/weld-analysis")
+async def get_weld_analysis():
+    """Analyze welds in drawing (Phase 24.17)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        analyzer = WeldAnalyzer()
+        return analyzer.to_dict()
+    except Exception as e:
+        logger.error(f"Weld analysis error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase24/nozzle-schedule")
+async def get_nozzle_schedule():
+    """Get nozzle schedule (Phase 24.16)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        analyzer = NozzleAnalyzer()
+        return analyzer.to_dict()
+    except Exception as e:
+        logger.error(f"Nozzle analysis error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class ASMECalcRequest(BaseModel):
+    """Request model for ASME calculations."""
+    material: str = "SA-516-70"
+    design_pressure_psi: float = 150.0
+    shell_inside_radius_in: Optional[float] = None
+    head_inside_diameter_in: Optional[float] = None
+    tubesheet_diameter_in: Optional[float] = None
+    joint_efficiency: float = 0.85
+    corrosion_allowance_in: float = 0.0625
+    ligament_efficiency: float = 0.5
+    head_type: str = "2:1_ellipsoidal"
+
+
+@app.post("/phase24/asme-calculations")
+async def run_asme_calculations(request: ASMECalcRequest):
+    """Run ASME VIII Div 1 calculations (Phase 24.13)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        calculator = ASMECalculator()
+        return calculator.to_dict(request.dict())
+    except Exception as e:
+        logger.error(f"ASME calculation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase24/full-analysis")
+async def get_full_analysis():
+    """Get comprehensive Phase 24 analysis of active model."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        results = {
+            "properties": PropertiesExtractor().get_all_properties(),
+            "hole_analysis": HolePatternExtractor().to_dict(),
+            "bend_analysis": BendRadiusAnalyzer().to_dict(),
+            "interference_check": InterferenceAnalyzer().to_dict(),
+            "nozzle_schedule": NozzleAnalyzer().to_dict(),
+        }
+        return results
+    except Exception as e:
+        logger.error(f"Full analysis error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
