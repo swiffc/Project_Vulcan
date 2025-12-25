@@ -2,7 +2,7 @@
 Desktop Server Analyzers
 ========================
 Analyze SolidWorks models for DFM, bend radius, manufacturability, etc.
-Phase 24 Implementation
+Phase 24 Implementation - Complete ACHE Design Assistant
 """
 
 from .bend_radius_analyzer import BendRadiusAnalyzer
@@ -14,6 +14,8 @@ from .mates_analyzer import MatesAnalyzer
 from .standards_checker import StandardsChecker
 from .thermal_analyzer import ThermalAnalyzer
 from .report_generator import ReportGenerator
+from .drawing_analyzer import DrawingAnalyzer
+from .cost_estimator import CostEstimator
 
 __all__ = [
     "BendRadiusAnalyzer",
@@ -25,4 +27,6 @@ __all__ = [
     "StandardsChecker",
     "ThermalAnalyzer",
     "ReportGenerator",
+    "DrawingAnalyzer",
+    "CostEstimator",
 ]
