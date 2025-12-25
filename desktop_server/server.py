@@ -82,6 +82,7 @@ try:
         ReportGenerator,
         DrawingAnalyzer,
         CostEstimator,
+        ComponentAnalyzer,
     )
 
     PHASE24_AVAILABLE = True
