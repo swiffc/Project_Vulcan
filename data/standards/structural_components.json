@@ -1,0 +1,782 @@
+{
+  "_metadata": {
+    "version": "1.0.0",
+    "created": "2025-12-25",
+    "description": "Comprehensive structural components for ACHE plenum, substructure, and access systems",
+    "standards": ["AISC 360", "OSHA 1910", "API 661", "AWS D1.1", "ASCE 7", "NAAMM MBG 531", "ASME BTH-1", "FMCSA 49 CFR 393"]
+  },
+
+  "bracing_systems": {
+    "description": "Lateral bracing systems for structural steel frames",
+    "reference": "AISC 360, Eurocode 3/8, GB 50017",
+    "types": {
+      "X_bracing": {
+        "name": "X-Bracing (Cross Bracing)",
+        "description": "Two diagonal members crossing in X-pattern, one in tension, one in compression",
+        "applications": ["High-rise structures", "Industrial plants", "Equipment support frames", "Pipe racks"],
+        "advantages": ["Maximum lateral stiffness", "Redundant load path", "Effective drift control"],
+        "disadvantages": ["May limit interior space", "More material than other types"],
+        "typical_angle_deg": {"min": 30, "max": 60, "optimal": 45},
+        "connection_type": "Gusset plate at intersection and ends",
+        "slenderness_limit_tension": 300,
+        "slenderness_limit_compression": 200,
+        "typical_members": ["L angles", "WT sections", "Double angles", "HSS tubes", "Rods (tension only)"],
+        "design_notes": "One brace resists tension, other resists compression. Size for compression governs."
+      },
+      "V_bracing": {
+        "name": "V-Bracing (Chevron Bracing)",
+        "description": "Two diagonal members meeting at mid-span of beam forming inverted V",
+        "applications": ["Buildings with openings", "Moderate height structures", "Bridge applications"],
+        "advantages": ["Allows door/window openings", "Good aesthetic appearance", "Effective load distribution"],
+        "disadvantages": ["Requires strong beam at apex", "Potential buckling issues at V-point"],
+        "typical_angle_deg": {"min": 35, "max": 55, "optimal": 45},
+        "connection_type": "Gusset plate at beam connection",
+        "beam_requirements": "Must be designed for unbalanced brace forces",
+        "typical_members": ["HSS tubes", "Wide flange", "Double angles"],
+        "design_notes": "Beam at apex must resist vertical unbalanced force if braces buckle"
+      },
+      "inverted_V_bracing": {
+        "name": "Inverted V-Bracing (Chevron)",
+        "description": "V-pattern with apex at bottom, spreading to beam",
+        "applications": ["Buildings requiring open ground floor", "Retail spaces", "Parking structures"],
+        "advantages": ["Open space at base", "Architectural flexibility"],
+        "disadvantages": ["Complex foundation connection", "Potential for soft story"],
+        "typical_angle_deg": {"min": 35, "max": 55, "optimal": 45},
+        "typical_members": ["HSS tubes", "Wide flange sections"]
+      },
+      "K_bracing": {
+        "name": "K-Bracing",
+        "description": "Diagonal members connected at mid-height of column forming K-shape",
+        "applications": ["Large span structures (NOT seismic)", "Storage buildings"],
+        "advantages": ["Space efficient", "Good for low-rise"],
+        "disadvantages": ["NOT ALLOWED for seismic design", "Localized stress at column", "Potential column failure"],
+        "restrictions": "PROHIBITED in SCBF/OCBF seismic systems per AISC 341",
+        "typical_angle_deg": {"min": 30, "max": 50},
+        "typical_members": ["Angles", "WT sections"],
+        "design_notes": "Creates high inelastic demand at column - avoid for critical structures"
+      },
+      "diagonal_bracing": {
+        "name": "Single Diagonal Bracing",
+        "description": "Single diagonal member across bay",
+        "applications": ["Light industrial", "Low-rise buildings", "Temporary structures"],
+        "advantages": ["Simple design", "Minimum connections", "Low cost"],
+        "disadvantages": ["Less redundancy", "Larger member sizes", "Alternating pattern needed"],
+        "typical_angle_deg": {"min": 30, "max": 60, "optimal": 45},
+        "connection_type": "Corner gusset plates",
+        "typical_members": ["Single angle", "WT section", "HSS tube"],
+        "design_notes": "Must be sized for both tension and compression in alternating bays"
+      },
+      "knee_bracing": {
+        "name": "Knee Bracing",
+        "description": "Short diagonal from column to beam near corner",
+        "applications": ["Portal frames", "Clear span buildings", "Industrial sheds"],
+        "advantages": ["Maximum clear height", "Simple connections", "Aesthetic"],
+        "disadvantages": ["Lower stiffness than full bracing", "Moment frame behavior"],
+        "typical_length_ratio": 0.15,
+        "typical_members": ["Angles", "Channels", "HSS tubes"]
+      },
+      "horizontal_bracing": {
+        "name": "Horizontal Bracing (Plan Bracing)",
+        "description": "X or diagonal bracing in horizontal plane for diaphragm action",
+        "applications": ["Roof systems", "Floor systems", "Transfer of lateral loads"],
+        "types": {
+          "roof_bracing": "Upper flange level of roof system",
+          "floor_bracing": "Lower flange level or dedicated plane"
+        },
+        "typical_members": ["Angles", "Rods", "Flat bars"],
+        "spacing_guidelines": "Per AISC design requirements for diaphragm stiffness"
+      }
+    },
+    "gusset_plate_design": {
+      "reference": "AISC Design Guide 29, AISC 360 Chapter J",
+      "thickness_guidelines": {
+        "light_bracing": {"typical_in": 0.375, "range_in": [0.25, 0.5]},
+        "medium_bracing": {"typical_in": 0.5, "range_in": [0.375, 0.75]},
+        "heavy_bracing": {"typical_in": 0.75, "range_in": [0.5, 1.0]}
+      },
+      "whitmore_width": {
+        "description": "Effective width at last bolt row, 30-degree spread from first bolt",
+        "angle_deg": 30,
+        "formula": "Lgw = connection_length + 2 * tan(30) * perpendicular_distance"
+      },
+      "limit_states": [
+        "Gross section yielding",
+        "Net section rupture",
+        "Block shear rupture",
+        "Weld strength",
+        "Bolt bearing",
+        "Bolt shear"
+      ],
+      "hinge_zone_length": {
+        "for_scbf": "2t minimum (t = gusset thickness)",
+        "purpose": "Allow ductile rotation during cyclic buckling"
+      },
+      "material": {
+        "typical": "ASTM A36 or A572 Gr.50",
+        "Fy_ksi": {"A36": 36, "A572_50": 50},
+        "Fu_ksi": {"A36": 58, "A572_50": 65}
+      }
+    }
+  },
+
+  "walkway_platform_systems": {
+    "description": "Industrial walkway, platform, and access structure requirements",
+    "reference": "OSHA 1910.21-30, ASCE 7",
+    "load_requirements": {
+      "reference": "OSHA 1910.22, ASCE 7 Table 4-1",
+      "design_philosophy": "Maximum intended load with appropriate safety factors",
+      "live_loads_psf": {
+        "light_duty_catwalk": {"load": 25, "notes": "OSHA light scaffold, access only"},
+        "catwalks_maintenance": {"load": 40, "concentrated_lb": 300, "notes": "ASCE 7 catwalks"},
+        "walkways_platforms": {"load": 60, "notes": "ASCE 7 elevated platforms (non-exit)"},
+        "motor_platforms": {"load": 75, "notes": "Equipment maintenance areas"},
+        "heavy_equipment_areas": {"load": 100, "notes": "Laydown, equipment handling"},
+        "stairways": {"load": 100, "notes": "Public/industrial stairs"},
+        "header_walkway": {"load": 50, "notes": "API 661/ACHE standard"},
+        "ballroom_walkway": {"load": 60, "notes": "Wide service walkway"}
+      },
+      "concentrated_loads": {
+        "personnel": {"load_lb": 250, "area_sqft": 2.5},
+        "equipment_handling": {"load_lb": 1000, "notes": "Per OSHA 1910.25 for stairs"}
+      }
+    },
+    "platform_framing": {
+      "typical_members": {
+        "main_beams": ["C8x11.5", "C10x15.3", "W8x10", "W8x18"],
+        "secondary_beams": ["C6x8.2", "C8x11.5", "L4x4x1/4"],
+        "edge_members": ["C6x8.2", "L3x3x1/4", "L4x3x1/4"]
+      },
+      "beam_spacing": {
+        "typical_in": 48,
+        "max_for_grating_in": 60,
+        "notes": "Based on grating span capacity"
+      },
+      "deflection_limits": {
+        "live_load": "L/360",
+        "total_load": "L/240",
+        "ponding": "Must check for outdoor platforms"
+      },
+      "connection_types": [
+        "Bolted clip angles",
+        "Welded seats",
+        "End plates",
+        "Shear tabs"
+      ]
+    },
+    "platform_supports": {
+      "column_types": {
+        "pipe_columns": ["3\" Sch 40", "4\" Sch 40", "6\" Sch 40"],
+        "hss_columns": ["HSS 4x4x1/4", "HSS 6x6x1/4", "HSS 4x4x3/8"],
+        "wide_flange": ["W6x15", "W8x18", "W8x31"]
+      },
+      "base_plate_design": {
+        "reference": "AISC Design Guide 1",
+        "thickness_formula": "Based on bearing and bending",
+        "typical_thickness_in": {"light": 0.5, "medium": 0.75, "heavy": 1.0},
+        "anchor_bolts": {
+          "typical_sizes": ["1/2\" dia", "5/8\" dia", "3/4\" dia", "7/8\" dia"],
+          "embedment_min": "12 bolt diameters",
+          "edge_distance_min": "6 bolt diameters"
+        }
+      },
+      "knee_braces": {
+        "purpose": "Lateral support for freestanding platforms",
+        "typical_angle": 45,
+        "members": ["L3x3x1/4", "L4x3x1/4", "Pipe 2\" Sch 40"]
+      }
+    },
+    "grating_specifications": {
+      "reference": "ANSI/NAAMM MBG 531-24",
+      "types": {
+        "welded_bar_grating": {
+          "bearing_bar_depth_in": [1, 1.25, 1.5, 2, 2.5],
+          "bearing_bar_thickness_in": [0.125, 0.1875, 0.25],
+          "cross_bar_spacing_in": [2, 4],
+          "bar_spacing_in": ["19-4 (1-3/16\")", "15-4 (1-1/2\")", "11-4 (2\")"]
+        },
+        "pressure_locked": {
+          "notes": "Higher load capacity than welded"
+        },
+        "fiberglass_grating": {
+          "applications": "Corrosive environments",
+          "typical_thickness_in": [1, 1.5, 2]
+        }
+      },
+      "material": {
+        "carbon_steel": {"coating": "Hot-dip galvanized per ASTM A123"},
+        "aluminum": {"alloy": "6063-T6 or 6061-T6"},
+        "stainless_steel": {"grade": "304 or 316"}
+      },
+      "selection_criteria": {
+        "uniform_load_psf": "Match to platform design load",
+        "concentrated_load_lb": "300 lb over 4\" x 4\" area",
+        "deflection_limit": "Span/200 or 1/4\" max"
+      },
+      "bearing_bar_orientation": "Perpendicular to main beams (span direction)"
+    },
+    "toe_boards": {
+      "reference": "OSHA 1910.29(k)",
+      "height_min_in": 3.5,
+      "height_typical_in": 4,
+      "gap_from_surface_max_in": 0.25,
+      "material": ["Galvanized steel", "Aluminum", "Fiberglass"],
+      "typical_thickness_in": [0.125, 0.1875],
+      "attachment": "Bolted or welded to platform frame"
+    }
+  },
+
+  "handrail_guardrail_systems": {
+    "description": "Fall protection guardrail and handrail requirements",
+    "reference": "OSHA 1910.29",
+    "dimensions": {
+      "top_rail_height_in": {"nominal": 42, "min": 39, "max": 45},
+      "midrail_height_in": 21,
+      "intermediate_spacing_max_in": 19,
+      "notes": "Midrail at approximately 1/2 top rail height"
+    },
+    "load_requirements": {
+      "top_rail_lb": 200,
+      "top_rail_application": "Any direction, within 2\" of top edge",
+      "midrail_lb": 150,
+      "midrail_application": "Downward or outward",
+      "deflection_limit": "Top rail shall not deflect below 39\" under load"
+    },
+    "post_design": {
+      "spacing_max_ft": 8,
+      "spacing_typical_ft": 6,
+      "materials": {
+        "pipe": {
+          "size": "1-1/2\" Schedule 40",
+          "OD_in": 1.90,
+          "wall_in": 0.145
+        },
+        "structural_steel": {
+          "angles": "L2x2x3/8",
+          "tubes": "HSS 2x2x3/16"
+        }
+      },
+      "base_plate": {
+        "typical_size_in": "4x4 or 5x5",
+        "thickness_in": 0.375,
+        "anchor_bolts": "2 or 4 bolts, 3/8\" or 1/2\" dia"
+      },
+      "post_to_platform_connection": [
+        "Welded to platform frame",
+        "Bolted with base plate",
+        "Floor flange (pipe)",
+        "Side-mount bracket"
+      ]
+    },
+    "rail_configurations": {
+      "single_top_rail": "With screen, mesh, or vertical members < 19\" spacing",
+      "top_and_midrail": "Standard industrial configuration",
+      "top_mid_and_knee_rail": "Enhanced protection for special applications",
+      "solid_panel": "Alternative to intermediate members"
+    },
+    "materials": {
+      "pipe_rail": {
+        "material": "ASTM A53 Grade B",
+        "finish": ["Galvanized", "Painted", "Powder coated"]
+      },
+      "aluminum": {
+        "alloy": "6061-T6 or 6063-T5",
+        "applications": "Corrosive environments, light weight"
+      },
+      "stainless_steel": {
+        "grade": "304 or 316",
+        "applications": "Food/pharma, marine, corrosive"
+      }
+    },
+    "corner_posts": "Required at all direction changes",
+    "gate_requirements": {
+      "self_closing": "Required for ladder access",
+      "swing_direction": "Away from opening (into platform)"
+    }
+  },
+
+  "stair_systems": {
+    "description": "Industrial and commercial stairway design requirements",
+    "reference": "OSHA 1910.25, AISC Design Guide 34",
+    "dimensional_requirements": {
+      "angle_from_horizontal": {"min_deg": 30, "max_deg": 50},
+      "riser_height_max_in": 9.5,
+      "tread_depth_min_in": 9.5,
+      "width_min_in": 22,
+      "vertical_clearance_min_in": 80,
+      "landing_depth_min_in": 30,
+      "max_vertical_rise_between_landings_ft": 12
+    },
+    "load_requirements": {
+      "design_load": "5x anticipated live load, minimum 1000 lb concentrated",
+      "live_load_psf": 100,
+      "handrail_load_lb": 200
+    },
+    "stringer_design": {
+      "reference": "AISC Design Guide 34",
+      "typical_sections": {
+        "channel": ["C10x15.3", "C12x20.7", "C12x25"],
+        "mc_channel": ["MC10x22", "MC12x31"],
+        "plate": "Cut plate stringers for custom stairs"
+      },
+      "sizing_notes": "C12 or MC12 universal for most industrial applications",
+      "deflection_limit": "L/360 for live load",
+      "span_limit_ft": 12,
+      "loading": {
+        "typical_plf": 200,
+        "point_load_lb": 300,
+        "notes": "One stringer takes full point load conservatively"
+      }
+    },
+    "tread_types": {
+      "bar_grating": {
+        "depth_in": [1, 1.25],
+        "nosing": "Optional - leading edge must be identifiable",
+        "surface": "Serrated or non-slip design per OSHA"
+      },
+      "pan_treads": {
+        "material": "14 ga or 12 ga steel",
+        "fill": "Concrete, abrasive, or diamond plate"
+      },
+      "checkered_plate": {
+        "thickness_in": [0.1875, 0.25]
+      }
+    },
+    "handrail_requirements": {
+      "height_in": {"min": 30, "max": 37},
+      "clearance_from_wall_min_in": 3,
+      "grip_diameter_in": {"min": 1.25, "max": 2},
+      "graspability": "Circular cross-section or equivalent"
+    },
+    "platform_at_top_bottom": {
+      "width": "Same as stair width minimum",
+      "depth_min_in": 30,
+      "notes": "No door swing into required landing space"
+    }
+  },
+
+  "ladder_systems": {
+    "description": "Fixed ladder design and safety cage requirements",
+    "reference": "OSHA 1910.23, 1910.27 (historical)",
+    "fixed_ladder_design": {
+      "rung_spacing_in": 12,
+      "rung_diameter_min_in": 0.75,
+      "rung_clear_length_min_in": 16,
+      "side_rail_spacing_in": {"min": 16, "max": 20},
+      "clearance_behind_ladder_in": 7,
+      "clearance_front_of_ladder_in": 30,
+      "design_live_load_lb": 200,
+      "material": {
+        "steel": "ASTM A36, galvanized or painted",
+        "aluminum": "6061-T6"
+      },
+      "side_rail_sections": {
+        "channel": ["C3x4.1", "C3x5", "C4x5.4"],
+        "flat_bar": "2-1/2\" x 3/8\" minimum",
+        "angle": "L2-1/2x2-1/2x1/4"
+      }
+    },
+    "safety_cage_requirements": {
+      "trigger_height_ft": 20,
+      "notes_2036_deadline": "All cages must be replaced with PFAS by Nov 2036",
+      "dimensions": {
+        "width_min_in": 27,
+        "clearance_from_centerline_in": {"min": 27, "max": 28},
+        "vertical_bar_spacing_deg": 40,
+        "vertical_bar_spacing_in_approx": 9.5
+      },
+      "cage_extension": {
+        "above_landing_min_in": 42,
+        "below_start_ft": {"min": 7, "max": 8},
+        "bottom_flare_in": 4
+      },
+      "horizontal_bands": {
+        "spacing_max_in": 48,
+        "first_band_above_base_in": 18
+      },
+      "material": {
+        "bands": "1-1/2\" x 3/8\" flat bar or 1-1/2\" pipe",
+        "verticals": "2\" x 3/8\" flat bar or similar"
+      }
+    },
+    "ladder_wells": {
+      "description": "Alternative to cage - enclosed shaft",
+      "clear_width_min_in": 15,
+      "distance_to_wall_climbing_side_in": {"smooth_wall": 27, "with_obstructions": 30}
+    },
+    "landing_platforms": {
+      "required_every_ft": 30,
+      "offset_ladder_min_in": "Ladder centerlines offset for rest platform",
+      "platform_depth_min_in": 24,
+      "platform_width_min_in": "Match ladder width plus clearances"
+    },
+    "ladder_safety_systems": {
+      "description": "Personal fall arrest systems for ladders > 24 ft (post Nov 2018)",
+      "types": ["Cable grab systems", "Rail systems", "Retractable lifelines"],
+      "notes": "Required for new ladders, replacement for cages by 2036"
+    }
+  },
+
+  "lifting_lug_design": {
+    "description": "Lifting lug design requirements for equipment handling",
+    "reference": "ASME BTH-1, AISC, ANSI N14.6, OSHA 1926.251",
+    "factor_of_safety": {
+      "general_industrial": 5.0,
+      "ansi_n14_6": {"yield": 3.0, "ultimate": 5.0},
+      "critical_lifts": 5.0,
+      "routine_lifts": 3.0,
+      "notes": "Most industrial applications use FOS = 5"
+    },
+    "design_methods": {
+      "aisc_modified": {
+        "description": "Pin-connected members per AISC Chapter D, modified for lifting",
+        "omega_factor": 1.8,
+        "notes": "Results in FOS = 5 for A36 steel"
+      },
+      "asme_bth": {
+        "description": "ASME Below-the-Hook Standard BTH-1",
+        "design_category": {"A": "Critical", "B": "Normal"},
+        "service_class": {"0-4": "Based on load cycles"},
+        "application": "Equipment > 1 ton or lifts > 20 meters"
+      },
+      "air_force_method": {
+        "description": "Empirical curves for all failure modes",
+        "reference": "AFSC DH 1-6"
+      }
+    },
+    "limit_states": [
+      "Tension on net area through pin hole",
+      "Shear on effective area beyond pin hole",
+      "Bearing on pin",
+      "Tension on gross area (Whitmore section)",
+      "Weld strength to attachment surface",
+      "Base metal tear-out",
+      "Bending of lug plate",
+      "Pin bending",
+      "Pin shear"
+    ],
+    "geometry_requirements": {
+      "hole_diameter": "Pin diameter + 1/8\" to 1/4\" clearance",
+      "edge_distance_from_hole": "Greater of 1.5*d_hole or per strength calc",
+      "thickness_min": "Pin diameter / 4 minimum",
+      "radius_at_hole": "Generous radius to reduce stress concentration"
+    },
+    "material": {
+      "typical": "ASTM A36 or A572 Gr.50",
+      "pins": "AISI 4140 or equivalent, heat treated"
+    },
+    "weld_design": {
+      "safety_factor": 5.0,
+      "load_factor": 1.5,
+      "notes": "Weld sized for 1.5x safe working load"
+    },
+    "marking_requirements": {
+      "rated_load": "Stamped or marked on lug",
+      "warning": "Do not exceed rated load"
+    }
+  },
+
+  "shipping_transport_structures": {
+    "description": "Requirements for shipping, blocking, and transport of heavy equipment",
+    "reference": "FMCSA 49 CFR 393, DOT regulations",
+    "tie_down_requirements": {
+      "equipment_over_10000_lb": {
+        "min_tie_downs": 4,
+        "min_wll_each_lb": 5000,
+        "total_wll_rule": "Sum of WLL >= 50% of cargo weight"
+      },
+      "general_cargo": {
+        "under_5ft_under_1100lb": {"tie_downs": 1},
+        "5ft_to_10ft": {"tie_downs": 2},
+        "over_10ft": {"formula": "2 for first 10 ft + 1 per additional 10 ft"}
+      },
+      "tie_down_types": {
+        "chains": {"grade": ["70", "80"], "application": "Heavy equipment"},
+        "straps": {"type": "Polyester or nylon webbing", "application": "Medium loads"},
+        "steel_banding": {"application": "Securing to skids"}
+      }
+    },
+    "blocking_bracing": {
+      "purpose": "Prevent lateral and forward movement",
+      "methods": {
+        "wood_blocking": {
+          "material": "4x4 or 6x6 timbers",
+          "securing": "Nailed or strapped to trailer floor"
+        },
+        "steel_blocking": {
+          "welded_stops": "Tack weld to trailer if permitted",
+          "bolt_on_chocks": "Removable securing devices"
+        },
+        "friction_mats": {
+          "purpose": "Increase friction for metal-to-metal contact",
+          "material": "Rubber or composite pads"
+        }
+      },
+      "chocking": {
+        "wheeled_equipment": "Chocks at all wheels",
+        "tracked_equipment": "Blocking at track ends"
+      }
+    },
+    "shipping_skid_design": {
+      "reference": "AISC for structural, ASME for pressure equipment",
+      "load_cases": {
+        "dead_load": "Equipment weight",
+        "transport_g_forces": {
+          "longitudinal": "0.8g (forward/aft)",
+          "transverse": "0.5g (side to side)",
+          "vertical": "0.25g (up) + 1.0g (down)"
+        },
+        "lifting": "4 point lift with slings"
+      },
+      "member_design": {
+        "main_beams": "W-shapes or channels per load",
+        "cross_members": "Channels or angles",
+        "decking": "Checkered plate or grating if required"
+      },
+      "lifting_provisions": {
+        "lifting_lugs": "Per lifting lug design requirements",
+        "forklift_pockets": {"clear_width_in": 6, "height_in": 4, "spacing_in": 36},
+        "notes": "Lugs rated for full shipping weight"
+      }
+    },
+    "shipping_saddles": {
+      "purpose": "Support cylindrical equipment (vessels, exchangers)",
+      "design": {
+        "arc_angle_deg": {"min": 120, "typical": 150},
+        "wear_plate": "Full contact with vessel",
+        "web_stiffeners": "At concentrated loads",
+        "anchor_points": "For tie-down attachment"
+      },
+      "material": "A36 or A572 steel, painted or galvanized"
+    },
+    "flange_protection": {
+      "requirement": "All flanges protected during shipping",
+      "methods": ["Plywood covers", "Flange protectors", "Plastic covers"],
+      "gasket_face": "Extra protection for raised face flanges"
+    },
+    "dimensional_limits": {
+      "standard_truck": {
+        "width_ft": 8.5,
+        "height_ft": 13.5,
+        "length_ft": 53
+      },
+      "oversized_permit": {
+        "trigger_width_ft": 8.5,
+        "trigger_height_ft": 13.5,
+        "notes": "State permits required for over-dimensional loads"
+      }
+    },
+    "preservation": {
+      "machined_surfaces": "Rust preventative coating",
+      "internals": "Nitrogen purge or desiccant",
+      "external": "Shrink wrap or tarping as required"
+    }
+  },
+
+  "base_plate_anchor_bolt_design": {
+    "description": "Column base plate and anchor bolt design requirements",
+    "reference": "AISC Design Guide 1 (3rd Edition), ACI 318 Chapter 17",
+    "base_plate_design": {
+      "design_methods": {
+        "concentric_compression": {
+          "approach": "Bearing only, no anchor tension",
+          "plate_sizing": "Based on concrete bearing capacity",
+          "thickness": "Based on plate bending at yield lines"
+        },
+        "compression_with_moment": {
+          "approach": "Combined bearing and anchor tension",
+          "methods": ["Elastic method", "Plastic/Ultimate method"],
+          "notes": "AISC DG1 covers both approaches"
+        }
+      },
+      "concrete_bearing": {
+        "phi_factor": 0.65,
+        "bearing_strength": "0.85 * f'c for full area",
+        "area_ratio_factor": "Up to 2.0 for confined concrete"
+      },
+      "plate_sizing": {
+        "B_direction": "Column flange width + 2*N",
+        "N_direction": "Column depth + 2*n",
+        "cantilever_m": "(N - 0.95*d) / 2",
+        "cantilever_n": "(B - 0.8*bf) / 2"
+      },
+      "thickness_formula": {
+        "method": "Yield line at cantilever",
+        "equation": "t_p = l * sqrt(2*fp / (0.9*Fy))"
+      },
+      "typical_sizes": {
+        "light_columns": {"size_in": "10x10 to 12x12", "thickness_in": 0.5},
+        "medium_columns": {"size_in": "14x14 to 18x18", "thickness_in": 0.75},
+        "heavy_columns": {"size_in": "20x20 to 24x24", "thickness_in": 1.0}
+      }
+    },
+    "anchor_bolt_design": {
+      "reference": "AISC Design Guide 1, ACI 318-19 Chapter 17",
+      "bolt_types": {
+        "cast_in_place": ["Headed bolts", "J-bolts", "L-bolts"],
+        "post_installed": ["Expansion anchors", "Adhesive anchors", "Undercut anchors"]
+      },
+      "typical_sizes": ["1/2\"", "5/8\"", "3/4\"", "7/8\"", "1\"", "1-1/4\"", "1-1/2\""],
+      "materials": {
+        "ASTM_F1554": {"grades": [36, 55, 105], "notes": "Preferred for anchors"},
+        "ASTM_A307": "Grade A or C",
+        "ASTM_A36": "Threaded rod"
+      },
+      "limit_states": {
+        "steel_tension": "Bolt tensile strength",
+        "steel_shear": "Bolt shear strength",
+        "concrete_breakout_tension": "Per ACI 318 Eq 17.4.2",
+        "concrete_breakout_shear": "Per ACI 318 Eq 17.5.2",
+        "pullout": "For headed anchors",
+        "side_face_blowout": "Near edge conditions",
+        "pryout": "Shear on short anchors"
+      },
+      "embedment_requirements": {
+        "min_embedment": "12 * bolt_diameter",
+        "typical_headed": "8 to 12 bolt diameters",
+        "j_bolt": "Per developed length"
+      },
+      "edge_distance": {
+        "minimum": "6 * bolt_diameter",
+        "for_full_strength": "Per ACI 318 requirements"
+      },
+      "spacing": {
+        "minimum": "6 * bolt_diameter or 4\" (larger governs)"
+      }
+    },
+    "leveling_methods": {
+      "leveling_nuts": "Nuts on threaded anchor below plate",
+      "shim_stacks": "Steel shims under plate",
+      "leveling_screws": "For heavy plates",
+      "leveling_plates": "Preset plates used as template"
+    },
+    "grout": {
+      "purpose": "Fill void between plate and concrete",
+      "types": ["Cementitious non-shrink", "Epoxy grout"],
+      "thickness": "1\" to 2\" typical",
+      "requirements": "Non-shrink, min 5000 psi compressive"
+    }
+  },
+
+  "plenum_substructure": {
+    "description": "ACHE plenum chamber and substructure design requirements",
+    "reference": "API 661, manufacturer standards (Chart, Hudson)",
+    "plenum_chamber": {
+      "function": "Air distribution chamber between fans and tube bundles",
+      "components": {
+        "floor_panels": {
+          "material": "Carbon steel or aluminum",
+          "thickness_typical_in": [0.125, 0.1875, 0.25],
+          "stiffener_attachment": "Welded or bolted"
+        },
+        "side_panels": {
+          "material": "Carbon steel or aluminum",
+          "thickness_typical_in": [0.125, 0.1875],
+          "stiffening": "Per panel span"
+        },
+        "stiffeners": {
+          "types": ["Channel", "Angle", "Z-section", "Hat section"],
+          "typical_sections": ["C4x5.4", "C6x8.2", "L3x3x1/4"],
+          "spacing_typical_in": 24
+        },
+        "fan_rings": {
+          "purpose": "Support fan and maintain tip clearance",
+          "material": "Rolled plate or bent section",
+          "tip_clearance": "Per API 661 table"
+        }
+      },
+      "structural_requirements": {
+        "load_cases": ["Dead load", "Wind uplift", "Maintenance personnel"],
+        "deflection_limit": "L/360 or 1/4\" max",
+        "design_pressure": "Consider negative pressure from fans"
+      },
+      "drain_provisions": {
+        "location": "Low points of plenum",
+        "size": "2\" minimum per compartment",
+        "quantity": "Minimum 2 per plenum"
+      },
+      "access": {
+        "access_doors": "For fan/motor maintenance",
+        "minimum_size_in": "18 x 24",
+        "hinges": "Quick-release or removable"
+      }
+    },
+    "substructure": {
+      "function": "Support structure for plenum, fans, bundles, and access",
+      "components": {
+        "columns": {
+          "typical_sections": ["W8x31", "W10x49", "W12x65", "HSS 6x6x3/8"],
+          "material": "ASTM A36 or A572 Gr.50",
+          "height_range_ft": {"typical": [15, 40]}
+        },
+        "main_beams": {
+          "typical_sections": ["W12x26", "W14x43", "W16x50"],
+          "function": "Support bundle and plenum loads"
+        },
+        "secondary_beams": {
+          "typical_sections": ["W8x18", "W10x33", "C12x20.7"],
+          "function": "Transfer loads to main beams"
+        },
+        "bracing": {
+          "types": ["X-bracing", "Diagonal bracing", "Knee bracing"],
+          "location": ["Column bays", "Horizontal at fan deck level"],
+          "typical_members": ["L4x4x3/8", "WT4x12", "HSS 3x3x1/4"]
+        }
+      },
+      "load_cases": {
+        "dead_load": "Structure + equipment self-weight",
+        "live_load": "Maintenance personnel (50-75 psf on platforms)",
+        "equipment_load": "Fans, motors, drives, bundles",
+        "wind_load": "Per ASCE 7, exposure category",
+        "seismic_load": "Per ASCE 7, seismic design category",
+        "thermal": "Expansion/contraction of piping/equipment",
+        "nozzle_loads": "Forces/moments from attached piping"
+      }
+    },
+    "foundation_interface": {
+      "anchor_bolt_pattern": "Per column base plate design",
+      "base_plate_sizes": "Per column load requirements",
+      "leveling": "Shim packs or leveling nuts",
+      "grout": "Non-shrink grout under all base plates"
+    }
+  },
+
+  "connection_details": {
+    "description": "Standard structural connection details",
+    "bolted_connections": {
+      "bolt_grades": {
+        "A325": {"Fnt_ksi": 90, "Fnv_ksi": 54, "application": "Structural"},
+        "A490": {"Fnt_ksi": 113, "Fnv_ksi": 68, "application": "High-strength"},
+        "A307": {"application": "Secondary, non-structural"}
+      },
+      "hole_types": {
+        "standard": "d + 1/16\" to d + 1/8\"",
+        "oversized": "For erection tolerance",
+        "slotted": "For expansion/movement"
+      },
+      "pretensioning": {
+        "slip_critical": "70% of tensile strength",
+        "bearing_type": "Snug-tight acceptable"
+      }
+    },
+    "welded_connections": {
+      "reference": "AWS D1.1",
+      "weld_types": {
+        "fillet": "Most common for structural",
+        "groove": "For full penetration joints",
+        "plug_slot": "For lap connections"
+      },
+      "fillet_weld_sizes": {
+        "min_size_table": {
+          "base_metal_up_to_1/4": {"min_fillet_in": 0.125},
+          "base_metal_1/4_to_1/2": {"min_fillet_in": 0.1875},
+          "base_metal_1/2_to_3/4": {"min_fillet_in": 0.25},
+          "base_metal_over_3/4": {"min_fillet_in": 0.3125}
+        }
+      },
+      "electrode_matching": {
+        "A36_steel": "E70XX",
+        "A572_Gr50": "E70XX"
+      }
+    }
+  }
+}
