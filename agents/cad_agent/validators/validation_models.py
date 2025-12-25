@@ -129,6 +129,9 @@ class ValidationReport(BaseModel):
     ache_results: Optional[ACHEValidationResult] = None
     drawing_results: Optional[DrawingValidationResult] = None  # Added field
 
+    # Phase 25 - Drawing Checker results (holes, structural, shaft, handling, etc.)
+    phase25_results: Optional[Dict[str, Any]] = None
+
     # Summary
     total_checks: int = 0
     passed: int = 0
