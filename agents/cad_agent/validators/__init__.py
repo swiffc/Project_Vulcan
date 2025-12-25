@@ -39,6 +39,11 @@ from .structural_capacity_validator import StructuralCapacityValidator, Structur
 from .shaft_validator import ShaftValidator, ShaftValidationResult, ShaftData, KeywayData
 from .handling_validator import HandlingValidator, HandlingValidationResult, HandlingData
 
+# Phase 25 - ACHE Standards Database Validators
+from .api661_bundle_validator import API661BundleValidator, API661BundleValidationResult, BundleData, FanData, DriveData
+from .nema_motor_validator import NEMAMotorValidator, NEMAMotorValidationResult, MotorData
+from .sspc_coating_validator import SSPCCoatingValidator, SSPCValidationResult, CoatingSpec
+
 __all__ = [
     # Core validators
     "ValidationOrchestrator",
@@ -87,4 +92,16 @@ __all__ = [
     "HandlingValidator",
     "HandlingValidationResult",
     "HandlingData",
+    # Phase 25 - ACHE Standards Database
+    "API661BundleValidator",
+    "API661BundleValidationResult",
+    "BundleData",
+    "FanData",
+    "DriveData",
+    "NEMAMotorValidator",
+    "NEMAMotorValidationResult",
+    "MotorData",
+    "SSPCCoatingValidator",
+    "SSPCValidationResult",
+    "CoatingSpec",
 ]
