@@ -877,6 +877,116 @@ async def generate_report(format: str = "pdf"):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# =============================================================================
+# Phase 25: PDF Drawing Validation Endpoints
+# =============================================================================
+
+class PDFValidationRequest(BaseModel):
+    """Request model for PDF validation."""
+    file_path: str
+    standards: list = ["api_661", "asme", "aws_d1_1"]
+
+
+@app.post("/phase25/validate-pdf")
+async def validate_pdf_drawing(request: PDFValidationRequest):
+    """
+    Validate a PDF engineering drawing against standards.
+
+    Phase 25.1-25.10 Implementation.
+
+    Args:
+        request: PDFValidationRequest with file_path and standards list
+
+    Returns:
+        Validation results including extraction and all standard checks
+    """
+    try:
+        # Import PDF validation engine
+        from extractors.pdf_drawing_extractor import PDFDrawingExtractor
+
+        # Import validators from agents
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.pdf_validation_engine import PDFValidationEngine
+
+        engine = PDFValidationEngine()
+        result = engine.validate(request.file_path, request.standards)
+        return engine.to_dict(result)
+
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"File not found: {request.file_path}")
+    except Exception as e:
+        logger.error(f"PDF validation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase25/extract-pdf")
+async def extract_pdf_data(file_path: str):
+    """
+    Extract data from a PDF engineering drawing without validation.
+
+    Args:
+        file_path: Path to the PDF file
+
+    Returns:
+        Extracted drawing data (title block, BOM, dimensions, etc.)
+    """
+    try:
+        from extractors.pdf_drawing_extractor import PDFDrawingExtractor
+
+        extractor = PDFDrawingExtractor()
+        result = extractor.extract(file_path)
+        return extractor.to_dict(result)
+
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"File not found: {file_path}")
+    except Exception as e:
+        logger.error(f"PDF extraction error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase25/validation-report")
+async def get_validation_report(file_path: str, format: str = "json"):
+    """
+    Validate a PDF and generate a formatted report.
+
+    Args:
+        file_path: Path to the PDF file
+        format: Report format (json, text, or summary)
+
+    Returns:
+        Validation report in requested format
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.pdf_validation_engine import PDFValidationEngine
+
+        engine = PDFValidationEngine()
+        result = engine.validate(file_path)
+
+        if format == "text":
+            return {"report": engine.generate_report_summary(result)}
+        elif format == "summary":
+            return {
+                "file": result.file_name,
+                "part_number": result.part_number,
+                "revision": result.revision,
+                "total_checks": result.total_checks,
+                "pass_rate": result.pass_rate,
+                "critical_issues": result.critical_failures,
+                "status": "PASS" if result.critical_failures == 0 else "FAIL",
+            }
+        else:
+            return engine.to_dict(result)
+
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"File not found: {file_path}")
+    except Exception as e:
+        logger.error(f"Validation report error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/kill")
 async def kill():
     """Emergency stop - activate kill switch."""
