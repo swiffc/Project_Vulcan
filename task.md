@@ -178,43 +178,43 @@
 
 ---
 
-### 24.10 Interference Detection (6 tasks)
-- [ ] Run interference check on demand
-- [ ] Display interference results (component pairs)
-- [ ] Interference volume calculation
-- [ ] Interference location visualization
-- [ ] Coincident face detection
-- [ ] Clearance analysis (minimum gaps)
+### 24.10 Interference Detection (6 tasks) ✅
+- [x] Run interference check on demand
+- [x] Display interference results (component pairs)
+- [x] Interference volume calculation
+- [x] Interference location visualization
+- [x] Coincident face detection
+- [x] Clearance analysis (minimum gaps)
 
 ---
 
-### 24.11 Sheet Metal &amp; Bend Radius Analysis (10 tasks)
-- [ ] Bend Radius Analyzer
-- [ ] Material-based minimum bend radius lookup table
-- [ ] K-Factor display and validation
-- [ ] Bend Allowance calculation
-- [ ] Bend Deduction calculation
-- [ ] Grain Direction warnings (bend parallel vs perpendicular)
-- [ ] Flat Pattern accuracy verification
-- [ ] Auto-fix radius suggestions
-- [ ] Bend sequence recommendation
-- [ ] Springback compensation notes
+### 24.11 Sheet Metal &amp; Bend Radius Analysis (10 tasks) ✅
+- [x] Bend Radius Analyzer
+- [x] Material-based minimum bend radius lookup table
+- [x] K-Factor display and validation
+- [x] Bend Allowance calculation
+- [x] Bend Deduction calculation
+- [x] Grain Direction warnings (bend parallel vs perpendicular)
+- [x] Flat Pattern accuracy verification
+- [x] Auto-fix radius suggestions
+- [x] Bend sequence recommendation
+- [x] Springback compensation notes
 
 ---
 
-### 24.12 Hole Location Analysis (12 tasks)
-- [ ] Hole Pattern Extractor
-- [ ] Tube Sheet hole pattern verification (pitch, rows, count)
-- [ ] Edge Distance checks (minimum 1.5× diameter per TEMA)
-- [ ] Ligament checks (minimum per TEMA)
-- [ ] Mating Hole Alignment checker (header ↔ tube sheet)
-- [ ] Bolt Circle verification (per ASME B16.5)
-- [ ] Hole schedule export
-- [ ] Hole tolerance verification (+0.003/-0.000 typical)
-- [ ] Countersink/counterbore detection
-- [ ] Threaded hole identification (NPT, UNC, etc.)
-- [ ] Hole centerline alignment verification
-- [ ] Pattern symmetry check
+### 24.12 Hole Location Analysis (12 tasks) ✅
+- [x] Hole Pattern Extractor
+- [x] Tube Sheet hole pattern verification (pitch, rows, count)
+- [x] Edge Distance checks (minimum 1.5× diameter per TEMA)
+- [x] Ligament checks (minimum per TEMA)
+- [x] Mating Hole Alignment checker (header ↔ tube sheet)
+- [x] Bolt Circle verification (per ASME B16.5)
+- [x] Hole schedule export
+- [x] Hole tolerance verification (+0.003/-0.000 typical)
+- [x] Countersink/counterbore detection
+- [x] Threaded hole identification (NPT, UNC, etc.)
+- [x] Hole centerline alignment verification
+- [x] Pattern symmetry check
 
 ---
 
