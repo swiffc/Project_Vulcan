@@ -151,11 +151,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No messages provided" }, { status: 400 });
     }
 
-    // Convert to Anthropic format
-    const anthropicMessages: Anthropic.MessageParam[] = messages.map((m) => ({
-      role: m.role,
-      content: m.content,
-    }));
+    // Convert to Anthropic format, sanitizing to only keep simple text messages
+    // This prevents the "unexpected tool_use_id found in tool_result blocks" error
+    // when conversation history contains corrupted tool_use/tool_result from previous requests
+    const anthropicMessages: Anthropic.MessageParam[] = messages
+      .filter((m) => {
+        // Only keep messages with string content (not arrays/objects from tool calling)
+        return typeof m.content === "string" && m.content.trim().length > 0;
+      })
+      .map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
 
     // Create response with tool use
     let response = await client.messages.create({
