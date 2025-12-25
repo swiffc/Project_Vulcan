@@ -39,28 +39,51 @@ HANDRAIL_STANDARDS = {
     },
 }
 
-# OSHA 1910.27 Ladder Requirements
+# OSHA 1910.28 / 1910.27 Ladder Requirements (2018 Final Rule)
+# Note: 2018 Final Rule phased out cages, now requires personal fall arrest
 LADDER_STANDARDS = {
     "rung_spacing": {
         "max_in": 12,
         "uniform": True,
-        "reference": "OSHA 1910.27(b)(1)(i)",
+        "reference": "OSHA 1910.23(b)(4)",
     },
     "side_rail_width": {
         "min_in": 16,
-        "reference": "OSHA 1910.27(b)(1)(ii)",
+        "reference": "OSHA 1910.23(b)(5)",
     },
-    "cage_required": {
-        "height_ft": 20,
-        "reference": "OSHA 1910.27(d)(1)",
+    # 2018 Final Rule: Fall protection trigger at 24 ft, not 20 ft
+    "fall_protection_trigger": {
+        "height_ft": 24,
+        "reference": "OSHA 1910.28(b)(9)(i)",
+    },
+    # Cage phase-out: Required PFAS or LAD for new ladders > 24 ft
+    "pfas_required": {
+        "height_ft": 24,
+        "note": "Personal Fall Arrest System or Ladder Safety Device",
+        "reference": "OSHA 1910.28(b)(9)(i)(A)",
+    },
+    # Existing cage systems grandfathered until 11/19/2036
+    "cage_grandfathered_until": {
+        "date": "2036-11-19",
+        "note": "Cages acceptable for existing installations only",
+        "reference": "OSHA 1910.28(b)(9)(i)(B)",
     },
     "landing_interval": {
-        "max_ft": 30,
-        "reference": "OSHA 1910.27(d)(2)",
+        "max_ft": 150,  # Updated: was 30 ft
+        "reference": "OSHA 1910.23(d)(5)",
     },
     "platform_width": {
         "min_in": 20,
-        "reference": "OSHA 1910.27(d)(3)",
+        "reference": "OSHA 1910.23(e)(2)",
+    },
+    "side_rail_extension": {
+        "min_in": 42,  # 3.5 ft above landing
+        "reference": "OSHA 1910.23(d)(1)",
+    },
+    "rung_diameter": {
+        "min_in": 0.75,
+        "max_in": 1.125,
+        "reference": "OSHA 1910.23(b)(4)(ii)",
     },
 }
 
