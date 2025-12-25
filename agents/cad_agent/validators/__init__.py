@@ -27,6 +27,12 @@ from .asme_validator import ASMEValidator, ASMEValidationResult
 from .aws_d1_1_validator import AWSD11Validator, AWSValidationResult
 from .pdf_validation_engine import PDFValidationEngine, PDFValidationResult, validate_pdf
 
+# Phase 25.5-25.8 - Additional Validators
+from .osha_validator import OSHAValidator, OSHAValidationResult
+from .bom_validator import BOMValidator, BOMValidationResult
+from .dimension_validator import DimensionValidator, DimensionValidationResult
+from .drawing_completeness_validator import DrawingCompletenessValidator, CompletenessValidationResult
+
 __all__ = [
     # Core validators
     "ValidationOrchestrator",
@@ -51,4 +57,13 @@ __all__ = [
     "PDFValidationEngine",
     "PDFValidationResult",
     "validate_pdf",
+    # Phase 25.5-25.8 - Additional Validators
+    "OSHAValidator",
+    "OSHAValidationResult",
+    "BOMValidator",
+    "BOMValidationResult",
+    "DimensionValidator",
+    "DimensionValidationResult",
+    "DrawingCompletenessValidator",
+    "CompletenessValidationResult",
 ]
