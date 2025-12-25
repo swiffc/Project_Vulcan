@@ -40,33 +40,37 @@
 
 ---
 
-### 25.1 PDF Extraction Engine (10 tasks)
-- [ ] Multi-page PDF parsing with page type detection
-- [ ] Title block extraction (Part #, Rev, Customer, Project, Date, Drawn By)
-- [ ] BOM table extraction with material specs (SA-516-70, SA-350-LF2, etc.)
-- [ ] Dimension extraction (imperial + metric dual units)
-- [ ] Weld symbol extraction from drawing views
-- [ ] GD&T symbol extraction
-- [ ] General notes extraction
-- [ ] Shop/drawing notes extraction
-- [ ] Revision block extraction (ECN history)
-- [ ] Design data extraction (MAWP, MDMT, Test Pressure, Code)
+### 25.1 PDF Extraction Engine (10 tasks) ✅ COMPLETE
+- [x] Multi-page PDF parsing with page type detection
+- [x] Title block extraction (Part #, Rev, Customer, Project, Date, Drawn By)
+- [x] BOM table extraction with material specs (SA-516-70, SA-350-LF2, etc.)
+- [x] Dimension extraction (imperial + metric dual units)
+- [x] Weld symbol extraction from drawing views
+- [x] GD&T symbol extraction
+- [x] General notes extraction
+- [x] Shop/drawing notes extraction
+- [x] Revision block extraction (ECN history)
+- [x] Design data extraction (MAWP, MDMT, Test Pressure, Code)
+
+**Implemented**: `desktop_server/extractors/pdf_drawing_extractor.py`
 
 ---
 
-### 25.2 Standards Validation - API 661 (12 tasks)
-- [ ] Tube pitch verification (2.75" typical for ACHE)
-- [ ] Tube support spacing (max 1.83m / 6ft)
-- [ ] Tube bundle lateral movement (min 6mm each direction)
-- [ ] Header type for pressure rating (plug type >435 psi)
-- [ ] Plug hardness verification (HRB 68 max CS, HRB 82 max SS)
-- [ ] Fin strip back dimensions (inlet/outlet ends)
-- [ ] Fin density verification (fins per inch)
-- [ ] Tube end weld specification (strength weld per API 661)
-- [ ] Bundle width vs frame width verification
-- [ ] Tubesheet-to-tubesheet dimension check
-- [ ] Plenum depth minimum (915mm / 36")
-- [ ] Fan coverage ratio (min 40%)
+### 25.2 Standards Validation - API 661 (12 tasks) ✅ COMPLETE
+- [x] Tube pitch verification (2.75" typical for ACHE)
+- [x] Tube support spacing (max 1.83m / 6ft)
+- [x] Tube bundle lateral movement (min 6mm each direction)
+- [x] Header type for pressure rating (plug type >435 psi)
+- [x] Plug hardness verification (HRB 68 max CS, HRB 82 max SS)
+- [x] Fin strip back dimensions (inlet/outlet ends)
+- [x] Fin density verification (fins per inch)
+- [x] Tube end weld specification (strength weld per API 661)
+- [x] Bundle width vs frame width verification
+- [x] Tubesheet-to-tubesheet dimension check
+- [x] Plenum depth minimum (915mm / 36")
+- [x] Fan coverage ratio (min 40%)
+
+**Implemented**: `agents/cad_agent/validators/api_661_validator.py`
 
 ---
 
