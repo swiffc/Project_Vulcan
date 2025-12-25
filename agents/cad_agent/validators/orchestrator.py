@@ -304,6 +304,84 @@ class ValidationOrchestrator:
                     )
                     report.drawing_results = await self._validate_drawing(file_path)
 
+                # Phase 25 - New validators
+                elif check == "holes":
+                    self._report_progress(
+                        request_id,
+                        ValidationStatus.RUNNING,
+                        "AISC Hole validation",
+                        progress,
+                        "Checking hole edge distances and spacing...",
+                    )
+                    report.phase25_results = report.phase25_results or {}
+                    report.phase25_results["holes"] = await self._validate_holes(analysis)
+
+                elif check == "structural":
+                    self._report_progress(
+                        request_id,
+                        ValidationStatus.RUNNING,
+                        "Structural capacity validation",
+                        progress,
+                        "Checking bolt and weld capacities...",
+                    )
+                    report.phase25_results = report.phase25_results or {}
+                    report.phase25_results["structural"] = await self._validate_structural(analysis)
+
+                elif check == "shaft":
+                    self._report_progress(
+                        request_id,
+                        ValidationStatus.RUNNING,
+                        "Shaft/machining validation",
+                        progress,
+                        "Checking tolerances and keyways...",
+                    )
+                    report.phase25_results = report.phase25_results or {}
+                    report.phase25_results["shaft"] = await self._validate_shaft(analysis)
+
+                elif check == "handling":
+                    self._report_progress(
+                        request_id,
+                        ValidationStatus.RUNNING,
+                        "Handling validation",
+                        progress,
+                        "Checking lifting lugs and CG...",
+                    )
+                    report.phase25_results = report.phase25_results or {}
+                    report.phase25_results["handling"] = await self._validate_handling(analysis)
+
+                elif check == "bom":
+                    self._report_progress(
+                        request_id,
+                        ValidationStatus.RUNNING,
+                        "BOM validation",
+                        progress,
+                        "Validating bill of materials...",
+                    )
+                    report.phase25_results = report.phase25_results or {}
+                    report.phase25_results["bom"] = await self._validate_bom(analysis)
+
+                elif check == "dimensions":
+                    self._report_progress(
+                        request_id,
+                        ValidationStatus.RUNNING,
+                        "Dimension validation",
+                        progress,
+                        "Checking dimension callouts...",
+                    )
+                    report.phase25_results = report.phase25_results or {}
+                    report.phase25_results["dimensions"] = await self._validate_dimensions(analysis)
+
+                elif check == "osha":
+                    self._report_progress(
+                        request_id,
+                        ValidationStatus.RUNNING,
+                        "OSHA safety validation",
+                        progress,
+                        "Checking safety requirements...",
+                    )
+                    report.phase25_results = report.phase25_results or {}
+                    report.phase25_results["osha"] = await self._validate_osha(analysis)
+
             # Step 3: Calculate summary (95%)
             self._report_progress(
                 request_id,
@@ -365,6 +443,21 @@ class ValidationOrchestrator:
                 checks.append("ache")
             if self.drawing_parser:
                 checks.append("drawing")
+            # Phase 25 validators
+            if self.aisc_hole_validator:
+                checks.append("holes")
+            if self.structural_validator:
+                checks.append("structural")
+            if self.shaft_validator:
+                checks.append("shaft")
+            if self.handling_validator:
+                checks.append("handling")
+            if self.bom_validator:
+                checks.append("bom")
+            if self.dimension_validator:
+                checks.append("dimensions")
+            if self.osha_validator:
+                checks.append("osha")
             return checks
         else:
             return [c for c in requested if self._is_check_available(c)]
@@ -381,6 +474,21 @@ class ValidationOrchestrator:
             return self.ache_validator is not None
         elif check == "drawing":
             return self.drawing_parser is not None
+        # Phase 25 validators
+        elif check == "holes":
+            return self.aisc_hole_validator is not None
+        elif check == "structural":
+            return self.structural_validator is not None
+        elif check == "shaft":
+            return self.shaft_validator is not None
+        elif check == "handling":
+            return self.handling_validator is not None
+        elif check == "bom":
+            return self.bom_validator is not None
+        elif check == "dimensions":
+            return self.dimension_validator is not None
+        elif check == "osha":
+            return self.osha_validator is not None
         return False
 
     async def _validate_gdt(self, analysis: Any) -> GDTValidationResult:
