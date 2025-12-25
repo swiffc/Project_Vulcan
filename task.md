@@ -489,23 +489,28 @@
 
 | Category | Total Checks Needed | Currently Have | Gap |
 |----------|---------------------|----------------|-----|
-| AISC Holes/Bolts | 16 | 8 | **8** |
-| AWS Welding | 8 | 4 | **4** |
-| API 661 ACHE | 32 | 0 | **32** |
+| AISC Holes/Bolts | 16 | 16 | **0** ✅ |
+| AWS Welding | 14 | 14 | **0** ✅ |
+| API 661 ACHE | 32 | 32 | **0** ✅ |
 | ASME VIII | 8 | 0 | **8** |
 | TEMA | 6 | 0 | **6** |
-| OSHA Safety | 12 | 2 | **10** |
-| NEMA Motors | 5 | 0 | **5** |
-| SSPC Coating | 6 | 0 | **6** |
-| Shaft/Machining | 12 | 9 | **3** |
-| Handling/Lifting | 12 | 10 | **2** |
-| **TOTAL** | **117** | **33** | **84** |
+| OSHA Safety | 12 | 12 | **0** ✅ |
+| NEMA Motors | 5 | 5 | **0** ✅ |
+| SSPC Coating | 6 | 6 | **0** ✅ |
+| Shaft/Machining | 12 | 12 | **0** ✅ |
+| Handling/Lifting | 12 | 12 | **0** ✅ |
+| **TOTAL** | **117** | **91** | **26** |
 
-**Current Coverage: ~28%** — New validators added Dec 25, 2025:
-- `aisc_hole_validator.py` - Edge distance, spacing, cross-part alignment
-- `structural_capacity_validator.py` - Bolt shear/bearing, weld capacity, net section
-- `shaft_validator.py` - Tolerances, keyways (ANSI B17.1), surface finish, runout
-- `handling_validator.py` - Lifting lugs, CG, shipping dimensions, rigging
+**Current Coverage: ~78%** — Major update Dec 25, 2025:
+- `aisc_hole_validator.py` - Edge distance, spacing, cross-part alignment, oversized/slotted holes, slip-critical, bearing capacity ✅
+- `structural_capacity_validator.py` - Bolt shear/bearing, weld capacity, net section ✅
+- `shaft_validator.py` - Tolerances, keyways (ANSI B17.1), surface finish, runout ✅
+- `handling_validator.py` - Lifting lugs, CG, shipping dimensions, rigging ✅
+- `api661_bundle_validator.py` - **NEW** Tube bundle assembly (32 checks per API 661 Section 7.1) ✅
+- `osha_validator.py` - **EXPANDED** 12 checks with 2018 Final Rule (24ft trigger, PFAS/LAD, cage phase-out) ✅
+- `nema_motor_validator.py` - **NEW** Motor frame dimensions per NEMA MG-1 (5 checks) ✅
+- `sspc_coating_validator.py` - **NEW** Surface prep and coating specs per SSPC (6 checks) ✅
+- `aws_d1_1_validator.py` - **EXPANDED** 14 checks with preheat, interpass, filler metal, welder qualification ✅
 
 ---
 
