@@ -73,6 +73,13 @@ except ImportError:
     inventor_feature_reader_router = None
     INVENTOR_FEATURE_READER_AVAILABLE = False
 
+try:
+    from .assembly_component_analyzer import router as assembly_component_analyzer_router
+    ASSEMBLY_COMPONENT_ANALYZER_AVAILABLE = True
+except ImportError:
+    assembly_component_analyzer_router = None
+    ASSEMBLY_COMPONENT_ANALYZER_AVAILABLE = False
+
 __all__ = [
     "solidworks_router",
     "solidworks_assembly_router",
@@ -84,6 +91,7 @@ __all__ = [
     "assembly_analyzer_router",
     "feature_reader_router",
     "inventor_feature_reader_router",
+    "assembly_component_analyzer_router",
     "SOLIDWORKS_AVAILABLE",
     "SOLIDWORKS_ASSEMBLY_AVAILABLE",
     "INVENTOR_AVAILABLE",
@@ -94,4 +102,5 @@ __all__ = [
     "ASSEMBLY_ANALYZER_AVAILABLE",
     "FEATURE_READER_AVAILABLE",
     "INVENTOR_FEATURE_READER_AVAILABLE",
+    "ASSEMBLY_COMPONENT_ANALYZER_AVAILABLE",
 ]
