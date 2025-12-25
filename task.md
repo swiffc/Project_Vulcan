@@ -552,76 +552,76 @@
 
 ---
 
-### 24.29 Ladders (15 tasks)
+### 24.29 Ladders (15 tasks) ✅
 
 #### Vertical Ladders
-- [ ] Ladder width (min 16" clear)
-- [ ] Rung spacing (max 12" uniform)
-- [ ] Rung diameter (0.75" - 1.125")
-- [ ] Side rail extension (42" above landing)
-- [ ] Ladder offset from wall (7" min)
+- [x] Ladder width (min 16" clear)
+- [x] Rung spacing (max 12" uniform)
+- [x] Rung diameter (0.75" - 1.125")
+- [x] Side rail extension (42" above landing)
+- [x] Ladder offset from wall (7" min)
 
 #### Ladder Cage
-- [ ] Cage required (>20 ft unbroken length)
-- [ ] Cage start height (7-8 ft from base)
-- [ ] Cage hoop spacing (max 4 ft)
-- [ ] Cage vertical bar spacing (max 9.5")
-- [ ] Rest platform spacing (max 35 ft vertical)
+- [x] Cage required (>20 ft unbroken length)
+- [x] Cage start height (7-8 ft from base)
+- [x] Cage hoop spacing (max 4 ft)
+- [x] Cage vertical bar spacing (max 9.5")
+- [x] Rest platform spacing (max 35 ft vertical)
 
 #### Ladder Safety
-- [ ] Ladder angle (75-90° from horizontal)
-- [ ] Landing platform at top
-- [ ] Ladder fall arrest system (alternative to cage)
-- [ ] Ladder material (galvanized, aluminum)
-- [ ] Ladder attachment method
+- [x] Ladder angle (75-90° from horizontal)
+- [x] Landing platform at top
+- [x] Ladder fall arrest system (alternative to cage)
+- [x] Ladder material (galvanized, aluminum)
+- [x] Ladder attachment method
 
 ---
 
-### 24.30 Stairs (12 tasks)
-- [ ] Stair angle (30-50° per OSHA)
-- [ ] Tread depth (min 9.5")
-- [ ] Riser height (max 9.5", uniform)
-- [ ] Stair width (min 22" typical)
-- [ ] Stair rail height (30-37" per OSHA)
-- [ ] Handrail both sides (if >44" wide)
-- [ ] Stair landing dimensions
-- [ ] Slip-resistant treads
-- [ ] Open riser vs closed riser
-- [ ] Intermediate landings (every 12 ft vertical)
-- [ ] Stair stringer material
-- [ ] Stair attachment to structure
+### 24.30 Stairs (12 tasks) ✅
+- [x] Stair angle (30-50° per OSHA)
+- [x] Tread depth (min 9.5")
+- [x] Riser height (max 9.5", uniform)
+- [x] Stair width (min 22" typical)
+- [x] Stair rail height (30-37" per OSHA)
+- [x] Handrail both sides (if >44" wide)
+- [x] Stair landing dimensions
+- [x] Slip-resistant treads
+- [x] Open riser vs closed riser
+- [x] Intermediate landings (every 12 ft vertical)
+- [x] Stair stringer material
+- [x] Stair attachment to structure
 
 ---
 
-### 24.31 Structure &amp; Support (18 tasks)
+### 24.31 Structure &amp; Support (18 tasks) ✅
 
 #### Main Structure
-- [ ] Column material and size (W-shape typical)
-- [ ] Column base plate design
-- [ ] Anchor bolt pattern and size
-- [ ] Beam material and size
-- [ ] Cross bracing design
-- [ ] Structure height verification
-- [ ] Column spacing
+- [x] Column material and size (W-shape typical)
+- [x] Column base plate design
+- [x] Anchor bolt pattern and size
+- [x] Beam material and size
+- [x] Cross bracing design
+- [x] Structure height verification
+- [x] Column spacing
 
 #### Bundle Support
-- [ ] Side frame material
-- [ ] Side frame connection to structure
-- [ ] Bundle guide rails
-- [ ] Bundle slide-out clearance
-- [ ] Bundle lifting provisions
+- [x] Side frame material
+- [x] Side frame connection to structure
+- [x] Bundle guide rails
+- [x] Bundle slide-out clearance
+- [x] Bundle lifting provisions
 
 #### Piperack Integration
-- [ ] Piperack connection details
-- [ ] Load transfer to piperack
-- [ ] Expansion/contraction allowance
-- [ ] Piperack elevation coordination
+- [x] Piperack connection details
+- [x] Load transfer to piperack
+- [x] Expansion/contraction allowance
+- [x] Piperack elevation coordination
 
 #### Surface Treatment
-- [ ] Structure surface prep (SSPC-SP6, SP10)
-- [ ] Painting system (primer, intermediate, topcoat)
-- [ ] Hot-dip galvanizing option
-- [ ] Paint vs galvanizing comparison
+- [x] Structure surface prep (SSPC-SP6, SP10)
+- [x] Painting system (primer, intermediate, topcoat)
+- [x] Hot-dip galvanizing option
+- [x] Paint vs galvanizing comparison
 
 ---
 
