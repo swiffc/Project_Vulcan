@@ -25,8 +25,8 @@
 | Phase 22 (CAD Events) | 3/3 | 0 | 100% |
 | Phase 23 (Render Deploy) | 6/6 | 0 | 100% |
 | Phase 24 (ACHE Design Assistant) | 0/340 | 340 | 0% |
-| **Phase 25 (Drawing Checker)** | **27/150** | **123** | **18%** |
-| **Phase 26 (Standards Database)** | **7/69** | **62** | **10%** |
+| **Phase 25 (Drawing Checker)** | **51/150** | **99** | **34%** |
+| **Phase 26 (Standards Database)** | **19/69** | **50** | **28%** |
 
 **Current Focus**: Phase 25 - Drawing Checker System 🚧
 
