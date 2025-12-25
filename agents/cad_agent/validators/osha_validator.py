@@ -103,6 +103,43 @@ STRUCTURAL_STANDARDS = {
     },
 }
 
+# OSHA 1910.25 Stairway Requirements
+STAIRWAY_STANDARDS = {
+    "stair_width": {
+        "min_in": 22,
+        "reference": "OSHA 1910.25(b)(3)",
+    },
+    "tread_depth": {
+        "min_in": 9.5,
+        "reference": "OSHA 1910.25(b)(4)",
+    },
+    "riser_height": {
+        "min_in": 6,
+        "max_in": 9.5,
+        "reference": "OSHA 1910.25(b)(2)",
+    },
+    "landing_length": {
+        "min_factor": 1.0,  # At least as long as stair width
+        "reference": "OSHA 1910.25(b)(6)",
+    },
+    "handrail_required": {
+        "stair_width_in": 44,  # Both sides if width > 44"
+        "reference": "OSHA 1910.25(b)(8)",
+    },
+}
+
+# OSHA 1910.22 Walking/Working Surfaces
+WALKING_SURFACES = {
+    "floor_load_capacity": {
+        "note": "Must be marked if limited",
+        "reference": "OSHA 1910.22(d)(1)",
+    },
+    "floor_opening_cover": {
+        "load_factor": 2.0,  # Capable of supporting 2x max intended load
+        "reference": "OSHA 1910.22(c)(1)",
+    },
+}
+
 
 @dataclass
 class OSHAValidationResult:
@@ -156,15 +193,19 @@ class OSHAValidator:
 
         drawing_type = extraction_result.drawing_type
 
-        # Run all validation checks
+        # Run all validation checks (12 total per 2018 Final Rule)
         self._check_handrails(extraction_result, result)
         self._check_ladders(extraction_result, result)
         self._check_platforms(extraction_result, result)
+        self._check_stairways(extraction_result, result)
         self._check_structural_bolts(extraction_result, result)
         self._check_structural_welds(extraction_result, result)
         self._check_toe_boards(extraction_result, result)
         self._check_guard_openings(extraction_result, result)
+        self._check_floor_openings(extraction_result, result)
         self._check_access_requirements(extraction_result, result)
+        self._check_load_ratings(extraction_result, result)
+        self._check_egress(extraction_result, result)
 
         return result
 
