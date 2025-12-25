@@ -1766,6 +1766,139 @@ async def check_asme_viii(request: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/phase25/check-geometry")
+async def check_geometry(request: dict):
+    """
+    Validate geometry features: corner radii, copes, notches, web openings.
+
+    Request body:
+        corners: List of {radius, angle_deg, cutting_process, location}
+        copes: List of {cope_depth_in, cope_length_in, corner_radius_in, beam_depth_in}
+        notches: List of {notch_depth_in, notch_radius_in, is_fatigue_critical}
+        web_openings: List of {opening_depth_in, opening_length_in, beam_depth_in, ...}
+
+    Returns:
+        Geometry validation results (4 checks)
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.geometry_profile_validator import (
+            GeometryProfileValidator, CornerData, CopeData, NotchData, WebOpeningData
+        )
+
+        validator = GeometryProfileValidator()
+
+        corners = [CornerData(**c) for c in request.get("corners", [])]
+        copes = [CopeData(**c) for c in request.get("copes", [])]
+        notches = [NotchData(**n) for n in request.get("notches", [])]
+        openings = [WebOpeningData(**o) for o in request.get("web_openings", [])]
+
+        result = validator.validate_all(corners, copes, notches, openings)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Geometry check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-tolerances")
+async def check_tolerances(request: dict):
+    """
+    Validate GD&T tolerances: flatness, squareness, parallelism.
+
+    Request body:
+        flatness: List of {surface_length_in, surface_width_in, specified_tolerance_in, surface_grade}
+        squareness: List of {feature_length_in, specified_tolerance_in, surface_grade}
+        parallelism: List of {feature_length_in, separation_distance_in, specified_tolerance_in}
+
+    Returns:
+        Tolerance validation results (3 checks)
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.tolerance_validator import (
+            ToleranceValidator, FlatnessData, SquarenessData, ParallelismData
+        )
+
+        validator = ToleranceValidator()
+
+        flatness = [FlatnessData(**f) for f in request.get("flatness", [])]
+        squareness = [SquarenessData(**s) for s in request.get("squareness", [])]
+        parallelism = [ParallelismData(**p) for p in request.get("parallelism", [])]
+
+        result = validator.validate_all(flatness, squareness, parallelism)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Tolerance check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-sheet-metal")
+async def check_sheet_metal(request: dict):
+    """
+    Validate sheet metal: bend allowance, grain direction, springback.
+
+    Request body:
+        bends: List of {
+            material_thickness_in, inside_bend_radius_in, bend_angle_deg,
+            material_type, bend_method, grain_direction
+        }
+
+    Returns:
+        Sheet metal validation results (3 checks per bend)
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.sheet_metal_validator import SheetMetalValidator, BendData
+
+        validator = SheetMetalValidator()
+
+        bends = [BendData(**b) for b in request.get("bends", [])]
+        result = validator.validate_all(bends)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Sheet metal check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-member-capacity")
+async def check_member_capacity(request: dict):
+    """
+    Validate structural member capacity and deflection.
+
+    Request body:
+        members: List of {
+            section: "W12X40",
+            length_in: 240,
+            material: "A992",
+            applied_moment_kip_in, applied_shear_kips, applied_axial_kips,
+            uniform_load_kip_per_in, application, is_cantilever
+        }
+
+    Returns:
+        Member capacity and deflection validation results (2 checks)
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.member_capacity_validator import MemberCapacityValidator, MemberData
+
+        validator = MemberCapacityValidator()
+
+        members = [MemberData(**m) for m in request.get("members", [])]
+        result = validator.validate_all(members)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Member capacity check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/phase25/check-tema")
 async def check_tema(request: dict):
     """
