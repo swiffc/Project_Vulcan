@@ -218,33 +218,33 @@
 
 ---
 
-### 24.13 Calculations &amp; Verification (12 tasks)
-- [ ] Tube Sheet thickness calc (ASME UG-34)
-- [ ] Header Box thickness calc (ASME UG-32)
-- [ ] Nozzle Reinforcement area calc (ASME UG-37/UG-40)
-- [ ] Nozzle Reinforcement limits verification (UG-40)
-- [ ] Tube Vibration - Natural Frequency calc
-- [ ] Tube Vibration - Vortex Shedding check
-- [ ] Tube Vibration - Fluidelastic Instability check
-- [ ] Tube Vibration - Acoustic Resonance check
-- [ ] Margin percentage display (actual vs required)
-- [ ] MAWP (Maximum Allowable Working Pressure) calc
-- [ ] Hydrostatic Test Pressure calc
-- [ ] Minimum Required Thickness calc
+### 24.13 Calculations &amp; Verification (12 tasks) ✅
+- [x] Tube Sheet thickness calc (ASME UG-34)
+- [x] Header Box thickness calc (ASME UG-32)
+- [x] Nozzle Reinforcement area calc (ASME UG-37/UG-40)
+- [x] Nozzle Reinforcement limits verification (UG-40)
+- [x] Tube Vibration - Natural Frequency calc
+- [x] Tube Vibration - Vortex Shedding check
+- [x] Tube Vibration - Fluidelastic Instability check
+- [x] Tube Vibration - Acoustic Resonance check
+- [x] Margin percentage display (actual vs required)
+- [x] MAWP (Maximum Allowable Working Pressure) calc
+- [x] Hydrostatic Test Pressure calc
+- [x] Minimum Required Thickness calc
 
 ---
 
-### 24.14 Thermal &amp; Pressure Analysis (10 tasks)
-- [ ] Thermal expansion calculation
-- [ ] Thermal growth at design temperature
-- [ ] Thermal stress analysis summary
-- [ ] Sliding support requirements
-- [ ] Bundle expansion allowance verification (min 6mm per API 661)
-- [ ] Header box thermal stress
-- [ ] Pressure drop estimation
-- [ ] Operating vs Design pressure comparison
-- [ ] Temperature classification verification
-- [ ] PWHT (Post-Weld Heat Treatment) requirements check
+### 24.14 Thermal &amp; Pressure Analysis (10 tasks) ✅
+- [x] Thermal expansion calculation
+- [x] Thermal growth at design temperature
+- [x] Thermal stress analysis summary
+- [x] Sliding support requirements
+- [x] Bundle expansion allowance verification (min 6mm per API 661)
+- [x] Header box thermal stress
+- [x] Pressure drop estimation
+- [x] Operating vs Design pressure comparison
+- [x] Temperature classification verification
+- [x] PWHT (Post-Weld Heat Treatment) requirements check
 
 ---
 
@@ -354,22 +354,22 @@
 
 ## STRUCTURAL COMPONENTS (NEW - COMPLETE)
 
-### 24.22 Plenum Chamber Analysis (15 tasks)
-- [ ] Plenum type identification (box type, slope-sided)
-- [ ] Plenum depth verification (min 915mm / 36" per API 661)
-- [ ] Plenum material verification (carbon steel typical)
-- [ ] Plenum thickness check
-- [ ] Plenum volume calculation
-- [ ] Air distribution uniformity analysis
-- [ ] Plenum drain locations
-- [ ] Plenum access door locations
-- [ ] Plenum seal/gasket verification
-- [ ] Plenum-to-bundle connection verification
-- [ ] Plenum structural bracing
-- [ ] Plenum coating/galvanizing verification
-- [ ] Plenum lifting lugs
-- [ ] Plenum partition plates (multi-service)
-- [ ] Plenum rain hood integration
+### 24.22 Plenum Chamber Analysis (15 tasks) ✅
+- [x] Plenum type identification (box type, slope-sided)
+- [x] Plenum depth verification (min 915mm / 36" per API 661)
+- [x] Plenum material verification (carbon steel typical)
+- [x] Plenum thickness check
+- [x] Plenum volume calculation
+- [x] Air distribution uniformity analysis
+- [x] Plenum drain locations
+- [x] Plenum access door locations
+- [x] Plenum seal/gasket verification
+- [x] Plenum-to-bundle connection verification
+- [x] Plenum structural bracing
+- [x] Plenum coating/galvanizing verification
+- [x] Plenum lifting lugs
+- [x] Plenum partition plates (multi-service)
+- [x] Plenum rain hood integration
 
 ---
 
