@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <title>ACHE Header and Tube Configurations - API 661</title>
+  <style>
+    .title { font: bold 18px sans-serif; }
+    .subtitle { font: bold 14px sans-serif; }
+    .label { font: 11px sans-serif; }
+    .note { font: italic 10px sans-serif; fill: #666; }
+    .critical { fill: #d32f2f; }
+    .ok { fill: #388e3c; }
+    .dim { font: 10px sans-serif; fill: #1976d2; }
+  </style>
+
+  <!-- Title -->
+  <text x="400" y="30" class="title" text-anchor="middle">API 661 Header &amp; Tube Configurations</text>
+
+  <!-- Section 1: Split Header Requirement -->
+  <g transform="translate(50, 60)">
+    <text x="0" y="0" class="subtitle">1. Split Header Requirement (7.1.6.1.2)</text>
+
+    <!-- Unified Header (OK for dT <= 110C) -->
+    <rect x="0" y="20" width="150" height="80" fill="#e8f5e9" stroke="#388e3c" stroke-width="2"/>
+    <text x="75" y="55" class="label" text-anchor="middle">Unified Header</text>
+    <text x="75" y="70" class="ok" text-anchor="middle">dT &lt;= 110C OK</text>
+    <line x1="10" y1="40" x2="140" y2="40" stroke="#333" stroke-width="1"/>
+    <text x="75" y="110" class="note" text-anchor="middle">Analysis still required</text>
+
+    <!-- Split Header (Required for dT > 110C) -->
+    <rect x="200" y="20" width="150" height="80" fill="#ffebee" stroke="#d32f2f" stroke-width="2"/>
+    <rect x="200" y="20" width="70" height="80" fill="#fff" stroke="#d32f2f" stroke-width="1"/>
+    <rect x="280" y="20" width="70" height="80" fill="#fff" stroke="#d32f2f" stroke-width="1"/>
+    <text x="275" y="55" class="label" text-anchor="middle">Split Header</text>
+    <text x="275" y="70" class="critical" text-anchor="middle">REQUIRED dT &gt; 110C</text>
+    <text x="275" y="110" class="note" text-anchor="middle">U-tube or strain relief</text>
+  </g>
+
+  <!-- Section 2: Header Types -->
+  <g transform="translate(450, 60)">
+    <text x="0" y="0" class="subtitle">2. Header Type Selection</text>
+
+    <!-- Plug Header -->
+    <g transform="translate(0, 20)">
+      <rect x="0" y="0" width="100" height="60" fill="#e3f2fd" stroke="#1976d2" stroke-width="2"/>
+      <circle cx="25" cy="30" r="8" fill="#1976d2"/>
+      <circle cx="50" cy="30" r="8" fill="#1976d2"/>
+      <circle cx="75" cy="30" r="8" fill="#1976d2"/>
+      <text x="50" y="75" class="label" text-anchor="middle">Plug Header</text>
+      <text x="50" y="88" class="dim" text-anchor="middle">P &gt;= 435 psi</text>
+    </g>
+
+    <!-- Cover Plate -->
+    <g transform="translate(120, 20)">
+      <rect x="0" y="0" width="100" height="60" fill="#fff3e0" stroke="#f57c00" stroke-width="2"/>
+      <rect x="5" y="5" width="90" height="50" fill="none" stroke="#f57c00" stroke-width="1" stroke-dasharray="5,3"/>
+      <text x="50" y="75" class="label" text-anchor="middle">Cover Plate</text>
+      <text x="50" y="88" class="dim" text-anchor="middle">P &lt; 435 psi</text>
+    </g>
+
+    <!-- Bonnet - NOT ALLOWED -->
+    <g transform="translate(240, 20)">
+      <rect x="0" y="0" width="100" height="60" fill="#ffebee" stroke="#d32f2f" stroke-width="2"/>
+      <line x1="10" y1="10" x2="90" y2="50" stroke="#d32f2f" stroke-width="3"/>
+      <line x1="90" y1="10" x2="10" y2="50" stroke="#d32f2f" stroke-width="3"/>
+      <text x="50" y="75" class="label" text-anchor="middle">Bonnet</text>
+      <text x="50" y="88" class="critical" text-anchor="middle">NOT ALLOWED</text>
+    </g>
+  </g>
+
+  <!-- Section 3: Condenser Tube Slope -->
+  <g transform="translate(50, 220)">
+    <text x="0" y="0" class="subtitle">3. Condenser Tube Slope (7.1.1.6/7)</text>
+
+    <!-- Single Pass -->
+    <g transform="translate(0, 20)">
+      <rect x="0" y="0" width="200" height="60" fill="none" stroke="#333" stroke-width="1"/>
+      <line x1="10" y1="20" x2="190" y2="35" stroke="#1976d2" stroke-width="2"/>
+      <line x1="10" y1="30" x2="190" y2="45" stroke="#1976d2" stroke-width="2"/>
+      <line x1="10" y1="40" x2="190" y2="55" stroke="#1976d2" stroke-width="2"/>
+      <text x="100" y="75" class="label" text-anchor="middle">Single-Pass: ALL tubes slope</text>
+      <text x="100" y="88" class="dim" text-anchor="middle">&gt;= 10 mm/m toward outlet</text>
+      <polygon points="185,25 195,30 185,35" fill="#1976d2"/>
+    </g>
+
+    <!-- Multi Pass -->
+    <g transform="translate(250, 20)">
+      <rect x="0" y="0" width="200" height="60" fill="none" stroke="#333" stroke-width="1"/>
+      <line x1="10" y1="20" x2="100" y2="20" stroke="#666" stroke-width="2"/>
+      <line x1="100" y1="20" x2="100" y2="40" stroke="#666" stroke-width="1"/>
+      <line x1="100" y1="40" x2="190" y2="50" stroke="#1976d2" stroke-width="2"/>
+      <text x="100" y="75" class="label" text-anchor="middle">Multi-Pass: LAST pass slopes</text>
+      <text x="100" y="88" class="dim" text-anchor="middle">&gt;= 10 mm/m toward outlet</text>
+      <polygon points="185,45 195,50 185,55" fill="#1976d2"/>
+    </g>
+  </g>
+
+  <!-- Section 4: Tube Keepers -->
+  <g transform="translate(50, 350)">
+    <text x="0" y="0" class="subtitle">4. Tube Keeper Attachment (7.1.1.5)</text>
+
+    <!-- BOLTED - Correct -->
+    <g transform="translate(0, 20)">
+      <rect x="0" y="0" width="150" height="70" fill="#e8f5e9" stroke="#388e3c" stroke-width="2"/>
+      <rect x="20" y="20" width="110" height="10" fill="#666"/>
+      <circle cx="40" cy="25" r="6" fill="#388e3c"/>
+      <circle cx="90" cy="25" r="6" fill="#388e3c"/>
+      <text x="75" y="55" class="label" text-anchor="middle">BOLTED</text>
+      <text x="75" y="85" class="ok" text-anchor="middle">CORRECT</text>
+    </g>
+
+    <!-- WELDED - Wrong -->
+    <g transform="translate(200, 20)">
+      <rect x="0" y="0" width="150" height="70" fill="#ffebee" stroke="#d32f2f" stroke-width="2"/>
+      <rect x="20" y="20" width="110" height="10" fill="#666"/>
+      <path d="M25,30 L45,35 L25,40 L45,45" stroke="#d32f2f" stroke-width="2" fill="none"/>
+      <path d="M105,30 L125,35 L105,40 L125,45" stroke="#d32f2f" stroke-width="2" fill="none"/>
+      <text x="75" y="55" class="label" text-anchor="middle">WELDED</text>
+      <text x="75" y="85" class="critical" text-anchor="middle">NOT ALLOWED</text>
+    </g>
+  </g>
+
+  <!-- Section 5: Fan Tip Clearance -->
+  <g transform="translate(450, 220)">
+    <text x="0" y="0" class="subtitle">5. Fan Tip Clearance (Table 6)</text>
+
+    <g transform="translate(0, 20)">
+      <!-- Fan ring -->
+      <circle cx="100" cy="80" r="70" fill="none" stroke="#333" stroke-width="2"/>
+      <!-- Fan blade -->
+      <ellipse cx="100" cy="80" rx="60" ry="20" fill="#90caf9" stroke="#1976d2" stroke-width="1" transform="rotate(45, 100, 80)"/>
+
+      <!-- Clearance annotation -->
+      <line x1="160" y1="80" x2="170" y2="80" stroke="#d32f2f" stroke-width="2"/>
+      <text x="175" y="75" class="dim">Min 6.35mm</text>
+      <text x="175" y="88" class="dim">Max per dia</text>
+
+      <!-- Table -->
+      <text x="0" y="170" class="label">&lt;= 3m: 6.35-12.7mm</text>
+      <text x="0" y="185" class="label">3-3.5m: 6.35-15.9mm</text>
+      <text x="0" y="200" class="label">&gt; 3.5m: 6.35-19.05mm</text>
+    </g>
+  </g>
+
+  <!-- Section 6: Nozzle Sizes -->
+  <g transform="translate(450, 430)">
+    <text x="0" y="0" class="subtitle">6. Prohibited Nozzle Sizes (7.1.9.5)</text>
+
+    <g transform="translate(0, 20)">
+      <text x="0" y="15" class="label critical">DN 32 (1-1/4")</text>
+      <text x="0" y="30" class="label critical">DN 65 (2-1/2")</text>
+      <text x="0" y="45" class="label critical">DN 90 (3-1/2")</text>
+      <text x="0" y="60" class="label critical">DN 125 (5")</text>
+      <text x="0" y="75" class="label critical">&lt; DN 20 (3/4")</text>
+
+      <text x="150" y="15" class="label ok">H2 Service:</text>
+      <text x="150" y="30" class="label ok">ALL flanged</text>
+      <text x="150" y="50" class="label ok">No threaded</text>
+      <text x="150" y="65" class="label ok">nozzles (S-710)</text>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <text x="400" y="580" class="note" text-anchor="middle">Reference: API 661 / ISO 13706, 7th Ed. + IOGP S-710 | Project Vulcan Phase 25</text>
+</svg>
