@@ -481,11 +481,11 @@ class OSHASafetyStandards:
 - [x] Hole sizes standard (drill/punch) - fractional sizes
 - [x] Hole sizes standard (drill/punch) - decimal sizes
 - [x] Hole sizes standard (drill/punch) - metric sizes
-- [ ] Edge distances vs AISC J3.4 minimum
-- [ ] Edge distances vs material thickness rules
-- [ ] Hole spacing/pitch (min 2.67d per AISC)
-- [ ] Hole-to-hole alignment (same part)
-- [ ] **Cross-part hole alignment** (mating parts) ⭐ CRITICAL
+- [x] Edge distances vs AISC J3.4 minimum ✅ aisc_hole_validator.py
+- [x] Edge distances vs material thickness rules ✅ aisc_hole_validator.py
+- [x] Hole spacing/pitch (min 2.67d per AISC) ✅ aisc_hole_validator.py
+- [x] Hole-to-hole alignment (same part) ✅ aisc_hole_validator.py
+- [x] **Cross-part hole alignment** (mating parts) ⭐ ✅ aisc_hole_validator.py
 - [ ] Slot length-to-width ratio verification
 - [ ] Slotted hole orientation vs load direction
 - [ ] Oversized hole callout verification
@@ -513,10 +513,10 @@ class OSHASafetyStandards:
 
 ### 25.2 Structural Adequacy (10 tasks)
 
-- [ ] Net section at holes (reduced area)
-- [ ] Bolt bearing capacity check
-- [ ] Bolt shear capacity check
-- [ ] Weld size adequate for load
+- [x] Net section at holes (reduced area) ✅ structural_capacity_validator.py
+- [x] Bolt bearing capacity check ✅ structural_capacity_validator.py
+- [x] Bolt shear capacity check ✅ structural_capacity_validator.py
+- [x] Weld size adequate for load ✅ structural_capacity_validator.py
 - [ ] Member capacity verification (channels, angles)
 - [ ] Connection capacity check
 - [ ] Block shear verification at hole groups
