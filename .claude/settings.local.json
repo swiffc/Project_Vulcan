@@ -50,7 +50,8 @@
       "Bash(tests/test_event_orchestration.py )",
       "Bash(data/design_knowledge/ )",
       "Bash(.claude/)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(del .gitindex.lock)"
     ]
   }
 }
