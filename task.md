@@ -106,39 +106,45 @@
 
 ---
 
-### 25.5 Standards Validation - Structural (8 tasks)
-- [ ] OSHA 1910.29 handrail height (42" ± 3")
-- [ ] OSHA 1910.29 mid-rail requirement (21")
-- [ ] OSHA 1910.29 toe board height (3.5" min)
-- [ ] OSHA 1910.27 ladder requirements
-- [ ] AWS D1.1 structural weld requirements
-- [ ] A325 bolt grade verification for structural
-- [ ] F436 hardened washer requirements
-- [ ] Column/beam sizing adequacy
+### 25.5 Standards Validation - Structural (8 tasks) ✅ COMPLETE
+- [x] OSHA 1910.29 handrail height (42" ± 3")
+- [x] OSHA 1910.29 mid-rail requirement (21")
+- [x] OSHA 1910.29 toe board height (3.5" min)
+- [x] OSHA 1910.27 ladder requirements
+- [x] AWS D1.1 structural weld requirements
+- [x] A325 bolt grade verification for structural
+- [x] F436 hardened washer requirements
+- [x] Column/beam sizing adequacy
+
+**Implemented**: `agents/cad_agent/validators/osha_validator.py`
 
 ---
 
-### 25.6 BOM Validation (8 tasks)
-- [ ] BOM item number vs balloon cross-reference
-- [ ] Material specification completeness check
-- [ ] Quantity verification (BOM qty vs drawing count)
-- [ ] Part number format validation (E&C FINFANS format)
-- [ ] Raw material (RM) part number mapping
-- [ ] Duplicate part detection
-- [ ] Missing BOM items detection
-- [ ] Material grade consistency (all SA-516-70 or mixed?)
+### 25.6 BOM Validation (8 tasks) ✅ COMPLETE
+- [x] BOM item number vs balloon cross-reference
+- [x] Material specification completeness check
+- [x] Quantity verification (BOM qty vs drawing count)
+- [x] Part number format validation (E&C FINFANS format)
+- [x] Raw material (RM) part number mapping
+- [x] Duplicate part detection
+- [x] Missing BOM items detection
+- [x] Material grade consistency (all SA-516-70 or mixed?)
+
+**Implemented**: `agents/cad_agent/validators/bom_validator.py`
 
 ---
 
-### 25.7 Dimensional Validation (8 tasks)
-- [ ] Imperial/metric conversion accuracy (within tolerance)
-- [ ] Overall dimension consistency (sum of parts = total)
-- [ ] Hole pattern pitch verification
-- [ ] Bolt circle diameter verification
-- [ ] Edge distance checks (1.5× diameter minimum)
-- [ ] Tube count verification (rows × tubes per row)
-- [ ] Nozzle projection dimensions
-- [ ] Header box dimension verification
+### 25.7 Dimensional Validation (8 tasks) ✅ COMPLETE
+- [x] Imperial/metric conversion accuracy (within tolerance)
+- [x] Overall dimension consistency (sum of parts = total)
+- [x] Hole pattern pitch verification
+- [x] Bolt circle diameter verification
+- [x] Edge distance checks (1.5× diameter minimum)
+- [x] Tube count verification (rows × tubes per row)
+- [x] Nozzle projection dimensions
+- [x] Header box dimension verification
+
+**Implemented**: `agents/cad_agent/validators/dimension_validator.py`
 
 ---
 
