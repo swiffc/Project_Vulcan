@@ -69,6 +69,7 @@ class MatesAnalysisResult:
     mate_counts_by_type: Dict[str, int] = field(default_factory=dict)
     issues: List[str] = field(default_factory=list)
     fix_suggestions: List[Dict[str, str]] = field(default_factory=list)
+    redundant_mates: List[Dict[str, Any]] = field(default_factory=list)
 
 
 class MatesAnalyzer:
@@ -194,6 +195,53 @@ class MatesAnalyzer:
             }
         return None
 
+    def _detect_redundant_mates(self, mates: List[MateInfo]) -> List[Dict[str, Any]]:
+        """Detect potentially redundant mates between same component pairs."""
+        redundant = []
+
+        # Group mates by component pair
+        comp_pair_mates: Dict[tuple, List[MateInfo]] = {}
+        for mate in mates:
+            if mate.is_suppressed:
+                continue
+            # Create sorted tuple for consistent pair identification
+            pair = tuple(sorted([mate.component1, mate.component2]))
+            if pair not in comp_pair_mates:
+                comp_pair_mates[pair] = []
+            comp_pair_mates[pair].append(mate)
+
+        # Check for redundancy patterns
+        for pair, pair_mates in comp_pair_mates.items():
+            if len(pair_mates) > 3:  # More than 3 mates between same parts is suspicious
+                redundant.append({
+                    "components": list(pair),
+                    "mate_count": len(pair_mates),
+                    "mates": [m.name for m in pair_mates],
+                    "suggestion": f"Components have {len(pair_mates)} mates. Consider if all are necessary.",
+                })
+
+            # Check for conflicting mate types
+            mate_types = [m.mate_type for m in pair_mates]
+            if MateType.LOCK in mate_types and len(mate_types) > 1:
+                redundant.append({
+                    "components": list(pair),
+                    "issue": "Lock mate with additional mates",
+                    "mates": [m.name for m in pair_mates],
+                    "suggestion": "Lock mate fully constrains - other mates may be redundant.",
+                })
+
+            # Check for duplicate coincident mates on same face type
+            coincident_count = sum(1 for m in pair_mates if m.mate_type == MateType.COINCIDENT)
+            if coincident_count > 2:
+                redundant.append({
+                    "components": list(pair),
+                    "issue": f"{coincident_count} coincident mates",
+                    "mates": [m.name for m in pair_mates if m.mate_type == MateType.COINCIDENT],
+                    "suggestion": "Multiple coincident mates may be redundant.",
+                })
+
+        return redundant
+
     def analyze(self) -> MatesAnalysisResult:
         """Analyze all mates in the assembly."""
         result = MatesAnalysisResult()
@@ -250,6 +298,9 @@ class MatesAnalyzer:
                         sub_feat = sub_feat.GetNextSubFeature()
                     break  # Only one MateGroup
                 feat = feat.GetNextFeature()
+
+            # Detect redundant mates (Phase 24.9)
+            result.redundant_mates = self._detect_redundant_mates(result.mates)
 
         except Exception as e:
             logger.error(f"Error analyzing mates: {e}")
