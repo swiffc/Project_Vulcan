@@ -181,41 +181,49 @@ PDF Input
     ▼
 ┌─────────────────────────────────────────────────────┐
 │  PDF Extraction Engine (desktop_server/extractors/) │
-│  - pdf_extractor.py (existing)                      │
-│  - title_block_parser.py (NEW)                      │
-│  - bom_parser.py (NEW)                              │
-│  - dimension_extractor.py (NEW)                     │
-│  - weld_symbol_extractor.py (NEW)                   │
+│  - pdf_drawing_extractor.py ✅ IMPLEMENTED          │
+│    - DrawingType enum (HEADER, STRUCTURE, SHIPPING) │
+│    - TitleBlockData, BOMItem, WeldSymbol dataclasses│
+│    - Dimension, DesignData, RevisionEntry classes   │
+│    - PDFDrawingExtractor with all extraction methods│
 └─────────────────────────────────────────────────────┘
     │
     ▼
 ┌─────────────────────────────────────────────────────┐
 │  Validators (agents/cad_agent/validators/)          │
-│  - api_661_validator.py (NEW/ENHANCED)              │
-│  - asme_validator.py (NEW/ENHANCED)                 │
-│  - aws_d1_1_validator.py (NEW)                      │
-│  - osha_validator.py (NEW)                          │
-│  - bom_validator.py (NEW)                           │
-│  - dimension_validator.py (NEW)                     │
-│  - drawing_completeness_validator.py (NEW)          │
+│  - api_661_validator.py ✅ (12 checks)              │
+│  - asme_validator.py ✅ (10 checks)                 │
+│  - aws_d1_1_validator.py ✅ (10 checks)             │
+│  - pdf_validation_engine.py ✅ (unified orchestrator)│
+│  - osha_validator.py (PENDING)                      │
+│  - bom_validator.py (PENDING)                       │
+│  - dimension_validator.py (PENDING)                 │
+│  - drawing_completeness_validator.py (PENDING)      │
 └─────────────────────────────────────────────────────┘
     │
     ▼
 ┌─────────────────────────────────────────────────────┐
 │  Standards Database (data/standards/)               │
-│  - api_661_data.json (existing - enhance)           │
-│  - asme_materials.json (NEW)                        │
-│  - asme_flanges_b16_5.json (existing - enhance)     │
-│  - aws_d1_1_welds.json (NEW)                        │
-│  - osha_1910.json (NEW)                             │
-│  - ec_finfans_specs.json (NEW - company specific)   │
+│  - api_661_data.json (existing - enhanced)          │
+│  - materials.json (existing - used)                 │
+│  - asme_flanges_b16_5.json (existing)               │
+│  - aws_d1_1_welds.json (PENDING)                    │
+│  - osha_1910.json (PENDING)                         │
 └─────────────────────────────────────────────────────┘
     │
     ▼
 ┌─────────────────────────────────────────────────────┐
-│  Report Generator                                   │
-│  - validation_report.py (NEW)                       │
-│  - error_annotator.py (NEW - mark up PDF)           │
+│  Server API Endpoints (desktop_server/server.py)    │
+│  - POST /phase25/validate-pdf ✅                    │
+│  - GET /phase25/extract-pdf ✅                      │
+│  - GET /phase25/validation-report ✅                │
+└─────────────────────────────────────────────────────┘
+    │
+    ▼
+┌─────────────────────────────────────────────────────┐
+│  Report Generator (PENDING)                         │
+│  - validation_report.py                             │
+│  - error_annotator.py (mark up PDF)                 │
 └─────────────────────────────────────────────────────┘
 ```
 
