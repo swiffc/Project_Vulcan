@@ -331,4 +331,5 @@ class MatesAnalyzer:
             ],
             "issues": result.issues,
             "fix_suggestions": result.fix_suggestions,
+            "redundant_mates": result.redundant_mates,
         }

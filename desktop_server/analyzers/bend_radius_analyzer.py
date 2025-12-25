@@ -17,13 +17,17 @@ logger = logging.getLogger("vulcan.analyzer.bend_radius")
 
 @dataclass
 class BendInfo:
-    """Information about a single bend."""
+    """Information about a single bend (Phase 24.11)."""
     feature_name: str = ""
     radius_m: float = 0.0
     angle_deg: float = 0.0
     thickness_m: float = 0.0
     k_factor: float = 0.0
     bend_allowance_m: float = 0.0
+    bend_deduction_m: float = 0.0
+    flat_length_m: float = 0.0
+    springback_angle_deg: float = 0.0  # Estimated springback
+    sequence_order: int = 0  # Suggested bend sequence
 
 
 @dataclass
