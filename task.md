@@ -273,20 +273,20 @@
 | # | Check | Reference | Current Status |
 |---|-------|-----------|----------------|
 | 1 | Hole type classification (std/oversized/short-slot/long-slot) | J3.3 | ❌ MISSING |
-| 2 | Standard hole size | J3.3 | ✅ Have |
+| 2 | Standard hole size | J3.3 | ✅ aisc_hole_validator.py |
 | 3 | Oversized hole size | J3.3 | ❌ MISSING |
 | 4 | Short-slot dimensions (width × length) | J3.3 | ❌ MISSING |
 | 5 | Long-slot dimensions (width × length) | J3.3 | ❌ MISSING |
-| 6 | Edge distance - sheared edge | J3.4 | ⚠️ Partial |
-| 7 | Edge distance - rolled/thermally cut edge | J3.4 | ❌ MISSING |
+| 6 | Edge distance - sheared edge | J3.4 | ✅ aisc_hole_validator.py |
+| 7 | Edge distance - rolled/thermally cut edge | J3.4 | ✅ aisc_hole_validator.py |
 | 8 | C₂ increment for slotted/oversized holes | J3.5 | ❌ MISSING |
-| 9 | Min spacing (2.67d) | J3.3 | ✅ Have |
-| 10 | Preferred spacing (3d) noted | J3.3 | ❌ MISSING |
+| 9 | Min spacing (2.67d) | J3.3 | ✅ aisc_hole_validator.py |
+| 10 | Preferred spacing (3d) noted | J3.3 | ✅ aisc_hole_validator.py |
 | 11 | Max spacing (12t or 6") | J3.5 | ❌ MISSING |
 | 12 | Clear distance Lc calculation | J3.10 | ❌ MISSING |
-| 13 | Bearing capacity check | J3.10 | ❌ MISSING |
+| 13 | Bearing capacity check | J3.10 | ✅ structural_capacity_validator.py |
 | 14 | Tearout capacity check | J3.10 | ❌ MISSING |
-| 15 | Block shear (net area with hole + 1/8") | J4.3 | ❌ MISSING |
+| 15 | Block shear (net area with hole + 1/8") | J4.3 | ✅ structural_capacity_validator.py (net section) |
 | 16 | Slot orientation vs load direction | J3.3 | ❌ MISSING |
 
 #### AWS D1.1 Checks (8 total)
@@ -354,17 +354,23 @@
 
 | Category | Total Checks Needed | Currently Have | Gap |
 |----------|---------------------|----------------|-----|
-| AISC Holes/Bolts | 16 | 3 | **13** |
-| AWS Welding | 8 | 2 | **6** |
+| AISC Holes/Bolts | 16 | 8 | **8** |
+| AWS Welding | 8 | 4 | **4** |
 | API 661 ACHE | 10 | 0 | **10** |
 | ASME VIII | 8 | 0 | **8** |
 | TEMA | 6 | 0 | **6** |
 | OSHA Safety | 10 | 2 | **8** |
 | NEMA Motors | 5 | 0 | **5** |
 | SSPC Coating | 6 | 0 | **6** |
-| **TOTAL** | **69** | **7** | **62** |
+| Shaft/Machining | 12 | 9 | **3** |
+| Handling/Lifting | 12 | 10 | **2** |
+| **TOTAL** | **93** | **33** | **60** |
 
-**Current Coverage: ~10%** — Significant expansion required for full standards compliance.
+**Current Coverage: ~35%** — New validators added Dec 25, 2025:
+- `aisc_hole_validator.py` - Edge distance, spacing, cross-part alignment
+- `structural_capacity_validator.py` - Bolt shear/bearing, weld capacity, net section
+- `shaft_validator.py` - Tolerances, keyways (ANSI B17.1), surface finish, runout
+- `handling_validator.py` - Lifting lugs, CG, shipping dimensions, rigging
 
 ---
 
