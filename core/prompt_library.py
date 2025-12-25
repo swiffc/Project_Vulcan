@@ -29,6 +29,7 @@ class PromptType(Enum):
     REACT = "react"  # ReAct pattern (thought + action)
     STRUCTURED = "structured"  # JSON/YAML output
     ROLE_PLAY = "role_play"  # Persona-based
+    CODE_GENERATION = "code_generation"  # Code generation tasks
 
 
 class PromptCategory(Enum):
@@ -82,6 +83,101 @@ class PromptLibrary:
         self.prompts: Dict[str, Prompt] = {}
         self._load_library()
         self._register_builtin_prompts()
+    
+    def get_prompt(self, prompt_id: str) -> Optional[Prompt]:
+        """Get a prompt by ID."""
+        return self.prompts.get(prompt_id)
+    
+    def search_prompts(
+        self,
+        query: Optional[str] = None,
+        category: Optional[PromptCategory] = None,
+        prompt_type: Optional[PromptType] = None,
+        tags: Optional[List[str]] = None,
+    ) -> List[Prompt]:
+        """Search prompts by various criteria."""
+        results = list(self.prompts.values())
+        
+        if category:
+            results = [p for p in results if p.category == category]
+        
+        if prompt_type:
+            results = [p for p in results if p.prompt_type == prompt_type]
+        
+        if tags:
+            results = [p for p in results if any(tag in p.tags for tag in tags)]
+        
+        if query:
+            query_lower = query.lower()
+            results = [
+                p for p in results
+                if query_lower in p.name.lower()
+                or query_lower in p.description.lower()
+                or any(query_lower in tag for tag in p.tags)
+            ]
+        
+        return results
+    
+    def format_prompt(self, prompt_id: str, **variables) -> str:
+        """Format a prompt with variables."""
+        prompt = self.get_prompt(prompt_id)
+        if not prompt:
+            return ""
+        
+        content = prompt.content
+        for key, value in variables.items():
+            content = content.replace(f"${{{key}}}", str(value))
+        
+        return content
+    
+    def load_from_yaml(self, yaml_path: str):
+        """Load prompts from a YAML file."""
+        try:
+            with open(yaml_path, 'r') as f:
+                data = yaml.safe_load(f)
+                if data and 'prompts' in data:
+                    for prompt_data in data['prompts']:
+                        prompt = Prompt(
+                            id=prompt_data['id'],
+                            name=prompt_data['name'],
+                            description=prompt_data['description'],
+                            content=prompt_data['content'],
+                            prompt_type=PromptType(prompt_data.get('type', 'task')),
+                            category=PromptCategory(prompt_data.get('category', 'analysis')),
+                            variables=prompt_data.get('variables', []),
+                            examples=prompt_data.get('examples', []),
+                            tags=prompt_data.get('tags', []),
+                            version=prompt_data.get('version', '1.0'),
+                            model_hint=prompt_data.get('model_hint', 'claude-sonnet-4'),
+                            temperature=prompt_data.get('temperature', 0.7),
+                            max_tokens=prompt_data.get('max_tokens', 2048),
+                        )
+                        self.prompts[prompt.id] = prompt
+        except Exception as e:
+            print(f"Error loading {yaml_path}: {e}")
+    
+    def export_to_yaml(self, output_path: str):
+        """Export prompts to YAML file."""
+        prompts_data = []
+        for prompt in self.prompts.values():
+            prompts_data.append({
+                'id': prompt.id,
+                'name': prompt.name,
+                'description': prompt.description,
+                'type': prompt.prompt_type.value,
+                'category': prompt.category.value,
+                'content': prompt.content,
+                'variables': prompt.variables,
+                'examples': prompt.examples,
+                'tags': prompt.tags,
+                'version': prompt.version,
+                'model_hint': prompt.model_hint,
+                'temperature': prompt.temperature,
+                'max_tokens': prompt.max_tokens,
+            })
+        
+        with open(output_path, 'w') as f:
+            yaml.dump({'version': '1.0', 'prompts': prompts_data}, f, default_flow_style=False)
     
     def _load_library(self):
         """Load prompts from YAML files."""
@@ -140,7 +236,7 @@ When analyzing designs:
 Maintain a professional but approachable tone. Ask clarifying questions if requirements are unclear.""",
             prompt_type=PromptType.ROLE_PLAY,
             category=PromptCategory.ENGINEERING,
-            tags=["cad", "mechanical", "expert", "solidworks"],
+            tags=["CAD", "mechanical", "expert", "solidworks", "engineering"],
             model_hint="claude-sonnet-4",
             temperature=0.5,
         )
@@ -182,7 +278,7 @@ Let's work through this systematically to ensure we have the right answer:
             prompt_type=PromptType.CHAIN_OF_THOUGHT,
             category=PromptCategory.VALIDATION,
             variables=["component_type"],
-            tags=["validation", "cot", "systematic"],
+            tags=["CAD", "validation", "cot", "systematic", "engineering"],
             temperature=0.3,
         )
         

@@ -311,43 +311,60 @@ class CADNLPParser:
     
     def extract_material(self, text: str) -> Optional[str]:
         """Extract material specification from text."""
-        materials = {
-            # Common materials
-            "steel": r"\b(steel|a36|carbon\s*steel)\b",
-            "stainless": r"\b(stainless|304|316|ss)\b",
-            "aluminum": r"\b(aluminum|aluminium|6061|al)\b",
-            "copper": r"\b(copper|cu)\b",
-            "brass": r"\b(brass)\b",
-            
-            # ASTM specs
-            "ASTM A105": r"\b(a105|a-105)\b",
-            "ASTM A36": r"\b(a36|a-36)\b",
-            "ASTM A516": r"\b(a516|sa-516)\b",
-            "304 Stainless": r"\b(304|ss304|304ss)\b",
-            "316 Stainless": r"\b(316|ss316|316ss)\b",
-            "6061-T6": r"\b(6061|6061-t6)\b",
-        }
-        
         text_lower = text.lower()
-        for material, pattern in materials.items():
+        
+        # Check SPECIFIC materials FIRST (ordered by specificity)
+        specific_materials = [
+            (r"\ba105\b", "ASTM A105"),
+            (r"\ba516\b", "ASTM A516"),
+            (r"\ba36\b", "ASTM A36"),
+            (r"316\s*ss\b", "316SS"),
+            (r"304\s*ss\b", "304SS"),
+            (r"\b316\b", "316SS"),
+            (r"\b304\b", "304SS"),
+            (r"6061-?t6", "6061-T6"),
+            (r"\b6061\b", "6061-T6"),
+            (r"\b7075\b", "7075 Aluminum"),
+        ]
+        
+        for pattern, material in specific_materials:
             if re.search(pattern, text_lower):
                 return material
+        
+        # THEN check generic materials (fallback)
+        if "stainless" in text_lower:
+            return "stainless steel"
+        if "aluminum" in text_lower or "aluminium" in text_lower:
+            return "aluminum"
+        if "carbon" in text_lower and "steel" in text_lower:
+            return "carbon steel"
+        if "copper" in text_lower:
+            return "copper"
+        if "brass" in text_lower:
+            return "brass"
+        if "steel" in text_lower:
+            return "steel"
         
         return None
     
     def extract_standard(self, text: str) -> Optional[str]:
         """Extract engineering standard from text."""
-        standards = {
-            "ASME B16.5": r"\b(b16\.5|b16-5|ansi\s*b16\.5)\b",
-            "ASME B16.9": r"\b(b16\.9|b16-9)\b",
-            "ASME B31.3": r"\b(b31\.3|b31-3)\b",
-            "ASME VIII": r"\b(asme\s*viii|asme\s*8|section\s*viii)\b",
-            "AWS D1.1": r"\b(aws\s*d1\.1|d1\.1)\b",
-            "AISC": r"\b(aisc)\b",
-        }
-        
         text_upper = text.upper()
-        for standard, pattern in standards.items():
+        
+        # Use regex patterns that handle spaces and variations
+        standards = [
+            (r"(?:ASME\s*)?B\s*16\.5", "ASME B16.5"),
+            (r"(?:ASME\s*)?B\s*16\.9", "ASME B16.9"),
+            (r"(?:ASME\s*)?B\s*31\.3", "ASME B31.3"),
+            (r"ASME\s*VIII", "ASME VIII"),
+            (r"AWS\s*D\s*1\.1", "AWS D1.1"),
+            (r"\bAISC\b", "AISC"),
+            (r"ASTM\s*A\s*36", "ASTM A36"),
+            (r"ASTM\s*A\s*105", "ASTM A105"),
+            (r"ASTM\s*A\s*516", "ASTM A516"),
+        ]
+        
+        for pattern, standard in standards:
             if re.search(pattern, text_upper):
                 return standard
         

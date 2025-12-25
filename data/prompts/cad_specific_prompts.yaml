@@ -600,7 +600,7 @@ prompts:
     name: "CAD API Automation Expert"
     description: "Generate Python/VBA code for SolidWorks and Inventor API automation"
     type: "code_generation"
-    category: "code"
+    category: "code_generation"
     content: |
       Generate API automation code for ${cad_software} to ${task_description}.
       
@@ -931,7 +931,7 @@ prompts:
     name: "CAD Troubleshooting Assistant"
     description: "Diagnose and fix common CAD software errors and issues"
     type: "react"
-    category: "debug"
+    category: "debugging"
     content: |
       You are a CAD troubleshooting expert. Help diagnose and resolve ${error_description} in ${cad_software}.
       
