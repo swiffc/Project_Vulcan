@@ -74,31 +74,35 @@
 
 ---
 
-### 25.3 Standards Validation - ASME (10 tasks)
-- [ ] Material specification validation (SA-516-70, SA-350-LF2, SA-105, SA-193-B7)
-- [ ] Pressure rating vs material grade check
-- [ ] Flange rating verification (150#, 300#, 900#, 1500#)
-- [ ] Flange type validation (WN, LWN, BLD per application)
-- [ ] Nozzle schedule verification (SCH 160, etc.)
-- [ ] MDMT vs material impact test requirements (UCS-66)
-- [ ] Joint efficiency verification (100% RT = E=1.0)
-- [ ] Hydro test pressure calculation check (1.3 × MAWP)
-- [ ] Corrosion allowance verification
-- [ ] PWHT requirements based on thickness
+### 25.3 Standards Validation - ASME (10 tasks) ✅ COMPLETE
+- [x] Material specification validation (SA-516-70, SA-350-LF2, SA-105, SA-193-B7)
+- [x] Pressure rating vs material grade check
+- [x] Flange rating verification (150#, 300#, 900#, 1500#)
+- [x] Flange type validation (WN, LWN, BLD per application)
+- [x] Nozzle schedule verification (SCH 160, etc.)
+- [x] MDMT vs material impact test requirements (UCS-66)
+- [x] Joint efficiency verification (100% RT = E=1.0)
+- [x] Hydro test pressure calculation check (1.3 × MAWP)
+- [x] Corrosion allowance verification
+- [x] PWHT requirements based on thickness
+
+**Implemented**: `agents/cad_agent/validators/asme_validator.py`
 
 ---
 
-### 25.4 Standards Validation - AWS D1.1 & Welding (10 tasks)
-- [ ] Weld procedure number extraction (P1A-4, P1TM-1, P1TMA-4, etc.)
-- [ ] Weld size verification vs joint type
-- [ ] Joint preparation angle verification (30°, 20°, etc.)
-- [ ] Root opening verification (1/8" typical)
-- [ ] Weld joint efficiency per code
-- [ ] Fillet weld size minimums (1/4" typical)
-- [ ] Full penetration vs partial penetration validation
-- [ ] Weld NDE requirements (RT, UT, MT, PT)
-- [ ] CSA W59/W47.1/W48 compliance (Canadian jobs)
-- [ ] Tube-to-tubesheet weld verification (GTAW per spec)
+### 25.4 Standards Validation - AWS D1.1 & Welding (10 tasks) ✅ COMPLETE
+- [x] Weld procedure number extraction (P1A-4, P1TM-1, P1TMA-4, etc.)
+- [x] Weld size verification vs joint type
+- [x] Joint preparation angle verification (30°, 20°, etc.)
+- [x] Root opening verification (1/8" typical)
+- [x] Weld joint efficiency per code
+- [x] Fillet weld size minimums (1/4" typical)
+- [x] Full penetration vs partial penetration validation
+- [x] Weld NDE requirements (RT, UT, MT, PT)
+- [x] CSA W59/W47.1/W48 compliance (Canadian jobs)
+- [x] Tube-to-tubesheet weld verification (GTAW per spec)
+
+**Implemented**: `agents/cad_agent/validators/aws_d1_1_validator.py`
 
 ---
 
