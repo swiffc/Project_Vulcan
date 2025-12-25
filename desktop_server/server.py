@@ -77,6 +77,8 @@ try:
         inventor_drawings_router,
         solidworks_mate_refs_router,
         assembly_analyzer_router,
+        feature_reader_router,
+        inventor_feature_reader_router,
     )
 
     CAD_AVAILABLE = True
@@ -90,6 +92,8 @@ except ImportError:
     inventor_drawings_router = None
     solidworks_mate_refs_router = None
     assembly_analyzer_router = None
+    feature_reader_router = None
+    inventor_feature_reader_router = None
     logger.warning("CAD COM adapters not available")
 
 # Global state
@@ -334,6 +338,12 @@ if CAD_AVAILABLE:
     if assembly_analyzer_router:
         app.include_router(assembly_analyzer_router)
         logger.info("Assembly analyzer loaded")
+    if feature_reader_router:
+        app.include_router(feature_reader_router)
+        logger.info("Feature reader loaded")
+    if inventor_feature_reader_router:
+        app.include_router(inventor_feature_reader_router)
+        logger.info("Inventor feature reader loaded")
     logger.info("CAD COM adapters loaded")
 
 # Include Events router if available
