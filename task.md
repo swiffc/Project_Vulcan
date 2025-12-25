@@ -777,21 +777,21 @@
 
 ---
 
-### 24.41 Integrations (6 tasks)
-- [ ] PDM integration (SolidWorks PDM check-in/out status)
-- [ ] ERP system connection concept (job costing)
-- [ ] Email notification capability
-- [ ] Slack/Teams alert integration
-- [ ] Google Drive backup of reports
-- [ ] Export to customer portal
+### 24.41 Integrations (6 tasks) ✅
+- [x] PDM integration (SolidWorks PDM check-in/out status)
+- [x] ERP system connection concept (job costing)
+- [x] Email notification capability
+- [x] Slack/Teams alert integration
+- [x] Google Drive backup of reports
+- [x] Export to customer portal
 
 ---
 
-### 24.42 Mobile/Tablet Support (4 tasks)
-- [ ] Responsive UI for shop floor tablets
-- [ ] QR code generation (link to model data)
-- [ ] Offline mode for shop floor (cached data)
-- [ ] Touch-friendly interface
+### 24.42 Mobile/Tablet Support (4 tasks) ✅
+- [x] Responsive UI for shop floor tablets
+- [x] QR code generation (link to model data)
+- [x] Offline mode for shop floor (cached data)
+- [x] Touch-friendly interface
 
 ---
 
