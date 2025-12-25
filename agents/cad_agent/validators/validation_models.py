@@ -187,6 +187,28 @@ class ValidationReport(BaseModel):
             self.critical_failures += self.ache_results.critical_failures
             self.all_issues.extend(self.ache_results.issues)
 
+        # Phase 25 results
+        if self.phase25_results:
+            for check_name, result in self.phase25_results.items():
+                if isinstance(result, dict):
+                    self.total_checks += result.get("total_checks", 0)
+                    self.passed += result.get("passed", 0)
+                    self.warnings += result.get("warnings", 0)
+                    self.errors += result.get("failed", 0)
+                    self.critical_failures += result.get("critical_failures", 0)
+                    # Add issues if present
+                    if "issues" in result and isinstance(result["issues"], list):
+                        for issue_dict in result["issues"]:
+                            if isinstance(issue_dict, dict):
+                                self.all_issues.append(ValidationIssue(
+                                    severity=ValidationSeverity(issue_dict.get("severity", "warning")),
+                                    check_type=check_name,
+                                    message=issue_dict.get("message", ""),
+                                    location=issue_dict.get("location"),
+                                    suggestion=issue_dict.get("suggestion"),
+                                    standard_reference=issue_dict.get("standard_reference"),
+                                ))
+
         # Count severity levels from all issues
         for issue in self.all_issues:
             if issue.severity == ValidationSeverity.CRITICAL:
