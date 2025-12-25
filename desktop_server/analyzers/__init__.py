@@ -10,6 +10,10 @@ from .interference_analyzer import InterferenceAnalyzer
 from .weld_analyzer import WeldAnalyzer
 from .nozzle_analyzer import NozzleAnalyzer
 from .asme_calculations import ASMECalculator
+from .mates_analyzer import MatesAnalyzer
+from .standards_checker import StandardsChecker
+from .thermal_analyzer import ThermalAnalyzer
+from .report_generator import ReportGenerator
 
 __all__ = [
     "BendRadiusAnalyzer",
@@ -17,4 +21,8 @@ __all__ = [
     "WeldAnalyzer",
     "NozzleAnalyzer",
     "ASMECalculator",
+    "MatesAnalyzer",
+    "StandardsChecker",
+    "ThermalAnalyzer",
+    "ReportGenerator",
 ]
