@@ -243,7 +243,8 @@ class BendRadiusAnalyzer:
         return sequence
 
     def analyze(self) -> BendAnalysisResult:
-        """Analyze all bends in the active sheet metal part."""
+        """Analyze all bends in the active sheet metal part (Phase 24.11)."""
+        import math
         result = BendAnalysisResult()
 
         if not self._connect():
@@ -255,6 +256,7 @@ class BendRadiusAnalyzer:
         result.k_factor_used = self.get_k_factor(material)
 
         bend_features = self._get_sheet_metal_features()
+        sequence_order = 0
 
         for feat in bend_features:
             try:
@@ -270,8 +272,28 @@ class BendRadiusAnalyzer:
                 if definition and hasattr(definition, "Angle"):
                     bend_info.angle_deg = definition.Angle
 
+                # Calculate bend allowance and deduction (Phase 24.11)
+                angle_rad = math.radians(bend_info.angle_deg) if bend_info.angle_deg else math.radians(90)
+                bend_info.bend_allowance_m = self.calculate_bend_allowance(
+                    bend_info.radius_m, thickness, angle_rad, result.k_factor_used
+                )
+                bend_info.bend_deduction_m = self.calculate_bend_deduction(
+                    bend_info.radius_m, thickness, angle_rad, result.k_factor_used
+                )
+
+                # Estimate springback
+                bend_info.springback_angle_deg = self.estimate_springback(
+                    material, bend_info.radius_m, thickness, bend_info.angle_deg
+                )
+
+                # Assign sequence order
+                sequence_order += 1
+                bend_info.sequence_order = sequence_order
+
                 result.bends.append(bend_info)
                 result.total_bends += 1
+                result.total_bend_allowance_m += bend_info.bend_allowance_m
+                result.total_bend_deduction_m += bend_info.bend_deduction_m
 
                 # Check against minimum
                 if bend_info.radius_m < min_radius:
@@ -285,11 +307,27 @@ class BendRadiusAnalyzer:
             except Exception as e:
                 logger.debug(f"Could not analyze bend {feat.Name}: {e}")
 
+        # Generate bend sequence recommendation
+        result.recommended_sequence = self.recommend_bend_sequence(result.bends)
+
+        # Add springback notes
+        if any(b.springback_angle_deg > 1 for b in result.bends):
+            result.springback_notes.append(
+                f"Material {material}: Consider overbending by 1-3° to compensate for springback."
+            )
+
         # Add grain direction warning if many bends
         if result.total_bends > 4:
             result.grain_direction_warning = True
             result.warnings.append(
                 "Multiple bends detected. Verify grain direction for optimal strength."
+            )
+
+        # Check for tight tolerances on multiple bends
+        if result.total_bends > 2 and result.total_bend_deduction_m > 0.005:
+            result.warnings.append(
+                f"Total bend deduction: {result.total_bend_deduction_m*1000:.2f}mm. "
+                "Consider tolerance stack-up in flat pattern."
             )
 
         return result
