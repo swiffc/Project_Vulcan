@@ -43,6 +43,8 @@ from .handling_validator import HandlingValidator, HandlingValidationResult, Han
 from .api661_bundle_validator import API661BundleValidator, API661BundleValidationResult, BundleData, FanData, DriveData
 from .nema_motor_validator import NEMAMotorValidator, NEMAMotorValidationResult, MotorData
 from .sspc_coating_validator import SSPCCoatingValidator, SSPCValidationResult, CoatingSpec
+from .asme_viii_validator import ASMEVIIIValidator, ASMEVIIIValidationResult, VesselData
+from .tema_validator import TEMAValidator, TEMAValidationResult, HeatExchangerData, TEMAClass
 
 __all__ = [
     # Core validators
@@ -104,4 +106,11 @@ __all__ = [
     "SSPCCoatingValidator",
     "SSPCValidationResult",
     "CoatingSpec",
+    "ASMEVIIIValidator",
+    "ASMEVIIIValidationResult",
+    "VesselData",
+    "TEMAValidator",
+    "TEMAValidationResult",
+    "HeatExchangerData",
+    "TEMAClass",
 ]
