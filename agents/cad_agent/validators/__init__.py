@@ -33,6 +33,12 @@ from .bom_validator import BOMValidator, BOMValidationResult
 from .dimension_validator import DimensionValidator, DimensionValidationResult
 from .drawing_completeness_validator import DrawingCompletenessValidator, CompletenessValidationResult
 
+# Phase 25 Drawing Checker - New Validators
+from .aisc_hole_validator import AISCHoleValidator, AISCHoleValidationResult, HoleData
+from .structural_capacity_validator import StructuralCapacityValidator, StructuralValidationResult, BoltData, WeldData
+from .shaft_validator import ShaftValidator, ShaftValidationResult, ShaftData, KeywayData
+from .handling_validator import HandlingValidator, HandlingValidationResult, HandlingData
+
 __all__ = [
     # Core validators
     "ValidationOrchestrator",
@@ -66,4 +72,19 @@ __all__ = [
     "DimensionValidationResult",
     "DrawingCompletenessValidator",
     "CompletenessValidationResult",
+    # Phase 25 Drawing Checker - New
+    "AISCHoleValidator",
+    "AISCHoleValidationResult",
+    "HoleData",
+    "StructuralCapacityValidator",
+    "StructuralValidationResult",
+    "BoltData",
+    "WeldData",
+    "ShaftValidator",
+    "ShaftValidationResult",
+    "ShaftData",
+    "KeywayData",
+    "HandlingValidator",
+    "HandlingValidationResult",
+    "HandlingData",
 ]
