@@ -732,6 +732,20 @@ async def get_mates_analysis():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/phase24/component-analysis")
+async def get_component_analysis():
+    """Comprehensive component analysis (Phase 24.8)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        analyzer = ComponentAnalyzer()
+        return analyzer.to_dict()
+    except Exception as e:
+        logger.error(f"Component analysis error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 class StandardsCheckRequest(BaseModel):
     """Request model for standards check."""
     tube_support_spacing_m: Optional[float] = None
