@@ -232,7 +232,7 @@ class OSHAValidator:
             result.critical_failures += result.handrail_violations
 
     def _check_ladders(self, extraction_result, result: OSHAValidationResult):
-        """Check ladder compliance with OSHA 1910.27."""
+        """Check ladder compliance with OSHA 1910.23/1910.28 (2018 Final Rule)."""
         result.total_checks += 1
         result.ladder_checks += 1
 
@@ -242,10 +242,15 @@ class OSHAValidator:
 
         # Look for ladder-related items
         ladder_dims = []
+        ladder_height_ft = None
         for dim in dimensions:
             desc = (dim.description or "").upper()
             if any(kw in desc for kw in ["LADDER", "RUNG", "CAGE", "CLIMB"]):
                 ladder_dims.append(dim)
+                # Try to extract ladder height
+                if "HEIGHT" in desc and dim.value_imperial:
+                    if "FT" in desc or dim.value_imperial > 20:
+                        ladder_height_ft = dim.value_imperial
 
         # Check for ladder in BOM
         has_ladder = False
@@ -254,6 +259,8 @@ class OSHAValidator:
             if "LADDER" in desc:
                 has_ladder = True
                 break
+
+        notes_text = " ".join([n.text for n in general_notes]).upper() if general_notes else ""
 
         if has_ladder or ladder_dims:
             # Check rung spacing
@@ -273,17 +280,77 @@ class OSHAValidator:
                             suggestion="Reduce rung spacing to 12\" maximum",
                         ))
 
-            # Check for cage requirement note if tall ladder
-            notes_text = " ".join([n.text for n in general_notes]).upper() if general_notes else ""
-            if "20" in notes_text or "FT" in notes_text:
-                if "CAGE" not in notes_text and "GUARD" not in notes_text:
+            # Check side rail extension
+            for dim in ladder_dims:
+                desc = (dim.description or "").upper()
+                val = dim.value_imperial
+                if val and "SIDE" in desc and "EXTENSION" in desc:
+                    std = LADDER_STANDARDS["side_rail_extension"]
+                    if val < std["min_in"]:
+                        result.ladder_violations += 1
+                        result.issues.append(ValidationIssue(
+                            severity=ValidationSeverity.ERROR,
+                            check_type="side_rail_extension",
+                            message=f"Side rail extension {val}\" below min {std['min_in']}\" (3.5 ft)",
+                            standard_reference=std["reference"],
+                            suggestion="Extend side rails 42\" above landing surface",
+                        ))
+
+            # 2018 Final Rule: Check fall protection for ladders > 24 ft
+            trigger_height = LADDER_STANDARDS["fall_protection_trigger"]["height_ft"]
+
+            # Detect if ladder appears to be over 24 ft
+            is_tall_ladder = False
+            if ladder_height_ft and ladder_height_ft > trigger_height:
+                is_tall_ladder = True
+            elif any(x in notes_text for x in ["24", "25", "26", "27", "28", "29", "30"]):
+                if "FT" in notes_text or "FEET" in notes_text:
+                    is_tall_ladder = True
+
+            if is_tall_ladder:
+                # Check for PFAS/LAD (2018 Final Rule requirement)
+                has_fall_protection = any(x in notes_text for x in [
+                    "PFAS", "PERSONAL FALL", "FALL ARREST", "LAD",
+                    "LADDER SAFETY", "SELF-RETRACT", "LIFELINE"
+                ])
+
+                has_cage = "CAGE" in notes_text
+
+                if has_cage and not has_fall_protection:
+                    # Cage being used - check if existing installation
                     result.issues.append(ValidationIssue(
                         severity=ValidationSeverity.WARNING,
-                        check_type="ladder_cage",
-                        message="Ladder over 20' may require cage per OSHA 1910.27(d)(1)",
-                        standard_reference="OSHA 1910.27(d)(1)",
-                        suggestion="Add cage for ladders over 20' or verify exemption",
+                        check_type="ladder_cage_phaseout",
+                        message="Cage specified for ladder >24'. 2018 Final Rule requires PFAS/LAD for new installations",
+                        standard_reference="OSHA 1910.28(b)(9)(i)",
+                        suggestion="For new installations, use personal fall arrest system (PFAS) or ladder safety device (LAD). Cages grandfathered until 11/19/2036",
                     ))
+                    result.warnings += 1
+                elif not has_fall_protection and not has_cage:
+                    result.ladder_violations += 1
+                    result.issues.append(ValidationIssue(
+                        severity=ValidationSeverity.CRITICAL,
+                        check_type="ladder_fall_protection",
+                        message=f"Ladder >24' requires fall protection per 2018 Final Rule",
+                        standard_reference="OSHA 1910.28(b)(9)(i)",
+                        suggestion="Add personal fall arrest system (PFAS) or ladder safety device (LAD)",
+                    ))
+
+            # Check ladder width (side rail spacing)
+            for dim in ladder_dims:
+                desc = (dim.description or "").upper()
+                val = dim.value_imperial
+                if val and ("WIDTH" in desc or "BETWEEN" in desc):
+                    std = LADDER_STANDARDS["side_rail_width"]
+                    if val < std["min_in"]:
+                        result.ladder_violations += 1
+                        result.issues.append(ValidationIssue(
+                            severity=ValidationSeverity.ERROR,
+                            check_type="ladder_width",
+                            message=f"Ladder width {val}\" below min {std['min_in']}\"",
+                            standard_reference=std["reference"],
+                            suggestion=f"Increase clear width between side rails to ≥{std['min_in']}\"",
+                        ))
 
         if result.ladder_violations == 0:
             result.passed += 1
