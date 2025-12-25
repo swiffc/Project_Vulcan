@@ -148,34 +148,41 @@
 
 ---
 
-### 25.8 Drawing Completeness Checks (10 tasks)
-- [ ] Title block completeness (all fields populated)
-- [ ] Revision history completeness
-- [ ] General notes presence and completeness
-- [ ] Shop notes presence
-- [ ] Weld detail callouts present
-- [ ] Section views for complex areas
-- [ ] Detail views for critical features
-- [ ] Scale verification per view
-- [ ] Third angle projection symbol
-- [ ] Copyright/proprietary notice
+### 25.8 Drawing Completeness Checks (10 tasks) ✅ COMPLETE
+- [x] Title block completeness (all fields populated)
+- [x] Revision history completeness
+- [x] General notes presence and completeness
+- [x] Shop notes presence
+- [x] Weld detail callouts present
+- [x] Section views for complex areas
+- [x] Detail views for critical features
+- [x] Scale verification per view
+- [x] Third angle projection symbol
+- [x] Copyright/proprietary notice
+
+**Implemented**: `agents/cad_agent/validators/drawing_completeness_validator.py`
 
 ---
 
-### 25.9 Error Severity Classification (5 tasks)
-- [ ] CRITICAL: Code violations (ASME, API fails)
-- [ ] CRITICAL: Safety issues (OSHA violations)
-- [ ] WARNING: Missing information
-- [ ] WARNING: Dimension inconsistencies
-- [ ] INFO: Best practice suggestions
+### 25.9 Error Severity Classification (5 tasks) ✅ COMPLETE
+- [x] CRITICAL: Code violations (ASME, API fails)
+- [x] CRITICAL: Safety issues (OSHA violations)
+- [x] WARNING: Missing information
+- [x] WARNING: Dimension inconsistencies
+- [x] INFO: Best practice suggestions
+
+**Implemented**: All validators use `ValidationSeverity` enum (CRITICAL, ERROR, WARNING, INFO)
 
 ---
 
-### 25.10 Validation Report Generation (4 tasks)
+### 25.10 Validation Report Generation (4 tasks) - 50% COMPLETE
 - [ ] PDF report with annotated errors (visual highlighting)
 - [ ] Excel checklist export
-- [ ] JSON structured results for API
-- [ ] Summary dashboard (pass/fail/warning counts)
+- [x] JSON structured results for API
+- [x] Summary dashboard (pass/fail/warning counts)
+
+**Implemented**: `pdf_validation_engine.py` - `to_dict()` and `generate_report_summary()` methods
+**Remaining**: PDF annotation and Excel export (Phase 25 enhancement)
 
 ---
 
