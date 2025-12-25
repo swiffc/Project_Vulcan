@@ -9,8 +9,14 @@ import os
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 
-import chromadb
-from chromadb.config import Settings
+try:
+    import chromadb
+    from chromadb.config import Settings
+    CHROMA_AVAILABLE = True
+except ImportError:
+    CHROMA_AVAILABLE = False
+    chromadb = None
+    Settings = None
 
 from .embeddings import get_embedding_function
 

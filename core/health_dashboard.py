@@ -11,6 +11,8 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field
 
+from core.desktop_client import get_desktop_client
+
 logger = logging.getLogger("core.health_dashboard")
 
 
@@ -105,6 +107,30 @@ class HealthDashboard:
     async def _check_service(self, name: str, url: str) -> ServiceStatus:
         """Check health of a single service."""
         try:
+            # Use desktop client for desktop server
+            if name == "desktop":
+                client = get_desktop_client()
+                start = datetime.utcnow()
+                result = await client.health_check()
+                latency = (datetime.utcnow() - start).total_seconds() * 1000
+                
+                if result.get("status") == "healthy":
+                    return ServiceStatus(
+                        name=name,
+                        status="healthy",
+                        latency_ms=round(latency, 2),
+                        last_check=datetime.utcnow().isoformat(),
+                        details=result
+                    )
+                else:
+                    return ServiceStatus(
+                        name=name,
+                        status="unhealthy",
+                        last_check=datetime.utcnow().isoformat(),
+                        details=result
+                    )
+            
+            # For other services, use HTTP check
             import httpx
             start = datetime.utcnow()
 
