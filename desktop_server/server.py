@@ -1230,6 +1230,334 @@ async def check_handling(request: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/phase25/check-weld")
+async def check_weld(request: dict):
+    """
+    Validate welding against AWS D1.1 requirements.
+
+    Request body:
+        welds: List of weld data (procedure, size, type, etc.)
+        drawing_type: "M", "S", or "CS"
+
+    Returns:
+        AWS D1.1 validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.aws_d1_1_validator import AWSD11Validator
+
+        validator = AWSD11Validator()
+
+        # Create a mock extraction result for standalone use
+        class MockExtraction:
+            def __init__(self, data):
+                self.weld_symbols = []
+                self.general_notes = []
+                self.bom_items = []
+
+                # Convert weld data to weld symbols
+                from dataclasses import dataclass
+                @dataclass
+                class WeldSymbol:
+                    weld_type: str = ""
+                    size: float = 0.0
+                    length: float = 0.0
+                    procedure: str = ""
+                    note: str = ""
+
+                for w in data.get("welds", []):
+                    self.weld_symbols.append(WeldSymbol(
+                        weld_type=w.get("weld_type", "fillet"),
+                        size=w.get("size", 0.25),
+                        length=w.get("length", 1.0),
+                        procedure=w.get("procedure", ""),
+                        note=w.get("note", ""),
+                    ))
+
+        extraction = MockExtraction(request)
+        result = validator.validate(extraction)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Weld check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-bom")
+async def check_bom(request: dict):
+    """
+    Validate Bill of Materials.
+
+    Request body:
+        items: List of BOM items {item_number, part_number, description, material, quantity}
+
+    Returns:
+        BOM validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.bom_validator import BOMValidator
+
+        validator = BOMValidator()
+
+        # Create mock extraction for standalone use
+        class MockExtraction:
+            def __init__(self, data):
+                self.bom_items = []
+
+                from dataclasses import dataclass
+                @dataclass
+                class BOMItem:
+                    item_number: str = ""
+                    part_number: str = ""
+                    description: str = ""
+                    material: str = ""
+                    quantity: int = 1
+
+                for item in data.get("items", []):
+                    self.bom_items.append(BOMItem(
+                        item_number=str(item.get("item_number", "")),
+                        part_number=item.get("part_number", ""),
+                        description=item.get("description", ""),
+                        material=item.get("material", ""),
+                        quantity=item.get("quantity", 1),
+                    ))
+
+        extraction = MockExtraction(request)
+        result = validator.validate(extraction)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"BOM check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-dimensions")
+async def check_dimensions(request: dict):
+    """
+    Validate dimensions (tolerances, conversions).
+
+    Request body:
+        dimensions: List of {value_imperial, value_metric, is_dual_unit, description}
+
+    Returns:
+        Dimension validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.dimension_validator import DimensionValidator
+
+        validator = DimensionValidator()
+
+        # Create mock extraction
+        class MockExtraction:
+            def __init__(self, data):
+                self.dimensions = []
+                self.design_data = None
+                self.drawing_type = None
+
+                from dataclasses import dataclass
+                @dataclass
+                class Dimension:
+                    value_imperial: float = None
+                    value_metric: float = None
+                    is_dual_unit: bool = False
+                    description: str = ""
+                    tolerance_plus: float = None
+                    tolerance_minus: float = None
+                    tolerance_bilateral: float = None
+
+                for d in data.get("dimensions", []):
+                    self.dimensions.append(Dimension(
+                        value_imperial=d.get("value_imperial"),
+                        value_metric=d.get("value_metric"),
+                        is_dual_unit=d.get("is_dual_unit", False),
+                        description=d.get("description", ""),
+                        tolerance_plus=d.get("tolerance_plus"),
+                        tolerance_minus=d.get("tolerance_minus"),
+                    ))
+
+        extraction = MockExtraction(request)
+        result = validator.validate(extraction)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Dimension check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-osha")
+async def check_osha(request: dict):
+    """
+    Validate OSHA structural safety requirements.
+
+    Request body:
+        handrail_height: Height in inches
+        has_midrail: Boolean
+        has_toeboard: Boolean
+        ladder_rung_spacing: Spacing in inches
+        platform_width: Width in inches
+
+    Returns:
+        OSHA validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.osha_validator import OSHAValidator
+
+        validator = OSHAValidator()
+
+        # Create mock extraction
+        class MockExtraction:
+            def __init__(self, data):
+                self.dimensions = []
+                self.bom_items = []
+                self.general_notes = []
+                self.weld_symbols = []
+
+                from dataclasses import dataclass
+                from enum import Enum
+
+                class DrawingType(Enum):
+                    HEADER = "M"
+                    STRUCTURE = "S"
+                    SHIPPING = "CS"
+
+                self.drawing_type = DrawingType.STRUCTURE
+
+                @dataclass
+                class Dimension:
+                    value_imperial: float = None
+                    description: str = ""
+
+                # Add handrail dimension if provided
+                if data.get("handrail_height"):
+                    self.dimensions.append(Dimension(
+                        value_imperial=data["handrail_height"],
+                        description="TOP RAIL HEIGHT"
+                    ))
+
+                if data.get("ladder_rung_spacing"):
+                    self.dimensions.append(Dimension(
+                        value_imperial=data["ladder_rung_spacing"],
+                        description="LADDER RUNG SPACING"
+                    ))
+
+                if data.get("platform_width"):
+                    self.dimensions.append(Dimension(
+                        value_imperial=data["platform_width"],
+                        description="PLATFORM WIDTH"
+                    ))
+
+        extraction = MockExtraction(request)
+        result = validator.validate(extraction)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"OSHA check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-completeness")
+async def check_completeness(request: dict):
+    """
+    Validate drawing completeness.
+
+    Request body:
+        title_block: {part_number, revision, title, date, drawn_by, scale, ...}
+        has_revision_history: Boolean
+        has_general_notes: Boolean
+        has_bom: Boolean
+        drawing_type: "M", "S", or "CS"
+
+    Returns:
+        Completeness validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.drawing_completeness_validator import DrawingCompletenessValidator
+
+        validator = DrawingCompletenessValidator()
+
+        # Create mock extraction
+        class MockExtraction:
+            def __init__(self, data):
+                from dataclasses import dataclass
+                from enum import Enum
+
+                class DrawingType(Enum):
+                    HEADER = "M"
+                    STRUCTURE = "S"
+                    SHIPPING = "CS"
+
+                @dataclass
+                class TitleBlock:
+                    part_number: str = ""
+                    revision: str = ""
+                    title: str = ""
+                    customer: str = ""
+                    project_number: str = ""
+                    date: str = ""
+                    drawn_by: str = ""
+                    checked_by: str = ""
+                    approved_by: str = ""
+                    scale: str = ""
+
+                @dataclass
+                class GeneralNote:
+                    text: str = ""
+
+                @dataclass
+                class RevisionEntry:
+                    revision: str = ""
+                    date: str = ""
+                    description: str = ""
+
+                tb = data.get("title_block", {})
+                self.title_block = TitleBlock(
+                    part_number=tb.get("part_number", ""),
+                    revision=tb.get("revision", ""),
+                    title=tb.get("title", ""),
+                    customer=tb.get("customer", ""),
+                    project_number=tb.get("project_number", ""),
+                    date=tb.get("date", ""),
+                    drawn_by=tb.get("drawn_by", ""),
+                    checked_by=tb.get("checked_by", ""),
+                    approved_by=tb.get("approved_by", ""),
+                    scale=tb.get("scale", ""),
+                )
+
+                dt = data.get("drawing_type", "S")
+                self.drawing_type = DrawingType.STRUCTURE if dt == "S" else \
+                                   DrawingType.HEADER if dt == "M" else \
+                                   DrawingType.SHIPPING
+
+                self.revision_history = []
+                if data.get("has_revision_history"):
+                    self.revision_history = [RevisionEntry(revision="A", date="2025-01-01")]
+
+                self.general_notes = []
+                if data.get("has_general_notes"):
+                    self.general_notes = [GeneralNote(text="MATERIAL PER BOM")]
+
+                self.bom_items = []
+                self.weld_symbols = []
+                self.page_count = data.get("page_count", 1)
+
+        extraction = MockExtraction(request)
+        result = validator.validate(extraction)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Completeness check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/kill")
 async def kill():
     """Emergency stop - activate kill switch."""
