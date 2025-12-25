@@ -66,13 +66,16 @@ export interface ValidationReport {
   timestamp: string;
   durationMs: number;
   status: "queued" | "running" | "complete" | "error";
-  
+
   // Results by type
   gdtResults?: GDTValidationResult;
   weldingResults?: WeldValidationResult;
   materialResults?: MaterialValidationResult;
   acheResults?: ACHEValidationResult;
-  
+
+  // Phase 25 - Drawing Checker results
+  phase25Results?: Phase25Results;
+
   // Summary
   totalChecks: number;
   passed: number;
@@ -80,15 +83,15 @@ export interface ValidationReport {
   errors: number;
   criticalFailures: number;
   passRate: number;
-  
+
   // All issues
   allIssues: ValidationIssue[];
-  
+
   // Files
   inputFile: string;
   annotatedPdf?: string;
   reportPdf?: string;
-  
+
   // Metadata
   metadata: Record<string, any>;
 }
@@ -108,9 +111,89 @@ export interface ValidationStatus {
     weldingValidator: boolean;
     materialValidator: boolean;
     acheValidator: boolean;
+    drawingParser: boolean;
+    // Phase 25 validators
+    aiscHoleValidator: boolean;
+    structuralValidator: boolean;
+    shaftValidator: boolean;
+    handlingValidator: boolean;
+    bomValidator: boolean;
+    dimensionValidator: boolean;
+    oshaValidator: boolean;
   };
   message: string;
   error?: string;
+}
+
+// Phase 25 - Drawing Checker types
+export interface Phase25Results {
+  holes?: HoleValidationResult;
+  structural?: StructuralValidationResult;
+  shaft?: ShaftValidationResult;
+  handling?: HandlingValidationResult;
+  bom?: BOMValidationResult;
+  dimensions?: DimensionValidationResult;
+  osha?: OSHAValidationResult;
+}
+
+export interface HoleValidationResult {
+  totalChecks: number;
+  passed: number;
+  failed: number;
+  warnings: number;
+  criticalFailures: number;
+  issues: ValidationIssue[];
+}
+
+export interface StructuralValidationResult {
+  checks: any[];
+  boltCapacityKips?: number;
+  weldCapacityKips?: number;
+  bearingCapacityKips?: number;
+}
+
+export interface ShaftValidationResult {
+  checks: any[];
+  missingCallouts: string[];
+}
+
+export interface HandlingValidationResult {
+  totalChecks: number;
+  passed: number;
+  failed: number;
+  warnings: number;
+  criticalFailures: number;
+  issues: ValidationIssue[];
+  statistics: {
+    weightLbs: number;
+    requiresLiftingLugs: boolean;
+    requiresCg: boolean;
+    shippableStandard: boolean;
+  };
+}
+
+export interface BOMValidationResult {
+  totalChecks: number;
+  passed: number;
+  failed: number;
+  warnings: number;
+  issues: ValidationIssue[];
+}
+
+export interface DimensionValidationResult {
+  totalChecks: number;
+  passed: number;
+  failed: number;
+  warnings: number;
+  issues: ValidationIssue[];
+}
+
+export interface OSHAValidationResult {
+  totalChecks: number;
+  passed: number;
+  failed: number;
+  warnings: number;
+  issues: ValidationIssue[];
 }
 
 /**
