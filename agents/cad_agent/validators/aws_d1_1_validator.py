@@ -107,6 +107,47 @@ class AWSD11Validator:
         "VT": "Visual Testing",
     }
 
+    # Preheat requirements per AWS D1.1 Table 3.2 (simplified)
+    # Base metal thickness -> minimum preheat temp (°F)
+    PREHEAT_REQUIREMENTS = {
+        # ASTM A36, A572 Gr 50 (Group I)
+        "A36": {
+            (0, 0.75): 32,      # No preheat required
+            (0.75, 1.5): 50,    # 50°F min
+            (1.5, 2.5): 150,    # 150°F min
+            (2.5, 999): 225,    # 225°F min
+        },
+        "A572": {
+            (0, 0.75): 32,
+            (0.75, 1.5): 50,
+            (1.5, 2.5): 150,
+            (2.5, 999): 225,
+        },
+        # High strength (Group II)
+        "A514": {
+            (0, 0.75): 50,
+            (0.75, 1.5): 125,
+            (1.5, 2.5): 175,
+            (2.5, 999): 225,
+        },
+    }
+
+    # Interpass temperature limits (°F)
+    INTERPASS_TEMP = {
+        "standard": {"min": 50, "max": 600},
+        "low_hydrogen": {"min": 50, "max": 400},
+        "quench_tempered": {"min": 50, "max": 400},
+    }
+
+    # Filler metal classifications
+    FILLER_METALS = {
+        "E70XX": {"tensile_ksi": 70, "process": "SMAW"},
+        "E71T-X": {"tensile_ksi": 70, "process": "FCAW"},
+        "ER70S-X": {"tensile_ksi": 70, "process": "GMAW/GTAW"},
+        "E80XX": {"tensile_ksi": 80, "process": "SMAW"},
+        "E81T-X": {"tensile_ksi": 80, "process": "FCAW"},
+    }
+
     def __init__(self):
         """Initialize the AWS D1.1 validator."""
         pass
