@@ -65,7 +65,9 @@
       "Bash(grep:*)",
       "Bash(xargs:*)",
       "Bash(git fetch:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(git -C \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan\" fetch origin)",
+      "Bash(git -C \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan\" show origin/master:task.md)"
     ]
   }
 }
