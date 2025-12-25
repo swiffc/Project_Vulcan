@@ -1,8 +1,8 @@
 # Project Vulcan: Active Task List
 
-**Status**: Phase 25 - Drawing Checker System (IN PROGRESS)
+**Status**: Phase 25 - Drawing Checker System (STANDARDS COMPLETE)
 **Last Updated**: Dec 25, 2025
-**Overall Health**: 9.9/10 (Production Deployment Ready)
+**Overall Health**: 10/10 (Production Deployment Ready)
 
 ---
 
@@ -12,12 +12,12 @@
 |----------|----------|-----------|--------|
 | Phase 19-23 (Foundation) | 57/58 | 1 (blocked) | 98% |
 | Phase 24 (ACHE Design Assistant) | 0/340 | 340 | 0% |
-| Phase 25 (Drawing Checker) | 68/150 | 82 | 45% |
-| **Standards Database** | **105/117** | **12** | **90%** |
+| Phase 25 (Drawing Checker) | 80/150 | 70 | 53% |
+| **Standards Database** | **117/117** | **0** | **100%** |
 
 ---
 
-## Completed Validators (105/117 checks)
+## Completed Validators (117/117 checks)
 
 | Validator | Checks | Status |
 |-----------|--------|--------|
@@ -29,7 +29,11 @@
 | `sspc_coating_validator.py` | 6 | ✅ Complete |
 | `asme_viii_validator.py` | 8 | ✅ Complete |
 | `tema_validator.py` | 6 | ✅ Complete |
-| `structural_capacity_validator.py` | - | ✅ Complete |
+| `geometry_profile_validator.py` | 4 | ✅ Complete |
+| `tolerance_validator.py` | 3 | ✅ Complete |
+| `sheet_metal_validator.py` | 3 | ✅ Complete |
+| `member_capacity_validator.py` | 2 | ✅ Complete |
+| `structural_capacity_validator.py` | 6 | ✅ Complete |
 | `shaft_validator.py` | - | ✅ Complete |
 | `handling_validator.py` | - | ✅ Complete |
 | `bom_validator.py` | - | ✅ Complete |
@@ -37,39 +41,9 @@
 
 ---
 
-## Remaining Standards Gaps (12 checks)
+## Phase 25 Remaining Tasks (70 tasks)
 
-| Category | Missing Checks |
-|----------|----------------|
-| Profile/Cutout | 4 (corner radii, cope dims, notch stress, web openings) |
-| Tolerances | 3 (flatness, squareness, parallelism) |
-| Sheet Metal | 3 (bend allowance, grain direction, springback) |
-| Structural | 2 (member capacity, deflection limits) |
-
----
-
-## Phase 25 Remaining Tasks (82 tasks)
-
-### 25.1 Geometry (11 remaining)
-- [ ] Slot length-to-width ratio
-- [ ] Inside corner radii (plasma/laser min)
-- [ ] Cope dimensions for weld access
-- [ ] Notch stress concentration
-- [ ] Web openings for tooling
-- [ ] Flatness requirements
-- [ ] Squareness requirements
-- [ ] Parallelism requirements
-- [ ] Bend allowance/K-factor
-- [ ] Grain direction
-- [ ] Springback consideration
-
-### 25.2 Structural (4 remaining)
-- [ ] Member capacity (channels, angles)
-- [ ] Connection capacity
-- [ ] Deflection limits specified
-- [ ] Fatigue consideration
-
-### 25.3-25.13 (67 remaining)
+### 25.3-25.13 Implementation Tasks
 - 25.3 Fabrication Feasibility (~8 tasks)
 - 25.4 Welding (~6 tasks)
 - 25.5 Machining/Shaft (~3 tasks)
@@ -95,6 +69,33 @@ Major feature areas:
 - Walkways, Handrails, Ladders
 - AI Features & Integration
 - Field Erection Support
+
+---
+
+## API Endpoints Summary
+
+### Phase 25 Drawing Checker Endpoints
+
+| Endpoint | Validator | Checks |
+|----------|-----------|--------|
+| `/phase25/check-holes` | AISC Hole | 16 |
+| `/phase25/check-weld` | AWS D1.1 | 14 |
+| `/phase25/check-api661-bundle` | API 661 | 32 |
+| `/phase25/check-osha` | OSHA | 12 |
+| `/phase25/check-nema-motor` | NEMA MG-1 | 5 |
+| `/phase25/check-sspc-coating` | SSPC | 6 |
+| `/phase25/check-asme-viii` | ASME VIII | 8 |
+| `/phase25/check-tema` | TEMA R/B/C | 6 |
+| `/phase25/check-geometry` | Geometry/Profile | 4 |
+| `/phase25/check-tolerances` | GD&T | 3 |
+| `/phase25/check-sheet-metal` | Sheet Metal | 3 |
+| `/phase25/check-member-capacity` | Structural | 2 |
+| `/phase25/check-structural` | Connections | 6 |
+| `/phase25/check-shaft` | Machining | - |
+| `/phase25/check-handling` | Handling | - |
+| `/phase25/check-bom` | BOM | - |
+| `/phase25/check-dimensions` | Dimensions | - |
+| `/phase25/check-completeness` | Completeness | - |
 
 ---
 
@@ -144,8 +145,26 @@ Major feature areas:
 | C (Commercial) | 0.625 |
 | B (Chemical) | 0.50 |
 
+### Sheet Metal K-Factors
+| Bend Method | K-Factor |
+|-------------|----------|
+| Air Bend | 0.33 |
+| Bottoming | 0.42 |
+| Coining | 0.50 |
+
+### Deflection Limits
+| Application | Limit |
+|-------------|-------|
+| Floor Live Load | L/360 |
+| Floor Total | L/240 |
+| Roof Live | L/240 |
+| Equipment Support | L/600 |
+| Crane Runway | L/600 |
+
 ---
 
-**Next Priority**: Complete remaining 12 geometry/tolerance validators to reach 100% standards coverage
+**Standards Database: 100% COMPLETE**
+
+**Next Priority**: Phase 25.3-25.13 implementation tasks, then Phase 24
 
 **Last Updated**: Dec 25, 2025
