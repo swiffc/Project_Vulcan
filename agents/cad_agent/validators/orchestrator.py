@@ -140,6 +140,15 @@ class ValidationOrchestrator:
         self.drawing_analyzer = DrawingAnalyzer()
         self.drawing_parser = get_drawing_parser() if get_drawing_parser else None
 
+        # Phase 25 - New validators
+        self.aisc_hole_validator = AISCHoleValidator() if AISCHoleValidator else None
+        self.structural_validator = StructuralCapacityValidator() if StructuralCapacityValidator else None
+        self.shaft_validator = ShaftValidator() if ShaftValidator else None
+        self.handling_validator = HandlingValidator() if HandlingValidator else None
+        self.bom_validator = BOMValidator() if BOMValidator else None
+        self.dimension_validator = DimensionValidator() if DimensionValidator else None
+        self.osha_validator = OSHAValidator() if OSHAValidator else None
+
         try:
             from core.flatter_files_client import FlatterFilesClient
 
@@ -156,6 +165,13 @@ class ValidationOrchestrator:
         logger.info(f"  Material Validator: {'✓' if self.material_validator else '✗'}")
         logger.info(f"  ACHE Validator: {'✓' if self.ache_validator else '✗'}")
         logger.info(f"  Drawing Parser: {'✓' if self.drawing_parser else '✗'}")
+        logger.info(f"  AISC Hole Validator: {'✓' if self.aisc_hole_validator else '✗'}")
+        logger.info(f"  Structural Validator: {'✓' if self.structural_validator else '✗'}")
+        logger.info(f"  Shaft Validator: {'✓' if self.shaft_validator else '✗'}")
+        logger.info(f"  Handling Validator: {'✓' if self.handling_validator else '✗'}")
+        logger.info(f"  BOM Validator: {'✓' if self.bom_validator else '✗'}")
+        logger.info(f"  Dimension Validator: {'✓' if self.dimension_validator else '✗'}")
+        logger.info(f"  OSHA Validator: {'✓' if self.osha_validator else '✗'}")
         logger.info(
             f"  Flatter Files Client: {'✓' if self.flatter_files_client else '✗'}"
         )
