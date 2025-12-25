@@ -90,6 +90,22 @@ class SystemManagerAdapter:
         self.scheduler.add_job("health_check", health_func, "interval", hours=1)
         # Metrics every 5 min
         self.scheduler.add_job("metrics", self.metrics.get_system_metrics, "interval", minutes=5)
+        # Weekly standards update (Sunday at 3 AM)
+        self.scheduler.add_job("standards_update", self.run_standards_update, "cron", day_of_week="sun", hour=3)
+        
+    def run_standards_update(self):
+        """Run the standards update script."""
+        import subprocess
+        import sys
+        
+        script_path = "scripts/pull_external_standards.py"
+        python_executable = sys.executable
+        
+        try:
+            subprocess.run([python_executable, script_path], check=True)
+            logger.info("Standards update script completed successfully.")
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Standards update script failed: {e}")
         
     def start(self):
         self.scheduler.start()

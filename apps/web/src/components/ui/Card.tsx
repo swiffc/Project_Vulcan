@@ -32,14 +32,18 @@ interface CardHeaderProps {
   title: string;
   subtitle?: string;
   action?: ReactNode;
+  icon?: ReactNode;
 }
 
-export function CardHeader({ title, subtitle, action }: CardHeaderProps) {
+export function CardHeader({ title, subtitle, action, icon }: CardHeaderProps) {
   return (
     <div className="flex items-center justify-between mb-4">
-      <div>
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
-        {subtitle && <p className="text-sm text-white/50">{subtitle}</p>}
+      <div className="flex items-center gap-3">
+        {icon && <div>{icon}</div>}
+        <div>
+          <h3 className="text-lg font-semibold text-white">{title}</h3>
+          {subtitle && <p className="text-sm text-white/50">{subtitle}</p>}
+        </div>
       </div>
       {action && <div>{action}</div>}
     </div>

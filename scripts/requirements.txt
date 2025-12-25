@@ -1,0 +1,13 @@
+# Core dependency for optional GitHub fetches
+requests>=2.31.0
+
+# Optional: pipe and fitting calculations (used if installed)
+fluids>=1.0.23
+
+# Optional (not installed by default):
+# fastener-db            # Often unavailable on PyPI; install via GitHub if needed
+# aisc-shapes            # Typically not on PyPI; install via GitHub if needed
+
+# Optional install helpers (uncomment to try installing from GitHub):
+# fastener-db @ git+https://github.com/jreinhardt/BOLTS.git#subdirectory=python
+# aisc-shapes @ git+https://github.com/aisc-org/aisc-shapes.git

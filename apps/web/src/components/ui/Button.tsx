@@ -20,14 +20,14 @@ export function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = "inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-all";
+  const baseStyles = "inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-all duration-200 active:scale-95";
 
   const variants = {
-    primary: "bg-vulcan-accent text-white hover:bg-vulcan-accent/80 disabled:bg-vulcan-accent/50",
-    secondary: "glass text-white hover:bg-white/10 border border-white/10",
-    ghost: "text-white/70 hover:text-white hover:bg-white/5",
-    danger: "bg-vulcan-error text-white hover:bg-vulcan-error/80",
-    success: "bg-vulcan-success text-white hover:bg-vulcan-success/80",
+    primary: "bg-vulcan-accent text-white hover:bg-vulcan-accent/90 hover:shadow-lg hover:shadow-vulcan-accent/20 disabled:bg-vulcan-accent/50 disabled:cursor-not-allowed",
+    secondary: "glass text-white hover:bg-white/10 hover:shadow-lg border border-white/10 active:border-white/20",
+    ghost: "text-white/70 hover:text-white hover:bg-white/5 active:bg-white/10",
+    danger: "bg-vulcan-error text-white hover:bg-vulcan-error/90 hover:shadow-lg hover:shadow-red-500/20 disabled:bg-vulcan-error/50",
+    success: "bg-vulcan-success text-white hover:bg-vulcan-success/90 hover:shadow-lg hover:shadow-emerald-500/20 disabled:bg-vulcan-success/50",
   };
 
   const sizes = {

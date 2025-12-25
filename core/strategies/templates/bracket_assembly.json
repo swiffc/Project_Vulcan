@@ -1,0 +1,86 @@
+{
+  "name": "Support Bracket Assembly",
+  "product_type": "assembly",
+  "description": "Multi-component support bracket with hardware",
+  "material": {
+    "name": "AISI 1018 Steel",
+    "grade": "1018",
+    "density": 7870,
+    "yield_strength": 370,
+    "tensile_strength": 440
+  },
+  "components": [
+    {
+      "name": "Main Bracket",
+      "part_number": "BRK-001",
+      "quantity": 1,
+      "material": "AISI 1018",
+      "volume": 45000
+    },
+    {
+      "name": "Gusset Plate",
+      "part_number": "BRK-002",
+      "quantity": 2,
+      "material": "AISI 1018",
+      "volume": 8000
+    },
+    {
+      "name": "Hex Bolt M10x30",
+      "part_number": "HW-M10-30",
+      "quantity": 4,
+      "standard": "ISO 4014",
+      "volume": 500
+    },
+    {
+      "name": "Hex Nut M10",
+      "part_number": "HW-NUT-M10",
+      "quantity": 4,
+      "standard": "ISO 4032",
+      "volume": 200
+    },
+    {
+      "name": "Flat Washer M10",
+      "part_number": "HW-WASH-M10",
+      "quantity": 8,
+      "standard": "ISO 7089",
+      "volume": 100
+    }
+  ],
+  "mates": [
+    {
+      "name": "Gusset-Bracket Left",
+      "type": "coincident",
+      "component": "Gusset Plate",
+      "face": "bottom"
+    },
+    {
+      "name": "Gusset-Bracket Right",
+      "type": "coincident",
+      "component": "Gusset Plate",
+      "face": "bottom"
+    },
+    {
+      "name": "Bolt Pattern",
+      "type": "concentric",
+      "component": "Hex Bolt M10x30",
+      "pattern": "4x"
+    }
+  ],
+  "bom": [
+    {"item": 1, "part_number": "BRK-001", "description": "Main Bracket", "qty": 1, "material": "AISI 1018"},
+    {"item": 2, "part_number": "BRK-002", "description": "Gusset Plate", "qty": 2, "material": "AISI 1018"},
+    {"item": 3, "part_number": "HW-M10-30", "description": "Hex Bolt M10x30", "qty": 4, "material": "Grade 8.8"},
+    {"item": 4, "part_number": "HW-NUT-M10", "description": "Hex Nut M10", "qty": 4, "material": "Grade 8"},
+    {"item": 5, "part_number": "HW-WASH-M10", "description": "Flat Washer M10", "qty": 8, "material": "Steel"}
+  ],
+  "constraints": [
+    {
+      "name": "Bolt Torque",
+      "type": "process",
+      "value": 45,
+      "standard": "ISO 898-1",
+      "is_critical": true
+    }
+  ],
+  "tags": ["bracket", "assembly", "support", "hardware"]
+}

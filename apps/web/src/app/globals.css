@@ -21,11 +21,11 @@
   --session-gap: #6e7681;
 
   /* EMA Colors (BTMM) */
-  --ema-mustard: #FFD700;
-  --ema-ketchup: #FF4444;
-  --ema-water: #4A9EFF;
-  --ema-mayo: #E0E0E0;
-  --ema-blueberry: #1E3A8A;
+  --ema-mustard: #ffd700;
+  --ema-ketchup: #ff4444;
+  --ema-water: #4a9eff;
+  --ema-mayo: #e0e0e0;
+  --ema-blueberry: #1e3a8a;
 
   /* Level Colors */
   --level-1: #3fb950;
@@ -35,18 +35,22 @@
   /* Vulcan Theme */
   --vulcan-accent: #6366f1;
   --vulcan-darker: #0d1117;
+  --vulcan-success: #10b981;
+  --vulcan-warning: #f59e0b;
+  --vulcan-error: #ef4444;
 }
 
-body {
+html, body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
-      135deg,
-      rgb(30, 27, 75) 0%,
-      rgb(49, 46, 129) 25%,
-      rgb(30, 58, 138) 50%,
-      rgb(17, 24, 39) 100%
-    );
+    135deg,
+    rgb(30, 27, 75) 0%,
+    rgb(49, 46, 129) 25%,
+    rgb(30, 58, 138) 50%,
+    rgb(17, 24, 39) 100%
+  );
   min-height: 100vh;
+  overflow-y: auto;
 }
 
 /* Glassmorphism utilities */
@@ -126,14 +130,12 @@ body {
 
 /* Glow effects */
 .glow-indigo {
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4),
-    0 0 40px rgba(99, 102, 241, 0.2),
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4), 0 0 40px rgba(99, 102, 241, 0.2),
     0 0 60px rgba(99, 102, 241, 0.1);
 }
 
 .glow-emerald {
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4),
-    0 0 40px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4), 0 0 40px rgba(16, 185, 129, 0.2);
 }
 
 /* Animated gradient border */
@@ -168,9 +170,15 @@ body {
 }
 
 @keyframes gradient-rotate {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Hover lift effect */
@@ -185,8 +193,12 @@ body {
 
 /* Shimmer loading effect */
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .shimmer {
@@ -202,8 +214,14 @@ body {
 
 /* Pulse ring animation */
 @keyframes pulse-ring {
-  0% { transform: scale(0.8); opacity: 1; }
-  100% { transform: scale(2); opacity: 0; }
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
 .pulse-ring {
@@ -221,8 +239,8 @@ body {
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -231,8 +249,9 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
+  background: rgba(99, 102, 241, 0.4);
+  border-radius: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.05);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -311,16 +330,32 @@ body {
 }
 
 /* Trading Module Styles */
-.trading-bullish { color: var(--trading-bullish); }
-.trading-bearish { color: var(--trading-bearish); }
-.trading-neutral { color: var(--trading-neutral); }
+.trading-bullish {
+  color: var(--trading-bullish);
+}
+.trading-bearish {
+  color: var(--trading-bearish);
+}
+.trading-neutral {
+  color: var(--trading-neutral);
+}
 
-.bg-trading-bullish { background-color: var(--trading-bullish); }
-.bg-trading-bearish { background-color: var(--trading-bearish); }
-.bg-trading-neutral { background-color: var(--trading-neutral); }
+.bg-trading-bullish {
+  background-color: var(--trading-bullish);
+}
+.bg-trading-bearish {
+  background-color: var(--trading-bearish);
+}
+.bg-trading-neutral {
+  background-color: var(--trading-neutral);
+}
 
-.border-trading-bullish { border-color: var(--trading-bullish); }
-.border-trading-bearish { border-color: var(--trading-bearish); }
+.border-trading-bullish {
+  border-color: var(--trading-bullish);
+}
+.border-trading-bearish {
+  border-color: var(--trading-bearish);
+}
 
 /* Trading Layout */
 .trading-layout {
@@ -343,7 +378,7 @@ body {
 
 .trading-main {
   grid-row: 2;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .trading-right-panel {
@@ -384,8 +419,15 @@ body {
 
 /* Kill Zone Pulse Animation */
 @keyframes killzone-pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.4); }
-  50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(248, 81, 73, 0); }
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.4);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 0 8px rgba(248, 81, 73, 0);
+  }
 }
 
 .killzone-active {
@@ -455,17 +497,29 @@ body {
 .cycle-day-1 {
   --cycle-color: #fbbf24;
   border-color: var(--cycle-color);
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, transparent 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.15) 0%,
+    transparent 100%
+  );
 }
 
 .cycle-day-2 {
   --cycle-color: #f97316;
   border-color: var(--cycle-color);
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, transparent 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(249, 115, 22, 0.15) 0%,
+    transparent 100%
+  );
 }
 
 .cycle-day-3 {
   --cycle-color: #22c55e;
   border-color: var(--cycle-color);
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, transparent 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.15) 0%,
+    transparent 100%
+  );
 }

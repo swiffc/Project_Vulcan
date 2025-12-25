@@ -21,41 +21,91 @@ from typing import Dict, Any
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+import httpx
 import yaml
 import pyautogui
+import sys
+from pathlib import Path
 
-# Import controllers
-from controllers import mouse_router, keyboard_router, screen_router, window_router
-from controllers import tradingview_router, TRADINGVIEW_AVAILABLE
-from controllers import browser_router, BROWSER_AVAILABLE
-from controllers import j2_tracker_router, J2_AVAILABLE
-
-# Import memory controller (optional - requires chromadb)
+# Windows COM imports for CAD status checking
 try:
-    from controllers.memory import router as memory_router
-    MEMORY_AVAILABLE = True
+    import win32com.client
+    import pythoncom
+
+    COM_AVAILABLE = True
 except ImportError:
-    MEMORY_AVAILABLE = False
-    logger.warning("Memory/RAG module not available - install chromadb and sentence-transformers")
+    COM_AVAILABLE = False
+
+sys.path.append(str(Path(__file__).parent.parent))
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("vulcan_actions.log"), logging.StreamHandler()],
-)
+from core.logging_config import setup_logging
+
+setup_logging()
 logger = logging.getLogger(__name__)
+
+# Import controllers
+from controllers import (
+    mouse_router,
+    keyboard_router,
+    screen_router,
+    window_router,
+    tradingview_router,
+    TRADINGVIEW_AVAILABLE,
+    browser_router,
+    BROWSER_AVAILABLE,
+    j2_tracker_router,
+    J2_AVAILABLE,
+    memory_router,
+    MEMORY_AVAILABLE,
+    cad_validation_router,
+    CAD_VALIDATION_AVAILABLE,
+    recorder_router,
+    verifier_router,
+    events_router,
+    EVENTS_AVAILABLE,
+)
 
 # Import CAD COM adapters (optional - only if CAD software is installed)
 try:
-    from com import solidworks_router, solidworks_assembly_router, inventor_router
+    from com import (
+        solidworks_router,
+        solidworks_assembly_router,
+        solidworks_drawings_router,
+        inventor_router,
+        inventor_imates_router,
+        inventor_drawings_router,
+        solidworks_mate_refs_router,
+        assembly_analyzer_router,
+        feature_reader_router,
+        inventor_feature_reader_router,
+        assembly_component_analyzer_router,
+        configuration_router,
+        measurement_router,
+        properties_router,
+        document_exporter_router,
+        bom_router,
+    )
 
     CAD_AVAILABLE = True
 except ImportError:
     CAD_AVAILABLE = False
     solidworks_router = None
     solidworks_assembly_router = None
+    solidworks_drawings_router = None
     inventor_router = None
+    inventor_imates_router = None
+    inventor_drawings_router = None
+    solidworks_mate_refs_router = None
+    assembly_analyzer_router = None
+    feature_reader_router = None
+    inventor_feature_reader_router = None
+    assembly_component_analyzer_router = None
+    configuration_router = None
+    measurement_router = None
+    properties_router = None
+    document_exporter_router = None
+    bom_router = None
     logger.warning("CAD COM adapters not available")
 
 # Global state
@@ -77,41 +127,65 @@ class CommandRequest(BaseModel):
 async def process_command_queue():
     """Background worker to process commands sequentially."""
     logger.info("Queue Worker Started")
-    while True:
-        try:
-            # Get a "unit of work"
-            command = await COMMAND_QUEUE.get()
+    # Store port locally to avoid relying on global port during startup
+    port = int(os.environ.get("PORT", 8000))
+    # Wait for server to be ready before processing queue
+    await asyncio.sleep(2)
 
-            # Check kill switch before processing
-            if KILL_SWITCH_ACTIVE:
-                logger.warning(f"Skipping command {command} due to Kill Switch")
+    async with httpx.AsyncClient(
+        base_url=f"http://127.0.0.1:{port}", timeout=60.0
+    ) as client:
+        while True:
+            try:
+                # Get a "unit of work"
+                command: CommandRequest = await COMMAND_QUEUE.get()
+
+                # Check kill switch before processing
+                if KILL_SWITCH_ACTIVE:
+                    logger.warning(
+                        f"Skipping command {command.type}/{command.action} due to Kill Switch"
+                    )
+                    COMMAND_QUEUE.task_done()
+                    continue
+
+                logger.info(f"Processing command: {command.type}/{command.action}")
+
+                # Map command types to router prefixes
+                endpoint = f"/{command.type}/{command.action}"
+
+                # Execute command via local API call
+                try:
+                    resp = await client.post(endpoint, json=command.params)
+                    result = (
+                        resp.json() if resp.status_code < 400 else {"error": resp.text}
+                    )
+                    logger.info(
+                        f"Command {command.type}/{command.action} result: {resp.status_code}"
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to execute command locally: {e}")
+                    result = {"error": str(e)}
+
+                # Log completion
+                ACTION_LOG.append(
+                    {
+                        "timestamp": datetime.now().isoformat(),
+                        "type": "queue_execution",
+                        "command": command.dict(),
+                        "result": result,
+                    }
+                )
+
+                # Notify queue that content is processed
                 COMMAND_QUEUE.task_done()
-                continue
 
-            logger.info(f"Processing command: {command}")
-
-            # Simulate processing delay or route to specific controller
-            # In a real implementation, you would route to controllers here
-            # e.g., await mouse_router.execute(command)
-
-            # Log completion
-            ACTION_LOG.append(
-                {
-                    "timestamp": datetime.now().isoformat(),
-                    "type": "queue_execution",
-                    "command": command.dict(),
-                }
-            )
-
-            # Notify queue that content is processed
-            COMMAND_QUEUE.task_done()
-
-        except asyncio.CancelledError:
-            logger.info("Queue Worker Cancelled")
-            break
-        except Exception as e:
-            logger.error(f"Error processing command: {e}")
-            COMMAND_QUEUE.task_done()
+            except asyncio.CancelledError:
+                logger.info("Queue Worker Cancelled")
+                break
+            except Exception as e:
+                logger.error(f"Error in queue worker loop: {e}")
+                # Don't call task_done() here if we didn't successfully get a command
+                await asyncio.sleep(1)
 
 
 def get_tailscale_ip() -> str | None:
@@ -263,9 +337,49 @@ if CAD_AVAILABLE:
         app.include_router(solidworks_router)
     if solidworks_assembly_router:
         app.include_router(solidworks_assembly_router)
+    if solidworks_drawings_router:
+        app.include_router(solidworks_drawings_router)
     if inventor_router:
         app.include_router(inventor_router)
+    if inventor_imates_router:
+        app.include_router(inventor_imates_router)
+    if inventor_drawings_router:
+        app.include_router(inventor_drawings_router)
+    if solidworks_mate_refs_router:
+        app.include_router(solidworks_mate_refs_router)
+    if assembly_analyzer_router:
+        app.include_router(assembly_analyzer_router)
+        logger.info("Assembly analyzer loaded")
+    if feature_reader_router:
+        app.include_router(feature_reader_router)
+        logger.info("Feature reader loaded")
+    if inventor_feature_reader_router:
+        app.include_router(inventor_feature_reader_router)
+        logger.info("Inventor feature reader loaded")
+    if assembly_component_analyzer_router:
+        app.include_router(assembly_component_analyzer_router)
+        logger.info("Assembly component analyzer loaded")
+    if configuration_router:
+        app.include_router(configuration_router)
+        logger.info("Configuration manager loaded")
+    if measurement_router:
+        app.include_router(measurement_router)
+        logger.info("Measurement tools loaded")
+    if properties_router:
+        app.include_router(properties_router)
+        logger.info("Properties reader loaded")
+    if document_exporter_router:
+        app.include_router(document_exporter_router)
+        logger.info("Document exporter loaded")
+    if bom_router:
+        app.include_router(bom_router)
+        logger.info("BOM manager loaded")
     logger.info("CAD COM adapters loaded")
+
+# Include Events router if available
+if EVENTS_AVAILABLE:
+    app.include_router(events_router)
+    logger.info("Events controller loaded")
 
 # Include memory router if available
 if MEMORY_AVAILABLE:
@@ -286,6 +400,16 @@ if J2_AVAILABLE:
     app.include_router(j2_tracker_router)
     logger.info("J2 Tracker controller loaded")
 
+# Include CAD validation router if available
+if CAD_VALIDATION_AVAILABLE:
+    app.include_router(cad_validation_router)
+    logger.info("CAD validation controller loaded")
+
+# Include recorder and verifier routers
+app.include_router(recorder_router)
+app.include_router(verifier_router)
+logger.info("Recorder and Verifier routers loaded")
+
 
 @app.get("/")
 async def root():
@@ -298,15 +422,63 @@ async def root():
     }
 
 
+def check_cad_status() -> dict:
+    """Check CAD application connection status."""
+    cad_status = {
+        "solidworks": {"connected": False, "version": ""},
+        "inventor": {"connected": False, "version": ""},
+    }
+
+    if not COM_AVAILABLE:
+        return cad_status
+
+    # Check SolidWorks
+    try:
+        pythoncom.CoInitialize()
+        sw = win32com.client.GetActiveObject("SldWorks.Application")
+        if sw:
+            cad_status["solidworks"]["connected"] = True
+            try:
+                cad_status["solidworks"]["version"] = str(sw.RevisionNumber)[:4]
+            except:
+                cad_status["solidworks"]["version"] = "Unknown"
+    except:
+        pass
+
+    # Check Inventor
+    try:
+        inv = win32com.client.GetActiveObject("Inventor.Application")
+        if inv:
+            cad_status["inventor"]["connected"] = True
+            try:
+                cad_status["inventor"]["version"] = inv.SoftwareVersion.DisplayVersion
+            except:
+                cad_status["inventor"]["version"] = "Unknown"
+    except:
+        pass
+
+    try:
+        pythoncom.CoUninitialize()
+    except:
+        pass
+
+    return cad_status
+
+
 @app.get("/health")
 async def health():
-    """Health check endpoint."""
+    """Health check endpoint with CAD status."""
     tailscale_ip = get_tailscale_ip()
+    cad_status = check_cad_status()
+
     return {
         "status": "ok" if not KILL_SWITCH_ACTIVE else "kill_switch_active",
         "tailscale_ip": tailscale_ip,
         "timestamp": datetime.now().isoformat(),
         "actions_logged": len(ACTION_LOG),
+        "solidworks": cad_status["solidworks"],
+        "inventor": cad_status["inventor"],
+        "queue_depth": COMMAND_QUEUE.qsize(),
     }
 
 

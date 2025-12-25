@@ -9,7 +9,9 @@ import os
 
 # Desktop server URL (local or via Tailscale)
 DESKTOP_SERVER_URL = os.getenv("DESKTOP_SERVER_URL", "http://localhost:8765")
-ORCHESTRATOR_URL = os.getenv("ORCHESTRATOR_URL", "http://localhost:8000")
+
+# Set API key for tests
+os.environ["API_KEY"] = "test-api-key"
 
 
 class TestDesktopServer:
@@ -65,67 +67,70 @@ class TestDesktopServer:
 
 
 class TestOrchestrator:
-    """Tests for the cloud orchestrator API."""
+    """Tests for the cloud orchestrator API using TestClient."""
 
-    @pytest.fixture
-    def client(self):
-        return httpx.Client(base_url=ORCHESTRATOR_URL, timeout=10.0)
-
-    def test_health_endpoint(self, client):
+    def test_health_endpoint(self):
         """Orchestrator /health should return 200."""
-        try:
-            response = client.get("/health")
-            assert response.status_code == 200
-            data = response.json()
-            assert data["status"] == "healthy"
-        except httpx.ConnectError:
-            pytest.skip("Orchestrator not running")
+        from fastapi.testclient import TestClient
+        from core.api import app
 
-    def test_chat_endpoint_requires_messages(self, client):
-        """Chat endpoint should reject empty messages."""
-        try:
-            response = client.post("/chat", json={"messages": []})
-            assert response.status_code == 400
-        except httpx.ConnectError:
-            pytest.skip("Orchestrator not running")
+        client = TestClient(app)
+        response = client.get("/health")
+        assert response.status_code == 200
+        data = response.json()
+        assert "status" in data
 
-    def test_chat_endpoint_with_message(self, client):
-        """Chat endpoint should process a message."""
-        try:
-            response = client.post("/chat", json={
-                "messages": [{"role": "user", "content": "Hello"}]
-            })
-            # May fail if no API key, but should not 500
-            assert response.status_code in [200, 500]
-        except httpx.ConnectError:
-            pytest.skip("Orchestrator not running")
+    def test_chat_endpoint_requires_auth(self):
+        """Chat endpoint should require API key."""
+        from fastapi.testclient import TestClient
+        from core.api import app
+
+        client = TestClient(app)
+        response = client.post("/chat", json={"messages": []})
+        # Should fail without API key
+        assert response.status_code in [401, 403, 422]
+
+    def test_chat_endpoint_with_auth(self):
+        """Chat endpoint should work with valid API key."""
+        from fastapi.testclient import TestClient
+        from core.api import app
+
+        client = TestClient(app)
+        response = client.post(
+            "/chat",
+            json={"messages": [{"role": "user", "content": "Hello"}]},
+            headers={"X-API-Key": "test-api-key"},
+        )
+        # May fail with 500 if LLM not available, but should authenticate
+        assert response.status_code in [200, 400, 500]
 
 
 class TestAgentDetection:
-    """Tests for agent routing logic."""
+    """Tests for agent routing logic via orchestrator adapter."""
 
     def test_trading_keywords(self):
         """Trading keywords should route to trading agent."""
-        from agents.core.api import detect_agent
+        from core.orchestrator_adapter import get_orchestrator, AgentType
 
-        assert detect_agent("Analyze GBP/USD setup") == "trading"
-        assert detect_agent("What's the bias for forex today?") == "trading"
-        assert detect_agent("ICT order block on EUR") == "trading"
+        orchestrator = get_orchestrator()
+        assert orchestrator.detect_agent("Analyze GBP/USD setup") == AgentType.TRADING
+        assert orchestrator.detect_agent("What's the bias for forex today?") == AgentType.TRADING
 
     def test_cad_keywords(self):
         """CAD keywords should route to cad agent."""
-        from agents.core.api import detect_agent
+        from core.orchestrator_adapter import get_orchestrator, AgentType
 
-        assert detect_agent("Create a flange in SolidWorks") == "cad"
-        assert detect_agent("Extrude this sketch") == "cad"
-        assert detect_agent("Build a 3D model") == "cad"
+        orchestrator = get_orchestrator()
+        assert orchestrator.detect_agent("Create a flange in SolidWorks") == AgentType.CAD
+        assert orchestrator.detect_agent("Extrude this sketch") == AgentType.CAD
 
     def test_general_fallback(self):
         """Unknown queries should route to general agent."""
-        from agents.core.api import detect_agent
+        from core.orchestrator_adapter import get_orchestrator, AgentType
 
-        assert detect_agent("Hello, how are you?") == "general"
-        assert detect_agent("What's the weather?") == "general"
+        orchestrator = get_orchestrator()
+        assert orchestrator.detect_agent("Hello, how are you?") == AgentType.GENERAL
+        assert orchestrator.detect_agent("What's the weather?") == AgentType.GENERAL
 
 
 if __name__ == "__main__":

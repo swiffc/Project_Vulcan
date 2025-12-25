@@ -32,7 +32,7 @@ class TestCADE2EFlow:
 
         Simulates: "Build a flange from the uploaded PDF"
         """
-        from agents.core.orchestrator_adapter import (
+        from core.orchestrator_adapter import (
             OrchestratorAdapter, TaskRequest, AgentType
         )
 
@@ -115,7 +115,7 @@ class TestCADE2EFlow:
     @pytest.mark.asyncio
     async def test_assembly_creation(self):
         """Test multi-part assembly workflow."""
-        from agents.core.orchestrator_adapter import (
+        from core.orchestrator_adapter import (
             OrchestratorAdapter, TaskRequest, AgentType
         )
 

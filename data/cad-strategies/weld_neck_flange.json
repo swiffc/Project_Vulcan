@@ -1,0 +1,233 @@
+{
+  "part_type": "weld_neck_flange",
+  "assembly_type": "PART",
+  "description": "ASME B16.5 Weld Neck Flange - forged steel flange with integral tapered hub for butt welding to pipe. PURCHASED standard part.",
+
+  "engineering_analysis": {
+    "what_is_this": "Pipe flange for bolted connections - allows piping to be assembled/disassembled",
+    "standard": "ASME B16.5 (NPS 1/2 to 24), ASME B16.47 (NPS 26+)",
+    "manufacturing_method": "Forged steel, then machined for bolt holes and facing",
+    "procurement": "ALWAYS purchase from flange manufacturer - never fabricate in-house",
+    "why_weld_neck": "Integral hub provides smooth stress transition, best for high-pressure/cyclic service"
+  },
+
+  "flange_types": {
+    "weld_neck": "WN - Tapered hub, butt-welded to pipe (this file)",
+    "slip_on": "SO - Slides over pipe, fillet welded both sides",
+    "blind": "BL - Solid, no bore, used to close pipe ends",
+    "threaded": "TH - NPT threaded bore, screws onto pipe",
+    "socket_weld": "SW - Socket bore, pipe inserts and is fillet welded",
+    "lap_joint": "LJ - Used with stub ends, ring floats on stub"
+  },
+
+  "modeling_approach": "revolve_then_pattern",
+  "sketch_plane": "Right",
+  "why_this_plane": "Right plane allows revolve around vertical axis, then add bolt holes on face",
+
+  "standard_dimensions": {
+    "6in_150lb_wn_rf": {
+      "description": "6 inch Class 150 Weld Neck Raised Face Flange",
+      "nps": "6",
+      "class": "150",
+      "type": "Weld Neck",
+      "facing": "Raised Face",
+      "flange_od": 0.2794,
+      "flange_thickness": 0.0254,
+      "rf_od": 0.2159,
+      "rf_height": 0.0016,
+      "hub_od_large": 0.1842,
+      "hub_od_small": 0.1683,
+      "hub_length": 0.0635,
+      "bore_id": 0.1541,
+      "bolt_circle": 0.2413,
+      "num_bolts": 8,
+      "bolt_hole_dia": 0.022,
+      "bolt_size": "3/4\"",
+      "units": "meters",
+      "units_imperial": {
+        "flange_od": "11.00 in",
+        "flange_thickness": "1.00 in",
+        "rf_od": "8.50 in",
+        "rf_height": "0.0625 in (1/16 in)",
+        "hub_length": "2.50 in",
+        "bore_id": "6.065 in (Sch 40)",
+        "bolt_circle": "9.50 in",
+        "bolt_hole_dia": "0.875 in (7/8 in)"
+      }
+    },
+    "4in_150lb_wn_rf": {
+      "description": "4 inch Class 150 Weld Neck Raised Face Flange",
+      "nps": "4",
+      "class": "150",
+      "flange_od": 0.2286,
+      "flange_thickness": 0.0238,
+      "rf_od": 0.1683,
+      "rf_height": 0.0016,
+      "hub_od_large": 0.1302,
+      "hub_od_small": 0.1143,
+      "hub_length": 0.0572,
+      "bore_id": 0.1023,
+      "bolt_circle": 0.1905,
+      "num_bolts": 8,
+      "bolt_hole_dia": 0.019,
+      "bolt_size": "5/8\"",
+      "units": "meters"
+    }
+  },
+
+  "steps": [
+    {
+      "phase": "base_body",
+      "order": 1,
+      "endpoint": "/com/solidworks/new_part",
+      "body": {},
+      "description": "Create new part document"
+    },
+    {
+      "phase": "base_body",
+      "order": 2,
+      "endpoint": "/com/solidworks/create_sketch",
+      "body": {"plane": "Right"},
+      "description": "Start sketch on Right plane for revolve profile"
+    },
+    {
+      "phase": "base_body",
+      "order": 3,
+      "endpoint": "/com/solidworks/draw_centerline",
+      "body": {"x1": 0, "y1": -0.05, "x2": 0, "y2": 0.15},
+      "description": "Draw vertical centerline for revolve axis",
+      "critical": true
+    },
+    {
+      "phase": "base_body",
+      "order": 4,
+      "endpoint": "/com/solidworks/draw_line",
+      "body": {"x1": "${bore_id/2}", "y1": 0, "x2": "${bore_id/2}", "y2": "${flange_thickness + hub_length}"},
+      "description": "Line 1: Inner bore - bottom to top"
+    },
+    {
+      "phase": "base_body",
+      "order": 5,
+      "endpoint": "/com/solidworks/draw_line",
+      "body": {"x1": "${bore_id/2}", "y1": "${flange_thickness + hub_length}", "x2": "${rf_od/2}", "y2": "${flange_thickness + hub_length}"},
+      "description": "Line 2: Top of flange - bore to RF edge"
+    },
+    {
+      "phase": "base_body",
+      "order": 6,
+      "endpoint": "/com/solidworks/draw_line",
+      "body": {"x1": "${rf_od/2}", "y1": "${flange_thickness + hub_length}", "x2": "${rf_od/2}", "y2": "${flange_thickness + hub_length - rf_height}"},
+      "description": "Line 3: RF step down"
+    },
+    {
+      "phase": "base_body",
+      "order": 7,
+      "endpoint": "/com/solidworks/draw_line",
+      "body": {"x1": "${rf_od/2}", "y1": "${flange_thickness + hub_length - rf_height}", "x2": "${flange_od/2}", "y2": "${flange_thickness + hub_length - rf_height}"},
+      "description": "Line 4: Top face to flange OD"
+    },
+    {
+      "phase": "base_body",
+      "order": 8,
+      "endpoint": "/com/solidworks/draw_line",
+      "body": {"x1": "${flange_od/2}", "y1": "${flange_thickness + hub_length - rf_height}", "x2": "${flange_od/2}", "y2": "${hub_length}"},
+      "description": "Line 5: Flange OD - down to hub transition"
+    },
+    {
+      "phase": "base_body",
+      "order": 9,
+      "endpoint": "/com/solidworks/draw_line",
+      "body": {"x1": "${flange_od/2}", "y1": "${hub_length}", "x2": "${hub_od_large/2}", "y2": "${hub_length}"},
+      "description": "Line 6: Flange bottom face"
+    },
+    {
+      "phase": "base_body",
+      "order": 10,
+      "endpoint": "/com/solidworks/draw_line",
+      "body": {"x1": "${hub_od_large/2}", "y1": "${hub_length}", "x2": "${hub_od_small/2}", "y2": 0},
+      "description": "Line 7: Tapered hub (weld neck characteristic)"
+    },
+    {
+      "phase": "base_body",
+      "order": 11,
+      "endpoint": "/com/solidworks/draw_line",
+      "body": {"x1": "${hub_od_small/2}", "y1": 0, "x2": "${bore_id/2}", "y2": 0},
+      "description": "Line 8: Close profile at pipe end"
+    },
+    {
+      "phase": "base_body",
+      "order": 12,
+      "endpoint": "/com/solidworks/close_sketch",
+      "body": {},
+      "description": "Exit sketch mode"
+    },
+    {
+      "phase": "base_body",
+      "order": 13,
+      "endpoint": "/com/solidworks/revolve",
+      "body": {"angle": 360},
+      "description": "Revolve profile 360 degrees to create flange body"
+    },
+    {
+      "phase": "bolt_holes",
+      "order": 14,
+      "endpoint": "/com/solidworks/create_sketch",
+      "body": {"plane": "flange_face", "face_coords": {"x": 0.1, "y": "${flange_thickness + hub_length}", "z": 0}},
+      "description": "Start sketch on flange face for bolt holes"
+    },
+    {
+      "phase": "bolt_holes",
+      "order": 15,
+      "endpoint": "/com/solidworks/draw_circle",
+      "body": {"cx": "${bolt_circle/2}", "cy": 0, "radius": "${bolt_hole_dia/2}"},
+      "description": "Draw first bolt hole at 3 o'clock position"
+    },
+    {
+      "phase": "bolt_holes",
+      "order": 16,
+      "endpoint": "/com/solidworks/close_sketch",
+      "body": {},
+      "description": "Exit sketch mode"
+    },
+    {
+      "phase": "bolt_holes",
+      "order": 17,
+      "endpoint": "/com/solidworks/extrude_cut",
+      "body": {"depth": "${flange_thickness}", "direction": "through_all"},
+      "description": "Cut first bolt hole through flange"
+    },
+    {
+      "phase": "bolt_holes",
+      "order": 18,
+      "endpoint": "/com/solidworks/circular_pattern",
+      "body": {"feature": "last", "axis": "z", "count": "${num_bolts}", "angle": 360},
+      "description": "Pattern bolt hole around flange (8 holes for 6in 150#)"
+    }
+  ],
+
+  "notes": [
+    "Weld neck flange is ALWAYS a purchased part - never fabricate",
+    "Bolt hole count and size determined by flange class, not arbitrary",
+    "RF (Raised Face) height is standard 1/16\" for Class 150/300",
+    "Hub taper provides smooth stress transition at weld joint",
+    "Bore ID matches pipe ID for smooth flow - specify schedule when ordering",
+    "Material typically A105 (carbon steel) or A182 (stainless/alloy)"
+  ],
+
+  "common_errors": [
+    {
+      "error": "Forgetting to taper the hub",
+      "why_wrong": "WN flanges have tapered hub - that's what makes them 'weld neck'",
+      "correct_approach": "Hub OD at large end > hub OD at small (pipe) end"
+    },
+    {
+      "error": "Wrong number of bolt holes",
+      "why_wrong": "Bolt count is per ASME B16.5 table, based on size and class",
+      "correct_approach": "Look up correct count: 6\" 150# = 8 bolts, 6\" 300# = 12 bolts"
+    }
+  ],
+
+  "created": "2025-12-23",
+  "tested": false,
+  "solidworks_version": "2025"
+}

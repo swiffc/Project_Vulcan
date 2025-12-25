@@ -107,12 +107,12 @@ export function QuickActions() {
   return (
     <Card>
       <CardHeader title="Quick Actions" subtitle="Jump to common tasks" />
-      <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         {actions.map((action) => (
           <Link
             key={action.label}
             href={action.href || "#"}
-            className="group flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all"
+            className="group flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 hover:scale-[1.02] transition-all active:scale-[0.98]"
           >
             <div
               className={`w-10 h-10 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}

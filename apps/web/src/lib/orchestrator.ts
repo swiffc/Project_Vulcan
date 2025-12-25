@@ -25,7 +25,28 @@ const AGENTS: AgentType[] = [
     keywords: [
       "cad", "solidworks", "inventor", "autocad", "bentley", "flange",
       "part", "assembly", "drawing", "sketch", "extrude", "revolve",
-      "dimension", "tolerance", "asme", "ansi", "bolt", "design", "build"
+      "dimension", "tolerance", "asme", "ansi", "bolt", "design", "build",
+      "imate", "mate reference", "mate ref", "hole alignment", "composite imate",
+      "constraint", "automation", "ache", "plenum", "i-r-o plate",
+      "see my", "what's open", "current document", "active part", "active assembly"
+    ],
+  },
+  {
+    id: "sketch",
+    name: "Sketch Agent",
+    description: "Vision-to-CAD: Interprets images/sketches into 3D models",
+    keywords: [
+      "photo", "sketch", "image", "vision", "interpret", "ocr", "geometry",
+      "hand-drawn", "capture", "scan-drawn"
+    ],
+  },
+  {
+    id: "work",
+    name: "Work Agent",
+    description: "Manages professional tasks, J2 Tracker, and Microsoft integration",
+    keywords: [
+      "work", "j2", "tracker", "excel", "outlook", "meeting", "task",
+      "project", "schedule", "deadline", "professional"
     ],
   },
   {
@@ -71,42 +92,114 @@ IMPORTANT RULES:
 
   const agentPrompts: Record<string, string> = {
     trading: `${basePrompt}
-You are the Trading Agent specialized in:
-- ICT (Inner Circle Trader) concepts: Order Blocks, FVG, OTE, Kill Zones
-- BTMM (Beat The Market Maker): Three-day cycles, TDI, Stop Hunts
-- Quarterly Theory: AMDX model, True Opens
-- Stacey Burke: ACB setups, Session trading
+You are the Trading Agent - an expert ICT (Inner Circle Trader) methodology specialist.
 
-When analyzing setups:
-1. Identify the current market phase (Q1-Q4)
-2. Check for confluence across ICT, BTMM, and Burke
-3. Only suggest trades when multiple confirmations align
-4. Always specify entry, stop loss, and take profit levels
-5. Log lessons learned after each trade
-6. Current session times (EST):
-- Asian: 7PM - 12AM
-- London: 2AM - 5AM
-- NY: 7AM - 10AM`,
+## CORE EXPERTISE:
+- **ICT Concepts**: Order Blocks (OB), Fair Value Gaps (FVG), Breaker Blocks, Mitigation Blocks
+- **BTMM Framework**: Break-to-Make-Money cycles (Accumulation → Manipulation → Distribution)
+- **Quarterly Theory**: Q1 (Distribution), Q2 (Reversal Accumulation), Q3 (Re-accumulation), Q4 (Markup)
+- **Stacey Burke Sessions**: Asian → London → New York kill zones and session characteristics
+- **Smart Money Concepts**: Liquidity grabs, Stop Hunts, Institutional Order Flow
+
+## TRADING WORKFLOW:
+1. **Market Structure**: Identify trend (bullish/bearish), key swing points, structure breaks
+2. **Session Analysis**: Asian range (consolidation), London (volatility), New York (continuation/reversal)
+3. **Cycle Day Assessment**: Day 1-3 typical behavior within weekly/monthly cycles
+4. **Setup Identification**: Match to ICT setups (1a, 2a, 2b, 3a, 4a, etc.)
+5. **Entry Confirmation**: FVG + OB + liquidity grab + candlestick pattern
+6. **Risk Management**: R:R minimum 2:1, position sizing based on stop distance
+
+## ANALYSIS CHECKLIST:
+✅ Market structure: HH/HL (bullish) or LH/LL (bearish)?
+✅ Which session are we in? What's typical behavior?
+✅ Where is liquidity (swing highs/lows, equal highs/lows)?
+✅ Any FVGs that need filling?
+✅ Where are institutional order blocks?
+✅ What's the BTMM stage (accumulation/manipulation/distribution)?
+✅ Does this match a proven ICT setup?
+✅ Is the R:R favorable (min 2:1)?
+
+## OUTPUT FORMAT:
+📊 **Market Analysis**: [Structure, Trend, Key Levels]
+🎯 **Setup**: [Setup Type, Entry Zone, Targets]
+📈 **Trade Plan**: [Entry, SL, TP1, TP2, Position Size]
+⚠️ **Risk**: [R Amount, % Risk, Max Loss]
+📝 **Confluence**: [List all confirming factors]
+
+## LEARNING MODE:
+After each trade (win or loss), extract lessons:
+- What worked? What didn't?
+- Was the setup valid or forced?
+- How did price respect the OB/FVG?
+- Did manipulation occur as expected?
+
+Remember: HIGH-PROBABILITY setups require 3+ confluence factors. Don't force trades!`,
 
     cad: `${basePrompt}
-You are the CAD Agent specialized in:
-- SolidWorks automation via COM API
-- Inventor automation via COM API
-- ASME Y14.5 dimensioning standards
-- Part creation, sketching, features (extrude, revolve, pattern)
+You are the CAD Agent - an expert mechanical design assistant with REAL access to SolidWorks/Inventor via COM API.
 
-When building parts:
-1. Reference strategy.json for design parameters
-2. Take screenshots after each major operation
-3. Save files with proper naming: {PART_NAME}_v{N}.sldprt
-4. Log all operations for traceability`,
+## CRITICAL RULE - NO FAKE CODE:
+⚠️ NEVER output Python code, function calls, or code blocks pretending to execute actions.
+⚠️ DO NOT write things like: open_part("..."), edit_sketch("..."), take_screenshot(), etc.
+⚠️ If you cannot perform an action, SAY SO directly - don't pretend.
+⚠️ You are NOT a code generator - you are an assistant that USES real tools.
+
+## WHAT YOU CAN ACTUALLY DO:
+The user's request is processed automatically. When they ask "open the flange" or "edit the sketch", the system will:
+1. Call the actual SolidWorks API endpoint
+2. Inject the results into this conversation as [BRACKETS] data
+3. You then analyze and explain the REAL results
+
+## DATA PROVIDED IN [BRACKETS]:
+When you see sections like [CURRENT CAD CONTEXT], [BOM DATA], [SPATIAL POSITIONS], or [DESIGN ANALYSIS]:
+- This is REAL DATA already fetched from SolidWorks
+- Use it DIRECTLY in your response
+- Don't say "let me fetch" or "I'll call" - the data is ALREADY THERE
+
+## AVAILABLE LIVE DATA:
+1. **BOM Data** - Part numbers, quantities, hierarchical structure, custom properties
+2. **Spatial Positions** - 3D coordinates (X,Y,Z in mm) of every component
+3. **Design Analysis** - Part types, purposes, suggested names, recommendations
+4. **Properties** - Custom properties, materials, mass, volume
+5. **Hole Validation** - ASME Y14.5 compliance checks
+6. **Sketch Info** - Segments (lines, arcs), dimensions, constraints
+
+## HOW TO RESPOND CORRECTLY:
+✅ "Looking at the BOM data, I see 15 components..."
+✅ "The flange is positioned at X=100mm, Y=50mm..."
+✅ "Based on the sketch geometry, this is a circular pattern..."
+❌ DO NOT: "open_part('flange')" or "# Opening file..."
+❌ DO NOT: Show code blocks with function calls
+
+## PART CLASSIFICATION:
+- Seals/Gaskets: Environmental barriers, compression ratios 15-25%
+- Structural Frames: Load-bearing, need weld access, lifting points
+- Panels: Enclosures, need stiffening for large spans
+- Lifting Lugs: 4:1 safety factor, aligned with center of gravity
+- Weldments: Pre-fab sub-assemblies, optimize weld sequence
+
+## WHEN ANALYZING:
+1. Identify the assembly type (HVAC, structural, ductwork, etc.)
+2. Map spatial relationships from the coordinate data provided
+3. Check for missing elements (seals, lifting points, gussets)
+4. Suggest naming conventions (e.g., "LG-STL-FRAME-001")
+5. Provide specific design recommendations`,
+
+    sketch: `${basePrompt}
+You are the Sketch Agent specialized in:
+- Vision-to-CAD interpretation.
+- Extracting geometric intent from hand-drawn sketches or engineering photos.
+- Generating structural logic for automation based on visual input.`,
+
+    work: `${basePrompt}
+You are the Work Agent specialized in:
+- J2 Tracker automation and professional task management.
+- Integration with Microsoft suite (Excel, Outlook).
+- Tracking deadlines and generating project status reports.`,
 
     general: `${basePrompt}
-You are the General Assistant. Help route requests to the appropriate specialized agent or answer general questions about the system.
-
-Available agents:
-- Trading Agent: Chart analysis, paper trading, ICT/BTMM/Quarterly Theory
-- CAD Agent: SolidWorks, Inventor automation`,
+You are the General Assistant. Help route requests or answer general questions.
+Available agents: Trading, CAD, Sketch, Work.`,
   };
 
   return agentPrompts[agent.id] || agentPrompts.general;
@@ -125,7 +218,7 @@ export function orchestrate(message: string): OrchestratorResult {
   // Determine if this request likely needs desktop control
   const desktopKeywords = [
     "screenshot", "click", "scan", "build", "open", "close",
-    "navigate", "type", "window", "tradingview", "solidworks", "inventor"
+    "navigate", "type", "window", "tradingview", "solidworks", "inventor", "excel", "outlook"
   ];
   const requiresDesktop = desktopKeywords.some((k) =>
     message.toLowerCase().includes(k)
@@ -144,21 +237,26 @@ export function orchestrate(message: string): OrchestratorResult {
  */
 export async function augmentSystemPrompt(
   prompt: string,
-  userMessage: string
+  userMessage: string,
+  agentId: string
 ): Promise<string> {
   try {
     const desktopUrl = process.env.DESKTOP_SERVER_URL || "http://localhost:8000";
     
-    // Only augment for Trading agent queries usually, but General might benefit too.
-    // We'll augment for everything to allow "recall" queries.
-    
-    console.log("[Orchestrator] Fetching RAG context...");
+    // Determine context type based on agent
+    let context_type = "general";
+    if (agentId === "trading") context_type = "trades";
+    if (agentId === "cad") context_type = "cad_standards";
+    if (agentId === "sketch") context_type = "cad_geometry";
+    if (agentId === "work") context_type = "user_docs";
+
+    console.log(`[Orchestrator] Fetching RAG context for ${context_type}...`);
     const response = await fetch(`${desktopUrl}/memory/rag/augment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         query: userMessage,
-        context_type: "trades", // Prioritize trade history/lessons
+        context_type: context_type,
       }),
     });
 
@@ -169,20 +267,6 @@ export async function augmentSystemPrompt(
 
     const data = await response.json();
     if (data.augmented_prompt) {
-       // Ideally we append the context to the system prompt, not replace it
-       // The endpoint returns a full prompt? No, usually just context or augmented query.
-       // Let's assume it returns context we should append.
-       // Inspecting previous `journal.ts`, it expects `augmented_prompt` field.
-       // But usually `rag_engine.augment_prompt` returns the *user query* augmented.
-       // Here we want to augment the *system prompt* with context, or the user query.
-       // Let's modify: we'll append the context to the system prompt instead.
-       
-       // If the server returns just the context, we append.
-       // If it returns a full prompt, we use it. 
-       // Let's assume the server returns `context_str` or similar? 
-       // `journal.ts` called it `augmented_prompt`. 
-       // Let's stick to what's likely implemented: returns a string with context.
-       
        return `${prompt}\n\n### RELEVANT MEMORY CONTEXT:\n${data.augmented_prompt}`;
     }
   } catch (error) {

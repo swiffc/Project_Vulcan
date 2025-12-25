@@ -1,0 +1,27 @@
+{
+  "part_type": "pipe",
+  "description": "Standard pipe segment",
+  "source_type": "repo",
+  "repo_alias": "bolt",
+  "file_pattern": "Pipe_{size}_{schedule}.step",
+  "steps": [
+    {
+      "type": "fetch_file",
+      "repo": "bolt",
+      "path": "piping/ASME_B36.10/NPS_{size}/Sch_{schedule}/pipe.step"
+    },
+    {
+      "type": "open",
+      "format": "step"
+    },
+    {
+      "type": "modify",
+      "action": "change_length",
+      "parameter": "length"
+    },
+    {
+      "type": "save_as",
+      "filename": "Pipe_{size}_{schedule}.sldprt"
+    }
+  ]
+}

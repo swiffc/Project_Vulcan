@@ -13,6 +13,35 @@ const DESKTOP_SERVER_URL = process.env.DESKTOP_SERVER_URL || "http://localhost:8
 
 // ============= Types =============
 
+// Internal API response types (snake_case from Python backend)
+interface J2JobAPI {
+  id: string;
+  title: string;
+  status: string;
+  assigned_to: string;
+  due_date: string | null;
+  priority: string;
+  workflow_step: string | null;
+  workflow_total: number | null;
+  workflow_current: number | null;
+  web_url?: string;
+}
+
+interface J2SummaryAPI {
+  total: number;
+  active: number;
+  overdue: number;
+  due_this_week: number;
+}
+
+interface J2JobsResponseAPI {
+  jobs: J2JobAPI[];
+  summary: J2SummaryAPI;
+  session_valid: boolean;
+  last_refresh: string;
+}
+
+// Public types (camelCase for TypeScript)
 interface J2StatusResponse {
   browser_available: boolean;
   session_valid: boolean;
@@ -25,13 +54,6 @@ interface J2LoginResponse {
   url?: string;
   cookies_saved?: boolean;
   message?: string;
-}
-
-interface J2JobsResponse {
-  jobs: J2Job[];
-  summary: J2Summary;
-  session_valid: boolean;
-  last_refresh: string;
 }
 
 // ============= Helper Functions =============
@@ -141,7 +163,7 @@ export async function getJ2Jobs(options?: {
   status?: string;
   assignedTo?: string;
   limit?: number;
-}): Promise<J2JobsResponse | null> {
+}): Promise<J2Response | null> {
   const params = new URLSearchParams();
 
   if (options?.status) params.append("status", options.status);
@@ -151,14 +173,66 @@ export async function getJ2Jobs(options?: {
   const queryString = params.toString();
   const endpoint = `/j2/jobs${queryString ? `?${queryString}` : ""}`;
 
-  return desktopRequest<J2JobsResponse>(endpoint);
+  const apiResponse = await desktopRequest<J2JobsResponseAPI>(endpoint);
+  if (!apiResponse) return null;
+
+  // Transform snake_case API response to camelCase TypeScript types
+  return {
+    jobs: apiResponse.jobs.map((job) => ({
+      id: job.id,
+      title: job.title,
+      status: job.status as "Pending" | "In Progress" | "Review" | "Complete" | "On Hold",
+      assignedTo: job.assigned_to,
+      dueDate: job.due_date || "",
+      priority: job.priority as "Low" | "Medium" | "High" | "Critical",
+      workflow: {
+        currentStep: job.workflow_step || "",
+        totalSteps: job.workflow_total || 0,
+        completedSteps: job.workflow_current || 0,
+      },
+      webUrl: job.web_url,
+    })),
+    summary: {
+      total: apiResponse.summary.total,
+      active: apiResponse.summary.active,
+      overdue: apiResponse.summary.overdue,
+      dueThisWeek: apiResponse.summary.due_this_week,
+    },
+    sessionValid: apiResponse.session_valid,
+  };
 }
 
 /**
  * Get jobs assigned to the current user
  */
-export async function getMyJ2Jobs(): Promise<J2JobsResponse | null> {
-  return desktopRequest<J2JobsResponse>("/j2/my-jobs");
+export async function getMyJ2Jobs(): Promise<J2Response | null> {
+  const apiResponse = await desktopRequest<J2JobsResponseAPI>("/j2/my-jobs");
+  if (!apiResponse) return null;
+
+  // Transform snake_case API response to camelCase TypeScript types
+  return {
+    jobs: apiResponse.jobs.map((job) => ({
+      id: job.id,
+      title: job.title,
+      status: job.status as "Pending" | "In Progress" | "Review" | "Complete" | "On Hold",
+      assignedTo: job.assigned_to,
+      dueDate: job.due_date || "",
+      priority: job.priority as "Low" | "Medium" | "High" | "Critical",
+      workflow: {
+        currentStep: job.workflow_step || "",
+        totalSteps: job.workflow_total || 0,
+        completedSteps: job.workflow_current || 0,
+      },
+      webUrl: job.web_url,
+    })),
+    summary: {
+      total: apiResponse.summary.total,
+      active: apiResponse.summary.active,
+      overdue: apiResponse.summary.overdue,
+      dueThisWeek: apiResponse.summary.due_this_week,
+    },
+    sessionValid: apiResponse.session_valid,
+  };
 }
 
 /**
@@ -184,8 +258,8 @@ export async function getJ2Summary(): Promise<{
   // Get top 5 most urgent jobs (overdue first, then due soon)
   const sortedJobs = [...result.jobs].sort((a, b) => {
     // Prioritize overdue
-    const aOverdue = a.due_date && new Date(a.due_date) < new Date();
-    const bOverdue = b.due_date && new Date(b.due_date) < new Date();
+    const aOverdue = a.dueDate && new Date(a.dueDate) < new Date();
+    const bOverdue = b.dueDate && new Date(b.dueDate) < new Date();
 
     if (aOverdue && !bOverdue) return -1;
     if (!aOverdue && bOverdue) return 1;
@@ -198,8 +272,8 @@ export async function getJ2Summary(): Promise<{
     if (aPriority !== bPriority) return aPriority - bPriority;
 
     // Then by due date
-    if (a.due_date && b.due_date) {
-      return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+    if (a.dueDate && b.dueDate) {
+      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
     }
 
     return 0;
@@ -235,6 +309,7 @@ export async function getJ2ForWorkHub(): Promise<J2Response | null> {
     };
   }
 
+  // getMyJ2Jobs already transforms the response to camelCase
   const result = await getMyJ2Jobs();
 
   if (!result) {
@@ -245,28 +320,5 @@ export async function getJ2ForWorkHub(): Promise<J2Response | null> {
     };
   }
 
-  // Transform to Work Hub format
-  return {
-    jobs: result.jobs.map((job) => ({
-      id: job.id,
-      title: job.title,
-      status: job.status as "Pending" | "In Progress" | "Review" | "Complete" | "On Hold",
-      assignedTo: job.assigned_to,
-      dueDate: job.due_date || "",
-      priority: job.priority as "Low" | "Medium" | "High" | "Critical",
-      workflow: {
-        currentStep: job.workflow_step || "",
-        totalSteps: job.workflow_total || 0,
-        completedSteps: job.workflow_current || 0,
-      },
-      webUrl: job.web_url,
-    })),
-    summary: {
-      total: result.summary.total,
-      active: result.summary.active,
-      overdue: result.summary.overdue,
-      dueThisWeek: result.summary.due_this_week,
-    },
-    sessionValid: result.session_valid,
-  };
+  return result;
 }

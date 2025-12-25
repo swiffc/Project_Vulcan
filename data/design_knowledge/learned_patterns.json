@@ -1,0 +1,47 @@
+[
+  {
+    "pattern_id": "naming_S24441_20251224143437",
+    "pattern_type": "naming_convention",
+    "description": "Parts with prefix 'S24441' are typically: ring, lifting, weldment, unknown, seal, structural_frame, panel",
+    "examples": [
+      "S24441-5A-FAN RING-42",
+      "S24441-5A-FAN RING-44",
+      "S24441-5A-SHOP LIFTING LUG-4",
+      "S24441-5A-FAN RING-43",
+      "S24441-5A-WELDMENT_4-3"
+    ],
+    "learned_from": "S24441-5A1",
+    "confidence": 0.9,
+    "created_at": "2025-12-24T14:34:37.021079"
+  },
+  {
+    "pattern_id": "naming_S24441_20251224152808",
+    "pattern_type": "naming_convention",
+    "description": "Parts with prefix 'S24441' are typically: ring, lifting, weldment, unknown, seal, structural_frame, panel",
+    "examples": [
+      "S24441-5A-FAN RING-42",
+      "S24441-5A-FAN RING-44",
+      "S24441-5A-SHOP LIFTING LUG-4",
+      "S24441-5A-FAN RING-43",
+      "S24441-5A-WELDMENT_4-3"
+    ],
+    "learned_from": "S24441-5A1",
+    "confidence": 0.9,
+    "created_at": "2025-12-24T15:28:08.646122"
+  },
+  {
+    "pattern_id": "naming_S24441_20251224152817",
+    "pattern_type": "naming_convention",
+    "description": "Parts with prefix 'S24441' are typically: ring, lifting, weldment, unknown, seal, structural_frame, panel",
+    "examples": [
+      "S24441-5A-FAN RING-42",
+      "S24441-5A-FAN RING-44",
+      "S24441-5A-SHOP LIFTING LUG-4",
+      "S24441-5A-FAN RING-43",
+      "S24441-5A-WELDMENT_4-3"
+    ],
+    "learned_from": "S24441-5A1",
+    "confidence": 0.9,
+    "created_at": "2025-12-24T15:28:17.202036"
+  }
+]

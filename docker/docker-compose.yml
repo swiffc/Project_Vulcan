@@ -1,0 +1,108 @@
+# Project Vulcan - Docker Compose
+# Multi-service deployment configuration
+
+version: '3.8'
+
+services:
+  # Web Interface (Next.js)
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - DESKTOP_SERVER_URL=http://desktop:8000
+    depends_on:
+      - orchestrator
+    restart: unless-stopped
+    networks:
+      - vulcan-net
+
+  # Orchestrator (Python/FastAPI)
+  orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.orchestrator
+    ports:
+      - "8080:8080"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - DESKTOP_SERVER_URL=http://desktop:8000
+      - CHROMA_HOST=chromadb
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - chromadb
+      - redis
+    restart: unless-stopped
+    networks:
+      - vulcan-net
+
+  # Redis Cache (Cost Optimization)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 100mb --maxmemory-policy allkeys-lru
+    restart: unless-stopped
+    networks:
+      - vulcan-net
+
+  # Memory Brain (ChromaDB)
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8770:8000"
+    volumes:
+      - chroma-data:/chroma/chroma
+    restart: unless-stopped
+    networks:
+      - vulcan-net
+
+  # System Manager (Background Worker)
+  system-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile.system-manager
+    environment:
+      - BACKUP_ENABLED=true
+      - HEALTH_CHECK_INTERVAL=3600
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - vulcan-storage:/app/storage
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - vulcan-net
+
+  postgres:
+    image: postgres:13-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=vulcan
+      - POSTGRES_PASSWORD=vulcan
+      - POSTGRES_DB=vulcan
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - vulcan-net
+
+  # NOTE: Desktop Server runs on Windows PC (not in Docker)
+  # It connects via Tailscale VPN
+
+networks:
+  vulcan-net:
+    driver: bridge
+
+volumes:
+  chroma-data:
+  vulcan-storage:
+  redis-data:
+  postgres-data:

@@ -1,0 +1,95 @@
+services:
+  # Next.js Frontend
+  - type: web
+    name: vulcan-web
+    runtime: node
+    region: ohio
+    plan: free
+    rootDir: apps/web
+    buildCommand: cd apps/web && npm install && npm run build
+    startCommand: cd apps/web && npm run start
+    envVars:
+      - key: NEXT_PUBLIC_ORCHESTRATOR_URL
+        fromService:
+          type: web
+          name: vulcan-orchestrator
+          property: host
+      - key: DATABASE_URL
+        fromService:
+          type: psql
+          name: vulcan-postgres
+          property: connectionString
+
+  # Python Orchestrator / API (with Tailscale Bridge)
+  - type: web
+    name: vulcan-orchestrator
+    runtime: docker
+    region: ohio
+    plan: free
+    dockerfileContext: .
+    dockerfilePath: docker/Dockerfile.orchestrator.tailscale
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: DESKTOP_SERVER_URL
+        sync: false
+      - key: TAILSCALE_AUTHKEY
+        sync: false  # Set in Render dashboard
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: vulcan-redis
+          property: connectionString
+      - key: CHROMA_HOST
+        fromService:
+          type: web
+          name: vulcan-chroma
+          property: host
+      - key: DATABASE_URL
+        fromService:
+          type: psql
+          name: vulcan-postgres
+          property: connectionString
+
+  # Redis Cache (Cost Optimization)
+  - type: redis
+    name: vulcan-redis
+    region: ohio
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+
+  # Memory Brain (ChromaDB)
+  - type: web
+    name: vulcan-chroma
+    runtime: docker
+    region: ohio
+    plan: free
+    dockerfilePath: ./docker/Dockerfile.chroma
+
+  # System Manager (Background Worker)
+  - type: worker
+    name: vulcan-system-manager
+    runtime: docker
+    region: ohio
+    plan: free
+    dockerfilePath: ./docker/Dockerfile.system-manager
+    envVars:
+      - key: BACKUP_ENABLED
+        value: "true"
+      - key: HEALTH_CHECK_INTERVAL
+        value: "3600"
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: vulcan-redis
+          property: connectionString
+
+  # PostgreSQL Database
+  - type: psql
+    name: vulcan-postgres
+    region: ohio
+    plan: free

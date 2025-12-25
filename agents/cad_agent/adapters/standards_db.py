@@ -209,12 +209,37 @@ EDGE_DISTANCES: dict[str, dict] = {
 HOLE_SIZES: dict[str, dict] = {
     # Bolt size: {standard, oversize, short_slot, long_slot}
     "1/2": {"std": 0.5625, "over": 0.625, "short": "9/16x11/16", "long": "9/16x1-1/4"},
-    "5/8": {"std": 0.6875, "over": 0.8125, "short": "11/16x7/8", "long": "11/16x1-9/16"},
+    "5/8": {
+        "std": 0.6875,
+        "over": 0.8125,
+        "short": "11/16x7/8",
+        "long": "11/16x1-9/16",
+    },
     "3/4": {"std": 0.8125, "over": 0.9375, "short": "13/16x1", "long": "13/16x1-7/8"},
-    "7/8": {"std": 0.9375, "over": 1.0625, "short": "15/16x1-1/8", "long": "15/16x2-3/16"},
-    "1": {"std": 1.0625, "over": 1.25, "short": "1-1/16x1-5/16", "long": "1-1/16x2-1/2"},
-    "1-1/8": {"std": 1.1875, "over": 1.4375, "short": "1-3/16x1-1/2", "long": "1-3/16x2-13/16"},
-    "1-1/4": {"std": 1.3125, "over": 1.5625, "short": "1-5/16x1-11/16", "long": "1-5/16x3-1/8"},
+    "7/8": {
+        "std": 0.9375,
+        "over": 1.0625,
+        "short": "15/16x1-1/8",
+        "long": "15/16x2-3/16",
+    },
+    "1": {
+        "std": 1.0625,
+        "over": 1.25,
+        "short": "1-1/16x1-5/16",
+        "long": "1-1/16x2-1/2",
+    },
+    "1-1/8": {
+        "std": 1.1875,
+        "over": 1.4375,
+        "short": "1-3/16x1-1/2",
+        "long": "1-3/16x2-13/16",
+    },
+    "1-1/4": {
+        "std": 1.3125,
+        "over": 1.5625,
+        "short": "1-5/16x1-11/16",
+        "long": "1-5/16x3-1/8",
+    },
 }
 
 
@@ -224,13 +249,13 @@ HOLE_SIZES: dict[str, dict] = {
 
 MIN_FILLET_WELDS: dict[str, float] = {
     # Base metal thickness range: minimum fillet weld size
-    "<=1/4": 0.125,       # 1/8"
+    "<=1/4": 0.125,  # 1/8"
     ">1/4 to 1/2": 0.1875,  # 3/16"
-    ">1/2 to 3/4": 0.25,    # 1/4"
+    ">1/2 to 3/4": 0.25,  # 1/4"
     ">3/4 to 1-1/2": 0.3125,  # 5/16"
     ">1-1/2 to 2-1/4": 0.375,  # 3/8"
-    ">2-1/4 to 6": 0.50,     # 1/2"
-    ">6": 0.625,            # 5/8"
+    ">2-1/4 to 6": 0.50,  # 1/2"
+    ">6": 0.625,  # 5/8"
 }
 
 
@@ -240,14 +265,14 @@ MIN_FILLET_WELDS: dict[str, float] = {
 
 BEND_FACTORS: dict[str, float] = {
     # Material: factor (multiply by thickness for min inside radius)
-    "1010": 0.5,      # Soft steel
-    "1018": 0.75,     # Low carbon
-    "A36": 1.0,       # Mild steel
-    "A572-50": 1.5,   # High strength low alloy
-    "A514": 2.0,      # Quenched & tempered
-    "SS304": 1.5,     # Stainless steel
+    "1010": 0.5,  # Soft steel
+    "1018": 0.75,  # Low carbon
+    "A36": 1.0,  # Mild steel
+    "A572-50": 1.5,  # High strength low alloy
+    "A514": 2.0,  # Quenched & tempered
+    "SS304": 1.5,  # Stainless steel
     "SS316": 1.5,
-    "AL5052": 1.0,    # Aluminum alloys
+    "AL5052": 1.0,  # Aluminum alloys
     "AL6061-T6": 1.5,
     "AL3003": 0.5,
 }
@@ -277,18 +302,19 @@ DENSITIES: dict[str, float] = {
 
 FAN_TIP_CLEARANCES: dict[str, float] = {
     # Fan diameter range: max radial clearance (inches)
-    "4-5ft": 0.375,    # 3/8"
-    "6-8ft": 0.50,     # 1/2"
-    "9-12ft": 0.625,   # 5/8"
-    "13-18ft": 0.75,   # 3/4"
-    "19-28ft": 1.00,   # 1"
-    ">28ft": 1.25,     # 1-1/4"
+    "4-5ft": 0.375,  # 3/8"
+    "6-8ft": 0.50,  # 1/2"
+    "9-12ft": 0.625,  # 5/8"
+    "13-18ft": 0.75,  # 3/4"
+    "19-28ft": 1.00,  # 1"
+    ">28ft": 1.25,  # 1-1/4"
 }
 
 
 # =============================================================================
 # OSHA PLATFORM REQUIREMENTS
 # =============================================================================
+
 
 @dataclass
 class PlatformRequirements:
@@ -343,6 +369,7 @@ STAIR_REQUIREMENTS: dict[str, float] = {
 # LOOKUP FUNCTIONS
 # =============================================================================
 
+
 def get_beam_properties(shape: str) -> Optional[dict]:
     """Get properties for a W-shape beam."""
     # Normalize input (W8x31 -> W8x31, W8X31 -> W8x31)
@@ -368,7 +395,7 @@ def get_gauge_thickness(gauge: str) -> Optional[float]:
 def get_plate_thickness(fraction: str) -> Optional[float]:
     """Get thickness for a plate specified as a fraction."""
     # Handle various formats: 1/4", 1/4, 0.250
-    clean = fraction.replace('"', '').replace("'", '').strip()
+    clean = fraction.replace('"', "").replace("'", "").strip()
     if clean in PLATE_THICKNESSES:
         return PLATE_THICKNESSES[clean]["t"]
     return None
@@ -385,7 +412,7 @@ def get_edge_distance(bolt_size: str, edge_type: str = "rolled") -> Optional[flo
     Returns:
         Minimum edge distance in inches
     """
-    clean = bolt_size.replace('"', '').strip()
+    clean = bolt_size.replace('"', "").strip()
     if clean in EDGE_DISTANCES:
         key = f"min_{edge_type}"
         return EDGE_DISTANCES[clean].get(key)
@@ -394,7 +421,7 @@ def get_edge_distance(bolt_size: str, edge_type: str = "rolled") -> Optional[flo
 
 def get_standard_hole(bolt_size: str) -> Optional[float]:
     """Get standard hole diameter for a bolt size."""
-    clean = bolt_size.replace('"', '').strip()
+    clean = bolt_size.replace('"', "").strip()
     if clean in HOLE_SIZES:
         return HOLE_SIZES[clean]["std"]
     return None
@@ -484,6 +511,7 @@ def get_fan_tip_clearance(fan_diameter_ft: float) -> float:
 # CALCULATION FUNCTIONS
 # =============================================================================
 
+
 def calculate_beam_weight(shape: str, length_ft: float) -> Optional[float]:
     """Calculate weight of a beam given shape and length."""
     props = get_beam_properties(shape)
@@ -493,10 +521,7 @@ def calculate_beam_weight(shape: str, length_ft: float) -> Optional[float]:
 
 
 def calculate_plate_weight(
-    length_in: float,
-    width_in: float,
-    thickness_in: float,
-    material: str = "steel"
+    length_in: float, width_in: float, thickness_in: float, material: str = "steel"
 ) -> float:
     """Calculate weight of a plate in pounds."""
     volume = length_in * width_in * thickness_in
@@ -519,9 +544,7 @@ def calculate_min_bend_radius(thickness: float, material: str) -> float:
 
 
 def validate_edge_distance(
-    actual_distance: float,
-    bolt_size: str,
-    edge_type: str = "rolled"
+    actual_distance: float, bolt_size: str, edge_type: str = "rolled"
 ) -> tuple[bool, str]:
     """
     Validate an edge distance against AISC requirements.
@@ -534,15 +557,16 @@ def validate_edge_distance(
         return False, f"Unknown bolt size: {bolt_size}"
 
     if actual_distance < min_dist:
-        return False, f"Edge distance {actual_distance}\" < min {min_dist}\" for {bolt_size}\" bolt"
+        return (
+            False,
+            f'Edge distance {actual_distance}" < min {min_dist}" for {bolt_size}" bolt',
+        )
 
-    return True, f"Edge distance {actual_distance}\" OK (min {min_dist}\")"
+    return True, f'Edge distance {actual_distance}" OK (min {min_dist}")'
 
 
 def validate_bend_radius(
-    actual_radius: float,
-    thickness: float,
-    material: str
+    actual_radius: float, thickness: float, material: str
 ) -> tuple[bool, str]:
     """
     Validate a bend radius against material requirements.
@@ -553,38 +577,39 @@ def validate_bend_radius(
     min_radius = calculate_min_bend_radius(thickness, material)
 
     if actual_radius < min_radius:
-        return False, f"Bend radius R{actual_radius}\" < min R{min_radius}\" for {material}"
+        return (
+            False,
+            f'Bend radius R{actual_radius}" < min R{min_radius}" for {material}',
+        )
 
-    return True, f"Bend radius R{actual_radius}\" OK (min R{min_radius}\")"
+    return True, f'Bend radius R{actual_radius}" OK (min R{min_radius}")'
 
 
-def validate_hole_size(
-    hole_diameter: float,
-    bolt_size: str
-) -> tuple[bool, str]:
+def validate_hole_size(hole_diameter: float, bolt_size: str) -> tuple[bool, str]:
     """
     Validate a hole size is standard for the bolt.
 
     Returns:
         Tuple of (is_valid, message)
     """
-    hole_data = HOLE_SIZES.get(bolt_size.replace('"', '').strip())
+    hole_data = HOLE_SIZES.get(bolt_size.replace('"', "").strip())
     if hole_data is None:
         return False, f"Unknown bolt size: {bolt_size}"
 
     if abs(hole_diameter - hole_data["std"]) < 0.01:
-        return True, f"Standard hole Ø{hole_diameter}\" for {bolt_size}\" bolt"
+        return True, f'Standard hole Ø{hole_diameter}" for {bolt_size}" bolt'
 
     if abs(hole_diameter - hole_data["over"]) < 0.01:
-        return True, f"Oversize hole Ø{hole_diameter}\" for {bolt_size}\" bolt"
+        return True, f'Oversize hole Ø{hole_diameter}" for {bolt_size}" bolt'
 
-    return False, f"Non-standard hole Ø{hole_diameter}\" for {bolt_size}\" bolt (std={hole_data['std']}\")"
+    return (
+        False,
+        f"Non-standard hole Ø{hole_diameter}\" for {bolt_size}\" bolt (std={hole_data['std']}\")",
+    )
 
 
 def validate_weight(
-    stated_weight: float,
-    calculated_weight: float,
-    tolerance: float = 0.10
+    stated_weight: float, calculated_weight: float, tolerance: float = 0.10
 ) -> tuple[bool, str]:
     """
     Validate stated weight against calculated weight.
@@ -604,10 +629,111 @@ def validate_weight(
     diff_pct = diff / stated_weight
 
     if diff_pct <= tolerance:
-        return True, f"Weight OK: {stated_weight:.1f} lb (calc {calculated_weight:.1f} lb, diff {diff_pct*100:.1f}%)"
+        return (
+            True,
+            f"Weight OK: {stated_weight:.1f} lb (calc {calculated_weight:.1f} lb, diff {diff_pct*100:.1f}%)",
+        )
 
-    return False, f"Weight mismatch: {stated_weight:.1f} lb vs calc {calculated_weight:.1f} lb ({diff_pct*100:.1f}% diff)"
+    return (
+        False,
+        f"Weight mismatch: {stated_weight:.1f} lb vs calc {calculated_weight:.1f} lb ({diff_pct*100:.1f}% diff)",
+    )
 
+
+# =============================================================================
+# ASME B36.10M PIPE DIMENSIONS
+# =============================================================================
+
+PIPE_SCHEDULES: dict[str, dict] = {
+    # nominal_size: {outside_diameter, schedules: {schedule: wall_thickness}}
+    "1/8": {"od": 0.405, "schedules": {"40": 0.068, "80": 0.095}},
+    "1/4": {"od": 0.540, "schedules": {"40": 0.088, "80": 0.119}},
+    "3/8": {"od": 0.675, "schedules": {"40": 0.091, "80": 0.126}},
+    "1/2": {"od": 0.840, "schedules": {"40": 0.109, "80": 0.147, "160": 0.188}},
+    "3/4": {"od": 1.050, "schedules": {"40": 0.113, "80": 0.154, "160": 0.219}},
+    "1": {"od": 1.315, "schedules": {"40": 0.133, "80": 0.179, "160": 0.250}},
+    "1.5": {"od": 1.900, "schedules": {"40": 0.145, "80": 0.200, "160": 0.281}},
+    "2": {"od": 2.375, "schedules": {"40": 0.154, "80": 0.218, "160": 0.344}},
+    "3": {"od": 3.500, "schedules": {"40": 0.216, "80": 0.300, "160": 0.438}},
+    "4": {"od": 4.500, "schedules": {"40": 0.237, "80": 0.337, "160": 0.531}},
+    "6": {"od": 6.625, "schedules": {"40": 0.280, "80": 0.432, "120": 0.562}},
+    "8": {
+        "od": 8.625,
+        "schedules": {"40": 0.322, "80": 0.500, "100": 0.594, "120": 0.719},
+    },
+    "10": {
+        "od": 10.750,
+        "schedules": {"40": 0.365, "60": 0.500, "80": 0.594, "100": 0.719},
+    },
+    "12": {
+        "od": 12.750,
+        "schedules": {"STD": 0.375, "XS": 0.500, "40": 0.406, "80": 0.688},
+    },
+}
+
+# =============================================================================
+# ASME B16.5 FLANGE DIMENSIONS (Class 150)
+# =============================================================================
+
+FLANGE_DIMENSIONS_150: dict[str, dict] = {
+    # nominal_size: {od, thickness, bolt_circle, num_holes, hole_dia, hub_base_dia}
+    "2": {
+        "od": 6.00,
+        "thk": 0.75,
+        "bc": 4.75,
+        "num_holes": 4,
+        "hole_dia": 0.75,
+        "hub_dia": 3.06,
+    },
+    "3": {
+        "od": 7.50,
+        "thk": 0.94,
+        "bc": 6.00,
+        "num_holes": 4,
+        "hole_dia": 0.75,
+        "hub_dia": 4.25,
+    },
+    "4": {
+        "od": 9.00,
+        "thk": 0.94,
+        "bc": 7.50,
+        "num_holes": 8,
+        "hole_dia": 0.75,
+        "hub_dia": 5.31,
+    },
+    "6": {
+        "od": 11.00,
+        "thk": 1.00,
+        "bc": 9.50,
+        "num_holes": 8,
+        "hole_dia": 0.88,
+        "hub_dia": 7.56,
+    },
+    "8": {
+        "od": 13.50,
+        "thk": 1.12,
+        "bc": 11.75,
+        "num_holes": 8,
+        "hole_dia": 0.88,
+        "hub_dia": 9.69,
+    },
+    "10": {
+        "od": 16.00,
+        "thk": 1.19,
+        "bc": 14.25,
+        "num_holes": 12,
+        "hole_dia": 1.00,
+        "hub_dia": 12.00,
+    },
+    "12": {
+        "od": 19.00,
+        "thk": 1.25,
+        "bc": 17.00,
+        "num_holes": 12,
+        "hole_dia": 1.00,
+        "hub_dia": 14.38,
+    },
+}
 
 # =============================================================================
 # EXPORTS

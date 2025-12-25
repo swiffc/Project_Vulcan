@@ -1,0 +1,51 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Trade {
+  id          String   @id @default(cuid())
+  symbol      String   // Trading pair (e.g., "GBPUSD")
+  direction   String   // "long" or "short"
+  entry_price Float
+  exit_price  Float?
+  quantity    Int      @default(1)
+  notes       String?
+  setup       String?  // Setup type (e.g., "FVG", "Order Block")
+  bias        String?  // Market bias
+  target      Float?
+  stop        Float?
+  rr          Float?   // Risk/Reward ratio
+  result      String?  // "win", "loss", "breakeven"
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@index([symbol])
+  @@index([created_at])
+}
+
+model Validation {
+  id           String   @id @default(cuid())
+  job_id       String   @unique
+  status       String   // "pending", "running", "complete", "failed"
+  file_path    String
+  report_path  String?
+  errors       Json?
+  metadata     Json?
+  created_at   DateTime @default(now())
+  completed_at DateTime?
+  updated_at   DateTime @updatedAt
+
+  @@index([status])
+  @@index([created_at])
+}
+
+model Setting {
+  key        String   @id
+  value      String
+  updated_at DateTime @updatedAt
+}

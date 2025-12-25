@@ -1,0 +1,36 @@
+
+# Project Vulcan - Natural Language Action Mapping
+# Maps user intents discovered via voice/chat to executable system actions.
+
+actions:
+  # CAD Actions
+  cad_explain_selection:
+    description: "Provide a detailed engineering explanation of the currently selected SolidWorks feature."
+    handler: "core.agents.cad.explain_feature"
+  
+  cad_measure_selection:
+    description: "Extract and display dimensions for the selected item."
+    tools: ["desktop.cad.measure"]
+    
+  cad_validate_selection:
+    description: "Run automated GD&T and standards checks on the selected part."
+    tools: ["desktop.cad.validate"]
+
+  cad_modify_selection:
+    description: "Modify a property or dimension of the currently selected CAD feature."
+    tools: ["com.solidworks.modify_selection_property"]
+
+  # Trading Actions
+  trading_journal_quick:
+    description: "Quickly log a trade result from voice."
+    pattern: "record {result} on {pair}"
+    handler: "core.agents.trading.log_quick_trade"
+
+  # System Actions
+  system_health_check:
+    description: "Report overall system and desktop server health."
+    tools: ["system.check_health"]
+
+  system_backup_sync:
+    description: "Trigger a manual backup to GitHub and local storage."
+    tools: ["system.run_backup"]

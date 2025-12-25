@@ -1,46 +1,75 @@
 # Project Vulcan - Cloud Orchestrator Dependencies
 # For Render deployment
 # Install: pip install -r requirements.txt
+# Updated: 2025-12-23
 
 # Web Framework
-fastapi==0.109.0
-uvicorn[standard]==0.27.0
-gunicorn==21.2.0
+fastapi>=0.127.0
+uvicorn[standard]>=0.40.0
+gunicorn>=21.2.0
 
 # HTTP Client (for desktop server proxy)
-httpx==0.26.0
-aiohttp==3.9.1
+httpx>=0.28.0
+aiohttp>=3.13.0
 
 # LLM
-anthropic==0.18.1
+# LLM
+anthropic>=0.75.0
+openai>=1.0.0
+
+# AI Agent SDK & Web Research (Section 11 capabilities)
+claude-agent-sdk>=0.1.0  # Claude Agent SDK (official)
+tavily-python>=0.5.0  # Web search API (requires TAVILY_API_KEY)
+duckduckgo_search>=8.0.0  # Free web search fallback
+langchain-anthropic>=1.2.0  # LangChain + Claude integration
 
 # Vector Memory & RAG
-chromadb==0.4.22
-sentence-transformers==2.2.2
+chromadb>=1.3.0
+sentence-transformers>=2.2.2
 
 # Cache (Cost Optimization)
-redis==5.0.1
+redis>=7.0.0
 
 # Configuration
-pyyaml==6.0.1
-python-dotenv==1.0.0
+pyyaml>=6.0.1
+python-dotenv>=1.2.0
 
 # Validation
-pydantic==2.5.3
+pydantic>=2.12.0
 
 # System Manager (scheduler + metrics)
-APScheduler==3.10.4
-psutil==5.9.7
+APScheduler>=3.11.0
+psutil>=7.0.0
 
 # PDF Processing (for CAD Agent)
-pdf2image==1.16.3
-pytesseract==0.3.10
-Pillow==10.2.0
+pdf2image>=1.17.0
+pytesseract>=0.3.13
+Pillow>=12.0.0
 
 # Google Drive Integration
-google-api-python-client==2.111.0
-google-auth==2.25.2
+google-api-python-client>=2.187.0
+google-auth>=2.45.0
+
+# Browser Automation (Phase 10 - Work Hub)
+playwright>=1.57.0
 
 # Testing
-pytest==7.4.4
-pytest-asyncio==0.23.3
+pytest>=9.0.0
+pytest-asyncio>=1.3.0
+numpy<2.0.0  # Fix NumPy 2.0 incompatibility
+
+# Additional dependencies for validators (Phase 19.1.3)
+ezdxf>=1.4.0  # DXF file analysis
+reportlab>=4.4.0  # PDF generation in validators
+PyPDF2>=3.0.0  # PDF annotation feature
+fluids>=1.0.0  # Pipe fitting calculations (used in standards scripts)
+
+# Logging (Phase 19.4.21)
+python-json-logger>=4.0.0  # JSON logging formatter
+
+# Monitoring
+sentry-sdk>=2.48.0
+
+# MCP Servers
+mcp>=1.0.0
+google-auth-oauthlib>=1.2.0

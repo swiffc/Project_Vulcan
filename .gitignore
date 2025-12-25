@@ -73,3 +73,17 @@ credentials.json
 secrets.yaml
 
 nul
+
+# Database files (Phase 19.1.4 - should never be committed)
+*.db
+*.sqlite
+*.sqlite3
+
+# Browser session data (Phase 19.1.4)
+desktop_server/data/tradingview_session/
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+

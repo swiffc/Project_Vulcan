@@ -1,76 +1,93 @@
-# System Architecture: The Universal Connector
+# System Architecture: Project Vulcan
 
-This diagram visualizes the strictly hierarchical control flow: **Render -> Tailscale -> MCP Server -> Apps**.
+This document provides a high-level overview of the Project Vulcan architecture, tracking the flow of data from the user's request to local hardware execution.
+
+---
+
+## 🏗️ The 4-Layer Architecture
+
+Project Vulcan is built on a distributed "Bouncer-and-Brain" model, separating high-level reasoning from low-level execution.
+
+1.  **UI Layer (Web)**: Next.js frontend providing the command interface and visualization dashboard.
+2.  **Intelligence Layer (Cloud)**: The Orchestrator and specialized AI agent fleet.
+3.  **Security Layer (VPN)**: Tailscale encrypted tunnel connecting Cloud to Local.
+4.  **Execution Layer (Desktop)**: Local server translating AI intent into mouse/keyboard/app actions.
+
+---
+
+## 🔄 Core Data Flow
 
 ```mermaid
-graph TD
-    %% Styling
-    classDef cloud fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-    classDef vpn fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
-    classDef local fill:#fff3e0,stroke:#ef6c00,stroke-width:4px;
-    classDef app fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
-    classDef agent fill:#bbdefb,stroke:#1565c0,stroke-width:1px,stroke-dasharray: 5 5;
-
-    subgraph CLOUD ["☁️ CLOUD (Render)"]
-        User([User UI])
-        
-        subgraph BRAIN ["🧠 CrewAI Orchestrator"]
-            TA[Trading Agent]
-            CA[CAD Agent]
-        end
-        
-        User ==> BRAIN
+graph TB
+    subgraph Cloud [RENDER.COM - CLOUD BRAIN]
+        UI[Web Dashboard]
+        ORCH[Orchestrator]
+        RAG[ChromaDB / RAG]
+        SQL[(PostgreSQL)]
+        REDIS[(Redis State)]
     end
 
-    subgraph TUNNEL ["🔒 SECURE VPN"]
-        VPN[Tailscale Tunnel]
+    subgraph Security [SECURE TUNNEL]
+        VPN{Tailscale VPN}
     end
 
-    subgraph PC ["💻 LOCAL PC"]
-        MCPServer[⚡ MCP SERVER / WRAPPER]
-        
-        subgraph APPS ["Controlled Apps"]
-            SW[SolidWorks]
-            TV[TradingView]
-        end
+    subgraph PC [LOCAL DESKTOP - PHYSICAL HANDS]
+        DS[Desktop Server]
+        MC[MCP Guard]
+        APPS[Applications]
     end
 
-    %% Connections
-    BRAIN ==>|JSON Request| VPN
-    VPN ==>|Forward| MCPServer
-    
-    %% The Critical Branching
-    MCPServer ==>|COM API| SW
-    MCPServer ==>|PyAutoGUI| TV
+    UI --> ORCH
+    ORCH <--> RAG
+    ORCH --> SQL
+    ORCH <--> REDIS
+    ORCH <--> VPN
+    VPN <--> DS
+    DS --> MC
+    MC --> APPS
 
-    %% Agent Logic
-    TA -.->|Analyze| TV
-    CA -.->|Design| SW
+    classDef cloud fill:#e3f2fd,stroke:#1976d2,stroke-width:2px;
+    classDef local fill:#fff3e0,stroke:#f57c00,stroke-width:2px;
+    classDef vpn fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
 
-    class User,BRAIN cloud;
-    class TA,CA agent;
+    class UI,ORCH,RAG,SQL,REDIS cloud;
+    class DS,MC,APPS local;
     class VPN vpn;
-    class MCPServer local;
-    class SW,TV app;
 ```
 
-### Key Components
+---
 
-1.  **Cloud (Render)**:
-    *   Hosts the **Intelligence** (LLMs, Agents).
-    *   Runs 24/7.
-    *   No access to your physical devices *except* via the tunnel.
+## 🔑 Key Components
 
-2.  **The Tunnel (Tailscale)**:
-    *   Makes your local PC appear as if it's "on the same wifi" as the Cloud Server.
-    *   Zero public ports opened on your router (Safe!).
+### 1. 📂 Intelligence Layer (Cloud)
 
-3.  **Local Desktop Server (The MCP Endpoint)**:
-    *   **The Guard**: Checks the Kill Switch and Circuit Breaker.
-    *   **The Translator**: Converts "Make a Box" (AI Speak) into `SketchManager.CreateCornerRectangle(0,0,0, 10,10,0)` (CAD Speak).
-    *   **The Queue**: Ensures your PC does one thing at a time.
+- **Orchestrator**: The central brain that receives user requests, maintains session state in **Redis**, and routes tasks to specialized agents.
+- **Agent Fleet**: Specialized LLM-powered workers:
+  - **CAD Agent**: Precision design via SolidWorks COM.
+  - **Sketch Agent**: Computer Vision (OCR/Geometry) for Photo-to-CAD.
+  - **Trading Agent**: Market analysis and automation via custom macros.
+  - **Work Agent**: Task management and J2 Tracker integration.
 
-### 🔒 Security Note: No Direct Connection
-*   **SolidWorks & TradingView Stay Local**: They do **NOT** connect to Render or the Internet directly.
-*   **The Proxy Pattern**: Render talks *only* to the Python Script (`server.py`). The Script then talks to the Apps.
-*   **Why?**: This means hackers cannot touch your TradingView or CAD files. Use the server as a "bouncer."
+### 2. 📦 Persistence & RAG
+
+- **PostgreSQL**: Stores long-term data like completed trades, CAD validation history, and security logs.
+- **ChromaDB**: Our Vector database for **Retrieval-Augmented Generation (RAG)**. It allows agents to "remember" thousands of engineering standards and technical docs.
+- **Redis**: Handles high-speed temporary state and WebSocket communication.
+
+### 3. 🔐 The Bridge (Tailscale VPN)
+
+- **Zero-Trust Connectivity**: Tailscale creates a virtual private network between the Render server and your local PC.
+- **Encrypted Path**: No public ports are opened. Render talks to your PC as if it were a local IP (`100.x.x.x`).
+
+### 4. ⚡ Local Execution (The MCP Guard)
+
+- **Translator**: The Desktop Server converts abstract AI commands into hardware-specific API calls (SolidWorks COM, Windows UI Automation).
+- **Safety Layer**: Implements a dedicated **Kill Switch** and hardware-level circuit breakers to stop automation instantly if needed.
+
+---
+
+## 🔒 Security & Observability
+
+- **Sentry Integration**: Real-time error tracking across both the Cloud API and the Local Desktop Server.
+- **Proxy Pattern**: The Cloud never touches your files directly. It only sends requests to the local server, which acts as a "bouncer."
+- **Audit Logging**: Every action taken by an agent is logged locally and to the PostgreSQL database for full traceability.

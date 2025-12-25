@@ -4,9 +4,14 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Message, MessageRole } from "@/lib/types";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
+import { FileUpload, UploadedFile } from "./FileUpload";
+import { parseValidationIntent, formatValidationResponse } from "@/lib/cad/validation-intent";
+import { validateDrawing, formatValidationReport } from "@/lib/cad/validation-client";
+import { BOMPreview } from "./BOMPreview";
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000;
+const STORAGE_KEY_PREFIX = "vulcan-chat-";
 
 const DEFAULT_WELCOME =
   "Welcome to **Project Vulcan**. I'm your AI operating system for CAD automation and paper trading.\n\n" +
@@ -15,6 +20,50 @@ const DEFAULT_WELCOME =
   "- `Scan GBP/USD` - Analyze trading setups\n" +
   "- `Weekly review` - Generate performance summary\n\n" +
   "How can I help you today?";
+
+// Helper functions for localStorage persistence
+function getStorageKey(context: string): string {
+  return `${STORAGE_KEY_PREFIX}${context}`;
+}
+
+function loadMessagesFromStorage(context: string, defaultWelcome: string): Message[] {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const stored = localStorage.getItem(getStorageKey(context));
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Restore Date objects from ISO strings
+      return parsed.map((m: any) => ({
+        ...m,
+        timestamp: new Date(m.timestamp),
+      }));
+    }
+  } catch (e) {
+    console.error("Failed to load chat history:", e);
+  }
+
+  // Return default welcome message if no stored messages
+  return [{
+    id: "welcome",
+    role: "assistant" as const,
+    content: defaultWelcome,
+    timestamp: new Date(),
+    status: "complete" as const,
+  }];
+}
+
+function saveMessagesToStorage(context: string, messages: Message[]): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    // Only save the last 100 messages to avoid storage limits
+    const toSave = messages.slice(-100);
+    localStorage.setItem(getStorageKey(context), JSON.stringify(toSave));
+  } catch (e) {
+    console.error("Failed to save chat history:", e);
+  }
+}
 
 // Quick command suggestions based on context
 const QUICK_COMMANDS = {
@@ -25,10 +74,11 @@ const QUICK_COMMANDS = {
     { label: "Session Times", command: "What are the key session times today?" },
   ],
   cad: [
-    { label: "New Part", command: "Create a new part from template" },
-    { label: "ECN Status", command: "Show pending ECN revisions" },
-    { label: "Export STEP", command: "Export current assembly to STEP" },
-    { label: "Check GD&T", command: "Validate GD&T on current drawing" },
+    { label: "View BOM", command: "__OPEN_BOM_PREVIEW__" },
+    { label: "Analyze Assembly", command: "analyze assembly" },
+    { label: "Validate Drawing", command: "Check this drawing for errors" },
+    { label: "GD&T Check", command: "Validate GD&T on this drawing" },
+    { label: "Weld Check", command: "Check welds for AWS D1.1 compliance" },
   ],
   general: [
     { label: "System Status", command: "Show system status" },
@@ -44,17 +94,32 @@ interface ChatProps {
 }
 
 export function Chat({ agentContext, welcomeMessage }: ChatProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content: welcomeMessage || DEFAULT_WELCOME,
-      timestamp: new Date(),
-      status: "complete",
-    },
-  ]);
+  const context = agentContext || "general";
+  const welcome = welcomeMessage || DEFAULT_WELCOME;
+
+  // Initialize with empty array to avoid hydration mismatch
+  // localStorage is loaded after mount in useEffect
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [showBOMPreview, setShowBOMPreview] = useState(false);
+  const [autoAnalyze, setAutoAnalyze] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Load from localStorage after mount (client-side only)
+  useEffect(() => {
+    const stored = loadMessagesFromStorage(context, welcome);
+    setMessages(stored);
+    setIsHydrated(true);
+  }, [context, welcome]);
+
+  // Save to localStorage whenever messages change
+  useEffect(() => {
+    if (isHydrated && messages.length > 0) {
+      saveMessagesToStorage(context, messages);
+    }
+  }, [messages, context, isHydrated]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -63,6 +128,19 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Clear chat history function (can be exposed via button later)
+  const clearHistory = useCallback(() => {
+    const defaultMessages: Message[] = [{
+      id: "welcome",
+      role: "assistant",
+      content: welcome,
+      timestamp: new Date(),
+      status: "complete",
+    }];
+    setMessages(defaultMessages);
+    saveMessagesToStorage(context, defaultMessages);
+  }, [context, welcome]);
 
   const streamWithRetry = useCallback(
     async (
@@ -158,6 +236,33 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
   );
 
   const handleSendMessage = async (content: string) => {
+    // Check for BOM preview trigger
+    if (content === "__OPEN_BOM_PREVIEW__" ||
+        /\b(show|view|print|preview|display)\b.*\b(bom|bill of materials)\b/i.test(content) ||
+        /\bbom\b.*\b(pdf|print|preview|popup)\b/i.test(content)) {
+      setShowBOMPreview(true);
+      setAutoAnalyze(false);
+      return;
+    }
+
+    // Check for analyze assembly trigger
+    if (/\b(analyze|analyse|review|inspect)\b.*\b(assembly|design|parts|components)\b/i.test(content) ||
+        /\b(design|assembly)\b.*\b(analysis|review|recommendations)\b/i.test(content)) {
+      setShowBOMPreview(true);
+      setAutoAnalyze(true);
+      return;
+    }
+
+    // Check for validation intent
+    const validationIntent = parseValidationIntent(content);
+
+    if (validationIntent && validationIntent.confidence > 0.7) {
+      // Handle validation request
+      await handleValidationRequest(content, validationIntent);
+      return;
+    }
+
+    // Regular chat message
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       role: "user",
@@ -204,14 +309,127 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
     setIsStreaming(false);
   };
 
-  const context = agentContext || "general";
+  const handleValidationRequest = async (
+    content: string,
+    intent: ReturnType<typeof parseValidationIntent>
+  ) => {
+    if (!intent) return;
+
+    // Add user message
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      content,
+      timestamp: new Date(),
+      status: "complete",
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setIsStreaming(true);
+
+    // Check if file is uploaded
+    if (!uploadedFile) {
+      const assistantMessage: Message = {
+        id: `assistant-${Date.now()}`,
+        role: "assistant",
+        content: formatValidationResponse(intent, false),
+        timestamp: new Date(),
+        status: "complete",
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+      setIsStreaming(false);
+      return;
+    }
+
+    // Start validation
+    const progressMessageId = `assistant-${Date.now()}`;
+    const progressMessage: Message = {
+      id: progressMessageId,
+      role: "assistant",
+      content: formatValidationResponse(intent, true),
+      timestamp: new Date(),
+      status: "streaming",
+    };
+    setMessages((prev) => [...prev, progressMessage]);
+
+    try {
+      // Run validation
+      const response = await validateDrawing({
+        type: intent.type === "ache" ? "ache" : "drawing",
+        file: uploadedFile.file,
+        checks: intent.checks || ["all"],
+        userId: "user@vulcan.ai",
+      });
+
+      // Format results
+      if (response.report) {
+        const reportMarkdown = formatValidationReport(response.report);
+        
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === progressMessageId
+              ? {
+                  ...m,
+                  content: reportMarkdown,
+                  status: "complete",
+                }
+              : m
+          )
+        );
+      } else {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === progressMessageId
+              ? {
+                  ...m,
+                  content: `✅ Validation complete!\n\n${response.message}`,
+                  status: "complete",
+                }
+              : m
+          )
+        );
+      }
+
+      // Clear uploaded file after validation
+      setUploadedFile(null);
+    } catch (error) {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === progressMessageId
+            ? {
+                ...m,
+                content: `❌ Validation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+                status: "error",
+              }
+            : m
+        )
+      );
+    }
+
+    setIsStreaming(false);
+  };
+
   const quickCommands = QUICK_COMMANDS[context];
-  const showQuickCommands = messages.length <= 2 && !isStreaming;
+  const showQuickCommands = isHydrated && messages.length <= 2 && !isStreaming;
+
+  // Show loading state before hydration
+  if (!isHydrated) {
+    return (
+      <div className="flex flex-col flex-1 gap-4">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex items-center gap-2 text-white/40">
+            <div className="w-2 h-2 bg-indigo-400 rounded-full animate-pulse" />
+            <span className="text-sm">Loading chat...</span>
+          </div>
+        </div>
+        <ChatInput onSend={handleSendMessage} disabled={true} />
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col flex-1 gap-4">
+    <div className="flex flex-col h-full flex-1 min-h-0 gap-4">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto space-y-4 pb-4">
+      <div className="flex-1 overflow-y-auto space-y-4 pb-4 min-h-0">
         {messages.map((message) => (
           <ChatMessage key={message.id} message={message} />
         ))}
@@ -252,16 +470,44 @@ export function Chat({ agentContext, welcomeMessage }: ChatProps) {
         </div>
       )}
 
+      {/* File Upload (for CAD context) */}
+      {agentContext === "cad" && (
+        <div className="px-2">
+          <FileUpload
+            currentFile={uploadedFile}
+            onFileSelect={setUploadedFile}
+            onFileRemove={() => setUploadedFile(null)}
+            disabled={isStreaming}
+            acceptedTypes=".pdf,.dxf"
+            maxSizeMB={10}
+          />
+        </div>
+      )}
+
       {/* Input */}
       <ChatInput onSend={handleSendMessage} disabled={isStreaming} />
 
-      {/* Model indicator */}
-      <div className="flex items-center justify-center gap-2 text-xs text-white/30">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-        <span>Cost-optimized routing active</span>
-        <span className="text-white/20">|</span>
-        <span>Haiku for simple, Sonnet for complex</span>
+      {/* Model indicator & Clear button */}
+      <div className="flex items-center justify-between text-xs text-white/30 px-1">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          <span>Cost-optimized routing</span>
+        </div>
+        <button
+          onClick={clearHistory}
+          className="text-white/40 hover:text-white/70 transition-colors px-2 py-1 rounded hover:bg-white/5"
+          title="Clear chat history"
+        >
+          Clear Chat
+        </button>
       </div>
+
+      {/* BOM Preview Modal */}
+      <BOMPreview
+        isOpen={showBOMPreview}
+        onClose={() => { setShowBOMPreview(false); setAutoAnalyze(false); }}
+        autoAnalyze={autoAnalyze}
+      />
     </div>
   );
 }

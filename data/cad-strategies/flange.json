@@ -1,0 +1,22 @@
+{
+  "part_type": "flange_rfwn",
+  "description": "Standard ASME B16.5 Raised Face Weld Neck Flange",
+  "source_type": "repo",
+  "repo_alias": "bolt",
+  "file_pattern": "ASME_B16.5_Flange_{size}_{class}.step",
+  "steps": [
+    {
+      "type": "fetch_file",
+      "repo": "bolt",
+      "path": "flanges/ASME_B16.5/NPS_{size}/Class_{class}/flange.step"
+    },
+    {
+      "type": "open",
+      "format": "step"
+    },
+    {
+      "type": "save_as",
+      "filename": "Flange_{size}_{class}.sldprt"
+    }
+  ]
+}

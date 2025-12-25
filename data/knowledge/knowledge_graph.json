@@ -1,0 +1,85 @@
+{
+  "nodes": [
+    {
+      "id": "strategy_1",
+      "type": "strategy",
+      "label": "I-Beam Weldment",
+      "properties": {
+        "product_type": "weldment"
+      },
+      "created_at": "2025-12-24T17:08:24.993159",
+      "last_accessed": "2025-12-24T17:37:48.598420"
+    },
+    {
+      "id": "s1",
+      "type": "strategy",
+      "label": "Strategy 1",
+      "properties": {},
+      "created_at": "2025-12-24T17:08:25.001189",
+      "last_accessed": "2025-12-24T17:37:48.604936"
+    },
+    {
+      "id": "s2",
+      "type": "strategy",
+      "label": "Strategy 2",
+      "properties": {},
+      "created_at": "2025-12-24T17:08:25.003198",
+      "last_accessed": "2025-12-24T17:37:48.609967"
+    },
+    {
+      "id": "center",
+      "type": "test",
+      "label": "Center",
+      "properties": {},
+      "created_at": "2025-12-24T17:08:25.010736",
+      "last_accessed": "2025-12-24T17:37:48.619330"
+    },
+    {
+      "id": "neighbor1",
+      "type": "test",
+      "label": "Neighbor 1",
+      "properties": {},
+      "created_at": "2025-12-24T17:08:25.011744",
+      "last_accessed": "2025-12-24T17:37:48.623774"
+    },
+    {
+      "id": "neighbor2",
+      "type": "test",
+      "label": "Neighbor 2",
+      "properties": {},
+      "created_at": "2025-12-24T17:08:25.014260",
+      "last_accessed": "2025-12-24T17:37:48.630879"
+    }
+  ],
+  "edges": [
+    {
+      "source": "s1",
+      "target": "s2",
+      "relation": "similar_to",
+      "weight": 0.8,
+      "properties": {},
+      "created_at": "2025-12-24T17:08:25.005716"
+    },
+    {
+      "source": "center",
+      "target": "neighbor1",
+      "relation": "connected",
+      "weight": 1.0,
+      "properties": {},
+      "created_at": "2025-12-24T17:08:25.016259"
+    },
+    {
+      "source": "center",
+      "target": "neighbor2",
+      "relation": "connected",
+      "weight": 1.0,
+      "properties": {},
+      "created_at": "2025-12-24T17:08:25.017260"
+    }
+  ],
+  "metadata": {
+    "saved_at": "2025-12-24T17:37:48.641416",
+    "node_count": 6,
+    "edge_count": 3
+  }
+}

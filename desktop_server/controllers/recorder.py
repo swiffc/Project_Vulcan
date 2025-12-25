@@ -12,6 +12,9 @@ from datetime import datetime
 from pathlib import Path
 import mss
 import numpy as np
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from typing import Optional
 
 # lazy import cv2 to avoid startup cost if not recording
 try:
@@ -109,6 +112,41 @@ class ScreenRecorder:
                 time.sleep(sleep_time)
 
             out.release()
+
+
+router = APIRouter(prefix="/recorder", tags=["recorder"])
+
+
+class StartRecordingRequest(BaseModel):
+    duration: Optional[int] = 0
+    fps: Optional[int] = 10
+
+
+@router.post("/start")
+async def start_recording(req: StartRecordingRequest):
+    """Start screen recording."""
+    result = recorder.start(duration=req.duration, fps=req.fps)
+    if "Error" in result:
+        raise HTTPException(status_code=500, detail=result)
+    return {"status": "ok", "message": result}
+
+
+@router.post("/stop")
+async def stop_recording():
+    """Stop screen recording."""
+    result = recorder.stop()
+    if "Not recording" in result:
+        return {"status": "warning", "message": result}
+    return {"status": "ok", "message": result}
+
+
+@router.get("/status")
+async def recording_status():
+    """Get current recording status."""
+    return {
+        "is_recording": recorder.is_recording,
+        "current_file": recorder.current_file,
+    }
 
 
 # Global instance

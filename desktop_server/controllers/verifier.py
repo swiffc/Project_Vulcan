@@ -9,7 +9,10 @@ import numpy as np
 import mss
 import logging
 from pathlib import Path
-from typing import Tuple, Optional
+from typing import Dict, Any, Tuple, Optional
+from datetime import datetime
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 
@@ -97,4 +100,31 @@ class VisualVerifier:
         }
 
 
+router = APIRouter(prefix="/verifier", tags=["verifier"])
+
+
+class VerificationRequest(BaseModel):
+    reference_path: str
+    threshold: Optional[float] = 0.95
+
+
+@router.post("/compare")
+async def compare_screen(req: VerificationRequest):
+    """Compare current screen with a reference image."""
+    result = verifier.capture_and_compare(
+        reference_path=req.reference_path, threshold=req.threshold
+    )
+    if "error" in result:
+        raise HTTPException(status_code=400, detail=result["error"])
+    return result
+
+
+@router.get("/last_result")
+async def get_last_result():
+    """Get the result of the last verification (placeholder)."""
+    # In a real system, we'd store this in state or a database
+    return {"message": "Verification history not implemented yet"}
+
+
+# Global instance
 verifier = VisualVerifier()

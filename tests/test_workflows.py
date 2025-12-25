@@ -23,7 +23,7 @@ class TestOrchestratorRouting:
 
     def test_detect_trading_agent(self):
         """Trading keywords should route to trading agent."""
-        from agents.core.orchestrator_adapter import OrchestratorAdapter, AgentType
+        from core.orchestrator_adapter import OrchestratorAdapter, AgentType
 
         orch = OrchestratorAdapter()
 
@@ -35,7 +35,7 @@ class TestOrchestratorRouting:
 
     def test_detect_cad_agent(self):
         """CAD keywords should route to CAD agent."""
-        from agents.core.orchestrator_adapter import OrchestratorAdapter, AgentType
+        from core.orchestrator_adapter import OrchestratorAdapter, AgentType
 
         orch = OrchestratorAdapter()
 
@@ -46,7 +46,7 @@ class TestOrchestratorRouting:
 
     def test_detect_inspector_agent(self):
         """Inspector keywords should route to inspector."""
-        from agents.core.orchestrator_adapter import OrchestratorAdapter, AgentType
+        from core.orchestrator_adapter import OrchestratorAdapter, AgentType
 
         orch = OrchestratorAdapter()
 
@@ -57,7 +57,7 @@ class TestOrchestratorRouting:
 
     def test_detect_system_agent(self):
         """System keywords should route to system manager."""
-        from agents.core.orchestrator_adapter import OrchestratorAdapter, AgentType
+        from core.orchestrator_adapter import OrchestratorAdapter, AgentType
 
         orch = OrchestratorAdapter()
 
@@ -67,7 +67,7 @@ class TestOrchestratorRouting:
 
     def test_detect_general_fallback(self):
         """Unknown queries should fall back to general."""
-        from agents.core.orchestrator_adapter import OrchestratorAdapter, AgentType
+        from core.orchestrator_adapter import OrchestratorAdapter, AgentType
 
         orch = OrchestratorAdapter()
 
@@ -82,7 +82,7 @@ class TestTradingWorkflow:
     @pytest.mark.asyncio
     async def test_trading_analysis_flow(self):
         """Test: User asks for analysis → Strategy adapter processes."""
-        from agents.core.orchestrator_adapter import (
+        from core.orchestrator_adapter import (
             OrchestratorAdapter, TaskRequest, AgentType
         )
 
@@ -142,7 +142,7 @@ class TestCADWorkflow:
     @pytest.mark.asyncio
     async def test_cad_pdf_to_part_flow(self):
         """Test: PDF upload → Parse → Build part."""
-        from agents.core.orchestrator_adapter import (
+        from core.orchestrator_adapter import (
             OrchestratorAdapter, TaskRequest, AgentType
         )
 
@@ -172,7 +172,7 @@ class TestInspectorWorkflow:
     @pytest.mark.asyncio
     async def test_audit_with_review(self):
         """Test: Task with require_review triggers inspector."""
-        from agents.core.orchestrator_adapter import (
+        from core.orchestrator_adapter import (
             OrchestratorAdapter, TaskRequest, AgentType
         )
 
@@ -208,7 +208,7 @@ class TestHealthDashboard:
 
     def test_agent_status(self):
         """Test agent registration status."""
-        from agents.core.orchestrator_adapter import OrchestratorAdapter, AgentType
+        from core.orchestrator_adapter import OrchestratorAdapter, AgentType
 
         orch = OrchestratorAdapter()
         orch.register_agent(AgentType.TRADING, MagicMock())
@@ -220,7 +220,7 @@ class TestHealthDashboard:
 
     def test_task_history(self):
         """Test task history retrieval."""
-        from agents.core.orchestrator_adapter import (
+        from core.orchestrator_adapter import (
             OrchestratorAdapter, TaskResult, AgentType
         )
 

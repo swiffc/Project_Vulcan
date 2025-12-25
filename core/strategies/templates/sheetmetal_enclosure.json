@@ -1,0 +1,61 @@
+{
+  "name": "Sheet Metal Enclosure Box",
+  "product_type": "sheet_metal",
+  "description": "Rectangular sheet metal enclosure for electronics or equipment housing",
+  "material": {
+    "name": "AISI 304 Stainless Steel",
+    "grade": "304",
+    "density": 8000,
+    "yield_strength": 215,
+    "tensile_strength": 505
+  },
+  "thickness": {
+    "nominal": 1.5,
+    "upper_tolerance": 0.1,
+    "lower_tolerance": -0.1,
+    "unit": "mm"
+  },
+  "bend_radius": 1.5,
+  "k_factor": 0.44,
+  "bends": [
+    {"name": "Front Left", "angle": 90, "sequence": 1, "direction": "up"},
+    {"name": "Front Right", "angle": 90, "sequence": 2, "direction": "up"},
+    {"name": "Back Left", "angle": 90, "sequence": 3, "direction": "up"},
+    {"name": "Back Right", "angle": 90, "sequence": 4, "direction": "up"},
+    {"name": "Top Flange", "angle": 90, "sequence": 5, "direction": "in"}
+  ],
+  "flat_pattern": {
+    "width": 400,
+    "height": 600,
+    "area": 240000
+  },
+  "features": [
+    {
+      "name": "Ventilation Holes",
+      "type": "hole",
+      "parameters": {"diameter": 8, "count": 20, "pattern": "grid"},
+      "sequence": 1
+    },
+    {
+      "name": "Mounting Tabs",
+      "type": "flange",
+      "parameters": {"width": 25, "count": 4},
+      "sequence": 2
+    }
+  ],
+  "constraints": [
+    {
+      "name": "Minimum Bend Radius",
+      "type": "process",
+      "value": 1.0,
+      "is_critical": true
+    },
+    {
+      "name": "Hole-to-Bend Distance",
+      "type": "dimensional",
+      "value": 8.0,
+      "is_critical": true
+    }
+  ],
+  "tags": ["enclosure", "sheet_metal", "box", "housing"]
+}
