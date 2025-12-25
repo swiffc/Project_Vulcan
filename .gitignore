@@ -71,6 +71,7 @@ storage/cad/**/screenshots/
 *.key
 credentials.json
 secrets.yaml
+.vulcan_key
 
 nul
 

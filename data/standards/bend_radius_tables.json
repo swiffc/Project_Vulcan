@@ -1,0 +1,62 @@
+{
+  "mild_steel": [
+    {"thickness": 0.001, "min_radius": 0.001, "k_factor": 0.44},
+    {"thickness": 0.002, "min_radius": 0.002, "k_factor": 0.44},
+    {"thickness": 0.003, "min_radius": 0.003, "k_factor": 0.44},
+    {"thickness": 0.005, "min_radius": 0.005, "k_factor": 0.44},
+    {"thickness": 0.006, "min_radius": 0.006, "k_factor": 0.44},
+    {"thickness": 0.008, "min_radius": 0.008, "k_factor": 0.44},
+    {"thickness": 0.010, "min_radius": 0.010, "k_factor": 0.44},
+    {"thickness": 0.012, "min_radius": 0.012, "k_factor": 0.44}
+  ],
+  "stainless_304": [
+    {"thickness": 0.001, "min_radius": 0.0015, "k_factor": 0.45},
+    {"thickness": 0.002, "min_radius": 0.003, "k_factor": 0.45},
+    {"thickness": 0.003, "min_radius": 0.0045, "k_factor": 0.45},
+    {"thickness": 0.005, "min_radius": 0.0075, "k_factor": 0.45},
+    {"thickness": 0.006, "min_radius": 0.009, "k_factor": 0.45},
+    {"thickness": 0.008, "min_radius": 0.012, "k_factor": 0.45},
+    {"thickness": 0.010, "min_radius": 0.015, "k_factor": 0.45},
+    {"thickness": 0.012, "min_radius": 0.018, "k_factor": 0.45}
+  ],
+  "stainless_316": [
+    {"thickness": 0.001, "min_radius": 0.0015, "k_factor": 0.45},
+    {"thickness": 0.002, "min_radius": 0.003, "k_factor": 0.45},
+    {"thickness": 0.003, "min_radius": 0.0045, "k_factor": 0.45},
+    {"thickness": 0.005, "min_radius": 0.0075, "k_factor": 0.45},
+    {"thickness": 0.006, "min_radius": 0.009, "k_factor": 0.45},
+    {"thickness": 0.008, "min_radius": 0.012, "k_factor": 0.45},
+    {"thickness": 0.010, "min_radius": 0.015, "k_factor": 0.45},
+    {"thickness": 0.012, "min_radius": 0.018, "k_factor": 0.45}
+  ],
+  "aluminum_6061": [
+    {"thickness": 0.001, "min_radius": 0.001, "k_factor": 0.40},
+    {"thickness": 0.002, "min_radius": 0.002, "k_factor": 0.40},
+    {"thickness": 0.003, "min_radius": 0.003, "k_factor": 0.40},
+    {"thickness": 0.005, "min_radius": 0.005, "k_factor": 0.40},
+    {"thickness": 0.006, "min_radius": 0.006, "k_factor": 0.40},
+    {"thickness": 0.008, "min_radius": 0.008, "k_factor": 0.40},
+    {"thickness": 0.010, "min_radius": 0.010, "k_factor": 0.40},
+    {"thickness": 0.012, "min_radius": 0.012, "k_factor": 0.40}
+  ],
+  "aluminum_5052": [
+    {"thickness": 0.001, "min_radius": 0.0005, "k_factor": 0.40},
+    {"thickness": 0.002, "min_radius": 0.001, "k_factor": 0.40},
+    {"thickness": 0.003, "min_radius": 0.0015, "k_factor": 0.40},
+    {"thickness": 0.005, "min_radius": 0.0025, "k_factor": 0.40},
+    {"thickness": 0.006, "min_radius": 0.003, "k_factor": 0.40},
+    {"thickness": 0.008, "min_radius": 0.004, "k_factor": 0.40},
+    {"thickness": 0.010, "min_radius": 0.005, "k_factor": 0.40},
+    {"thickness": 0.012, "min_radius": 0.006, "k_factor": 0.40}
+  ],
+  "copper": [
+    {"thickness": 0.001, "min_radius": 0.0005, "k_factor": 0.38},
+    {"thickness": 0.002, "min_radius": 0.001, "k_factor": 0.38},
+    {"thickness": 0.003, "min_radius": 0.0015, "k_factor": 0.38}
+  ],
+  "brass": [
+    {"thickness": 0.001, "min_radius": 0.0005, "k_factor": 0.38},
+    {"thickness": 0.002, "min_radius": 0.001, "k_factor": 0.38},
+    {"thickness": 0.003, "min_radius": 0.0015, "k_factor": 0.38}
+  ]
+}

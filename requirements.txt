@@ -73,3 +73,13 @@ sentry-sdk>=2.48.0
 # MCP Servers
 mcp>=1.0.0
 google-auth-oauthlib>=1.2.0
+
+# Encryption (Phase 24 security)
+cryptography>=44.0.0
+
+# Optional dependencies (used by desktop server)
+# pywin32>=306  # Windows COM API (install on Windows only)
+# solidwrap>=0.1.0  # SolidWorks wrapper (optional)
+
+# HTTP client (used by various adapters)
+# httpx is already included above
