@@ -987,6 +987,249 @@ async def get_validation_report(file_path: str, format: str = "json"):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ============================================================================
+# Phase 25 Drawing Checker Endpoints
+# ============================================================================
+
+@app.post("/phase25/check-holes")
+async def check_holes(request: dict):
+    """
+    Validate hole patterns against AISC requirements.
+
+    Request body:
+        holes: List of {diameter, x, y, edge_distance_x, edge_distance_y}
+        material_thickness: Optional plate thickness
+        edge_type: "sheared" or "rolled"
+
+    Returns:
+        AISC hole validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.aisc_hole_validator import AISCHoleValidator, HoleData
+
+        validator = AISCHoleValidator()
+
+        holes = [
+            HoleData(
+                diameter=h.get("diameter", 0),
+                x=h.get("x", 0),
+                y=h.get("y", 0),
+                edge_distance_x=h.get("edge_distance_x"),
+                edge_distance_y=h.get("edge_distance_y"),
+            )
+            for h in request.get("holes", [])
+        ]
+
+        result = validator.validate_holes(
+            holes=holes,
+            material_thickness=request.get("material_thickness"),
+            edge_type=request.get("edge_type", "sheared")
+        )
+
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Hole check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-structural")
+async def check_structural(request: dict):
+    """
+    Validate structural connection capacity.
+
+    Request body:
+        check_type: "bolt_shear", "bearing", "weld", "net_section"
+        ... parameters specific to check type
+
+    Returns:
+        Structural capacity validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.structural_capacity_validator import (
+            StructuralCapacityValidator, BoltData, WeldData
+        )
+
+        validator = StructuralCapacityValidator()
+        check_type = request.get("check_type", "bolt_shear")
+
+        if check_type == "bolt_shear":
+            bolt = BoltData(
+                diameter=request.get("bolt_diameter", 0.75),
+                grade=request.get("bolt_grade", "A325"),
+                threads_excluded=request.get("threads_excluded", False),
+                num_bolts=request.get("num_bolts", 1),
+                num_shear_planes=request.get("num_shear_planes", 1),
+            )
+            result = validator.check_bolt_shear(
+                bolt=bolt,
+                applied_load_kips=request.get("applied_load_kips")
+            )
+
+        elif check_type == "bearing":
+            bolt = BoltData(
+                diameter=request.get("bolt_diameter", 0.75),
+                num_bolts=request.get("num_bolts", 1),
+            )
+            result = validator.check_bearing(
+                bolt=bolt,
+                material_thickness=request.get("material_thickness", 0.5),
+                material_grade=request.get("material_grade", "A572-50"),
+                applied_load_kips=request.get("applied_load_kips")
+            )
+
+        elif check_type == "weld":
+            weld = WeldData(
+                weld_type=request.get("weld_type", "fillet"),
+                leg_size=request.get("leg_size", 0.25),
+                length=request.get("weld_length", 1.0),
+            )
+            result = validator.check_fillet_weld(
+                weld=weld,
+                base_metal_thickness=request.get("base_metal_thickness", 0.5),
+                applied_load_kips=request.get("applied_load_kips")
+            )
+
+        elif check_type == "net_section":
+            result = validator.check_net_section(
+                gross_width=request.get("gross_width", 6.0),
+                thickness=request.get("thickness", 0.5),
+                hole_diameters=request.get("hole_diameters", []),
+                material_grade=request.get("material_grade", "A572-50"),
+                applied_load_kips=request.get("applied_load_kips")
+            )
+        else:
+            raise HTTPException(status_code=400, detail=f"Unknown check_type: {check_type}")
+
+        return validator.to_dict(result)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Structural check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-shaft")
+async def check_shaft(request: dict):
+    """
+    Validate shaft/machining requirements.
+
+    Request body:
+        check_type: "shaft", "keyway", "retaining_ring", "chamfer"
+        ... parameters specific to check type
+
+    Returns:
+        Shaft validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.shaft_validator import (
+            ShaftValidator, ShaftData, KeywayData
+        )
+
+        validator = ShaftValidator()
+        check_type = request.get("check_type", "shaft")
+
+        if check_type == "shaft":
+            shaft = ShaftData(
+                diameter=request.get("diameter", 1.0),
+                length=request.get("length"),
+                tolerance_plus=request.get("tolerance_plus"),
+                tolerance_minus=request.get("tolerance_minus"),
+                surface_finish_ra=request.get("surface_finish_ra"),
+                runout_tir=request.get("runout_tir"),
+                concentricity=request.get("concentricity"),
+            )
+            result = validator.validate_shaft(
+                shaft=shaft,
+                feature_type=request.get("feature_type", "general")
+            )
+
+        elif check_type == "keyway":
+            keyway = KeywayData(
+                width=request.get("keyway_width", 0.25),
+                depth=request.get("keyway_depth", 0.125),
+                length=request.get("keyway_length"),
+                angular_location=request.get("angular_location"),
+            )
+            result = validator.validate_keyway(
+                keyway=keyway,
+                shaft_diameter=request.get("shaft_diameter", 1.0)
+            )
+
+        elif check_type == "retaining_ring":
+            result = validator.validate_retaining_ring_groove(
+                shaft_diameter=request.get("shaft_diameter", 1.0),
+                groove_width=request.get("groove_width"),
+                groove_depth=request.get("groove_depth"),
+            )
+
+        elif check_type == "chamfer":
+            result = validator.check_chamfers(
+                has_chamfer=request.get("has_chamfer", False),
+                chamfer_size=request.get("chamfer_size"),
+            )
+        else:
+            raise HTTPException(status_code=400, detail=f"Unknown check_type: {check_type}")
+
+        return validator.to_dict(result)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Shaft check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-handling")
+async def check_handling(request: dict):
+    """
+    Validate handling and lifting requirements.
+
+    Request body:
+        total_weight_lbs: Assembly weight
+        length_in, width_in, height_in: Dimensions
+        has_lifting_lugs, num_lifting_lugs, lug_capacity_lbs
+        cg_marked, cg_location
+        has_rigging_diagram
+
+    Returns:
+        Handling validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.handling_validator import HandlingValidator, HandlingData
+
+        validator = HandlingValidator()
+
+        handling = HandlingData(
+            total_weight_lbs=request.get("total_weight_lbs", 0),
+            length_in=request.get("length_in"),
+            width_in=request.get("width_in"),
+            height_in=request.get("height_in"),
+            has_lifting_lugs=request.get("has_lifting_lugs", False),
+            num_lifting_lugs=request.get("num_lifting_lugs", 0),
+            lug_capacity_lbs=request.get("lug_capacity_lbs"),
+            cg_marked=request.get("cg_marked", False),
+            cg_location=request.get("cg_location"),
+            has_rigging_diagram=request.get("has_rigging_diagram", False),
+        )
+
+        result = validator.validate(handling)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Handling check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/kill")
 async def kill():
     """Emergency stop - activate kill switch."""
