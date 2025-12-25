@@ -521,6 +521,191 @@ class AWSD11Validator:
 
         return results
 
+    def _check_preheat_requirements(self, data) -> Optional[AWSCheckResult]:
+        """Check preheat temperature requirements per AWS D1.1 Table 3.2."""
+        raw_text = getattr(data, 'raw_text', '')
+
+        # Look for preheat specifications
+        preheat_pattern = re.compile(
+            r'PREHEAT[:\s]*(\d+)\s*(?:°?F|DEG)',
+            re.I
+        )
+        match = preheat_pattern.search(raw_text)
+
+        if match:
+            preheat_temp = int(match.group(1))
+
+            # Minimum preheat for structural welding is typically 50°F
+            passed = preheat_temp >= 50
+
+            return AWSCheckResult(
+                check_id="AWS-PRE-001",
+                check_name="Preheat Temperature",
+                passed=passed,
+                actual_value=f"{preheat_temp}°F",
+                expected_value="≥50°F minimum (higher for thicker material)",
+                reference="AWS D1.1 Table 3.2",
+                severity=ValidationSeverity.INFO if passed else ValidationSeverity.WARNING,
+                message=f"Preheat temperature {preheat_temp}°F specified",
+            )
+
+        # Check if material thickness suggests preheat needed
+        thickness_pattern = re.compile(r'(\d+(?:\.\d+)?)\s*(?:"|IN)\s*(?:THK|THICK|PL|PLATE)', re.I)
+        thickness_match = thickness_pattern.search(raw_text)
+
+        if thickness_match:
+            thickness = float(thickness_match.group(1))
+            if thickness > 1.5:  # Thicker than 1.5" typically needs preheat
+                return AWSCheckResult(
+                    check_id="AWS-PRE-001",
+                    check_name="Preheat Temperature",
+                    passed=False,
+                    actual_value="Not specified",
+                    expected_value=f"Preheat required for >{thickness}\" material",
+                    reference="AWS D1.1 Table 3.2",
+                    severity=ValidationSeverity.WARNING,
+                    message=f"Material >{thickness}\" thick may require preheat specification",
+                )
+
+        return None
+
+    def _check_interpass_temperature(self, data) -> Optional[AWSCheckResult]:
+        """Check interpass temperature requirements."""
+        raw_text = getattr(data, 'raw_text', '')
+
+        # Look for interpass temperature
+        interpass_pattern = re.compile(
+            r'(?:INTERPASS|MAX\s*INTERPASS)[:\s]*(\d+)\s*(?:°?F|DEG)',
+            re.I
+        )
+        match = interpass_pattern.search(raw_text)
+
+        if match:
+            interpass_temp = int(match.group(1))
+
+            # Standard max is 600°F, Q&T steels max 400°F
+            limits = self.INTERPASS_TEMP["standard"]
+            passed = limits["min"] <= interpass_temp <= limits["max"]
+
+            return AWSCheckResult(
+                check_id="AWS-INT-001",
+                check_name="Interpass Temperature",
+                passed=passed,
+                actual_value=f"{interpass_temp}°F max",
+                expected_value=f"{limits['min']}-{limits['max']}°F typical range",
+                reference="AWS D1.1 Section 5.6",
+                severity=ValidationSeverity.INFO if passed else ValidationSeverity.WARNING,
+                message=f"Interpass temperature {interpass_temp}°F {'within' if passed else 'outside'} limits",
+            )
+
+        # For multi-pass welds, interpass should be specified
+        if re.search(r'MULTI(?:-|\s)?PASS', raw_text, re.I):
+            return AWSCheckResult(
+                check_id="AWS-INT-001",
+                check_name="Interpass Temperature",
+                passed=False,
+                actual_value="Not specified",
+                expected_value="Interpass temp required for multi-pass welds",
+                reference="AWS D1.1 Section 5.6",
+                severity=ValidationSeverity.INFO,
+                message="Multi-pass weld detected but interpass temperature not specified",
+            )
+
+        return None
+
+    def _check_welder_qualification(self, data) -> Optional[AWSCheckResult]:
+        """Check welder qualification requirements are referenced."""
+        raw_text = getattr(data, 'raw_text', '')
+
+        # Look for welder qualification references
+        qual_patterns = [
+            r'WELDER\s*(?:QUAL(?:IFICATION)?|CERT(?:IFICATION)?)',
+            r'WQR',  # Welder Qualification Record
+            r'WPQR',  # Welding Procedure Qualification Record
+            r'QUALIFIED\s*(?:PER|TO)\s*(?:AWS|ASME)',
+        ]
+
+        for pattern in qual_patterns:
+            if re.search(pattern, raw_text, re.I):
+                return AWSCheckResult(
+                    check_id="AWS-QUAL-001",
+                    check_name="Welder Qualification",
+                    passed=True,
+                    actual_value="Qualification requirement referenced",
+                    expected_value="Welder qualification per AWS D1.1 Section 4",
+                    reference="AWS D1.1 Section 4",
+                    severity=ValidationSeverity.INFO,
+                    message="Welder qualification requirements referenced",
+                )
+
+        # Check if structural welding that should have qualification note
+        if re.search(r'(?:STRUCTURAL|CJP|FULL\s*PEN)', raw_text, re.I):
+            return AWSCheckResult(
+                check_id="AWS-QUAL-001",
+                check_name="Welder Qualification",
+                passed=False,
+                actual_value="Not specified",
+                expected_value="Welder qualification reference for structural welds",
+                reference="AWS D1.1 Section 4",
+                severity=ValidationSeverity.INFO,
+                message="Consider adding welder qualification note for structural welds",
+            )
+
+        return None
+
+    def _check_filler_metal(self, data) -> List[AWSCheckResult]:
+        """Check filler metal classifications."""
+        results = []
+        raw_text = getattr(data, 'raw_text', '')
+
+        # Look for filler metal classifications
+        filler_patterns = [
+            (r'E70(?:18|XX)', "E70XX", "SMAW"),
+            (r'E71T-\d+', "E71T-X", "FCAW"),
+            (r'ER70S-\d+', "ER70S-X", "GMAW/GTAW"),
+            (r'E80(?:18|XX)', "E80XX", "SMAW"),
+            (r'E81T-\d+', "E81T-X", "FCAW"),
+        ]
+
+        found_fillers = []
+        for pattern, classification, process in filler_patterns:
+            matches = re.findall(pattern, raw_text, re.I)
+            if matches:
+                found_fillers.extend([(m, classification, process) for m in matches])
+
+        if found_fillers:
+            for filler, classification, process in found_fillers:
+                filler_info = self.FILLER_METALS.get(classification, {})
+                tensile = filler_info.get("tensile_ksi", "N/A")
+
+                result = AWSCheckResult(
+                    check_id=f"AWS-FILL-{len(results)+1:03d}",
+                    check_name=f"Filler Metal {filler.upper()}",
+                    passed=True,
+                    actual_value=f"{filler.upper()} ({tensile} ksi tensile)",
+                    expected_value="Filler metal matching base metal strength",
+                    reference="AWS D1.1 Table 3.1",
+                    severity=ValidationSeverity.INFO,
+                    message=f"Filler metal {filler.upper()} specified ({process})",
+                )
+                results.append(result)
+        else:
+            # Check if welding is specified but no filler
+            if re.search(r'WELD|WLD|FILLET|GROOVE', raw_text, re.I):
+                result = AWSCheckResult(
+                    check_id="AWS-FILL-001",
+                    check_name="Filler Metal",
+                    passed=False,
+                    actual_value="Not specified",
+                    expected_value="Filler metal classification (E70XX, E71T-X, etc.)",
+                    reference="AWS D1.1 Table 3.1",
+                    severity=ValidationSeverity.WARNING,
+                    message="Welds specified but filler metal classification not found",
+                )
+                results.append(result)
+
+        return results
+
     def _get_suggestion(self, check: AWSCheckResult) -> str:
         """Get fix suggestion for failed check."""
         suggestions = {
