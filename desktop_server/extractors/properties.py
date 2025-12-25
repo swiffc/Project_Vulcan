@@ -39,7 +39,7 @@ class StandardProperties:
 
 @dataclass
 class MassProperties:
-    """Mass properties from SolidWorks (Phase 24.4)."""
+    """Mass properties from SolidWorks (Phase 24.4 - 10 fields)."""
     mass_kg: float = 0.0
     mass_lbs: float = 0.0
     volume_m3: float = 0.0
@@ -52,6 +52,7 @@ class MassProperties:
     products_of_inertia: tuple = (0.0, 0.0, 0.0)  # Ixy, Ixz, Iyz
     principal_axes: tuple = (0.0, 0.0, 0.0)
     bounding_box: tuple = (0.0, 0.0, 0.0)  # L x W x H
+    by_configuration: Dict[str, Dict] = field(default_factory=dict)  # Mass props per config
 
 
 @dataclass
@@ -123,20 +124,72 @@ class PropertiesExtractor:
             return False
 
     def get_standard_properties(self) -> StandardProperties:
-        """Extract standard document properties."""
+        """Extract standard document properties (Phase 24.3 - all 8 fields)."""
         if not self._connect():
             return StandardProperties()
 
         props = StandardProperties()
         try:
+            # File path and name
             props.path = self._doc.GetPathName() or ""
             props.filename = props.path.split("\\")[-1] if props.path else ""
-            props.configuration = self._doc.ConfigurationManager.ActiveConfiguration.Name
+            props.extension = os.path.splitext(props.filename)[1].lower() if props.filename else ""
 
-            # Get file info
-            file_info = self._doc.FileInfo
-            if file_info:
-                props.sw_version = str(self._sw_app.RevisionNumber())
+            # Configurations
+            props.configuration = self._doc.ConfigurationManager.ActiveConfiguration.Name
+            config_names = self._doc.GetConfigurationNames()
+            if config_names:
+                props.all_configurations = list(config_names)
+
+            # File dates and author
+            try:
+                summary_info = self._doc.SummaryInfo
+                if summary_info:
+                    props.last_saved_by = summary_info.Author or ""
+            except Exception:
+                pass
+
+            # File size
+            if props.path and os.path.exists(props.path):
+                props.file_size_bytes = os.path.getsize(props.path)
+                props.modified_date = datetime.fromtimestamp(os.path.getmtime(props.path))
+                props.created_date = datetime.fromtimestamp(os.path.getctime(props.path))
+
+            # SolidWorks version
+            try:
+                props.sw_version = str(self._sw_app.RevisionNumber())[:4]
+            except Exception:
+                pass
+
+            # Total edit time (custom property often stored)
+            try:
+                custom_mgr = self._doc.Extension.CustomPropertyManager("")
+                if custom_mgr:
+                    val_out = ""
+                    resolved_out = ""
+                    was_resolved = False
+                    # Try common property names for edit time
+                    for time_prop in ["EditTime", "TotalEditTime", "SW-Total Edit Time"]:
+                        try:
+                            result = custom_mgr.Get5(time_prop, False, val_out, resolved_out, was_resolved)
+                            if resolved_out:
+                                props.total_edit_time_sec = int(resolved_out)
+                                break
+                        except Exception:
+                            pass
+            except Exception:
+                pass
+
+            # Rebuild status
+            try:
+                needs_rebuild = self._doc.GetRebuildStatus()
+                if needs_rebuild == 0:
+                    props.rebuild_status = "up_to_date"
+                else:
+                    props.rebuild_status = "needs_rebuild"
+            except Exception:
+                pass
+
         except Exception as e:
             logger.error(f"Error extracting standard properties: {e}")
 
