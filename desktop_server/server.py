@@ -1709,6 +1709,139 @@ async def check_sspc_coating(request: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/phase25/check-asme-viii")
+async def check_asme_viii(request: dict):
+    """
+    Validate pressure vessel design per ASME Section VIII Division 1.
+
+    Request body:
+        design_pressure_psi: Float
+        shell_inside_diameter_in: Float
+        shell_wall_thickness_in: Float
+        material: String (e.g., "SA-516-70")
+        joint_efficiency: Float (0.0-1.0)
+        corrosion_allowance_in: Float
+        design_temperature_f: Float
+        hydro_test_pressure_psi: Float (optional)
+        nozzle_diameter_in: Float (optional)
+        nozzle_reinforcement_area_sqin: Float (optional)
+        flange_rating: String (e.g., "150", "300")
+        flange_temp_f: Float (optional)
+        mtr_available: Boolean
+        material_certs: List of cert types
+
+    Returns:
+        ASME VIII validation results with 8 checks
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.asme_viii_validator import ASMEVIIIValidator, VesselData
+
+        validator = ASMEVIIIValidator()
+
+        vessel = VesselData(
+            design_pressure_psi=request.get("design_pressure_psi", 150.0),
+            shell_inside_diameter_in=request.get("shell_inside_diameter_in"),
+            shell_wall_thickness_in=request.get("shell_wall_thickness_in"),
+            material=request.get("material", "SA-516-70"),
+            joint_efficiency=request.get("joint_efficiency", 1.0),
+            corrosion_allowance_in=request.get("corrosion_allowance_in", 0.0625),
+            design_temperature_f=request.get("design_temperature_f", 650.0),
+            hydro_test_pressure_psi=request.get("hydro_test_pressure_psi"),
+            nozzle_diameter_in=request.get("nozzle_diameter_in"),
+            nozzle_reinforcement_area_sqin=request.get("nozzle_reinforcement_area_sqin"),
+            shell_thickness_at_nozzle_in=request.get("shell_thickness_at_nozzle_in"),
+            flange_rating=request.get("flange_rating"),
+            flange_temp_f=request.get("flange_temp_f"),
+            mtr_available=request.get("mtr_available", False),
+            material_certs=request.get("material_certs", []),
+        )
+
+        result = validator.validate_vessel(vessel)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"ASME VIII check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-tema")
+async def check_tema(request: dict):
+    """
+    Validate heat exchanger design per TEMA standards (Class R/B/C).
+
+    Request body:
+        tema_class: String ("R", "B", or "C")
+        shell_id_in: Float
+        tube_od_in: Float
+        tube_pitch_in: Float
+        tube_layout: String ("triangular", "square", etc.)
+        tubesheet_thickness_in: Float
+        tube_joint_type: String ("expanded", "welded", "expanded_welded", "strength_welded")
+        baffle_spacing_in: Float
+        baffle_cut_percent: Float
+        tube_side_velocity_fps: Float (optional)
+        shell_side_velocity_fps: Float (optional)
+        tube_side_fluid: String ("liquid" or "gas")
+        shell_side_fluid: String ("liquid" or "gas")
+
+    Returns:
+        TEMA validation results with 6 checks
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.tema_validator import (
+            TEMAValidator, TEMAClass, HeatExchangerData, TubeJointType
+        )
+
+        validator = TEMAValidator()
+
+        # Parse TEMA class
+        tema_class_str = request.get("tema_class", "R").upper()
+        tema_class = TEMAClass.R
+        if tema_class_str == "B":
+            tema_class = TEMAClass.B
+        elif tema_class_str == "C":
+            tema_class = TEMAClass.C
+
+        # Parse tube joint type
+        joint_str = request.get("tube_joint_type", "expanded").lower()
+        tube_joint = TubeJointType.EXPANDED
+        if joint_str == "welded":
+            tube_joint = TubeJointType.WELDED
+        elif joint_str == "expanded_welded":
+            tube_joint = TubeJointType.EXPANDED_WELDED
+        elif joint_str == "strength_welded":
+            tube_joint = TubeJointType.STRENGTH_WELDED
+
+        hx = HeatExchangerData(
+            tema_class=tema_class,
+            shell_id_in=request.get("shell_id_in"),
+            tube_od_in=request.get("tube_od_in"),
+            tube_pitch_in=request.get("tube_pitch_in"),
+            tube_layout=request.get("tube_layout", "triangular"),
+            num_tubes=request.get("num_tubes", 0),
+            tubesheet_thickness_in=request.get("tubesheet_thickness_in"),
+            tube_joint_type=tube_joint,
+            num_baffles=request.get("num_baffles", 0),
+            baffle_spacing_in=request.get("baffle_spacing_in"),
+            baffle_cut_percent=request.get("baffle_cut_percent", 25.0),
+            tube_side_velocity_fps=request.get("tube_side_velocity_fps"),
+            shell_side_velocity_fps=request.get("shell_side_velocity_fps"),
+            tube_side_fluid=request.get("tube_side_fluid", "liquid"),
+            shell_side_fluid=request.get("shell_side_fluid", "liquid"),
+        )
+
+        result = validator.validate_exchanger(hx)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"TEMA check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/kill")
 async def kill():
     """Emergency stop - activate kill switch."""
