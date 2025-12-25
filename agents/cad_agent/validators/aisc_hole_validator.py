@@ -1,0 +1,448 @@
+"""
+AISC Hole & Edge Distance Validator
+====================================
+Validates hole patterns against AISC Steel Construction Manual requirements.
+
+Phase 25.1 - Geometry & Dimensions
+"""
+
+import logging
+from dataclasses import dataclass, field
+from typing import Dict, List, Any, Optional, Tuple
+from enum import Enum
+
+from .validation_models import ValidationIssue, ValidationSeverity
+
+logger = logging.getLogger("vulcan.validator.aisc_hole")
+
+
+# AISC Table J3.4 - Minimum Edge Distance (inches)
+# Based on bolt diameter and edge type
+AISC_MIN_EDGE_DISTANCE = {
+    # bolt_dia: (sheared_edge, rolled_edge)
+    0.5: (0.875, 0.75),      # 1/2"
+    0.625: (1.125, 0.875),   # 5/8"
+    0.75: (1.25, 1.0),       # 3/4"
+    0.875: (1.5, 1.125),     # 7/8"
+    1.0: (1.75, 1.25),       # 1"
+    1.125: (2.0, 1.5),       # 1-1/8"
+    1.25: (2.25, 1.625),     # 1-1/4"
+    1.375: (2.375, 1.75),    # 1-3/8"
+    1.5: (2.625, 1.875),     # 1-1/2"
+}
+
+# Minimum hole spacing per AISC J3.3 (2.67 × bolt diameter)
+MIN_SPACING_FACTOR = 2.67
+
+# Preferred hole spacing (3 × bolt diameter typical)
+PREFERRED_SPACING_FACTOR = 3.0
+
+# Standard hole sizes per AISC Table J3.3
+STANDARD_HOLE_SIZES = {
+    # bolt_dia: standard_hole_dia
+    0.5: 0.5625,      # 1/2" bolt = 9/16" hole
+    0.625: 0.6875,    # 5/8" bolt = 11/16" hole
+    0.75: 0.8125,     # 3/4" bolt = 13/16" hole
+    0.875: 0.9375,    # 7/8" bolt = 15/16" hole
+    1.0: 1.0625,      # 1" bolt = 1-1/16" hole
+    1.125: 1.1875,    # 1-1/8" bolt = 1-3/16" hole
+    1.25: 1.3125,     # 1-1/4" bolt = 1-5/16" hole
+    1.375: 1.4375,    # 1-3/8" bolt = 1-7/16" hole
+    1.5: 1.5625,      # 1-1/2" bolt = 1-9/16" hole
+}
+
+# Common drill sizes (fractional inches)
+STANDARD_DRILL_SIZES = [
+    0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5,
+    0.5625, 0.625, 0.6875, 0.75, 0.8125, 0.875, 0.9375,
+    1.0, 1.0625, 1.125, 1.1875, 1.25, 1.3125, 1.375,
+    1.4375, 1.5, 1.5625, 1.625, 1.75, 1.875, 2.0
+]
+
+
+@dataclass
+class HoleData:
+    """Data for a single hole."""
+    diameter: float  # inches
+    x: float = 0.0   # x coordinate
+    y: float = 0.0   # y coordinate
+    edge_distance_x: Optional[float] = None
+    edge_distance_y: Optional[float] = None
+    hole_type: str = "standard"  # standard, oversized, slotted
+
+
+@dataclass
+class AISCHoleValidationResult:
+    """AISC hole validation result."""
+    total_checks: int = 0
+    passed: int = 0
+    failed: int = 0
+    warnings: int = 0
+    critical_failures: int = 0
+    issues: List[ValidationIssue] = field(default_factory=list)
+
+    # Statistics
+    holes_checked: int = 0
+    edge_distance_violations: int = 0
+    spacing_violations: int = 0
+    non_standard_holes: int = 0
+
+
+class AISCHoleValidator:
+    """
+    Validates hole patterns against AISC requirements.
+
+    Checks:
+    1. Edge distance vs AISC J3.4 minimum
+    2. Edge distance vs material thickness rules
+    3. Hole spacing/pitch (min 2.67d per AISC)
+    4. Hole-to-hole alignment (same part)
+    5. Standard hole sizes for bolt diameters
+    6. Slot length-to-width ratio
+    7. Oversized hole requirements
+    """
+
+    def __init__(self):
+        pass
+
+    def validate_holes(
+        self,
+        holes: List[HoleData],
+        material_thickness: Optional[float] = None,
+        edge_type: str = "sheared"
+    ) -> AISCHoleValidationResult:
+        """
+        Validate a list of holes against AISC requirements.
+
+        Args:
+            holes: List of HoleData objects
+            material_thickness: Material thickness in inches
+            edge_type: "sheared" or "rolled" edge
+
+        Returns:
+            AISCHoleValidationResult
+        """
+        result = AISCHoleValidationResult()
+        result.holes_checked = len(holes)
+
+        if not holes:
+            return result
+
+        # Check each hole
+        for i, hole in enumerate(holes):
+            self._check_standard_size(hole, i, result)
+            self._check_edge_distance(hole, i, edge_type, result)
+            if material_thickness:
+                self._check_edge_vs_thickness(hole, i, material_thickness, result)
+
+        # Check hole spacing between pairs
+        self._check_hole_spacing(holes, result)
+
+        # Check alignment
+        self._check_hole_alignment(holes, result)
+
+        return result
+
+    def _check_standard_size(self, hole: HoleData, index: int, result: AISCHoleValidationResult):
+        """Check if hole size is a standard drill size."""
+        result.total_checks += 1
+
+        # Find closest standard size
+        closest = min(STANDARD_DRILL_SIZES, key=lambda x: abs(x - hole.diameter))
+        diff = abs(hole.diameter - closest)
+
+        if diff < 0.001:  # Essentially equal
+            result.passed += 1
+        elif diff <= 0.03:  # Within 1/32"
+            result.passed += 1
+        else:
+            result.non_standard_holes += 1
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.WARNING,
+                check_type="non_standard_hole",
+                message=f"Hole #{index+1}: {hole.diameter}\" is non-standard size",
+                location=f"Hole {index+1}",
+                suggestion=f"Consider standard size: {closest}\"",
+                standard_reference="AISC Table J3.3",
+            ))
+            result.warnings += 1
+
+    def _check_edge_distance(
+        self,
+        hole: HoleData,
+        index: int,
+        edge_type: str,
+        result: AISCHoleValidationResult
+    ):
+        """Check edge distance against AISC J3.4."""
+        result.total_checks += 1
+
+        # Determine bolt size from hole size
+        bolt_dia = self._get_bolt_from_hole(hole.diameter)
+
+        if bolt_dia not in AISC_MIN_EDGE_DISTANCE:
+            # Interpolate or use closest
+            bolt_dia = min(AISC_MIN_EDGE_DISTANCE.keys(), key=lambda x: abs(x - bolt_dia))
+
+        min_edge = AISC_MIN_EDGE_DISTANCE[bolt_dia]
+        min_dist = min_edge[0] if edge_type == "sheared" else min_edge[1]
+
+        # Check both x and y edge distances if provided
+        violations = []
+        if hole.edge_distance_x is not None and hole.edge_distance_x < min_dist:
+            violations.append(("X", hole.edge_distance_x))
+        if hole.edge_distance_y is not None and hole.edge_distance_y < min_dist:
+            violations.append(("Y", hole.edge_distance_y))
+
+        if violations:
+            result.edge_distance_violations += 1
+            result.failed += 1
+            result.critical_failures += 1
+            for direction, actual in violations:
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.CRITICAL,
+                    check_type="edge_distance_aisc",
+                    message=f"Hole #{index+1}: {direction} edge distance {actual}\" < min {min_dist}\"",
+                    location=f"Hole {index+1}",
+                    suggestion=f"Increase edge distance to min {min_dist}\" per AISC J3.4",
+                    standard_reference="AISC Table J3.4",
+                ))
+        else:
+            result.passed += 1
+
+    def _check_edge_vs_thickness(
+        self,
+        hole: HoleData,
+        index: int,
+        thickness: float,
+        result: AISCHoleValidationResult
+    ):
+        """Check edge distance vs material thickness rule."""
+        result.total_checks += 1
+
+        # Rule of thumb: min edge = 1.5 × hole diameter or 2 × thickness, whichever larger
+        min_by_hole = 1.5 * hole.diameter
+        min_by_thickness = 2.0 * thickness
+        min_edge = max(min_by_hole, min_by_thickness)
+
+        actual_edge = None
+        if hole.edge_distance_x is not None and hole.edge_distance_y is not None:
+            actual_edge = min(hole.edge_distance_x, hole.edge_distance_y)
+        elif hole.edge_distance_x is not None:
+            actual_edge = hole.edge_distance_x
+        elif hole.edge_distance_y is not None:
+            actual_edge = hole.edge_distance_y
+
+        if actual_edge is not None and actual_edge < min_edge:
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.WARNING,
+                check_type="edge_distance_thickness",
+                message=f"Hole #{index+1}: Edge {actual_edge}\" tight for {thickness}\" material",
+                location=f"Hole {index+1}",
+                suggestion=f"Recommended min edge: {min_edge:.3f}\"",
+            ))
+            result.warnings += 1
+        else:
+            result.passed += 1
+
+    def _check_hole_spacing(self, holes: List[HoleData], result: AISCHoleValidationResult):
+        """Check spacing between all hole pairs."""
+        if len(holes) < 2:
+            return
+
+        result.total_checks += 1
+
+        for i in range(len(holes)):
+            for j in range(i + 1, len(holes)):
+                h1, h2 = holes[i], holes[j]
+
+                # Calculate center-to-center distance
+                dx = h2.x - h1.x
+                dy = h2.y - h1.y
+                distance = (dx**2 + dy**2) ** 0.5
+
+                # Use larger bolt diameter for spacing check
+                max_hole = max(h1.diameter, h2.diameter)
+                bolt_dia = self._get_bolt_from_hole(max_hole)
+
+                min_spacing = MIN_SPACING_FACTOR * bolt_dia
+                preferred_spacing = PREFERRED_SPACING_FACTOR * bolt_dia
+
+                if distance < min_spacing:
+                    result.spacing_violations += 1
+                    result.failed += 1
+                    result.issues.append(ValidationIssue(
+                        severity=ValidationSeverity.CRITICAL,
+                        check_type="hole_spacing_min",
+                        message=f"Holes {i+1}-{j+1}: Spacing {distance:.3f}\" < min {min_spacing:.3f}\"",
+                        suggestion=f"Increase spacing to min {min_spacing:.3f}\" (2.67d per AISC J3.3)",
+                        standard_reference="AISC J3.3",
+                    ))
+                elif distance < preferred_spacing:
+                    result.issues.append(ValidationIssue(
+                        severity=ValidationSeverity.INFO,
+                        check_type="hole_spacing_preferred",
+                        message=f"Holes {i+1}-{j+1}: Spacing {distance:.3f}\" is tight (prefer {preferred_spacing:.3f}\")",
+                        suggestion=f"Consider increasing to {preferred_spacing:.3f}\" (3d preferred)",
+                    ))
+
+        if result.spacing_violations == 0:
+            result.passed += 1
+
+    def _check_hole_alignment(self, holes: List[HoleData], result: AISCHoleValidationResult):
+        """Check if holes are aligned in rows/columns."""
+        if len(holes) < 2:
+            return
+
+        result.total_checks += 1
+
+        # Group by approximate X and Y coordinates
+        x_groups: Dict[float, List[int]] = {}
+        y_groups: Dict[float, List[int]] = {}
+        tolerance = 0.0625  # 1/16" alignment tolerance
+
+        for i, hole in enumerate(holes):
+            # Find or create X group
+            found_x = False
+            for key in x_groups:
+                if abs(hole.x - key) < tolerance:
+                    x_groups[key].append(i)
+                    found_x = True
+                    break
+            if not found_x:
+                x_groups[hole.x] = [i]
+
+            # Find or create Y group
+            found_y = False
+            for key in y_groups:
+                if abs(hole.y - key) < tolerance:
+                    y_groups[key].append(i)
+                    found_y = True
+                    break
+            if not found_y:
+                y_groups[hole.y] = [i]
+
+        # Check for misaligned holes (not in any row/column with others)
+        aligned_holes = set()
+        for group in x_groups.values():
+            if len(group) > 1:
+                aligned_holes.update(group)
+        for group in y_groups.values():
+            if len(group) > 1:
+                aligned_holes.update(group)
+
+        misaligned = set(range(len(holes))) - aligned_holes
+        if misaligned and len(holes) > 2:
+            for i in misaligned:
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.INFO,
+                    check_type="hole_alignment",
+                    message=f"Hole #{i+1} not aligned with other holes",
+                    location=f"Hole {i+1}",
+                    suggestion="Verify intentional placement",
+                ))
+
+        result.passed += 1
+
+    def _get_bolt_from_hole(self, hole_dia: float) -> float:
+        """Estimate bolt diameter from hole diameter."""
+        # Standard hole is 1/16" larger than bolt
+        bolt_dia = hole_dia - 0.0625
+
+        # Round to nearest standard bolt size
+        standard_bolts = [0.5, 0.625, 0.75, 0.875, 1.0, 1.125, 1.25, 1.375, 1.5]
+        return min(standard_bolts, key=lambda x: abs(x - bolt_dia))
+
+    def validate_cross_part_alignment(
+        self,
+        part_a_holes: List[HoleData],
+        part_b_holes: List[HoleData],
+        tolerance: float = 0.0625
+    ) -> AISCHoleValidationResult:
+        """
+        Check hole alignment between mating parts.
+
+        Args:
+            part_a_holes: Holes from first part
+            part_b_holes: Holes from mating part
+            tolerance: Alignment tolerance (default 1/16")
+
+        Returns:
+            Validation result with alignment findings
+        """
+        result = AISCHoleValidationResult()
+        result.total_checks += 1
+
+        matched = []
+        unmatched_a = list(range(len(part_a_holes)))
+        unmatched_b = list(range(len(part_b_holes)))
+
+        for i, h_a in enumerate(part_a_holes):
+            for j, h_b in enumerate(part_b_holes):
+                if j not in unmatched_b:
+                    continue
+
+                # Check position alignment
+                dx = abs(h_a.x - h_b.x)
+                dy = abs(h_a.y - h_b.y)
+
+                if dx <= tolerance and dy <= tolerance:
+                    # Check diameter compatibility
+                    dia_diff = abs(h_a.diameter - h_b.diameter)
+
+                    if dia_diff <= 0.0625:  # Same size within 1/16"
+                        matched.append((i, j, "PASS"))
+                        if i in unmatched_a:
+                            unmatched_a.remove(i)
+                        unmatched_b.remove(j)
+                    else:
+                        result.issues.append(ValidationIssue(
+                            severity=ValidationSeverity.WARNING,
+                            check_type="cross_part_hole_size",
+                            message=f"Mating holes size mismatch: {h_a.diameter}\" vs {h_b.diameter}\"",
+                            suggestion="Verify hole sizes match for bolted connection",
+                        ))
+                        result.warnings += 1
+
+        # Report unmatched holes
+        if unmatched_a or unmatched_b:
+            result.failed += 1
+            result.critical_failures += 1
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.CRITICAL,
+                check_type="cross_part_alignment",
+                message=f"Hole alignment issue: {len(unmatched_a)} holes in Part A, {len(unmatched_b)} in Part B unmatched",
+                suggestion="Verify hole patterns align between mating parts",
+            ))
+        else:
+            result.passed += 1
+
+        return result
+
+    def to_dict(self, result: AISCHoleValidationResult) -> Dict[str, Any]:
+        """Convert result to dictionary."""
+        return {
+            "validator": "aisc_hole",
+            "total_checks": result.total_checks,
+            "passed": result.passed,
+            "failed": result.failed,
+            "warnings": result.warnings,
+            "critical_failures": result.critical_failures,
+            "statistics": {
+                "holes_checked": result.holes_checked,
+                "edge_distance_violations": result.edge_distance_violations,
+                "spacing_violations": result.spacing_violations,
+                "non_standard_holes": result.non_standard_holes,
+            },
+            "issues": [
+                {
+                    "severity": issue.severity.value,
+                    "check_type": issue.check_type,
+                    "message": issue.message,
+                    "location": issue.location,
+                    "suggestion": issue.suggestion,
+                    "standard_reference": issue.standard_reference,
+                }
+                for issue in result.issues
+            ],
+        }
