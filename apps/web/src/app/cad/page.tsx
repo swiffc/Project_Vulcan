@@ -7,6 +7,7 @@ import { CADStatusBar } from "@/components/cad/CADStatusBar";
 import { QuickStats } from "@/components/cad/QuickStats";
 import { RecentValidations } from "@/components/cad/RecentValidations";
 import { ToolsPanel } from "@/components/cad/ToolsPanel";
+import { ModelOverview } from "@/components/cad/ModelOverview";
 import { Sidebar } from "@/components/layout/Sidebar";
 
 export interface ValidationResult {
