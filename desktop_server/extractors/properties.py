@@ -316,34 +316,92 @@ class PropertiesExtractor:
 
         return props
 
+    def get_mass_properties_by_config(self, config_name: str) -> Dict[str, float]:
+        """Get mass properties for a specific configuration."""
+        result = {"mass_kg": 0.0, "volume_m3": 0.0, "surface_area_m2": 0.0}
+        if not self._connect():
+            return result
+
+        try:
+            # Temporarily switch to config
+            current_config = self._doc.ConfigurationManager.ActiveConfiguration.Name
+            self._doc.ShowConfiguration2(config_name)
+
+            mass_props = self._doc.Extension.CreateMassProperty()
+            if mass_props:
+                result = {
+                    "mass_kg": mass_props.Mass,
+                    "volume_m3": mass_props.Volume,
+                    "surface_area_m2": mass_props.SurfaceArea,
+                }
+
+            # Switch back
+            self._doc.ShowConfiguration2(current_config)
+        except Exception as e:
+            logger.debug(f"Error getting mass props for config {config_name}: {e}")
+
+        return result
+
     def get_all_properties(self) -> Dict[str, Any]:
-        """Get all properties as a dictionary for JSON serialization."""
+        """Get all properties as a dictionary for JSON serialization (Phase 24.3-24.7)."""
         standard = self.get_standard_properties()
         mass = self.get_mass_properties()
         custom = self.get_custom_properties()
 
+        # Get mass properties by configuration if multiple configs exist
+        mass_by_config = {}
+        if len(standard.all_configurations) > 1:
+            for config in standard.all_configurations[:5]:  # Limit to 5 configs for performance
+                mass_by_config[config] = self.get_mass_properties_by_config(config)
+
         return {
             "standard": {
+                # Phase 24.3 - All 8 standard properties
                 "filename": standard.filename,
                 "path": standard.path,
+                "extension": standard.extension,
                 "configuration": standard.configuration,
+                "all_configurations": standard.all_configurations,
+                "created_date": standard.created_date.isoformat() if standard.created_date else None,
+                "modified_date": standard.modified_date.isoformat() if standard.modified_date else None,
+                "last_saved_by": standard.last_saved_by,
                 "sw_version": standard.sw_version,
+                "total_edit_time_sec": standard.total_edit_time_sec,
+                "file_size_bytes": standard.file_size_bytes,
+                "file_size_mb": round(standard.file_size_bytes / (1024 * 1024), 2) if standard.file_size_bytes else 0,
+                "rebuild_status": standard.rebuild_status,
             },
             "mass": {
+                # Phase 24.4 - All 10 mass properties
                 "mass_kg": mass.mass_kg,
+                "mass_lbs": mass.mass_lbs,
                 "volume_m3": mass.volume_m3,
+                "volume_in3": mass.volume_in3,
                 "surface_area_m2": mass.surface_area_m2,
+                "surface_area_in2": mass.surface_area_in2,
+                "density_kg_m3": mass.density_kg_m3,
                 "center_of_gravity": list(mass.center_of_gravity),
                 "moments_of_inertia": list(mass.moments_of_inertia),
+                "products_of_inertia": list(mass.products_of_inertia),
+                "principal_axes": list(mass.principal_axes),
+                "bounding_box": list(mass.bounding_box),
+                "bounding_box_in": [dim * 39.3701 for dim in mass.bounding_box],
+                "by_configuration": mass_by_config,
             },
             "custom": {
+                # Phase 24.5 - Job Information & Design Data
                 "job_info": custom.job_info,
                 "design_data": custom.design_data,
+                # Phase 24.6 - ACHE-Specific Properties
                 "tube_bundle": custom.tube_bundle,
+                "fin_data": custom.fin_data,
                 "header_box": custom.header_box,
+                # Phase 24.7 - Additional Properties
                 "structural": custom.structural,
                 "drawing_info": custom.drawing_info,
                 "paint_coating": custom.paint_coating,
+                "instrumentation": custom.instrumentation,
+                "nozzle_data": custom.nozzle_data,
                 "other": custom.other,
             },
         }
