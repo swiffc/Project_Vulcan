@@ -1558,6 +1558,126 @@ async def check_completeness(request: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/phase25/check-api661-full")
+async def check_api661_full(request: dict):
+    """
+    Comprehensive API 661 / ISO 13706 validation (82 checks).
+
+    Covers:
+    - Bundle Assembly (22 checks)
+    - Header Box Design (18 checks)
+    - Plug Requirements (8 checks)
+    - Nozzle Requirements (12 checks)
+    - Tube-to-Tubesheet Joints (8 checks)
+    - Fan System (10 checks)
+    - Drive System (4 checks)
+
+    Request body includes all API 661 parameters.
+    See API661FullData dataclass for complete list.
+
+    Returns:
+        Comprehensive validation result with 82 checks
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.api661_full_scope_validator import (
+            API661FullScopeValidator, API661FullData,
+            HeaderType, JointType, FinType, DriveType
+        )
+
+        validator = API661FullScopeValidator()
+
+        # Parse enums
+        header_type = None
+        if request.get("header_type"):
+            header_type = HeaderType(request["header_type"])
+
+        joint_type = None
+        if request.get("joint_type"):
+            joint_type = JointType(request["joint_type"])
+
+        fin_type = None
+        if request.get("fin_type"):
+            fin_type = FinType(request["fin_type"])
+
+        drive_type = None
+        if request.get("drive_type"):
+            drive_type = DriveType(request["drive_type"])
+
+        data = API661FullData(
+            # Bundle Assembly
+            tube_support_spacing_m=request.get("tube_support_spacing_m"),
+            has_tube_keepers=request.get("has_tube_keepers", False),
+            tube_keepers_bolted=request.get("tube_keepers_bolted", False),
+            has_air_seals=request.get("has_air_seals", False),
+            has_p_strips=request.get("has_p_strips", False),
+            lateral_movement_mm=request.get("lateral_movement_mm"),
+            lateral_both_directions=request.get("lateral_both_directions", True),
+            is_condenser=request.get("is_condenser", False),
+            is_single_pass=request.get("is_single_pass", True),
+            tube_slope_mm_per_m=request.get("tube_slope_mm_per_m"),
+            has_thermal_expansion_provision=request.get("has_thermal_expansion_provision", False),
+
+            # Tube specs
+            tube_od_mm=request.get("tube_od_mm"),
+            tube_wall_mm=request.get("tube_wall_mm"),
+            tube_material=request.get("tube_material", "carbon_steel"),
+            fin_type=fin_type,
+            operating_temp_c=request.get("operating_temp_c"),
+            fin_gap_mm=request.get("fin_gap_mm"),
+
+            # Header Box
+            header_type=header_type,
+            design_pressure_psi=request.get("design_pressure_psi"),
+            is_h2_service=request.get("is_h2_service", False),
+            inlet_temp_c=request.get("inlet_temp_c"),
+            outlet_temp_c=request.get("outlet_temp_c"),
+            has_split_header=request.get("has_split_header", False),
+            has_restraint_analysis=request.get("has_restraint_analysis", False),
+            has_full_pen_flange_welds=request.get("has_full_pen_flange_welds", False),
+
+            # Gaskets
+            through_bolt_dia_mm=request.get("through_bolt_dia_mm"),
+            gasket_width_perimeter_mm=request.get("gasket_width_perimeter_mm"),
+
+            # Plugs
+            plug_type=request.get("plug_type", "shoulder"),
+            plug_head_type=request.get("plug_head_type", "hexagonal"),
+
+            # Nozzles
+            nozzle_sizes_dn=request.get("nozzle_sizes_dn", []),
+            nozzles_flanged=request.get("nozzles_flanged", True),
+            has_threaded_nozzles=request.get("has_threaded_nozzles", False),
+
+            # Joints
+            joint_type=joint_type,
+            num_grooves=request.get("num_grooves", 2),
+            groove_width_mm=request.get("groove_width_mm"),
+
+            # Fan
+            fan_diameter_m=request.get("fan_diameter_m"),
+            tip_clearance_mm=request.get("tip_clearance_mm"),
+            bundle_coverage_pct=request.get("bundle_coverage_pct"),
+            dispersion_angle_deg=request.get("dispersion_angle_deg"),
+            airflow_reserve_pct=request.get("airflow_reserve_pct"),
+
+            # Drive
+            drive_type=drive_type,
+            motor_power_kw=request.get("motor_power_kw"),
+            motor_bearing_l10_hrs=request.get("motor_bearing_l10_hrs"),
+            shaft_bearing_l10_hrs=request.get("shaft_bearing_l10_hrs"),
+            belt_service_factor=request.get("belt_service_factor"),
+        )
+
+        result = validator.validate(data)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"API 661 full scope check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/phase25/check-api661-bundle")
 async def check_api661_bundle(request: dict):
     """

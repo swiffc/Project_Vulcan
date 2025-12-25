@@ -1,5 +1,13 @@
 {
+  "_metadata": {
+    "version": "2.0.0",
+    "updated": "2025-12-25",
+    "description": "API 661 Air-Cooled Heat Exchanger data with complete structural requirements",
+    "standards": ["API 661 7th Edition", "OSHA 1910", "AISC 360", "ASCE 7", "AWS D1.1"]
+  },
+
   "fan_tip_clearances": {
+    "description": "Maximum radial tip clearance per API 661",
     "4-5ft": {"min_dia_ft": 4, "max_dia_ft": 5, "max_clearance_in": 0.375},
     "6-8ft": {"min_dia_ft": 6, "max_dia_ft": 8, "max_clearance_in": 0.500},
     "9-12ft": {"min_dia_ft": 9, "max_dia_ft": 12, "max_clearance_in": 0.625},
@@ -7,7 +15,9 @@
     "19-28ft": {"min_dia_ft": 19, "max_dia_ft": 28, "max_clearance_in": 1.000},
     ">28ft": {"min_dia_ft": 28, "max_dia_ft": 999, "max_clearance_in": 1.250}
   },
+
   "fan_balance_grades": {
+    "reference": "AMCA 204",
     "BV-3": {
       "grade": "BV-3",
       "description": "High precision",
@@ -27,6 +37,7 @@
       "typical_application": "Low-speed fans, <1200 RPM"
     }
   },
+
   "vibration_limits": {
     "alarm": {
       "displacement_in_pp": 0.2,
@@ -37,6 +48,7 @@
       "description": "Automatic shutdown"
     }
   },
+
   "header_plate_thickness": {
     "notes": "Per API 661 Table 1 - Minimum thickness based on pressure and span",
     "typical_ranges": {
@@ -45,6 +57,7 @@
       "600_psig": {"min_thickness_in": 0.750, "max_span_in": 48}
     }
   },
+
   "tube_specifications": {
     "common_sizes": {
       "1_inch": {
@@ -76,28 +89,252 @@
       }
     }
   },
+
+  "plenum_chamber": {
+    "description": "Air distribution chamber requirements between fans and tube bundles",
+    "panels": {
+      "floor_panel": {
+        "typical_thickness_in": [0.125, 0.1875, 0.25],
+        "material": ["Carbon steel", "Aluminum"],
+        "stiffener_attachment": ["Welded", "Bolted"]
+      },
+      "side_panel": {
+        "typical_thickness_in": [0.125, 0.1875],
+        "material": ["Carbon steel", "Aluminum"]
+      }
+    },
+    "stiffeners": {
+      "purpose": "Prevent panel buckling under negative pressure",
+      "typical_spacing_in": 24,
+      "typical_sections": ["C4x5.4", "C6x8.2", "L3x3x1/4", "L4x4x1/4"],
+      "types": ["Channel", "Angle", "Z-section", "Hat section"]
+    },
+    "fan_ring": {
+      "purpose": "Support fan and maintain tip clearance",
+      "material": "Rolled plate or formed section",
+      "tip_clearance": "Per fan_tip_clearances table",
+      "attachment": "Welded to plenum floor"
+    },
+    "drain_provisions": {
+      "location": "Low points of plenum compartments",
+      "min_size_in": 2,
+      "min_quantity_per_compartment": 1,
+      "total_min_per_plenum": 2
+    },
+    "access_doors": {
+      "purpose": "Fan and motor maintenance access",
+      "min_size_in": {"width": 18, "height": 24},
+      "hinge_type": ["Quick-release", "Removable", "Piano hinge"]
+    },
+    "corner_sealing": {
+      "requirement": "All corners and joints sealed",
+      "methods": ["Welded", "Caulked", "Gasketed"]
+    }
+  },
+
+  "substructure": {
+    "description": "Support structure for ACHE unit",
+    "columns": {
+      "typical_sections": {
+        "light_duty": ["W8x31", "HSS6x6x1/4"],
+        "medium_duty": ["W10x49", "W12x26", "HSS6x6x3/8"],
+        "heavy_duty": ["W12x65", "W14x43", "HSS8x8x1/2"]
+      },
+      "material": "ASTM A36 or A572 Gr.50",
+      "typical_height_ft": {"min": 15, "max": 40}
+    },
+    "beams": {
+      "main_beams": {
+        "typical_sections": ["W12x26", "W14x43", "W16x50", "W18x50"],
+        "function": "Support bundle and plenum loads"
+      },
+      "secondary_beams": {
+        "typical_sections": ["W8x18", "W10x33", "C10x20", "C12x20.7"],
+        "function": "Transfer loads to main beams"
+      }
+    },
+    "bracing": {
+      "types": {
+        "X_bracing": {
+          "description": "Cross bracing in column bays",
+          "typical_members": ["L4x4x3/8", "L5x5x3/8", "WT4x12"]
+        },
+        "diagonal_bracing": {
+          "description": "Single diagonal in column bays",
+          "typical_members": ["L4x4x1/4", "WT5x15", "HSS3x3x1/4"]
+        },
+        "horizontal_bracing": {
+          "description": "Plan bracing at fan deck level",
+          "typical_members": ["L3x3x1/4", "Rods", "Flat bars"]
+        },
+        "knee_bracing": {
+          "description": "Short diagonal from column to beam",
+          "typical_angle_deg": 45,
+          "typical_members": ["L3x3x1/4", "L4x3x1/4", "Pipe 2\" Sch 40"]
+        }
+      },
+      "connections": {
+        "type": "Gusset plate with bolted or welded connection",
+        "gusset_thickness_in": {"light": 0.375, "medium": 0.5, "heavy": 0.75}
+      }
+    },
+    "base_plates": {
+      "sizing": "Per AISC Design Guide 1",
+      "typical_thickness_in": {"light": 0.5, "medium": 0.75, "heavy": 1.0},
+      "anchor_bolts": {
+        "typical_diameter_in": [0.75, 0.875, 1.0, 1.25],
+        "grade": "ASTM F1554 Gr.36 or Gr.55",
+        "embedment": "12 x bolt diameter minimum",
+        "edge_distance": "6 x bolt diameter minimum"
+      }
+    },
+    "deflection_limits": {
+      "vertical_live_load": "L/360",
+      "vertical_total_load": "L/240",
+      "lateral": "H/400 typical"
+    }
+  },
+
   "osha_requirements": {
+    "reference": "OSHA 1910.21-30",
     "platforms": {
       "min_width_in": 30,
       "load_rating_psf": 50,
-      "handrail_height_in": 42,
-      "handrail_tolerance_in": 3,
+      "motor_platform_load_psf": 75,
+      "ballroom_walkway_width_in": {"min": 60, "max": 80},
+      "deflection_limit": "L/360 or 1/4\" max",
+      "design_load_factor": 5,
+      "grating": {
+        "bearing_bar_orientation": "Perpendicular to span",
+        "typical_depth_in": [1, 1.25, 1.5],
+        "material": ["Galvanized steel", "Aluminum", "Fiberglass"],
+        "reference": "ANSI/NAAMM MBG 531"
+      }
+    },
+    "handrails_guardrails": {
+      "top_rail_height_in": {"nominal": 42, "min": 39, "max": 45},
       "midrail_height_in": 21,
-      "toeboard_height_in": 4
+      "toeboard_height_in": 4,
+      "top_rail_load_lb": 200,
+      "midrail_load_lb": 150,
+      "post_spacing_max_ft": 8,
+      "post_spacing_typical_ft": 6,
+      "pipe_rail_size": "1-1/2\" Schedule 40",
+      "structural_steel_option": "L2x2x3/8 angles",
+      "deflection_limit": "Top rail shall not deflect below 39\" under 200 lb load"
     },
     "ladders": {
       "rung_spacing_in": 12,
       "rung_diameter_in": 0.75,
+      "rung_clear_length_min_in": 16,
       "side_rail_clearance_in": 7,
+      "front_clearance_in": 30,
+      "design_load_lb": 200,
       "cage_required_above_ft": 20,
-      "landing_required_every_ft": 30
+      "landing_required_every_ft": 30,
+      "cage_dimensions": {
+        "width_min_in": 27,
+        "clearance_from_centerline_in": {"min": 27, "max": 28},
+        "vertical_bar_spacing_deg": 40,
+        "extends_above_landing_in": 42,
+        "starts_below_ft": {"min": 7, "max": 8},
+        "bottom_flare_in": 4
+      },
+      "pfas_deadline": "Nov 2036 - All cages must be replaced with PFAS"
     },
     "stairs": {
       "min_width_in": 22,
       "min_tread_depth_in": 9.5,
-      "max_riser_height_in": 7.5,
-      "handrail_height_min_in": 30,
-      "handrail_height_max_in": 37
+      "max_riser_height_in": 9.5,
+      "angle_from_horizontal_deg": {"min": 30, "max": 50},
+      "handrail_height_in": {"min": 30, "max": 37},
+      "vertical_clearance_min_in": 80,
+      "landing_depth_min_in": 30,
+      "max_vertical_rise_between_landings_ft": 12,
+      "design_load": "5x live load, minimum 1000 lb concentrated",
+      "live_load_psf": 100,
+      "stringer_typical_sections": ["C10x15.3", "C12x20.7", "C12x25", "MC12x31"]
+    },
+    "toeboards": {
+      "height_min_in": 3.5,
+      "height_typical_in": 4,
+      "gap_from_surface_max_in": 0.25,
+      "material": ["Galvanized steel", "Aluminum"],
+      "thickness_typical_in": [0.125, 0.1875]
     }
+  },
+
+  "lifting_requirements": {
+    "reference": "ASME BTH-1, OSHA 1926.251",
+    "factor_of_safety": {
+      "general_industrial": 5.0,
+      "critical_lifts": 5.0,
+      "routine_lifts": 3.0
+    },
+    "lifting_lugs": {
+      "material": "ASTM A36 or A572 Gr.50",
+      "hole_clearance_in": {"min": 0.125, "max": 0.25},
+      "edge_distance": "1.5 x hole diameter minimum",
+      "thickness": "Pin diameter / 4 minimum",
+      "weld_sizing": "For 1.5x safe working load"
+    },
+    "marking": "All lugs marked with rated capacity",
+    "center_of_gravity": "Lift points must be above and aligned with CG"
+  },
+
+  "shipping_requirements": {
+    "reference": "FMCSA 49 CFR 393",
+    "tie_down_requirements": {
+      "equipment_over_10000_lb": {
+        "min_tie_downs": 4,
+        "min_wll_each_lb": 5000,
+        "total_wll_rule": "Sum of WLL >= 50% of cargo weight"
+      },
+      "tie_down_types": ["Grade 70/80 chains", "Polyester straps", "Steel banding"]
+    },
+    "blocking_bracing": {
+      "wood_blocking": "4x4 or 6x6 timbers",
+      "chocking": "Required at all wheels/tracks",
+      "friction_mats": "For metal-to-metal contact"
+    },
+    "shipping_skid": {
+      "forklift_pockets": {
+        "clear_width_in": 6,
+        "height_in": 4,
+        "spacing_in": 36
+      },
+      "transport_g_forces": {
+        "longitudinal_g": 0.8,
+        "transverse_g": 0.5,
+        "vertical_up_g": 0.25,
+        "vertical_down_g": 1.0
+      }
+    },
+    "dimensional_limits": {
+      "standard_truck": {
+        "width_ft": 8.5,
+        "height_ft": 13.5,
+        "length_ft": 53
+      },
+      "oversized_trigger": "Permit required if exceeds standard"
+    },
+    "flange_protection": {
+      "requirement": "All flanges protected during shipping",
+      "methods": ["Plywood covers", "Plastic flange protectors"]
+    },
+    "preservation": {
+      "machined_surfaces": "Rust preventative coating",
+      "internals": "Nitrogen purge or desiccant as required"
+    }
+  },
+
+  "cross_check_tolerances": {
+    "description": "Dimensional tolerances for mating parts",
+    "hole_alignment": "+/- 1/16\" (1.5 mm)",
+    "platform_to_frame": "+/- 1/16\" (1.5 mm)",
+    "grating_to_opening": "+/- 1/8\" (3 mm)",
+    "ladder_to_platform": "+/- 1/8\" (3 mm)",
+    "handrail_post_to_platform": "+/- 1/16\" (1.5 mm)",
+    "anchor_bolt_pattern": "+/- 1/8\" (3 mm)"
   }
 }
