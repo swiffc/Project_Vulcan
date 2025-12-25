@@ -324,12 +324,14 @@ export function ToolsPanel() {
       {/* Quick Reference */}
       <div className="glass rounded-2xl p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Standards Reference</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {[
             { name: "ASME Y14.5", desc: "GD&T Standard", icon: "M9 12l2 2 4-4" },
             { name: "AWS D1.1", desc: "Structural Welding", icon: "M17.657 18.657A8 8 0 016.343 7.343" },
-            { name: "ASME B16.5", desc: "Pipe Flanges", icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0" },
+            { name: "AISC 360", desc: "Steel Connections", icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16" },
             { name: "API 661", desc: "Heat Exchangers", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
+            { name: "ANSI B17.1", desc: "Keyways & Keys", icon: "M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743" },
+            { name: "OSHA 1910", desc: "Safety Standards", icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" },
           ].map((std) => (
             <div key={std.name} className="p-3 rounded-lg bg-white/5 border border-white/10">
               <p className="text-sm font-medium text-white">{std.name}</p>
