@@ -487,68 +487,68 @@
 
 ---
 
-### 24.27 Walkways &amp; Platforms (25 tasks)
+### 24.27 Walkways &amp; Platforms (25 tasks) ✅
 
 #### Header Walkway (Piperack End)
-- [ ] Walkway width (min 18" clear per OSHA)
-- [ ] Walkway length
-- [ ] Walkway elevation
-- [ ] Walkway structural support
+- [x] Walkway width (min 18" clear per OSHA)
+- [x] Walkway length
+- [x] Walkway elevation
+- [x] Walkway structural support
 
 #### Fan Maintenance Walkway/Catwalk
-- [ ] Catwalk width (min 18" per OSHA)
-- [ ] Catwalk load rating (50 psf minimum)
-- [ ] Catwalk material (steel grating, checkered plate)
-- [ ] Catwalk structural support
+- [x] Catwalk width (min 18" per OSHA)
+- [x] Catwalk load rating (50 psf minimum)
+- [x] Catwalk material (steel grating, checkered plate)
+- [x] Catwalk structural support
 
 #### Ballroom Walkway (Full Width Access)
-- [ ] Ballroom dimensions (length × width)
-- [ ] Ballroom load rating
-- [ ] Ballroom material
-- [ ] Ballroom access points
+- [x] Ballroom dimensions (length × width)
+- [x] Ballroom load rating
+- [x] Ballroom material
+- [x] Ballroom access points
 
 #### Flooring
-- [ ] Grating type (welded bar, press-lock)
-- [ ] Grating bar size and spacing
-- [ ] Grating bearing bar direction
-- [ ] Grating load rating
-- [ ] Grating material (galvanized, painted, aluminum)
-- [ ] Grating clips and fasteners
-- [ ] Checkered plate locations (solid flooring areas)
-- [ ] Slip-resistant surface verification
-- [ ] Floor openings protection
+- [x] Grating type (welded bar, press-lock)
+- [x] Grating bar size and spacing
+- [x] Grating bearing bar direction
+- [x] Grating load rating
+- [x] Grating material (galvanized, painted, aluminum)
+- [x] Grating clips and fasteners
+- [x] Checkered plate locations (solid flooring areas)
+- [x] Slip-resistant surface verification
+- [x] Floor openings protection
 
 ---
 
-### 24.28 Handrails &amp; Safety (20 tasks)
+### 24.28 Handrails &amp; Safety (20 tasks) ✅
 
 #### Top Rail
-- [ ] Top rail height (42" ± 3" per OSHA 1910.29)
-- [ ] Top rail material (pipe, tube, angle)
-- [ ] Top rail diameter (1.25" - 2" graspable)
-- [ ] Top rail smooth surface (no snag hazards)
+- [x] Top rail height (42" ± 3" per OSHA 1910.29)
+- [x] Top rail material (pipe, tube, angle)
+- [x] Top rail diameter (1.25" - 2" graspable)
+- [x] Top rail smooth surface (no snag hazards)
 
 #### Mid Rail
-- [ ] Mid rail height (21" typical - midway)
-- [ ] Mid rail material
-- [ ] Mid rail spacing verification
+- [x] Mid rail height (21" typical - midway)
+- [x] Mid rail material
+- [x] Mid rail spacing verification
 
 #### Toe Board/Kick Plate
-- [ ] Toe board height (min 3.5" per OSHA)
-- [ ] Toe board material
-- [ ] Toe board gap to floor (max 0.25")
+- [x] Toe board height (min 3.5" per OSHA)
+- [x] Toe board material
+- [x] Toe board gap to floor (max 0.25")
 
 #### Safety Gates
-- [ ] Self-closing gate at ladder access
-- [ ] Gate swing direction (away from opening)
-- [ ] Gate latch mechanism
-- [ ] Gate top rail and mid rail
+- [x] Self-closing gate at ladder access
+- [x] Gate swing direction (away from opening)
+- [x] Gate latch mechanism
+- [x] Gate top rail and mid rail
 
 #### Corner Posts &amp; Supports
-- [ ] Post spacing (max 8 ft typical)
-- [ ] Post material and size
-- [ ] Post base plate mounting
-- [ ] Post splice connections
+- [x] Post spacing (max 8 ft typical)
+- [x] Post material and size
+- [x] Post base plate mounting
+- [x] Post splice connections
 
 ---
 
