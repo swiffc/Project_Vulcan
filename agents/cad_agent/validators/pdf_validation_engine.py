@@ -19,6 +19,10 @@ from .validation_models import ValidationIssue, ValidationSeverity
 from .api_661_validator import API661Validator, API661ValidationResult
 from .asme_validator import ASMEValidator, ASMEValidationResult
 from .aws_d1_1_validator import AWSD11Validator, AWSValidationResult
+from .osha_validator import OSHAValidator, OSHAValidationResult
+from .bom_validator import BOMValidator, BOMValidationResult
+from .dimension_validator import DimensionValidator, DimensionValidationResult
+from .drawing_completeness_validator import DrawingCompletenessValidator, CompletenessValidationResult
 
 # Import PDF extractor
 import sys
@@ -54,6 +58,10 @@ class PDFValidationResult:
     api_661_results: Optional[Dict[str, Any]] = None
     asme_results: Optional[Dict[str, Any]] = None
     aws_d1_1_results: Optional[Dict[str, Any]] = None
+    osha_results: Optional[Dict[str, Any]] = None
+    bom_results: Optional[Dict[str, Any]] = None
+    dimension_results: Optional[Dict[str, Any]] = None
+    completeness_results: Optional[Dict[str, Any]] = None
 
     # Summary statistics
     total_checks: int = 0
@@ -79,7 +87,11 @@ class PDFValidationEngine:
     2. API 661 validation (ACHE standards)
     3. ASME validation (pressure vessels)
     4. AWS D1.1 validation (welding)
-    5. Result aggregation and reporting
+    5. OSHA validation (structural safety)
+    6. BOM validation (bill of materials)
+    7. Dimension validation (measurements)
+    8. Completeness validation (drawing requirements)
+    9. Result aggregation and reporting
     """
 
     def __init__(self):
@@ -88,6 +100,10 @@ class PDFValidationEngine:
         self.api_661 = API661Validator()
         self.asme = ASMEValidator()
         self.aws_d1_1 = AWSD11Validator()
+        self.osha = OSHAValidator()
+        self.bom = BOMValidator()
+        self.dimension = DimensionValidator()
+        self.completeness = DrawingCompletenessValidator()
 
         if not self.extractor:
             logger.warning("PDFDrawingExtractor not available - extraction will fail")
@@ -119,7 +135,7 @@ class PDFValidationEngine:
 
         # Default to all standards
         if standards is None:
-            standards = ["api_661", "asme", "aws_d1_1"]
+            standards = ["api_661", "asme", "aws_d1_1", "osha", "bom", "dimension", "completeness"]
 
         # Step 1: Extract data from PDF
         if not self.extractor:
