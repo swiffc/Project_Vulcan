@@ -599,6 +599,154 @@ class OSHAValidator:
 
         result.passed += 1
 
+    def _check_stairways(self, extraction_result, result: OSHAValidationResult):
+        """Check stairway compliance with OSHA 1910.25."""
+        result.total_checks += 1
+
+        dimensions = extraction_result.dimensions
+        general_notes = extraction_result.general_notes
+        notes_text = " ".join([n.text for n in general_notes]).upper() if general_notes else ""
+
+        # Look for stair-related dimensions
+        stair_dims = []
+        for dim in dimensions:
+            desc = (dim.description or "").upper()
+            if any(kw in desc for kw in ["STAIR", "TREAD", "RISER", "STEP"]):
+                stair_dims.append(dim)
+
+        has_stairs = "STAIR" in notes_text or stair_dims
+
+        if has_stairs:
+            for dim in stair_dims:
+                desc = (dim.description or "").upper()
+                val = dim.value_imperial
+
+                if val:
+                    # Check tread depth
+                    if "TREAD" in desc and "DEPTH" in desc:
+                        std = STAIRWAY_STANDARDS["tread_depth"]
+                        if val < std["min_in"]:
+                            result.issues.append(ValidationIssue(
+                                severity=ValidationSeverity.ERROR,
+                                check_type="tread_depth",
+                                message=f"Tread depth {val}\" below min {std['min_in']}\"",
+                                standard_reference=std["reference"],
+                                suggestion=f"Increase tread depth to ≥{std['min_in']}\"",
+                            ))
+
+                    # Check riser height
+                    if "RISER" in desc and "HEIGHT" in desc:
+                        std = STAIRWAY_STANDARDS["riser_height"]
+                        if val < std["min_in"] or val > std["max_in"]:
+                            result.issues.append(ValidationIssue(
+                                severity=ValidationSeverity.ERROR,
+                                check_type="riser_height",
+                                message=f"Riser height {val}\" outside range {std['min_in']}-{std['max_in']}\"",
+                                standard_reference=std["reference"],
+                                suggestion=f"Adjust riser height to {std['min_in']}-{std['max_in']}\"",
+                            ))
+
+                    # Check stair width
+                    if "WIDTH" in desc:
+                        std = STAIRWAY_STANDARDS["stair_width"]
+                        if val < std["min_in"]:
+                            result.issues.append(ValidationIssue(
+                                severity=ValidationSeverity.ERROR,
+                                check_type="stair_width",
+                                message=f"Stair width {val}\" below min {std['min_in']}\"",
+                                standard_reference=std["reference"],
+                                suggestion=f"Increase stair width to ≥{std['min_in']}\"",
+                            ))
+
+        result.passed += 1
+
+    def _check_floor_openings(self, extraction_result, result: OSHAValidationResult):
+        """Check floor opening covers and guards per OSHA 1910.22."""
+        result.total_checks += 1
+
+        bom_items = extraction_result.bom_items
+        general_notes = extraction_result.general_notes
+        notes_text = " ".join([n.text for n in general_notes]).upper() if general_notes else ""
+
+        # Check for floor openings in design
+        has_floor_opening = any(
+            x in notes_text for x in ["FLOOR OPENING", "HATCH", "ACCESS HOLE", "MANHOLE"]
+        )
+
+        if has_floor_opening:
+            # Check for cover specification
+            has_cover_spec = any(
+                x in notes_text for x in ["COVER", "GRATING", "PLATE", "HATCH COVER"]
+            )
+
+            if not has_cover_spec:
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.WARNING,
+                    check_type="floor_opening_cover",
+                    message="Floor opening detected but cover not specified",
+                    standard_reference="OSHA 1910.22(c)",
+                    suggestion="Specify cover capable of supporting 2x max intended load",
+                ))
+
+        result.passed += 1
+
+    def _check_load_ratings(self, extraction_result, result: OSHAValidationResult):
+        """Check load rating markings per OSHA 1910.22."""
+        result.total_checks += 1
+
+        general_notes = extraction_result.general_notes
+        notes_text = " ".join([n.text for n in general_notes]).upper() if general_notes else ""
+
+        # Check if structure has load-bearing platforms/floors
+        has_load_bearing = any(
+            x in notes_text for x in ["PLATFORM", "MEZZANINE", "FLOOR", "DECK"]
+        )
+
+        if has_load_bearing:
+            # Check for load rating
+            has_load_spec = any(
+                x in notes_text for x in ["PSF", "LBS/SQ", "KG/M", "LOAD RATING", "CAPACITY"]
+            )
+
+            if not has_load_spec:
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.INFO,
+                    check_type="load_rating",
+                    message="Load-bearing surface should have load rating marked",
+                    standard_reference="OSHA 1910.22(d)(1)",
+                    suggestion="Add live load capacity (PSF) to platform/floor notes",
+                ))
+
+        result.passed += 1
+
+    def _check_egress(self, extraction_result, result: OSHAValidationResult):
+        """Check egress/exit requirements per OSHA 1910.36-37."""
+        result.total_checks += 1
+
+        general_notes = extraction_result.general_notes
+        notes_text = " ".join([n.text for n in general_notes]).upper() if general_notes else ""
+
+        # For enclosed structures, check egress
+        is_enclosed = any(
+            x in notes_text for x in ["ENCLOSURE", "ROOM", "BUILDING", "BOOTH"]
+        )
+
+        if is_enclosed:
+            has_exit_ref = any(
+                x in notes_text for x in ["EXIT", "EGRESS", "DOOR", "ACCESS"]
+            )
+
+            if not has_exit_ref:
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.WARNING,
+                    check_type="egress",
+                    message="Enclosed structure should show exit/egress route",
+                    standard_reference="OSHA 1910.36",
+                    suggestion="Add exit door locations and markings",
+                ))
+
+        result.passed += 1
+
     def to_dict(self, result: OSHAValidationResult) -> Dict[str, Any]:
         """Convert result to dictionary."""
         return {
