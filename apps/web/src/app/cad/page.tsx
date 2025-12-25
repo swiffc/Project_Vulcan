@@ -93,6 +93,8 @@ export default function CADPage() {
 
         {/* Content Area */}
         <div className="flex-1 overflow-auto p-6">
+          {activeView === "overview" && <ModelOverview />}
+
           {activeView === "validate" && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left: Upload & Stats */}

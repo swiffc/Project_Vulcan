@@ -3,10 +3,16 @@ Properties Extractor
 ====================
 Extract all properties from SolidWorks models.
 
-Phase 24.3 Implementation
+Phase 24.3-24.7 Complete Implementation
+- 24.3: Standard Properties (8 fields)
+- 24.4: Mass Properties (10 fields)
+- 24.5: Custom Properties (15+ fields)
+- 24.6: ACHE-Specific Properties (20 fields)
+- 24.7: Additional Properties (12 fields)
 """
 
 import logging
+import os
 from typing import Dict, Any, Optional, List
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -16,13 +22,19 @@ logger = logging.getLogger("vulcan.extractor.properties")
 
 @dataclass
 class StandardProperties:
-    """Standard SolidWorks document properties."""
+    """Standard SolidWorks document properties (Phase 24.3 - 8 fields)."""
     filename: str = ""
     path: str = ""
+    extension: str = ""
     configuration: str = ""
+    all_configurations: List[str] = field(default_factory=list)
     created_date: Optional[datetime] = None
     modified_date: Optional[datetime] = None
+    last_saved_by: str = ""
     sw_version: str = ""
+    total_edit_time_sec: int = 0
+    file_size_bytes: int = 0
+    rebuild_status: str = "unknown"  # "up_to_date", "needs_rebuild", "unknown"
 
 
 @dataclass
