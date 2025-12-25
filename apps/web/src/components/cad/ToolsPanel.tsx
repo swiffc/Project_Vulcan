@@ -116,7 +116,13 @@ const TOOL_CATEGORIES: ToolCategory[] = [
       { id: "validate_material", name: "Material Check", description: "ASTM/ASME specs", software: "both" },
       { id: "validate_ache", name: "ACHE Validation", description: "130-point heat exchanger check", software: "both" },
       { id: "validate_dimensions", name: "Dimension Check", description: "Tolerance stack analysis", software: "both" },
-      { id: "validate_holes", name: "Hole Pattern Check", description: "Alignment verification", software: "both" },
+      { id: "validate_holes", name: "Hole Pattern Check", description: "AISC edge distance & spacing", software: "both" },
+      // Phase 25 - New validators
+      { id: "validate_structural", name: "Structural Capacity", description: "Bolt/weld capacity per AISC", software: "both" },
+      { id: "validate_shaft", name: "Shaft/Machining", description: "Tolerances, keyways (ANSI B17.1)", software: "both" },
+      { id: "validate_handling", name: "Handling/Lifting", description: "Lifting lugs, CG, rigging", software: "both" },
+      { id: "validate_bom", name: "BOM Validation", description: "Part number, qty, material", software: "both" },
+      { id: "validate_osha", name: "OSHA Safety", description: "Guardrails, ladders, platforms", software: "both" },
     ],
   },
   {
