@@ -221,6 +221,124 @@ class HolePatternExtractor:
 
         return violations
 
+    def verify_bolt_circle(self, holes: List[HoleInfo], expected_bcd: float = None) -> List[Dict]:
+        """Verify holes match ASME B16.5 bolt circle standards (Phase 24.12)."""
+        # Standard bolt circles from ASME B16.5 (inches converted to meters)
+        STANDARD_BCDs = {
+            "1/2": 0.0603,   # 2.375"
+            "3/4": 0.0698,   # 2.75"
+            "1": 0.0794,     # 3.125"
+            "1-1/2": 0.0984, # 3.875"
+            "2": 0.1207,     # 4.75"
+            "3": 0.1524,     # 6.0"
+            "4": 0.1905,     # 7.5"
+            "6": 0.2413,     # 9.5"
+            "8": 0.2984,     # 11.75"
+            "10": 0.3619,    # 14.25"
+            "12": 0.4286,    # 16.875"
+        }
+
+        results = []
+        if len(holes) < 3:
+            return results
+
+        # Calculate centroid
+        centers = [(h.center_x, h.center_y) for h in holes]
+        cx = sum(p[0] for p in centers) / len(centers)
+        cy = sum(p[1] for p in centers) / len(centers)
+
+        # Calculate actual BCD (average distance from centroid * 2)
+        distances = [math.sqrt((p[0] - cx)**2 + (p[1] - cy)**2) for p in centers]
+        actual_bcd = (sum(distances) / len(distances)) * 2
+
+        # Find closest standard BCD
+        closest_std = None
+        min_diff = float('inf')
+        for size, bcd in STANDARD_BCDs.items():
+            diff = abs(bcd - actual_bcd)
+            if diff < min_diff:
+                min_diff = diff
+                closest_std = (size, bcd)
+
+        if closest_std:
+            results.append({
+                "actual_bcd_m": actual_bcd,
+                "actual_bcd_in": actual_bcd * 39.3701,
+                "closest_standard": closest_std[0],
+                "standard_bcd_m": closest_std[1],
+                "deviation_m": abs(actual_bcd - closest_std[1]),
+                "deviation_in": abs(actual_bcd - closest_std[1]) * 39.3701,
+                "within_tolerance": abs(actual_bcd - closest_std[1]) < 0.001,  # 1mm tolerance
+            })
+
+        return results
+
+    def check_hole_alignment(self, holes: List[HoleInfo], tolerance: float = 0.0005) -> List[Dict]:
+        """Check if holes are properly aligned on X/Y axes (Phase 24.12)."""
+        issues = []
+
+        # Group holes by approximate X position
+        x_groups = {}
+        for hole in holes:
+            found = False
+            for x_key in x_groups:
+                if abs(hole.center_x - x_key) < tolerance:
+                    x_groups[x_key].append(hole)
+                    found = True
+                    break
+            if not found:
+                x_groups[hole.center_x] = [hole]
+
+        # Check for misaligned holes in X columns
+        for x_pos, group in x_groups.items():
+            if len(group) > 1:
+                # Check Y spacing is uniform
+                y_positions = sorted([h.center_y for h in group])
+                spacings = [y_positions[i+1] - y_positions[i] for i in range(len(y_positions)-1)]
+                if spacings:
+                    avg_spacing = sum(spacings) / len(spacings)
+                    for i, spacing in enumerate(spacings):
+                        if abs(spacing - avg_spacing) > tolerance:
+                            issues.append({
+                                "type": "uneven_y_spacing",
+                                "column_x": x_pos,
+                                "expected_spacing": avg_spacing,
+                                "actual_spacing": spacing,
+                                "deviation": abs(spacing - avg_spacing),
+                            })
+
+        # Group holes by approximate Y position
+        y_groups = {}
+        for hole in holes:
+            found = False
+            for y_key in y_groups:
+                if abs(hole.center_y - y_key) < tolerance:
+                    y_groups[y_key].append(hole)
+                    found = True
+                    break
+            if not found:
+                y_groups[hole.center_y] = [hole]
+
+        # Check for misaligned holes in Y rows
+        for y_pos, group in y_groups.items():
+            if len(group) > 1:
+                # Check X spacing is uniform
+                x_positions = sorted([h.center_x for h in group])
+                spacings = [x_positions[i+1] - x_positions[i] for i in range(len(x_positions)-1)]
+                if spacings:
+                    avg_spacing = sum(spacings) / len(spacings)
+                    for i, spacing in enumerate(spacings):
+                        if abs(spacing - avg_spacing) > tolerance:
+                            issues.append({
+                                "type": "uneven_x_spacing",
+                                "row_y": y_pos,
+                                "expected_spacing": avg_spacing,
+                                "actual_spacing": spacing,
+                                "deviation": abs(spacing - avg_spacing),
+                            })
+
+        return issues
+
     def analyze(self) -> HoleAnalysisResult:
         """Perform complete hole analysis on active document."""
         result = HoleAnalysisResult()
