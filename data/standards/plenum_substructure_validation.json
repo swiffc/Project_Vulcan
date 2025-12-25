@@ -1,0 +1,325 @@
+{
+  "_metadata": {
+    "version": "1.0.0",
+    "created": "2025-12-25",
+    "description": "Full scope validation checklist for ACHE plenum and substructure",
+    "total_checks": 185,
+    "reference": ["API 661", "OSHA 1910", "AISC 360", "ASCE 7", "AWS D1.1", "ASME BTH-1", "FMCSA 49 CFR 393"]
+  },
+
+  "plenum_chamber": {
+    "description": "Plenum chamber design validation",
+    "total_checks": 28,
+    "checks": {
+      "floor_panels": [
+        {"id": "PL-001", "item": "Floor panel thickness adequate for negative pressure", "standard": "API 661", "category": "design"},
+        {"id": "PL-002", "item": "Floor panel material specified (CS or Al)", "standard": "API 661", "category": "material"},
+        {"id": "PL-003", "item": "Floor panel holes aligned with stiffeners", "standard": "Manufacturing", "category": "fabrication"},
+        {"id": "PL-004", "item": "Floor panel deflection < L/360 or 1/4\"", "standard": "AISC", "category": "design"},
+        {"id": "PL-005", "item": "Floor panel attachments shown (welded/bolted)", "standard": "Drawing", "category": "detail"}
+      ],
+      "side_panels": [
+        {"id": "PL-006", "item": "Side panel thickness specified", "standard": "API 661", "category": "design"},
+        {"id": "PL-007", "item": "Side panel stiffening adequate", "standard": "AISC", "category": "design"},
+        {"id": "PL-008", "item": "Side panel joints sealed", "standard": "API 661", "category": "fabrication"}
+      ],
+      "stiffeners": [
+        {"id": "PL-009", "item": "Stiffener sections specified", "standard": "AISC", "category": "design"},
+        {"id": "PL-010", "item": "Stiffener spacing <= 24\" typical", "standard": "API 661", "category": "design"},
+        {"id": "PL-011", "item": "Stiffener attachment welds specified", "standard": "AWS D1.1", "category": "detail"},
+        {"id": "PL-012", "item": "Stiffener end conditions detailed", "standard": "AISC", "category": "detail"}
+      ],
+      "fan_ring": [
+        {"id": "PL-013", "item": "Fan ring diameter matches fan specification", "standard": "API 661", "category": "design"},
+        {"id": "PL-014", "item": "Fan ring tip clearance per API 661 table", "standard": "API 661", "category": "design"},
+        {"id": "PL-015", "item": "Fan ring thickness adequate for fan loads", "standard": "AISC", "category": "design"},
+        {"id": "PL-016", "item": "Fan ring attachment welds specified", "standard": "AWS D1.1", "category": "detail"},
+        {"id": "PL-017", "item": "Fan ring concentricity tolerance specified", "standard": "Manufacturing", "category": "fabrication"}
+      ],
+      "drain_provisions": [
+        {"id": "PL-018", "item": "Drains located at low points", "standard": "API 661", "category": "design"},
+        {"id": "PL-019", "item": "Drain size >= 2\" NPT", "standard": "API 661", "category": "design"},
+        {"id": "PL-020", "item": "Minimum 2 drains per plenum", "standard": "API 661", "category": "design"},
+        {"id": "PL-021", "item": "Drain plugs or valves specified", "standard": "API 661", "category": "detail"}
+      ],
+      "access": [
+        {"id": "PL-022", "item": "Access doors provided for fan/motor service", "standard": "API 661", "category": "design"},
+        {"id": "PL-023", "item": "Access door size >= 18\" x 24\"", "standard": "API 661", "category": "design"},
+        {"id": "PL-024", "item": "Access door hinge type specified", "standard": "Manufacturing", "category": "detail"},
+        {"id": "PL-025", "item": "Access door latching mechanism shown", "standard": "Manufacturing", "category": "detail"}
+      ],
+      "sealing": [
+        {"id": "PL-026", "item": "Corner joints sealed (weld/caulk/gasket)", "standard": "API 661", "category": "fabrication"},
+        {"id": "PL-027", "item": "Panel-to-frame joints sealed", "standard": "API 661", "category": "fabrication"},
+        {"id": "PL-028", "item": "Penetration seals specified", "standard": "API 661", "category": "detail"}
+      ]
+    }
+  },
+
+  "substructure_columns": {
+    "description": "Substructure column validation",
+    "total_checks": 18,
+    "checks": [
+      {"id": "SC-001", "item": "Column sections specified (W-shape, HSS, or Pipe)", "standard": "AISC", "category": "design"},
+      {"id": "SC-002", "item": "Column material specified (A36 or A572 Gr.50)", "standard": "AISC", "category": "material"},
+      {"id": "SC-003", "item": "Column sizes adequate for combined loads", "standard": "AISC 360", "category": "design"},
+      {"id": "SC-004", "item": "Column slenderness ratio acceptable (KL/r)", "standard": "AISC 360", "category": "design"},
+      {"id": "SC-005", "item": "Column splice locations shown (if applicable)", "standard": "AISC", "category": "detail"},
+      {"id": "SC-006", "item": "Column splice details per AISC", "standard": "AISC", "category": "detail"},
+      {"id": "SC-007", "item": "Column cap plates specified", "standard": "AISC", "category": "detail"},
+      {"id": "SC-008", "item": "Column base plate size specified", "standard": "AISC DG1", "category": "design"},
+      {"id": "SC-009", "item": "Column base plate thickness specified", "standard": "AISC DG1", "category": "design"},
+      {"id": "SC-010", "item": "Column base plate welds specified", "standard": "AWS D1.1", "category": "detail"},
+      {"id": "SC-011", "item": "Anchor bolt diameter specified", "standard": "AISC DG1", "category": "design"},
+      {"id": "SC-012", "item": "Anchor bolt grade specified (F1554)", "standard": "AISC DG1", "category": "material"},
+      {"id": "SC-013", "item": "Anchor bolt pattern shown", "standard": "AISC DG1", "category": "detail"},
+      {"id": "SC-014", "item": "Anchor bolt embedment depth specified", "standard": "ACI 318", "category": "design"},
+      {"id": "SC-015", "item": "Anchor bolt edge distance adequate", "standard": "ACI 318", "category": "design"},
+      {"id": "SC-016", "item": "Grout requirements specified", "standard": "AISC", "category": "detail"},
+      {"id": "SC-017", "item": "Column orientation shown on drawings", "standard": "Drawing", "category": "detail"},
+      {"id": "SC-018", "item": "Column grid lines and dimensions shown", "standard": "Drawing", "category": "detail"}
+    ]
+  },
+
+  "substructure_beams": {
+    "description": "Substructure beam validation",
+    "total_checks": 15,
+    "checks": [
+      {"id": "SB-001", "item": "Main beam sections specified", "standard": "AISC", "category": "design"},
+      {"id": "SB-002", "item": "Secondary beam sections specified", "standard": "AISC", "category": "design"},
+      {"id": "SB-003", "item": "Beam material specified", "standard": "AISC", "category": "material"},
+      {"id": "SB-004", "item": "Beam sizes adequate for bending", "standard": "AISC 360", "category": "design"},
+      {"id": "SB-005", "item": "Beam deflection < L/360 (live) or L/240 (total)", "standard": "AISC", "category": "design"},
+      {"id": "SB-006", "item": "Beam-to-column connections detailed", "standard": "AISC", "category": "detail"},
+      {"id": "SB-007", "item": "Secondary-to-main beam connections detailed", "standard": "AISC", "category": "detail"},
+      {"id": "SB-008", "item": "Connection bolts specified (A325 or A490)", "standard": "AISC", "category": "material"},
+      {"id": "SB-009", "item": "Connection weld sizes specified", "standard": "AWS D1.1", "category": "detail"},
+      {"id": "SB-010", "item": "Web stiffeners shown where required", "standard": "AISC", "category": "design"},
+      {"id": "SB-011", "item": "Beam copes shown where required", "standard": "AISC", "category": "detail"},
+      {"id": "SB-012", "item": "Beam camber specified (if required)", "standard": "AISC", "category": "design"},
+      {"id": "SB-013", "item": "Beam blocking shown for bundle support", "standard": "API 661", "category": "detail"},
+      {"id": "SB-014", "item": "Beam elevations and slopes shown", "standard": "Drawing", "category": "detail"},
+      {"id": "SB-015", "item": "Concentrated load points reinforced", "standard": "AISC", "category": "design"}
+    ]
+  },
+
+  "bracing_systems": {
+    "description": "Structural bracing validation",
+    "total_checks": 22,
+    "checks": {
+      "vertical_bracing": [
+        {"id": "BR-001", "item": "Vertical bracing type specified (X, diagonal, V, knee)", "standard": "AISC", "category": "design"},
+        {"id": "BR-002", "item": "Bracing member sections specified", "standard": "AISC", "category": "design"},
+        {"id": "BR-003", "item": "Bracing material specified", "standard": "AISC", "category": "material"},
+        {"id": "BR-004", "item": "Bracing slenderness ratio acceptable (KL/r)", "standard": "AISC 360", "category": "design"},
+        {"id": "BR-005", "item": "Bracing angle optimal (30-60 degrees, 45 preferred)", "standard": "AISC", "category": "design"},
+        {"id": "BR-006", "item": "K-bracing NOT used for seismic applications", "standard": "AISC 341", "category": "design"},
+        {"id": "BR-007", "item": "Bracing connections at both ends detailed", "standard": "AISC", "category": "detail"},
+        {"id": "BR-008", "item": "Gusset plate sizes specified", "standard": "AISC DG29", "category": "design"},
+        {"id": "BR-009", "item": "Gusset plate thickness specified", "standard": "AISC DG29", "category": "design"},
+        {"id": "BR-010", "item": "Gusset plate Whitmore width checked", "standard": "AISC", "category": "design"},
+        {"id": "BR-011", "item": "Gusset-to-beam/column welds specified", "standard": "AWS D1.1", "category": "detail"},
+        {"id": "BR-012", "item": "Bracing-to-gusset connection detailed (bolted or welded)", "standard": "AISC", "category": "detail"}
+      ],
+      "horizontal_bracing": [
+        {"id": "BR-013", "item": "Horizontal bracing locations shown", "standard": "AISC", "category": "design"},
+        {"id": "BR-014", "item": "Horizontal bracing member sections specified", "standard": "AISC", "category": "design"},
+        {"id": "BR-015", "item": "Horizontal bracing at fan deck level", "standard": "API 661", "category": "design"},
+        {"id": "BR-016", "item": "Horizontal bracing connections detailed", "standard": "AISC", "category": "detail"}
+      ],
+      "knee_bracing": [
+        {"id": "BR-017", "item": "Knee braces shown where required", "standard": "AISC", "category": "design"},
+        {"id": "BR-018", "item": "Knee brace angle approximately 45 degrees", "standard": "AISC", "category": "design"},
+        {"id": "BR-019", "item": "Knee brace connections to column and beam", "standard": "AISC", "category": "detail"},
+        {"id": "BR-020", "item": "Knee brace member sizes specified", "standard": "AISC", "category": "design"}
+      ],
+      "sway_bracing": [
+        {"id": "BR-021", "item": "Sway bracing (X-bracing) at structure ends", "standard": "AISC", "category": "design"},
+        {"id": "BR-022", "item": "Sway bracing in both principal directions", "standard": "AISC", "category": "design"}
+      ]
+    }
+  },
+
+  "walkways_platforms": {
+    "description": "Walkway and platform validation",
+    "total_checks": 24,
+    "checks": {
+      "header_walkway": [
+        {"id": "WP-001", "item": "Header walkway width >= 30\"", "standard": "OSHA 1910.22", "category": "design"},
+        {"id": "WP-002", "item": "Header walkway load rating >= 50 psf", "standard": "OSHA/API 661", "category": "design"},
+        {"id": "WP-003", "item": "Header walkway framing shown", "standard": "Drawing", "category": "detail"},
+        {"id": "WP-004", "item": "Header walkway grating specified", "standard": "NAAMM MBG 531", "category": "design"}
+      ],
+      "motor_platform": [
+        {"id": "WP-005", "item": "Motor platform width >= 36\"", "standard": "OSHA/API 661", "category": "design"},
+        {"id": "WP-006", "item": "Motor platform load rating >= 75 psf", "standard": "API 661", "category": "design"},
+        {"id": "WP-007", "item": "Motor platform access provided", "standard": "OSHA", "category": "design"},
+        {"id": "WP-008", "item": "Motor slide rail clearance shown", "standard": "Manufacturing", "category": "detail"}
+      ],
+      "ballroom_walkway": [
+        {"id": "WP-009", "item": "Ballroom walkway width 60-80\"", "standard": "API 661", "category": "design"},
+        {"id": "WP-010", "item": "Ballroom walkway load rating adequate", "standard": "OSHA/API 661", "category": "design"}
+      ],
+      "platform_framing": [
+        {"id": "WP-011", "item": "Platform beam sections specified", "standard": "AISC", "category": "design"},
+        {"id": "WP-012", "item": "Platform beam spacing <= 60\" for grating", "standard": "NAAMM", "category": "design"},
+        {"id": "WP-013", "item": "Platform-to-structure connections detailed", "standard": "AISC", "category": "detail"},
+        {"id": "WP-014", "item": "Platform deflection < L/360 or 1/4\"", "standard": "AISC", "category": "design"}
+      ],
+      "grating": [
+        {"id": "WP-015", "item": "Grating bearing bar depth specified", "standard": "NAAMM MBG 531", "category": "design"},
+        {"id": "WP-016", "item": "Grating bearing bar orientation perpendicular to span", "standard": "NAAMM", "category": "design"},
+        {"id": "WP-017", "item": "Grating material specified (galv, aluminum, FRP)", "standard": "API 661", "category": "material"},
+        {"id": "WP-018", "item": "Grating clips and spacing shown", "standard": "NAAMM", "category": "detail"},
+        {"id": "WP-019", "item": "Grating fits opening (+/- 1/8\")", "standard": "Manufacturing", "category": "fabrication"}
+      ],
+      "platform_supports": [
+        {"id": "WP-020", "item": "Platform support columns specified", "standard": "AISC", "category": "design"},
+        {"id": "WP-021", "item": "Platform support knee braces shown", "standard": "AISC", "category": "design"},
+        {"id": "WP-022", "item": "Freestanding platform stability checked", "standard": "AISC", "category": "design"},
+        {"id": "WP-023", "item": "Platform connection to main structure detailed", "standard": "AISC", "category": "detail"},
+        {"id": "WP-024", "item": "Walkway-to-plenum connection detailed", "standard": "AISC", "category": "detail"}
+      ]
+    }
+  },
+
+  "handrails_guardrails": {
+    "description": "Handrail and guardrail validation",
+    "total_checks": 18,
+    "checks": [
+      {"id": "HR-001", "item": "Top rail height 42\" +/- 3\"", "standard": "OSHA 1910.29", "category": "design"},
+      {"id": "HR-002", "item": "Midrail at approximately 21\"", "standard": "OSHA 1910.29", "category": "design"},
+      {"id": "HR-003", "item": "Top rail withstands 200 lb in any direction", "standard": "OSHA 1910.29", "category": "design"},
+      {"id": "HR-004", "item": "Midrail withstands 150 lb in any direction", "standard": "OSHA 1910.29", "category": "design"},
+      {"id": "HR-005", "item": "Post spacing <= 8' (6' typical)", "standard": "OSHA 1910.29", "category": "design"},
+      {"id": "HR-006", "item": "Post section specified (1-1/2\" Sch 40 or L2x2x3/8)", "standard": "OSHA", "category": "design"},
+      {"id": "HR-007", "item": "Post base plate or floor flange detailed", "standard": "AISC", "category": "detail"},
+      {"id": "HR-008", "item": "Post anchor bolts specified", "standard": "AISC", "category": "detail"},
+      {"id": "HR-009", "item": "Rail splice details shown", "standard": "Manufacturing", "category": "detail"},
+      {"id": "HR-010", "item": "Corner posts at all direction changes", "standard": "OSHA", "category": "design"},
+      {"id": "HR-011", "item": "Handrail material specified (galv, painted, SS)", "standard": "API 661", "category": "material"},
+      {"id": "HR-012", "item": "Gate at ladder access (self-closing)", "standard": "OSHA", "category": "design"},
+      {"id": "HR-013", "item": "Gate swing direction away from opening", "standard": "OSHA", "category": "design"},
+      {"id": "HR-014", "item": "Toe board at all open edges", "standard": "OSHA 1910.29", "category": "design"},
+      {"id": "HR-015", "item": "Toe board height >= 4\"", "standard": "OSHA 1910.29", "category": "design"},
+      {"id": "HR-016", "item": "Toe board gap from surface < 1/4\"", "standard": "OSHA 1910.29", "category": "design"},
+      {"id": "HR-017", "item": "Handrail post holes match platform (+/- 1/16\")", "standard": "Manufacturing", "category": "fabrication"},
+      {"id": "HR-018", "item": "Top rail doesn't deflect below 39\" under load", "standard": "OSHA 1910.29", "category": "design"}
+    ]
+  },
+
+  "stairs": {
+    "description": "Stairway validation",
+    "total_checks": 16,
+    "checks": [
+      {"id": "ST-001", "item": "Stair width >= 22\"", "standard": "OSHA 1910.25", "category": "design"},
+      {"id": "ST-002", "item": "Riser height uniform, <= 9.5\"", "standard": "OSHA 1910.25", "category": "design"},
+      {"id": "ST-003", "item": "Tread depth >= 9.5\"", "standard": "OSHA 1910.25", "category": "design"},
+      {"id": "ST-004", "item": "Stair angle 30-50 degrees from horizontal", "standard": "OSHA 1910.25", "category": "design"},
+      {"id": "ST-005", "item": "Stringer sections specified (C10-C12 typical)", "standard": "AISC DG34", "category": "design"},
+      {"id": "ST-006", "item": "Stringer design load 5x live, min 1000 lb", "standard": "OSHA 1910.25", "category": "design"},
+      {"id": "ST-007", "item": "Tread type specified (grating, pan, checkered plate)", "standard": "API 661", "category": "design"},
+      {"id": "ST-008", "item": "Tread nosing or leading edge identifiable", "standard": "OSHA 1910.25", "category": "design"},
+      {"id": "ST-009", "item": "Handrail height 30-37\"", "standard": "OSHA 1910.25", "category": "design"},
+      {"id": "ST-010", "item": "Handrails on both sides if width > 44\"", "standard": "OSHA", "category": "design"},
+      {"id": "ST-011", "item": "Vertical clearance >= 6'-8\"", "standard": "OSHA 1910.25", "category": "design"},
+      {"id": "ST-012", "item": "Landing depth >= 30\"", "standard": "OSHA 1910.25", "category": "design"},
+      {"id": "ST-013", "item": "Landing every 12' of vertical rise max", "standard": "OSHA 1910.25", "category": "design"},
+      {"id": "ST-014", "item": "Stair-to-platform connection detailed", "standard": "AISC", "category": "detail"},
+      {"id": "ST-015", "item": "Stair support at bottom detailed", "standard": "AISC", "category": "detail"},
+      {"id": "ST-016", "item": "Stair kickplate at open risers if required", "standard": "OSHA", "category": "design"}
+    ]
+  },
+
+  "ladders": {
+    "description": "Fixed ladder validation",
+    "total_checks": 18,
+    "checks": [
+      {"id": "LD-001", "item": "Rung spacing 12\" uniform", "standard": "OSHA 1910.23", "category": "design"},
+      {"id": "LD-002", "item": "Rung diameter >= 3/4\"", "standard": "OSHA 1910.23", "category": "design"},
+      {"id": "LD-003", "item": "Rung clear length >= 16\"", "standard": "OSHA 1910.23", "category": "design"},
+      {"id": "LD-004", "item": "Clearance behind ladder >= 7\"", "standard": "OSHA 1910.23", "category": "design"},
+      {"id": "LD-005", "item": "Clearance in front of ladder >= 30\"", "standard": "OSHA 1910.23", "category": "design"},
+      {"id": "LD-006", "item": "Side rail sections specified", "standard": "AISC", "category": "design"},
+      {"id": "LD-007", "item": "Ladder extends 42\" above landing or grab rails", "standard": "OSHA 1910.23", "category": "design"},
+      {"id": "LD-008", "item": "Ladder-to-platform attachment detailed", "standard": "AISC", "category": "detail"},
+      {"id": "LD-009", "item": "Ladder fits platform opening (+/- 1/8\")", "standard": "Manufacturing", "category": "fabrication"},
+      {"id": "LD-010", "item": "Safety cage if height > 20' (or PFAS)", "standard": "OSHA 1910.23", "category": "design"},
+      {"id": "LD-011", "item": "Cage width >= 27\"", "standard": "OSHA 1910.27", "category": "design"},
+      {"id": "LD-012", "item": "Cage clearance from centerline 27-28\"", "standard": "OSHA 1910.27", "category": "design"},
+      {"id": "LD-013", "item": "Cage vertical bar spacing 40 degrees (9.5\")", "standard": "OSHA 1910.27", "category": "design"},
+      {"id": "LD-014", "item": "Cage extends 42\" above landing", "standard": "OSHA 1910.27", "category": "design"},
+      {"id": "LD-015", "item": "Cage starts 7-8' above base", "standard": "OSHA 1910.27", "category": "design"},
+      {"id": "LD-016", "item": "Cage bottom flared 4\" minimum", "standard": "OSHA 1910.27", "category": "design"},
+      {"id": "LD-017", "item": "Landing platform every 30' maximum", "standard": "OSHA 1910.23", "category": "design"},
+      {"id": "LD-018", "item": "PFAS considered for new installations (Nov 2018+)", "standard": "OSHA 1910.23", "category": "design"}
+    ]
+  },
+
+  "lifting_lugs": {
+    "description": "Lifting lug validation",
+    "total_checks": 14,
+    "checks": [
+      {"id": "LL-001", "item": "Lifting lugs provided for all major assemblies", "standard": "ASME BTH-1", "category": "design"},
+      {"id": "LL-002", "item": "Factor of safety = 5 (or per spec)", "standard": "ASME BTH-1", "category": "design"},
+      {"id": "LL-003", "item": "Lug material specified (A36 or A572)", "standard": "AISC", "category": "material"},
+      {"id": "LL-004", "item": "Lug plate thickness >= pin dia/4", "standard": "ASME BTH-1", "category": "design"},
+      {"id": "LL-005", "item": "Hole diameter = pin + 1/8\" to 1/4\"", "standard": "ASME BTH-1", "category": "design"},
+      {"id": "LL-006", "item": "Edge distance >= 1.5 x hole diameter", "standard": "ASME BTH-1", "category": "design"},
+      {"id": "LL-007", "item": "Lug welds sized for 1.5x safe working load", "standard": "ASME BTH-1", "category": "design"},
+      {"id": "LL-008", "item": "Lug location above center of gravity", "standard": "ASME BTH-1", "category": "design"},
+      {"id": "LL-009", "item": "Lug orientation for vertical lift shown", "standard": "ASME BTH-1", "category": "detail"},
+      {"id": "LL-010", "item": "Rated capacity marked on lug", "standard": "OSHA 1926.251", "category": "detail"},
+      {"id": "LL-011", "item": "All failure modes checked (bearing, shear, tension, weld)", "standard": "ASME BTH-1", "category": "design"},
+      {"id": "LL-012", "item": "Lug stiffeners if required", "standard": "ASME BTH-1", "category": "design"},
+      {"id": "LL-013", "item": "Rigging diagram showing lift points", "standard": "OSHA", "category": "detail"},
+      {"id": "LL-014", "item": "Assembly weight shown on drawings", "standard": "Manufacturing", "category": "detail"}
+    ]
+  },
+
+  "shipping_transport": {
+    "description": "Shipping and transport validation",
+    "total_checks": 16,
+    "checks": [
+      {"id": "SH-001", "item": "Shipping splits identified for oversized units", "standard": "Logistics", "category": "design"},
+      {"id": "SH-002", "item": "Dimensions within truck limits (8.5'W x 13.5'H x 53'L) or permit", "standard": "FMCSA", "category": "design"},
+      {"id": "SH-003", "item": "Shipping weight calculated and shown", "standard": "FMCSA", "category": "detail"},
+      {"id": "SH-004", "item": "Tie-down points provided (4 min for >10,000 lb)", "standard": "FMCSA 49 CFR 393", "category": "design"},
+      {"id": "SH-005", "item": "Tie-down WLL >= 50% of cargo weight", "standard": "FMCSA 49 CFR 393", "category": "design"},
+      {"id": "SH-006", "item": "Forklift pockets provided (if applicable)", "standard": "Manufacturing", "category": "design"},
+      {"id": "SH-007", "item": "Shipping skid design for transport loads (0.8g long, 0.5g trans)", "standard": "AISC", "category": "design"},
+      {"id": "SH-008", "item": "Blocking and bracing points identified", "standard": "FMCSA", "category": "detail"},
+      {"id": "SH-009", "item": "Flange protection specified", "standard": "API 661", "category": "detail"},
+      {"id": "SH-010", "item": "Shipping saddles for cylindrical equipment", "standard": "Manufacturing", "category": "design"},
+      {"id": "SH-011", "item": "Preservation requirements specified", "standard": "API 661", "category": "detail"},
+      {"id": "SH-012", "item": "Center of gravity marked for transport", "standard": "OSHA", "category": "detail"},
+      {"id": "SH-013", "item": "Field erection sequence considered in shipping", "standard": "Construction", "category": "design"},
+      {"id": "SH-014", "item": "Match marks for field assembly", "standard": "Manufacturing", "category": "detail"},
+      {"id": "SH-015", "item": "Shipping preservation (rust inhibitor, desiccant)", "standard": "API 661", "category": "detail"},
+      {"id": "SH-016", "item": "Loose parts list and boxing", "standard": "Manufacturing", "category": "detail"}
+    ]
+  },
+
+  "cross_checks": {
+    "description": "Critical dimensional cross-checks",
+    "total_checks": 16,
+    "checks": [
+      {"id": "CC-001", "item": "All mating part holes align (+/- 1/16\")", "standard": "Manufacturing", "category": "fabrication"},
+      {"id": "CC-002", "item": "Platform holes match frame holes", "standard": "Manufacturing", "category": "fabrication"},
+      {"id": "CC-003", "item": "Grating fits platform openings (+/- 1/8\")", "standard": "Manufacturing", "category": "fabrication"},
+      {"id": "CC-004", "item": "Ladder fits platform opening", "standard": "Manufacturing", "category": "fabrication"},
+      {"id": "CC-005", "item": "Handrail post holes match platform", "standard": "Manufacturing", "category": "fabrication"},
+      {"id": "CC-006", "item": "Stair stringer matches platform level", "standard": "Manufacturing", "category": "fabrication"},
+      {"id": "CC-007", "item": "Bundle support beams align with bundle", "standard": "API 661", "category": "fabrication"},
+      {"id": "CC-008", "item": "Fan ring aligns with plenum floor opening", "standard": "API 661", "category": "fabrication"},
+      {"id": "CC-009", "item": "Nozzle centerlines match piping layout", "standard": "API 661", "category": "fabrication"},
+      {"id": "CC-010", "item": "Anchor bolt pattern matches foundation", "standard": "Civil", "category": "fabrication"},
+      {"id": "CC-011", "item": "Elevation datum consistent across drawings", "standard": "Drawing", "category": "documentation"},
+      {"id": "CC-012", "item": "Column gridlines match architectural/civil", "standard": "Drawing", "category": "documentation"},
+      {"id": "CC-013", "item": "BOM quantities match drawings", "standard": "Drawing", "category": "documentation"},
+      {"id": "CC-014", "item": "Weld symbols consistent across details", "standard": "AWS", "category": "documentation"},
+      {"id": "CC-015", "item": "Material callouts match BOM", "standard": "Drawing", "category": "documentation"},
+      {"id": "CC-016", "item": "Part numbers unique and traceable", "standard": "Manufacturing", "category": "documentation"}
+    ]
+  }
+}
