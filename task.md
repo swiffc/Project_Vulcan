@@ -10,7 +10,7 @@
 - Work automation and productivity
 - Learning loop to improve over time (LIVE)
 - **NEW**: Comprehensive Drawing Checker System (150+ checks)
-- **NEW**: Complete ACHE Standards Database (69 checks across 8 standards)
+- **NEW**: Complete ACHE Standards Database (117 checks across 8 standards)
 - Auto-launch chatbot when SolidWorks opens with full model overview
 
 ---
@@ -26,7 +26,7 @@
 | Phase 23 (Render Deploy) | 6/6 | 0 | 100% |
 | Phase 24 (ACHE Design Assistant) | 0/340 | 340 | 0% |
 | **Phase 25 (Drawing Checker)** | **51/150** | **99** | **34%** |
-| **Phase 26 (Standards Database)** | **19/69** | **50** | **28%** |
+| **Phase 26 (Standards Database)** | **33/117** | **84** | **28%** |
 
 **Current Focus**: Phase 25 - Drawing Checker System 🚧
 
@@ -175,6 +175,112 @@
 
 ---
 
+### API 661 - Tube Bundle Assembly (Section 7.1) ⭐ NEW
+
+#### Bundle Component Reference (per API 661 Figures 3 & 5)
+
+| Item # | Component | Description |
+|--------|-----------|-------------|
+| 1 | **Tubesheet** | Tube attachment plate at each end |
+| 2 | **Plug sheet** | Access plate with threaded plugs (plug headers only) |
+| 3 | **Top/bottom plates** | Header box closure plates |
+| 4 | **End plate** | Header box end closure |
+| 5 | **Tubes** | Finned tubes (process fluid side) |
+| 6 | **Pass partition** | Divides header into flow passes |
+| 7 | **Stiffener** | Reinforces header plates |
+| 8 | **Plug** | Shoulder-type access plug for tube cleaning |
+| 9 | **Nozzle** | Process inlet/outlet connections |
+| 10 | **Side frame** | Main structural member at bundle edges |
+| 11 | **Tube spacer** | Maintains tube position without fin damage |
+| 12 | **Tube support cross-member** | Supports tubes between side frames |
+| 13 | **Tube keeper** | Hold-down member preventing tube lift |
+| 14 | **Vent** | Air/gas release connection |
+| 15 | **Drain** | Liquid drainage connection |
+| 16 | **Instrument connection** | Thermowell, pressure gauge, etc. |
+
+#### Bundle Frame Requirements (7.1.1)
+
+| Parameter | Requirement | Reference |
+|-----------|-------------|-----------|
+| Lateral movement | ≥ 6 mm (1/4") both directions OR ≥ 12.7 mm (1/2") one direction | 7.1.1.2 |
+| Tube support spacing | ≤ 1.83 m (6 ft) center-to-center | 7.1.1.4 |
+| Tube keeper location | At each tube support | 7.1.1.5 |
+| Tube keeper attachment | **Bolted** to side frames (NOT welded) | 7.1.1.5 |
+| **Air seals / P-strips** | Throughout bundle AND bay to minimize leakage/bypassing | 7.1.1.8 |
+
+#### Air Seal Requirements (7.1.1.8) ⭐ CRITICAL
+
+| Parameter | Requirement |
+|-----------|-------------|
+| Coverage | Throughout tube bundle AND bay |
+| Function | Minimize air leakage and bypassing |
+| Types | P-strips, sealing strips, flexible seals |
+| Location | Bundle perimeter, between bundles, at plenum interface |
+
+#### Header Types
+
+| Type | Description | Max Pressure | Application |
+|------|-------------|--------------|-------------|
+| **Plug header** | Threaded plugs opposite each tube | Any (required ≥435 psi or H2) | Highest pressure |
+| **Cover plate header** | Removable bolted cover plate | < 435 psi (3 MPa) | Easy cleaning access |
+| **Bonnet header** | Removable dished/flanged bonnet | < 435 psi (3 MPa) | Full tube access |
+
+#### Plug Requirements (7.1.7)
+
+| Parameter | Requirement |
+|-----------|-------------|
+| Type | Shoulder type with straight-threaded shank |
+| Hollow plugs | **NOT allowed** |
+| Head type | Hexagonal |
+| Length | Fill plug sheet threads ± 1.5 mm (1/16") |
+
+#### Prohibited Nozzle Sizes (7.1.9.5)
+
+| DN (NPS) | Status |
+|----------|--------|
+| DN 32 (1-1/4") | ❌ PROHIBITED |
+| DN 65 (2-1/2") | ❌ PROHIBITED |
+| DN 90 (3-1/2") | ❌ PROHIBITED |
+| DN 125 (5") | ❌ PROHIBITED |
+
+**Flanged requirement**: DN 40 (1-1/2") and larger must be flanged
+
+#### Condenser Tube Slope
+
+| Service | Slope Requirement |
+|---------|-------------------|
+| Single-pass condenser | ≥ 10 mm/m (1/8 in/ft) toward outlet |
+| Multi-pass (last pass) | ≥ 10 mm/m (1/8 in/ft) toward outlet |
+
+#### Bundle Assembly Validator Checklist ⭐ NEW (22 checks)
+
+| # | Check | Reference | Status |
+|---|-------|-----------|--------|
+| 1 | Tube support spacing ≤ 6 ft | 7.1.1.4 | ❌ MISSING |
+| 2 | Tube keeper at each support | 7.1.1.5 | ❌ MISSING |
+| 3 | Tube keeper bolted (not welded) | 7.1.1.5 | ❌ MISSING |
+| 4 | Air seals / P-strips specified | 7.1.1.8 | ❌ MISSING |
+| 5 | Lateral movement provision | 7.1.1.2 | ❌ MISSING |
+| 6 | Condenser tube slope (single-pass) | 7.1.1.6 | ❌ MISSING |
+| 7 | Condenser tube slope (multi-pass last) | 7.1.1.7 | ❌ MISSING |
+| 8 | Header type vs pressure | 7.1.6 | ❌ MISSING |
+| 9 | Plug type (shoulder, hex head) | 7.1.7 | ❌ MISSING |
+| 10 | No hollow plugs | 7.1.7.2 | ❌ MISSING |
+| 11 | Plug hole thread depth | 7.1.6.3.1 | ❌ MISSING |
+| 12 | Nozzle size not prohibited | 7.1.9.5 | ❌ MISSING |
+| 13 | Nozzle ≥DN40 flanged | 7.1.9.5 | ❌ MISSING |
+| 14 | Min nozzle neck thickness | Table 3 | ❌ MISSING |
+| 15 | Thermowell location correct | 7.1.9.13 | ❌ MISSING |
+| 16 | Pressure gauge location correct | 7.1.9.14 | ❌ MISSING |
+| 17 | Vent at header high point | 7.1.9 | ❌ MISSING |
+| 18 | Drain at header low point | 7.1.9 | ❌ MISSING |
+| 19 | Fin end securing specified | 7.1.2 | ❌ MISSING |
+| 20 | Tubesheet groove location | 7.1.x | ❌ MISSING |
+| 21 | Pass partition integral plate | - | ❌ MISSING |
+| 22 | SS/alloy tube spacer compatibility | IOGP S-710 | ❌ MISSING |
+
+---
+
 ### OSHA - Safety Requirements
 
 #### Fall Protection (1910.28, 1910.29)
@@ -312,19 +418,35 @@
 | 7 | Interpass temperature | 5.6 | ❌ MISSING |
 | 8 | WPS/PQR requirements noted | - | ❌ MISSING |
 
-#### API 661 Checks (10 total)
+#### API 661 Checks (32 total) ⭐ EXPANDED
 | # | Check | Reference | Current Status |
 |---|-------|-----------|----------------|
 | 1 | Fan tip clearance | Table 6 | ❌ MISSING |
-| 2 | Tube support spacing ≤ 6 ft | 5.1.5.1 | ❌ MISSING |
-| 3 | Tube keeper bolted | 5.1.5.3 | ❌ MISSING |
-| 4 | Bundle lateral movement | 5.1.1.3 | ❌ MISSING |
-| 5 | Condenser tube slope | 5.1.1.4 | ❌ MISSING |
-| 6 | Header type vs pressure | 5.2 | ❌ MISSING |
+| 2 | Tube support spacing ≤ 6 ft | 7.1.1.4 | ❌ MISSING |
+| 3 | Tube keeper bolted | 7.1.1.5 | ❌ MISSING |
+| 4 | Bundle lateral movement | 7.1.1.2 | ❌ MISSING |
+| 5 | Condenser tube slope | 7.1.1.6 | ❌ MISSING |
+| 6 | Header type vs pressure | 7.1.6 | ❌ MISSING |
 | 7 | Motor bearing L10 ≥ 40,000 hrs | 7.2.4.1 | ❌ MISSING |
 | 8 | Shaft bearing L10 ≥ 50,000 hrs | 7.2.5 | ❌ MISSING |
 | 9 | Belt drive service factor | 7.2.4.5 | ❌ MISSING |
-| 10 | Nozzle size (≥DN40 flanged) | 5.3.1 | ❌ MISSING |
+| 10 | Nozzle size (≥DN40 flanged) | 7.1.9.5 | ❌ MISSING |
+| 11 | Air seals / P-strips specified | 7.1.1.8 | ❌ MISSING |
+| 12 | Tube keeper at each support | 7.1.1.5 | ❌ MISSING |
+| 13 | Plug type (shoulder, hex head) | 7.1.7 | ❌ MISSING |
+| 14 | No hollow plugs | 7.1.7.2 | ❌ MISSING |
+| 15 | Plug hole thread depth | 7.1.6.3.1 | ❌ MISSING |
+| 16 | Nozzle size not prohibited | 7.1.9.5 | ❌ MISSING |
+| 17 | Min nozzle neck thickness | Table 3 | ❌ MISSING |
+| 18 | Thermowell location correct | 7.1.9.13 | ❌ MISSING |
+| 19 | Pressure gauge location correct | 7.1.9.14 | ❌ MISSING |
+| 20 | Vent at header high point | 7.1.9 | ❌ MISSING |
+| 21 | Drain at header low point | 7.1.9 | ❌ MISSING |
+| 22 | Fin end securing specified | 7.1.2 | ❌ MISSING |
+| 23 | Tubesheet groove location | 7.1.x | ❌ MISSING |
+| 24 | Pass partition integral plate | - | ❌ MISSING |
+| 25 | SS/alloy tube spacer compatibility | IOGP S-710 | ❌ MISSING |
+| 26-32 | (Reserved for additional bundle checks) | - | ❌ MISSING |
 
 #### OSHA Checks (12 total) ⭐ UPDATED
 | # | Check | Reference | Current Status |
@@ -369,7 +491,7 @@
 |----------|---------------------|----------------|-----|
 | AISC Holes/Bolts | 16 | 8 | **8** |
 | AWS Welding | 8 | 4 | **4** |
-| API 661 ACHE | 10 | 0 | **10** |
+| API 661 ACHE | 32 | 0 | **32** |
 | ASME VIII | 8 | 0 | **8** |
 | TEMA | 6 | 0 | **6** |
 | OSHA Safety | 12 | 2 | **10** |
@@ -377,34 +499,13 @@
 | SSPC Coating | 6 | 0 | **6** |
 | Shaft/Machining | 12 | 9 | **3** |
 | Handling/Lifting | 12 | 10 | **2** |
-| **TOTAL** | **95** | **33** | **62** |
+| **TOTAL** | **117** | **33** | **84** |
 
-**Current Coverage: ~35%** — New validators added Dec 25, 2025:
+**Current Coverage: ~28%** — New validators added Dec 25, 2025:
 - `aisc_hole_validator.py` - Edge distance, spacing, cross-part alignment
 - `structural_capacity_validator.py` - Bolt shear/bearing, weld capacity, net section
 - `shaft_validator.py` - Tolerances, keyways (ANSI B17.1), surface finish, runout
 - `handling_validator.py` - Lifting lugs, CG, shipping dimensions, rigging
-
----
-
-### Phase 25 API Endpoints (12 total)
-
-All endpoints available via `desktop_server/server.py`:
-
-| Endpoint | Validator | Status |
-|----------|-----------|--------|
-| `/phase25/validate-pdf` | PDFValidationEngine | ✅ Live |
-| `/phase25/check-api661` | API661Validator | ✅ Live |
-| `/phase25/check-asme` | ASMEValidator | ✅ Live |
-| `/phase25/check-holes` | AISCHoleValidator | ✅ NEW |
-| `/phase25/check-structural` | StructuralCapacityValidator | ✅ NEW |
-| `/phase25/check-shaft` | ShaftValidator | ✅ NEW |
-| `/phase25/check-handling` | HandlingValidator | ✅ NEW |
-| `/phase25/check-weld` | AWSD11Validator | ✅ NEW |
-| `/phase25/check-bom` | BOMValidator | ✅ NEW |
-| `/phase25/check-dimensions` | DimensionValidator | ✅ NEW |
-| `/phase25/check-osha` | OSHAValidator | ✅ NEW |
-| `/phase25/check-completeness` | DrawingCompletenessValidator | ✅ NEW |
 
 ---
 
@@ -474,6 +575,10 @@ class API661Standards:
     MOTOR_BEARING_L10 = 40000
     SHAFT_BEARING_L10 = 50000
     MAX_TUBE_SUPPORT_SPACING_MM = 1830
+    
+    # Prohibited nozzle sizes
+    PROHIBITED_NOZZLE_SIZES_DN = [32, 65, 90, 125]
+    MIN_FLANGED_SIZE_DN = 40
 
 
 class OSHASafetyStandards:
@@ -511,15 +616,16 @@ class OSHASafetyStandards:
 
 | Priority | Standard | Checks to Add | Impact |
 |----------|----------|---------------|--------|
-| 🔴 1 | AISC J3 - Slotted holes | 5 checks | Prevents assembly failures |
-| 🔴 2 | AISC J3.5 - Max spacing | 2 checks | Prevents corrosion issues |
-| 🔴 3 | API 661 - Fan clearance | 1 check | Prevents fan damage |
-| 🟡 4 | OSHA 1910.28 - Ladder fall protection | 3 checks | Safety compliance |
-| 🟡 5 | OSHA 1910.29 - Guardrails | 5 checks | Safety compliance |
-| 🟡 6 | AWS D1.1 - Preheat | 2 checks | Weld quality |
-| 🟡 7 | SSPC - Surface prep | 3 checks | Coating durability |
-| 🟢 8 | NEMA - Motor frames | 4 checks | Interchangeability |
-| 🟢 9 | TEMA - Bundle specs | 3 checks | HX performance |
+| 🔴 1 | API 661 - Bundle assembly | 22 checks | Core ACHE compliance |
+| 🔴 2 | AISC J3 - Slotted holes | 5 checks | Prevents assembly failures |
+| 🔴 3 | AISC J3.5 - Max spacing | 2 checks | Prevents corrosion issues |
+| 🔴 4 | API 661 - Fan clearance | 1 check | Prevents fan damage |
+| 🟡 5 | OSHA 1910.28 - Ladder fall protection | 3 checks | Safety compliance |
+| 🟡 6 | OSHA 1910.29 - Guardrails | 5 checks | Safety compliance |
+| 🟡 7 | AWS D1.1 - Preheat | 2 checks | Weld quality |
+| 🟡 8 | SSPC - Surface prep | 3 checks | Coating durability |
+| 🟢 9 | NEMA - Motor frames | 4 checks | Interchangeability |
+| 🟢 10 | TEMA - Bundle specs | 3 checks | HX performance |
 
 ---
 
@@ -582,126 +688,15 @@ class OSHASafetyStandards:
 
 ---
 
-### 25.3 Fabrication Feasibility (16 tasks)
-
-#### Cutting
-- [ ] Plasma/laser kerf allowance
-- [ ] Minimum inside radius for cutting method
-- [ ] Cut edge quality specification (ASME/AWS)
-- [ ] Thermal distortion control notes
-
-#### Forming
-- [ ] Press brake capacity check
-- [ ] Bend sequence verification
-- [ ] Die marks acceptance criteria
-
-#### Drilling/Punching
-- [x] Punch capacity (t × 1.5 max hole)
-- [ ] Drill vs punch specification
-- [ ] Sub-punch and ream requirements
-
-#### Fit-Up
-- [ ] Root gap specification
-- [ ] Fit-up tolerance specification
-- [ ] Tack weld requirements
-- [ ] Strongback/jigging notes
-- [ ] Assembly sequence notes
-- [ ] Sub-assembly identification
-
----
-
-### 25.4 Welding (16 tasks)
-
-#### Weld Design
-- [x] Weld code referenced (AWS D1.1, CSA W59)
-- [x] Default weld size specified
-- [ ] Weld symbols on detail drawings
-- [ ] Weld throat adequate for load
-- [ ] Weld length adequate
-- [ ] Weld type appropriate (fillet vs groove)
-- [ ] Intermittent weld spacing (if applicable)
-
-#### Weld Quality
-- [ ] WPS/PQR requirements noted
-- [ ] Welder qualification requirements
-- [ ] Preheat requirements (>3/4" base metal)
-- [ ] Interpass temperature limits
-- [ ] PWHT requirements
-- [ ] NDE requirements (RT, UT, MT, PT)
-
-#### Weld Access
-- [ ] Welder access to joints
-- [ ] Electrode angle possible
-- [ ] Backgouge access (if CJP required)
-- [ ] Weld sequence for distortion control
-
----
-
-### 25.5 Machining/Shaft Analysis (12 tasks)
-
-- [x] Diameter tolerances achievable ✅ shaft_validator.py
-- [x] Length tolerances specified ✅ shaft_validator.py
-- [x] Keyway dimensions per ANSI B17.1 ✅ shaft_validator.py
-- [x] Keyway angular location specified ✅ shaft_validator.py
-- [x] Surface finish Ra specified ✅ shaft_validator.py
-- [x] Runout/TIR specification ✅ shaft_validator.py
-- [x] Concentricity specification ✅ shaft_validator.py
-- [x] Retaining ring groove dimensions ✅ shaft_validator.py
-- [x] Chamfers on shaft ends ✅ shaft_validator.py
-- [ ] Heat treatment requirements
-- [ ] Thread callouts (UNC, UNF)
-- [ ] Thread engagement verification
-
----
-
-### 25.6 Materials & Finishing (8 tasks)
-
-- [ ] Material specification complete (ASTM)
-- [ ] Material test reports required (MTR)
-- [ ] Surface preparation (SSPC-SP)
-- [ ] Coating system specified (DFT)
-- [ ] Touch-up paint requirements
-- [ ] Masking requirements
-- [ ] Special finishes (galvanizing, etc.)
-- [ ] Corrosion allowance
-
----
-
-### 25.7 Hardware & Fasteners (10 tasks)
-
-- [ ] Bolt grade specification (A325, A490)
-- [ ] Bolt length verification
-- [ ] Nut type specification
-- [ ] Washer requirements (F436)
-- [ ] Thread engagement (min 1.5d)
-- [ ] Lock washer/prevailing torque
-- [ ] Torque specifications
-- [ ] Hardware BOM complete
-- [ ] Special fasteners noted
-- [ ] Anchor bolt specification
-
----
-
-### 25.8 Handling & Erection (12 tasks)
-
-- [x] Lifting lugs provided (>500 lbs) ✅ handling_validator.py
-- [x] Lifting lug capacity adequate ✅ handling_validator.py
-- [x] Number of lifting lugs (min 2) ✅ handling_validator.py
-- [x] Center of gravity marked (>1000 lbs) ✅ handling_validator.py
-- [x] CG location dimensioned ✅ handling_validator.py
-- [x] Rigging diagram provided (>2000 lbs) ✅ handling_validator.py
-- [x] Shipping dimensions checked ✅ handling_validator.py
-- [x] Tie-down points shown ✅ handling_validator.py
-- [x] Shop vs field assembly scope ✅ handling_validator.py
-- [x] Match marks for field assembly ✅ handling_validator.py
-- [ ] Shimming/grouting requirements
-- [ ] Erection sequence notes
-
----
-
-### 25.9-25.13 (Remaining sections)
+### 25.3-25.13 (Remaining sections)
 
 See original task.md for complete Phase 25 task breakdown covering:
+- 25.3 Fabrication Feasibility
+- 25.4 Welding
+- 25.5 Machining/Shaft Analysis
+- 25.6 Materials & Finishing
+- 25.7 Hardware & Fasteners
+- 25.8 Handling & Erection
 - 25.9 Inspection & QC
 - 25.10 Documentation
 - 25.11 Safety & Code
@@ -728,6 +723,6 @@ See original task.md for complete Phase 24 task breakdown covering:
 
 ---
 
-**Total Tasks**: 559 (340 ACHE + 150 Drawing Checker + 69 Standards)
-**Estimated Effort**: 560-670 hours (~14-17 weeks)
+**Total Tasks**: 607 (340 ACHE + 150 Drawing Checker + 117 Standards)
+**Estimated Effort**: 600-720 hours (~15-18 weeks)
 **Last Updated**: Dec 25, 2025
