@@ -1,6 +1,6 @@
 # Project Vulcan: Active Task List
 
-**Status**: Phase 24 - ACHE Design Assistant (COMPLETE SCOPE)
+**Status**: Phase 25 - Drawing Checker System (IN PROGRESS)
 **Last Updated**: Dec 25, 2025
 **Overall Health**: 9.9/10 (Production Deployment Ready)
 
@@ -9,7 +9,8 @@
 - Trading analysis and journal keeping
 - Work automation and productivity
 - Learning loop to improve over time (LIVE)
-- **NEW**: Auto-launch chatbot when SolidWorks opens with full model overview
+- **NEW**: Comprehensive Drawing Checker System (150+ checks)
+- Auto-launch chatbot when SolidWorks opens with full model overview
 
 ---
 
@@ -23,8 +24,371 @@
 | Phase 22 (CAD Events) | 3/3 | 0 | 100% |
 | Phase 23 (Render Deploy) | 6/6 | 0 | 100% |
 | Phase 24 (ACHE Design Assistant) | 0/340 | 340 | 0% |
+| **Phase 25 (Drawing Checker)** | **27/150** | **123** | **18%** |
 
-**Current Focus**: Phase 24 - ACHE Design Assistant (COMPLETE SCOPE) 🚧
+**Current Focus**: Phase 25 - Drawing Checker System 🚧
+
+---
+
+## Phase 25: Drawing Checker System 🚧 NEW
+
+**Goal**: Comprehensive automated drawing validation system for fabrication drawings. Extract dimensions, verify against standards, check cross-part alignment, and generate professional reports.
+
+**Reference Drawing**: S25143-4A Machinery Mount Assembly (E&C Finfans)
+
+---
+
+### 25.1 Geometry & Dimensions (22 tasks)
+
+#### Holes Analysis
+- [x] Hole sizes standard (drill/punch) - fractional sizes
+- [x] Hole sizes standard (drill/punch) - decimal sizes
+- [x] Hole sizes standard (drill/punch) - metric sizes
+- [ ] Edge distances vs AISC J3.4 minimum
+- [ ] Edge distances vs material thickness rules
+- [ ] Hole spacing/pitch (min 2.67d per AISC)
+- [ ] Hole-to-hole alignment (same part)
+- [ ] **Cross-part hole alignment** (mating parts) ⭐ CRITICAL
+- [ ] Slot length-to-width ratio verification
+- [ ] Slotted hole orientation vs load direction
+- [ ] Oversized hole callout verification
+
+#### Profiles & Cutouts
+- [ ] Inside corner radii (min for plasma/laser)
+- [ ] Cope dimensions adequate for weld access
+- [ ] Notch stress concentration check
+- [ ] Minimum web openings for tooling
+
+#### Tolerances
+- [x] Linear tolerances achievable
+- [x] Angular tolerances achievable
+- [ ] Flatness requirements specified
+- [ ] Squareness requirements specified
+- [ ] Parallelism requirements specified
+
+#### Bends (Sheet Metal)
+- [x] Bend radii vs thickness (min 1×t for steel)
+- [ ] Bend allowance/K-factor verification
+- [ ] Grain direction specification
+- [ ] Springback consideration
+
+---
+
+### 25.2 Structural Adequacy (10 tasks)
+
+- [ ] Net section at holes (reduced area)
+- [ ] Bolt bearing capacity check
+- [ ] Bolt shear capacity check
+- [ ] Weld size adequate for load
+- [ ] Member capacity verification (channels, angles)
+- [ ] Connection capacity check
+- [ ] Block shear verification at hole groups
+- [ ] Deflection limits specified
+- [ ] Vibration/resonance consideration (rotating equip)
+- [ ] Fatigue consideration (cyclic loading)
+
+---
+
+### 25.3 Fabrication Feasibility (16 tasks)
+
+#### Cutting
+- [ ] Plasma/laser kerf allowance
+- [ ] Minimum inside radius for cutting method
+- [ ] Cut edge quality specification (ASME/AWS)
+- [ ] Thermal distortion control notes
+
+#### Forming
+- [ ] Press brake capacity check
+- [ ] Bend sequence verification
+- [ ] Die marks acceptance criteria
+
+#### Drilling/Punching
+- [x] Punch capacity (t × 1.5 max hole)
+- [ ] Drill vs punch specification
+- [ ] Sub-punch and ream requirements
+
+#### Fit-Up
+- [ ] Root gap specification
+- [ ] Fit-up tolerance specification
+- [ ] Tack weld requirements
+- [ ] Strongback/jigging notes
+- [ ] Assembly sequence notes
+- [ ] Sub-assembly identification
+
+---
+
+### 25.4 Welding (16 tasks)
+
+#### Weld Design
+- [x] Weld code referenced (AWS D1.1, CSA W59)
+- [x] Default weld size specified
+- [ ] Weld symbols on detail drawings
+- [ ] Weld throat adequate for load
+- [ ] Weld length adequate
+- [ ] Weld type appropriate (fillet vs groove)
+- [ ] Intermittent weld spacing (if applicable)
+
+#### Weld Quality
+- [ ] WPS/PQR requirements noted
+- [ ] Welder qualification requirements
+- [ ] Preheat requirements (>3/4" base metal)
+- [ ] Interpass temperature limits
+- [ ] PWHT requirements
+- [ ] NDE requirements (RT, UT, MT, PT)
+
+#### Weld Access
+- [ ] Welder access to joints
+- [ ] Electrode angle possible
+- [ ] Backgouge access (if CJP required)
+- [ ] Weld sequence for distortion control
+
+---
+
+### 25.5 Machining - Shaft Analysis (13 tasks)
+
+- [x] Diameter tolerances specified
+- [x] Length tolerances specified
+- [x] Keyway width tolerance
+- [x] Keyway depth tolerance
+- [ ] **Keyway angular location** ⭐ MISSING
+- [ ] **Surface finish Ra specified** ⭐ CRITICAL - MISSING
+- [ ] Runout/TIR specification
+- [ ] Concentricity specification
+- [ ] Chamfers on shaft ends
+- [ ] **Retaining ring groove width** ⚠️ VERIFY vs catalog
+- [ ] Thread callouts (if applicable)
+- [ ] Heat treatment requirements (C1045)
+- [ ] Hardness requirements
+
+---
+
+### 25.6 Materials & Finishing (14 tasks)
+
+#### Material Specifications
+- [x] Material grades specified (ASTM)
+- [x] Material forms correct (plate, channel, bar)
+- [ ] MTR (Mill Test Report) requirements
+- [ ] Charpy impact requirements (cold service)
+- [ ] Z-direction properties (lamellar tearing)
+- [ ] Dual certification requirements
+
+#### Coating & Finishing
+- [ ] Coating spec referenced ⚠️ S25143-C1 NOT INCLUDED
+- [ ] Surface prep specification (SSPC)
+- [ ] Primer specification
+- [ ] Intermediate coat specification
+- [ ] Topcoat specification
+- [ ] DFT (Dry Film Thickness) requirements
+- [ ] **Masking requirements** ⭐ CRITICAL for bearings
+- [ ] Galvanizing specification (if required)
+
+---
+
+### 25.7 Hardware & Fasteners (11 tasks)
+
+- [ ] **Bolt grade specified** ⭐ MISSING
+- [ ] Bolt length specified
+- [ ] Nut type specified
+- [ ] Washer requirements
+- [ ] Lock washer/Nyloc requirements
+- [ ] **Torque values** ⭐ MISSING
+- [ ] Pretension requirements (slip-critical)
+- [ ] Thread lubricant specification
+- [ ] Bearing mounting hardware
+- [ ] Motor mounting hardware
+- [ ] Set screw specifications (bearings)
+
+---
+
+### 25.8 Handling & Erection (12 tasks)
+
+- [ ] **Lifting lugs shown** ⭐ CRITICAL - NOT SHOWN (5,605 lbs!)
+- [ ] Lifting lug capacity rated
+- [ ] **Center of gravity marked** ⭐ MISSING
+- [ ] Rigging diagram provided
+- [ ] Shipping splits identified
+- [ ] Max shipping dimensions verified
+- [ ] Tie-down points shown
+- [ ] Skid/crating requirements
+- [ ] Shop vs field assembly scope
+- [ ] Erection sequence notes
+- [ ] Shimming requirements
+- [ ] Grouting requirements
+
+---
+
+### 25.9 Inspection & QC (10 tasks)
+
+- [ ] Dimensional inspection points identified
+- [ ] Critical dimensions flagged
+- [ ] Hold points specified
+- [ ] Witness points specified
+- [ ] NDE requirements (RT/UT/MT/PT)
+- [ ] Visual weld inspection (VT per AWS)
+- [ ] Hydro/pressure test (if applicable)
+- [ ] Balance requirements (rotating shaft)
+- [ ] Runout verification requirements
+- [ ] Documentation package requirements
+
+---
+
+### 25.10 Documentation (12 tasks)
+
+- [x] Drawing number unique
+- [x] Revision level shown
+- [ ] Revision history complete
+- [ ] Approval signatures present
+- [x] Scale indicated
+- [x] All sheets numbered
+- [x] Cross-references complete
+- [x] Notes legible and clear
+- [x] Notes not conflicting
+- [x] BOM complete
+- [x] BOM matches detail drawings
+- [ ] Specification references included ⚠️ Coating spec missing
+
+---
+
+### 25.11 Safety & Code Compliance (8 tasks)
+
+- [ ] Sharp edge callout (break edges)
+- [x] Pinch point guards (belt guard)
+- [ ] Guard opening size per OSHA
+- [x] Rotating equipment guard
+- [ ] Lock-out/tag-out provisions
+- [ ] Warning label locations
+- [ ] Nameplate location
+- [ ] PE stamp (if required by jurisdiction)
+
+---
+
+### 25.12 Cross-Part Reference Analysis ⭐ NEW CRITICAL
+
+#### Hole Pattern Verification Matrix
+| Part A | Part B | Connection | Hole Size | Status |
+|--------|--------|------------|-----------|--------|
+| 4A-4 (Mounting Angle) | Plenum Floor | Bolted | Ø11/16" | ❓ NEED MATING DWG |
+| 4A-K (Hanger) | Plenum Wall | Bolted | Ø11/16" | ❓ NEED MATING DWG |
+| 4A-A (Stringer LH) | 4A-K (Hanger) | Welded | N/A | ✅ N/A |
+| 4A-N (Motor Mount) | Motor Base | Bolted | Ø3/4", Ø11/16" | ❓ VERIFY MOTOR FRAME |
+
+#### Dimensional Fit-Up Verification
+| Assembly | Part A Dim | Part B Dim | Gap/Fit | Status |
+|----------|------------|------------|---------|--------|
+| Stringer Spacing | 4'-4" (inside) | Cross Stiff 4'-4" | Match | ✅ PASS |
+| Motor Mount Width | 4'-10 13/16" | Stringer + overhang | 3.4" each side | ✅ PASS |
+| Bearing Tower Span | 4'-4" | Top Channel 4'-4" | Match | ✅ PASS |
+| Belt Guard Frame | 5'-11 5/8" | Exp Metal 5'-10 3/8" | Frame wraps | ✅ PASS |
+
+#### Tasks
+- [ ] Extract all hole patterns to coordinate system
+- [ ] Build mating part relationship matrix
+- [ ] Calculate hole-to-hole deltas
+- [ ] Verify within tolerance (±1/16" structural)
+- [ ] Flag misalignments with visual callout
+- [ ] Generate cross-reference report
+- [ ] Request missing mating drawings (RFI)
+
+---
+
+### 25.13 Drawing Checker Report Generation (8 tasks)
+
+- [x] Generate Excel report with all findings
+- [x] Generate HTML dashboard with visual status
+- [ ] Generate PDF annotated drawing with markups
+- [ ] Color-code findings (Red/Yellow/Green)
+- [ ] Include AISC/AWS standard references
+- [ ] Auto-generate RFI for missing items
+- [ ] Track resolution status
+- [ ] Archive reports with drawing revision
+
+---
+
+## Drawing Checker Report Template
+
+### Report Sections
+1. **Executive Summary** - Pass/Warn/Fail counts, verdict
+2. **Project Information** - Drawing number, customer, project
+3. **Critical Findings** - Must-fix items before fabrication
+4. **Hole Analysis** - Size, edge distance, spacing, alignment
+5. **Material Verification** - Thickness, spec, finish
+6. **Tolerance Analysis** - Achievability check
+7. **Cross-Part Alignment** - Mating hole verification
+8. **Checklist Summary** - All 150+ checks by category
+9. **Recommendations** - Prioritized action items
+10. **Standards Referenced** - AISC, AWS, OSHA, ASME
+
+### Status Symbols
+| Symbol | Meaning |
+|--------|---------|
+| ✅ | Checked - PASS |
+| ⚠️ | Checked - ISSUE FOUND |
+| ❓ | NOT YET CHECKED |
+| ❌ | MISSING FROM DRAWING |
+
+---
+
+## Sample Analysis: S25143-4A Machinery Mount Assembly
+
+### Assembly Overview
+- **Drawing**: S25143-4A (26 sheets)
+- **Customer**: Industrial Technologies & Services LLC
+- **Project**: 119JAO / P.O. 12406404
+- **Weight**: 5,604.91 lbs
+- **Material**: A572-50, C1045, A53, A1011-33
+
+### Check Results Summary
+| Category | Checked | Issues | Not Checked | Missing |
+|----------|---------|--------|-------------|---------|
+| Geometry & Dimensions | 8 | 2 | 8 | 4 |
+| Structural Adequacy | 0 | 0 | 9 | 1 |
+| Fabrication Feasibility | 2 | 0 | 8 | 6 |
+| Welding | 2 | 1 | 8 | 5 |
+| Machining (Shaft) | 4 | 1 | 2 | 6 |
+| Materials & Finishing | 2 | 1 | 0 | 9 |
+| Hardware & Fasteners | 0 | 0 | 2 | 9 |
+| Handling & Erection | 0 | 0 | 4 | 8 |
+| Inspection & QC | 0 | 0 | 4 | 6 |
+| Documentation | 7 | 2 | 2 | 0 |
+| Safety & Code | 2 | 0 | 2 | 4 |
+| **TOTAL** | **27** | **7** | **49** | **58** |
+
+### Top 10 Critical Missing Items
+| Priority | Item | Impact |
+|----------|------|--------|
+| 1 | Lifting lugs/CG location | Safety - 5,605 lb assembly |
+| 2 | Surface finish on shaft journals | Bearing life/failure |
+| 3 | Bolt specifications | Assembly/maintenance |
+| 4 | Coating specification (S25143-C1) | Corrosion protection |
+| 5 | NDE requirements | Weld quality assurance |
+| 6 | Shaft runout/concentricity | Vibration/bearing wear |
+| 7 | Masking requirements | Coating on bearing seats |
+| 8 | Preheat requirements | Weld quality |
+| 9 | Torque values | Proper assembly |
+| 10 | Plenum interface drawings | Hole alignment verification |
+
+### Hole Analysis Summary
+| Drawing | Part | Hole Size | Standard? | Edge Dist | Status |
+|---------|------|-----------|-----------|-----------|--------|
+| 4A-4 | Mounting Angle | Ø11/16" | ✅ Yes | 1-13/16" | ✅ PASS |
+| 4A-A | Stringer LH | Ø3/4" | ✅ Yes | 1-1/2" | ✅ PASS |
+| 4A-K | Hanger PRC | Ø11/16" | ✅ Yes | 3/4" | ⚠️ TIGHT |
+| 4A-J | Bearing Top | Ø1/2" | ✅ Yes | 1/2" | ⚠️ CHECK |
+| 4A-N | Motor Mount | Ø11/16" | ✅ Yes | 7/8" | ⚠️ CHECK |
+
+### Material Verification
+| Part | Material | Thickness | Standard | Status |
+|------|----------|-----------|----------|--------|
+| Stringers | C15×33.9 A572-50 | Web 0.400" | AISC | ✅ PASS |
+| Plates | A572-50 | 1/4" | ASTM | ✅ PASS |
+| Shaft | C1045 | Ø2-15/16" | SAE | ✅ PASS |
+| Sheet | 10GA A1011-33 | 0.1345" | ASTM | ✅ PASS |
+| Exp Metal | 13GA | 0.090" | - | ✅ PASS |
+
+### Bend Radii Check
+| Part | Material | Thickness | Bend R | Min (1×t) | Status |
+|------|----------|-----------|--------|-----------|--------|
+| 4A-U | 10GA Steel | 0.1345" | R1/4" | R0.135" | ✅ PASS (1.9×t) |
 
 ---
 
@@ -428,7 +792,7 @@ Standards compliance, recommendations, reports, cost estimation, notifications, 
 ## Standards Database Requirements
 
 | Standard | Purpose | Key Sections |
-|----------|---------|--------------|
+|----------|---------|--------------| 
 | **API 661** | Air-Cooled Heat Exchangers | Table 6 (tip clearance), para 4.2.3 (fan), drive assembly |
 | **ASME VIII Div 1** | Pressure Vessel Design | UG-27, UG-32, UG-34, UG-37, UG-40 |
 | **TEMA** | Shell & Tube HX Standards | Classes R/C/B, Section 6 (vibration) |
@@ -440,10 +804,14 @@ Standards compliance, recommendations, reports, cost estimation, notifications, 
 | **ASTM A325** | Structural Bolts ⭐ NEW | Type 1, HDG, torque |
 | **ASTM F436** | Hardened Washers ⭐ NEW | For A325/A490 bolts |
 | **ASME B18.23.1** | Bevel Washers ⭐ NEW | Sloped surface connections |
+| **AISC 360** | Steel Construction ⭐ NEW | Table J3.4 edge distances, connections |
+| **AISC Steel Manual** | Design Tables ⭐ NEW | Channel, angle, plate properties |
 | **OSHA 1910.25** | Stairways | Angle, tread, riser |
 | **OSHA 1910.27** | Ladders | Width, rungs, cage |
 | **OSHA 1910.28** | Fall Protection | 4 ft trigger |
 | **OSHA 1910.29** | Guardrails | 42" top rail, 21" mid rail |
+| **SSPC** | Surface Prep ⭐ NEW | SP6, SP10, SP-COM |
+| **ANSI B46.1** | Surface Finish ⭐ NEW | Ra measurements |
 
 ---
 
@@ -475,6 +843,53 @@ Standards compliance, recommendations, reports, cost estimation, notifications, 
 
 ---
 
-**Total Tasks**: 340
-**Estimated Effort**: 340-420 hours (~9-11 weeks)
+## Drawing Checker Implementation Notes
+
+### PDF Extraction Pipeline
+```
+1. PDF → PyMuPDF (text extraction)
+2. Text → Dimension Parser (regex for fractions, decimals)
+3. Dimensions → Coordinate System Mapping
+4. Coordinates → Cross-Part Comparison
+5. Comparison → Tolerance Check (±1/16" structural)
+6. Results → Report Generation (Excel, HTML, PDF)
+```
+
+### Key Regex Patterns
+```python
+# Fractional dimensions: 1'-7 7/16", 4'-10 13/16"
+FRACTION_DIM = r"(\d+)'[-\s]?(\d+)\s*(\d+)/(\d+)\""
+
+# Decimal dimensions: 0.1345", 2.9375"
+DECIMAL_DIM = r"(\d+\.?\d*)\""
+
+# Hole callouts: Ø11/16", Ø3/4" (TYP)
+HOLE_CALLOUT = r"[ØⰀ](\d+)/(\d+)\"?\s*\(?TYP\)?"
+
+# Tolerance: +0.003/-0.000
+TOLERANCE = r"\+(\d+\.?\d*)/[-–](\d+\.?\d*)"
+```
+
+### Standards Database Queries
+```python
+# Edge distance lookup
+def get_min_edge_distance(hole_dia, bolt_dia):
+    """Per AISC Table J3.4"""
+    return AISC_EDGE_DISTANCE[bolt_dia]
+
+# Hole spacing lookup  
+def get_min_hole_spacing(hole_dia):
+    """Per AISC - min 2.67d"""
+    return 2.67 * hole_dia
+
+# Bend radius lookup
+def get_min_bend_radius(thickness, material):
+    """1×t for mild steel, 2×t for high strength"""
+    return thickness * BEND_FACTOR[material]
+```
+
+---
+
+**Total Tasks**: 490 (340 ACHE + 150 Drawing Checker)
+**Estimated Effort**: 490-580 hours (~12-15 weeks)
 **Last Updated**: Dec 25, 2025
