@@ -139,7 +139,13 @@ class HoleData:
     y: float = 0.0   # y coordinate
     edge_distance_x: Optional[float] = None
     edge_distance_y: Optional[float] = None
-    hole_type: str = "standard"  # standard, oversized, slotted
+    hole_type: str = "standard"  # standard, oversized, short_slot, long_slot
+    slot_width: Optional[float] = None  # For slotted holes
+    slot_length: Optional[float] = None  # For slotted holes
+    slot_orientation: Optional[str] = None  # "parallel" or "perpendicular" to load
+    bolt_diameter: Optional[float] = None
+    bolt_grade: str = "A325"  # A325 or A490
+    connection_type: str = "bearing"  # bearing or slip_critical
 
 
 @dataclass
@@ -157,6 +163,9 @@ class AISCHoleValidationResult:
     edge_distance_violations: int = 0
     spacing_violations: int = 0
     non_standard_holes: int = 0
+    oversized_holes: int = 0
+    slotted_holes: int = 0
+    slip_critical_connections: int = 0
 
 
 class AISCHoleValidator:
@@ -205,12 +214,20 @@ class AISCHoleValidator:
             self._check_edge_distance(hole, i, edge_type, result)
             if material_thickness:
                 self._check_edge_vs_thickness(hole, i, material_thickness, result)
+            # New checks
+            self._check_oversized_hole(hole, i, result)
+            self._check_slotted_hole(hole, i, result)
+            self._check_slip_critical(hole, i, result)
 
         # Check hole spacing between pairs
         self._check_hole_spacing(holes, result)
 
         # Check alignment
         self._check_hole_alignment(holes, result)
+
+        # Check bearing capacity if thickness provided
+        if material_thickness:
+            self._check_bearing_capacity(holes, material_thickness, result)
 
         return result
 
