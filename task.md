@@ -625,49 +625,49 @@
 
 ---
 
-### 24.32 Enclosures &amp; Hoods (15 tasks)
+### 24.32 Enclosures &amp; Hoods (15 tasks) ✅
 
 #### Recirculation Enclosure (Winterization)
-- [ ] Enclosure type (internal vs external recirculation)
-- [ ] Enclosure material (galvanized sheet, insulated panel)
-- [ ] Recirculation duct sizing
-- [ ] Recirculation duct location (over-side, over-end)
-- [ ] Mixing chamber design
-- [ ] Enclosure access doors
-- [ ] Enclosure sealing/weatherproofing
+- [x] Enclosure type (internal vs external recirculation)
+- [x] Enclosure material (galvanized sheet, insulated panel)
+- [x] Recirculation duct sizing
+- [x] Recirculation duct location (over-side, over-end)
+- [x] Mixing chamber design
+- [x] Enclosure access doors
+- [x] Enclosure sealing/weatherproofing
 
 #### Rain Hood/Weather Protection
-- [ ] Rain hood material
-- [ ] Rain hood dimensions
-- [ ] Rain hood drainage
-- [ ] Rain hood support structure
+- [x] Rain hood material
+- [x] Rain hood dimensions
+- [x] Rain hood drainage
+- [x] Rain hood support structure
 
 #### Noise Enclosure (Optional)
-- [ ] Acoustic enclosure material
-- [ ] Sound attenuation rating (dBA reduction)
-- [ ] Ventilation provisions
-- [ ] Access panels
+- [x] Acoustic enclosure material
+- [x] Sound attenuation rating (dBA reduction)
+- [x] Ventilation provisions
+- [x] Access panels
 
 #### Hot Air Discharge Hood
-- [ ] Discharge hood height
-- [ ] Discharge velocity calculation
-- [ ] Recirculation prevention
+- [x] Discharge hood height
+- [x] Discharge velocity calculation
+- [x] Recirculation prevention
 
 ---
 
-### 24.33 Winterization Systems (12 tasks)
-- [ ] Steam coil location and sizing
-- [ ] Steam coil tube pitch (max 2× bundle pitch per API 661)
-- [ ] Steam coil slope (min 10mm/m toward outlet)
-- [ ] Glycol/electric heater (Ruffneck style)
-- [ ] Internal recirculation louvers
-- [ ] External recirculation ducts
-- [ ] Positive/negative pitch fan combination
-- [ ] Auto-variable fan control
-- [ ] Air tempering verification
-- [ ] Freeze protection temperature setpoint
-- [ ] Steam trap and condensate return
-- [ ] Heating coil control valve
+### 24.33 Winterization Systems (12 tasks) ✅
+- [x] Steam coil location and sizing
+- [x] Steam coil tube pitch (max 2× bundle pitch per API 661)
+- [x] Steam coil slope (min 10mm/m toward outlet)
+- [x] Glycol/electric heater (Ruffneck style)
+- [x] Internal recirculation louvers
+- [x] External recirculation ducts
+- [x] Positive/negative pitch fan combination
+- [x] Auto-variable fan control
+- [x] Air tempering verification
+- [x] Freeze protection temperature setpoint
+- [x] Steam trap and condensate return
+- [x] Heating coil control valve
 
 ---
 
