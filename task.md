@@ -187,16 +187,27 @@
 | Opening spacing | ≤ 19" |
 | Rail load capacity | 200 lbs top rail |
 
-#### Fixed Ladders (1910.23)
+#### Fixed Ladders (1910.23, 1910.28)
 | Parameter | Requirement |
 |-----------|-------------|
 | Clear width | ≥ 16" (fixed), ≥ 11.5" (portable) |
 | Rung spacing | 10-14" uniform |
 | Offset from wall | 7" minimum |
 | Side rail extension | 42" above landing |
-| Cage required | > 20 ft unbroken |
-| Cage start | 7-8 ft from base |
-| Rest platform | Every 35 ft vertical |
+| **Fall protection trigger** | **> 24 ft** (per 1910.28(b)(9)) |
+| Cage start height | 7-8 ft from base |
+| Cage top extension | 42" above top landing |
+| **Landing platforms (with cage)** | **Every 50 ft** |
+| **Rest platforms (with PFAS)** | **Every 150 ft** |
+
+#### Fixed Ladder Fall Protection Requirements (1910.28(b)(9))
+| Installation Date | Height > 24 ft | Acceptable Protection |
+|-------------------|----------------|----------------------|
+| Before Nov 19, 2018 | Yes | Cage, well, PFAS, or ladder safety system |
+| **After Nov 19, 2018** | Yes | **PFAS or ladder safety system ONLY** (cages NOT compliant) |
+| Any (by Nov 18, 2036) | Yes | **All ladders must have PFAS or ladder safety system** |
+
+**Note**: Cages are being phased out. New installations after Nov 2018 cannot use cages alone as fall protection.
 
 #### Stairs (1910.25)
 | Parameter | Requirement |
@@ -315,7 +326,7 @@
 | 9 | Belt drive service factor | 7.2.4.5 | ❌ MISSING |
 | 10 | Nozzle size (≥DN40 flanged) | 5.3.1 | ❌ MISSING |
 
-#### OSHA Checks (10 total)
+#### OSHA Checks (12 total) ⭐ UPDATED
 | # | Check | Reference | Current Status |
 |---|-------|-----------|----------------|
 | 1 | Guardrail height 42" ± 3" | 1910.29(b) | ❌ MISSING |
@@ -325,9 +336,11 @@
 | 5 | Ladder width ≥ 16" | 1910.23(b) | ❌ MISSING |
 | 6 | Rung spacing uniform 10-14" | 1910.23(b) | ❌ MISSING |
 | 7 | Side rail extension 42" | 1910.23(d) | ❌ MISSING |
-| 8 | Cage required check (>20 ft) | 1910.28(b) | ❌ MISSING |
-| 9 | Self-closing gate at ladder | 1910.29(b) | ❌ MISSING |
-| 10 | Platform min 24"×30" | 1910.29(g) | ❌ MISSING |
+| 8 | **Fall protection required (>24 ft)** | **1910.28(b)(9)** | ❌ MISSING |
+| 9 | **Cage vs PFAS based on install date** | **1910.28(b)(9)** | ❌ MISSING |
+| 10 | **Landing platforms every 50 ft (cage)** | **1910.28(b)(9)(iii)** | ❌ MISSING |
+| 11 | Self-closing gate at ladder | 1910.29(b) | ❌ MISSING |
+| 12 | Platform min 24"×30" | 1910.29(g) | ❌ MISSING |
 
 #### NEMA Checks (5 total)
 | # | Check | Reference | Current Status |
@@ -359,12 +372,12 @@
 | API 661 ACHE | 10 | 0 | **10** |
 | ASME VIII | 8 | 0 | **8** |
 | TEMA | 6 | 0 | **6** |
-| OSHA Safety | 10 | 2 | **8** |
+| OSHA Safety | 12 | 2 | **10** |
 | NEMA Motors | 5 | 0 | **5** |
 | SSPC Coating | 6 | 0 | **6** |
 | Shaft/Machining | 12 | 9 | **3** |
 | Handling/Lifting | 12 | 10 | **2** |
-| **TOTAL** | **93** | **33** | **60** |
+| **TOTAL** | **95** | **33** | **62** |
 
 **Current Coverage: ~35%** — New validators added Dec 25, 2025:
 - `aisc_hole_validator.py` - Edge distance, spacing, cross-part alignment
@@ -464,17 +477,32 @@ class API661Standards:
 
 
 class OSHASafetyStandards:
-    """OSHA 1910 - Walking-Working Surfaces"""
+    """OSHA 1910 - Walking-Working Surfaces (Updated per 2018 Final Rule)"""
     
-    TOP_RAIL_HEIGHT_MIN = 39
-    TOP_RAIL_HEIGHT_MAX = 45
-    TOE_BOARD_MIN = 3.5
-    MAX_OPENING = 19
-    LADDER_WIDTH_MIN = 16
-    RUNG_SPACING_MIN = 10
-    RUNG_SPACING_MAX = 14
-    SIDE_RAIL_EXTENSION = 42
-    CAGE_TRIGGER_HEIGHT = 240
+    # Guardrails (1910.29)
+    TOP_RAIL_HEIGHT_MIN = 39   # inches (42 - 3)
+    TOP_RAIL_HEIGHT_MAX = 45   # inches (42 + 3)
+    TOE_BOARD_MIN = 3.5        # inches
+    MAX_OPENING = 19           # inches
+    
+    # Fixed Ladders (1910.23, 1910.28)
+    LADDER_WIDTH_MIN = 16      # inches
+    RUNG_SPACING_MIN = 10      # inches
+    RUNG_SPACING_MAX = 14      # inches
+    SIDE_RAIL_EXTENSION = 42   # inches above landing
+    
+    # Fall Protection Trigger (1910.28(b)(9)) - UPDATED
+    FALL_PROTECTION_TRIGGER = 288  # inches (24 ft) - NOT 20 ft!
+    CAGE_START_HEIGHT = 84         # inches (7 ft) from base
+    CAGE_TOP_EXTENSION = 42        # inches above top landing
+    
+    # Landing/Rest Platform Intervals
+    LANDING_INTERVAL_WITH_CAGE = 600   # inches (50 ft)
+    REST_INTERVAL_WITH_PFAS = 1800     # inches (150 ft)
+    
+    # Key Dates
+    CAGE_PROHIBITION_DATE = "2018-11-19"  # Cages not compliant for new installs
+    CAGE_PHASE_OUT_DATE = "2036-11-18"    # All ladders must have PFAS/safety system
 ```
 
 ---
@@ -486,11 +514,12 @@ class OSHASafetyStandards:
 | 🔴 1 | AISC J3 - Slotted holes | 5 checks | Prevents assembly failures |
 | 🔴 2 | AISC J3.5 - Max spacing | 2 checks | Prevents corrosion issues |
 | 🔴 3 | API 661 - Fan clearance | 1 check | Prevents fan damage |
-| 🟡 4 | OSHA 1910.29 - Guardrails | 5 checks | Safety compliance |
-| 🟡 5 | AWS D1.1 - Preheat | 2 checks | Weld quality |
-| 🟡 6 | SSPC - Surface prep | 3 checks | Coating durability |
-| 🟢 7 | NEMA - Motor frames | 4 checks | Interchangeability |
-| 🟢 8 | TEMA - Bundle specs | 3 checks | HX performance |
+| 🟡 4 | OSHA 1910.28 - Ladder fall protection | 3 checks | Safety compliance |
+| 🟡 5 | OSHA 1910.29 - Guardrails | 5 checks | Safety compliance |
+| 🟡 6 | AWS D1.1 - Preheat | 2 checks | Weld quality |
+| 🟡 7 | SSPC - Surface prep | 3 checks | Coating durability |
+| 🟢 8 | NEMA - Motor frames | 4 checks | Interchangeability |
+| 🟢 9 | TEMA - Bundle specs | 3 checks | HX performance |
 
 ---
 
