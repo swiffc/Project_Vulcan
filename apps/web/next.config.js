@@ -24,20 +24,23 @@ const nextConfig = {
   },
 };
 
-const { withSentryConfig } = require("@sentry/nextjs");
+// Sentry configuration is optional - only enable if you have Sentry set up
+const withSentry = process.env.SENTRY_DSN 
+  ? require("@sentry/nextjs").withSentryConfig
+  : (config) => config;
 
-module.exports = withSentryConfig(
+module.exports = withSentry(
   nextConfig,
-  {
+  process.env.SENTRY_DSN ? {
     // For all available options, see:
     // https://github.com/getsentry/sentry-webpack-plugin#options
 
     // Suppress source map uploading logs during build
     silent: true,
-    org: "your-org-slug",
-    project: "your-project-slug",
-  },
-  {
+    org: process.env.SENTRY_ORG || "your-org-slug",
+    project: process.env.SENTRY_PROJECT || "your-project-slug",
+  } : {},
+  process.env.SENTRY_DSN ? {
     // For all available options, see:
     // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
@@ -55,5 +58,7 @@ module.exports = withSentryConfig(
 
     // Automatically tree-shake Sentry logger statements to reduce bundle size
     disableLogger: true,
+  } : {}
+);
   }
 );
