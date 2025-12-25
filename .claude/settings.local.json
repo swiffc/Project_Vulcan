@@ -52,7 +52,8 @@
       "Bash(.claude/)",
       "Bash(git checkout:*)",
       "Bash(del .gitindex.lock)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "Bash(git push:*)"
     ]
   }
 }
