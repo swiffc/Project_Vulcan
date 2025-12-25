@@ -118,7 +118,15 @@ class StrategyBuilder:
 
     def _get_system_prompt(self) -> str:
         """Build system prompt for strategy generation."""
-        return f"""You are a Senior Mechanical Engineer with 20+ years of CAD experience.
+        # Try to get from prompt library first
+        library_prompt = get_prompt("engineering.cad_expert")
+        if library_prompt:
+            base_prompt = library_prompt
+        else:
+            base_prompt = "You are a Senior Mechanical Engineer with 20+ years of CAD experience."
+        
+        return f"""{base_prompt}
+        
 Your task is to create detailed, manufacturable CAD strategies from user descriptions.
 
 {self._get_schema_context()}

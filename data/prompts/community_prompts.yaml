@@ -1,0 +1,497 @@
+version: "1.0"
+description: "Curated prompts from awesome-chatgpt-prompts and Prompt Engineering Guide"
+
+prompts:
+  # ========================================================================
+  # ENGINEERING & CAD PROMPTS
+  # ========================================================================
+  
+  - id: "engineering.drawing_analyzer"
+    name: "Technical Drawing Analyzer"
+    description: "Analyze engineering drawings with attention to detail"
+    type: "role_play"
+    category: "engineering"
+    content: |
+      Act as a Technical Drawing Specialist with expertise in interpreting engineering drawings.
+      
+      When analyzing drawings:
+      1. Check title block completeness (part number, revision, date, approvals)
+      2. Verify all dimensions have tolerances
+      3. Identify missing GD&T callouts
+      4. Check for conflicting dimensions
+      5. Verify material callouts and finish requirements
+      6. Check scale and projection method
+      7. Look for missing views or sections
+      
+      For ${drawing_type} drawings, focus on:
+      ${specific_requirements}
+      
+      Provide findings in order of criticality (Critical → Major → Minor).
+    variables:
+      - drawing_type
+      - specific_requirements
+    tags:
+      - cad
+      - drawings
+      - validation
+    model_hint: "claude-sonnet-4"
+    temperature: 0.3
+    max_tokens: 2048
+
+  - id: "engineering.bom_validator"
+    name: "Bill of Materials Validator"
+    description: "Validate BOM completeness and accuracy"
+    type: "task"
+    category: "validation"
+    content: |
+      Validate the following Bill of Materials:
+      
+      ${bom_data}
+      
+      **Validation Checklist**:
+      - [ ] All items have part numbers
+      - [ ] Quantities are specified
+      - [ ] Materials are called out
+      - [ ] Descriptions are clear
+      - [ ] No duplicate items
+      - [ ] Finish/coating specified where needed
+      - [ ] Hardware sizes include lengths
+      - [ ] Fastener grades specified
+      - [ ] Raw material stock sizes noted
+      
+      **Output Format**:
+      - Missing Information: [list]
+      - Inconsistencies: [list]
+      - Recommendations: [list]
+      - Approval Status: PASS/FAIL
+    variables:
+      - bom_data
+    tags:
+      - bom
+      - validation
+      - engineering
+    temperature: 0.2
+    max_tokens: 1500
+
+  - id: "engineering.weld_symbol_explainer"
+    name: "Welding Symbol Interpreter"
+    description: "Explain welding symbols per AWS D1.1"
+    type: "task"
+    category: "engineering"
+    content: |
+      Interpret the welding symbol: ${weld_symbol}
+      
+      Provide explanation following AWS D1.1 standard:
+      
+      **Symbol Breakdown**:
+      - Weld Type: [e.g., Fillet, Groove, Plug]
+      - Location: Arrow Side / Other Side / Both
+      - Size: [dimension]
+      - Length: [if intermittent]
+      - Pitch: [if intermittent]
+      - Contour: [Flat, Convex, Concave]
+      - Finish: [Grind, Machine, etc.]
+      - Field Weld: [Yes/No]
+      - All-Around: [Yes/No]
+      - Tail Note: [specification reference]
+      
+      **Interpretation**:
+      [Plain English explanation of what the welder should do]
+      
+      **Common Mistakes to Avoid**:
+      [List potential errors]
+    variables:
+      - weld_symbol
+    tags:
+      - welding
+      - aws
+      - symbols
+    temperature: 0.3
+    max_tokens: 1024
+
+  # ========================================================================
+  # TRADING & ANALYSIS PROMPTS
+  # ========================================================================
+
+  - id: "trading.journal_entry"
+    name: "Trading Journal Template"
+    description: "Structured trade journaling"
+    type: "structured"
+    category: "trading"
+    content: |
+      Log the trade with full detail:
+      
+      {
+        "date": "${date}",
+        "pair": "${pair}",
+        "timeframe": "${timeframe}",
+        "bias": "${bias}",
+        "setup": {
+          "type": "${setup_type}",
+          "confluence_factors": [
+            "Order block at ${level}",
+            "FVG retracement",
+            "Session alignment",
+            "Liquidity sweep"
+          ],
+          "entry": ${entry},
+          "stop_loss": ${sl},
+          "take_profit": ${tp},
+          "risk_reward": "${rr}"
+        },
+        "session": "${session}",
+        "outcome": "${outcome}",
+        "lessons_learned": [
+          "${lesson1}",
+          "${lesson2}"
+        ],
+        "screenshots": [
+          "${screenshot_url}"
+        ],
+        "notes": "${additional_notes}"
+      }
+      
+      Analyze what worked and what didn't. Update strategy if needed.
+    variables:
+      - date
+      - pair
+      - timeframe
+      - bias
+      - setup_type
+      - level
+      - entry
+      - sl
+      - tp
+      - rr
+      - session
+      - outcome
+      - lesson1
+      - lesson2
+      - screenshot_url
+      - additional_notes
+    tags:
+      - trading
+      - journal
+      - documentation
+    temperature: 0.5
+    max_tokens: 1024
+
+  - id: "trading.risk_calculator"
+    name: "Position Sizing Calculator"
+    description: "Calculate position size based on risk parameters"
+    type: "task"
+    category: "trading"
+    content: |
+      Calculate position size for the following trade:
+      
+      **Account Details**:
+      - Account Balance: ${account_balance}
+      - Risk Per Trade: ${risk_percent}%
+      - Currency: ${currency}
+      
+      **Trade Setup**:
+      - Pair: ${pair}
+      - Entry: ${entry}
+      - Stop Loss: ${stop_loss}
+      - Take Profit: ${take_profit}
+      
+      **Calculate**:
+      1. Risk Amount: ${account_balance} × (${risk_percent}/100)
+      2. Stop Distance: |${entry} - ${stop_loss}| pips
+      3. Position Size: Risk Amount / Stop Distance
+      4. Potential Profit: Position Size × (${take_profit} - ${entry})
+      5. Risk:Reward Ratio
+      
+      **Output**:
+      - Position Size: [X lots/units]
+      - Dollar Risk: [$X]
+      - Potential Profit: [$X]
+      - R:R: [1:X]
+      - Recommendation: [PASS/ADJUST/SKIP]
+    variables:
+      - account_balance
+      - risk_percent
+      - currency
+      - pair
+      - entry
+      - stop_loss
+      - take_profit
+    tags:
+      - trading
+      - risk
+      - calculation
+    temperature: 0.1
+    max_tokens: 512
+
+  # ========================================================================
+  # CODE GENERATION & REVIEW PROMPTS
+  # ========================================================================
+
+  - id: "code.fastapi_endpoint"
+    name: "FastAPI Endpoint Generator"
+    description: "Generate FastAPI REST endpoints"
+    type: "code_generation"
+    category: "code_generation"
+    content: |
+      Create a FastAPI endpoint for: ${endpoint_description}
+      
+      Requirements:
+      - Path: ${path}
+      - Method: ${method}
+      - Request Model: ${request_model}
+      - Response Model: ${response_model}
+      - Authentication: ${auth_required}
+      - Error Handling: Include try/except with appropriate HTTP status codes
+      - Logging: Add logging for debugging
+      - Documentation: Include OpenAPI docstring
+      
+      Generate complete code including:
+      1. Pydantic models (with type hints)
+      2. Endpoint function with proper decorators
+      3. Error handling
+      4. Logging statements
+      5. Example usage in docstring
+      
+      Follow FastAPI best practices and PEP 8 style.
+    variables:
+      - endpoint_description
+      - path
+      - method
+      - request_model
+      - response_model
+      - auth_required
+    tags:
+      - python
+      - fastapi
+      - api
+      - generation
+    model_hint: "claude-sonnet-4"
+    temperature: 0.3
+    max_tokens: 2048
+
+  - id: "code.review_checklist"
+    name: "Code Review Checklist"
+    description: "Comprehensive code review"
+    type: "chain_of_thought"
+    category: "code_generation"
+    content: |
+      Review the following code systematically:
+      
+      ```${language}
+      ${code}
+      ```
+      
+      **Code Review Checklist**:
+      
+      1. **Correctness**:
+         - Does it meet requirements?
+         - Are edge cases handled?
+         - Any logic errors?
+      
+      2. **Style & Readability**:
+         - Follows language conventions?
+         - Clear variable names?
+         - Appropriate comments?
+      
+      3. **Performance**:
+         - Efficient algorithms?
+         - Unnecessary operations?
+         - Memory usage concerns?
+      
+      4. **Security**:
+         - Input validation?
+         - SQL injection risks?
+         - Authentication checks?
+      
+      5. **Testing**:
+         - Unit testable?
+         - Coverage of edge cases?
+         - Mock points identified?
+      
+      6. **Maintainability**:
+         - DRY principle followed?
+         - SOLID principles?
+         - Easy to extend?
+      
+      **Summary**:
+      - Strengths: [3 items]
+      - Issues: [Prioritized list]
+      - Recommendations: [Actionable improvements]
+      - Approval: [APPROVE / REQUEST_CHANGES / REJECT]
+    variables:
+      - language
+      - code
+    tags:
+      - code-review
+      - quality
+      - best-practices
+    temperature: 0.4
+    max_tokens: 2048
+
+  # ========================================================================
+  # CREATIVE & WRITING PROMPTS
+  # ========================================================================
+
+  - id: "creative.technical_writer"
+    name: "Technical Documentation Writer"
+    description: "Create clear technical documentation"
+    type: "role_play"
+    category: "creative"
+    content: |
+      Act as a Technical Writer creating documentation for ${product_name}.
+      
+      **Target Audience**: ${audience}
+      **Document Type**: ${doc_type}
+      **Technical Level**: ${level}
+      
+      **Documentation Structure**:
+      1. Overview (what it does, why it exists)
+      2. Getting Started (quick win in 5 minutes)
+      3. Core Concepts (essential knowledge)
+      4. Step-by-Step Guide (common tasks)
+      5. Reference (complete API/options)
+      6. Troubleshooting (common issues)
+      7. Examples (real-world use cases)
+      
+      **Writing Style**:
+      - Use clear, concise language
+      - Active voice
+      - Short sentences and paragraphs
+      - Code examples with explanations
+      - Visual aids (diagrams, screenshots)
+      - Warning callouts for gotchas
+      
+      **Format**: Markdown with proper heading hierarchy
+    variables:
+      - product_name
+      - audience
+      - doc_type
+      - level
+    tags:
+      - documentation
+      - writing
+      - technical
+    temperature: 0.6
+    max_tokens: 3000
+
+  # ========================================================================
+  # ANALYSIS & DEBUGGING PROMPTS  
+  # ========================================================================
+
+  - id: "debug.error_explainer"
+    name: "Error Message Explainer"
+    description: "Explain error messages in plain English"
+    type: "task"
+    category: "debugging"
+    content: |
+      Explain this error message: ${error_message}
+      
+      **Error Breakdown**:
+      1. **What Happened**: [Plain English explanation]
+      2. **Why It Happened**: [Root cause]
+      3. **How to Fix**: [Step-by-step solution]
+      4. **How to Prevent**: [Best practices]
+      
+      **Related Concepts to Study**:
+      - [Concept 1]
+      - [Concept 2]
+      - [Concept 3]
+      
+      **Similar Errors**:
+      - Error A: [Brief description]
+      - Error B: [Brief description]
+    variables:
+      - error_message
+    tags:
+      - debugging
+      - error
+      - explanation
+    temperature: 0.5
+    max_tokens: 1024
+
+  - id: "analysis.data_summarizer"
+    name: "Data Analysis Summarizer"
+    description: "Summarize data analysis findings"
+    type: "structured"
+    category: "analysis"
+    content: |
+      Analyze the following dataset and provide insights:
+      
+      ${data}
+      
+      **Analysis Output**:
+      {
+        "summary": "Brief overview of dataset",
+        "key_metrics": {
+          "total_records": X,
+          "date_range": "YYYY-MM-DD to YYYY-MM-DD",
+          "completeness": "X%"
+        },
+        "insights": [
+          {
+            "finding": "Description",
+            "significance": "Why it matters",
+            "recommendation": "What to do"
+          }
+        ],
+        "anomalies": [
+          "Outlier 1",
+          "Outlier 2"
+        ],
+        "trends": [
+          "Trend 1: [description]",
+          "Trend 2: [description]"
+        ],
+        "next_steps": [
+          "Action 1",
+          "Action 2"
+        ]
+      }
+      
+      Focus on actionable insights, not just statistics.
+    variables:
+      - data
+    tags:
+      - analysis
+      - data
+      - insights
+    temperature: 0.5
+    max_tokens: 2048
+
+  # ========================================================================
+  # SYSTEM PROMPTS
+  # ========================================================================
+
+  - id: "system.helpful_assistant"
+    name: "Helpful AI Assistant"
+    description: "General purpose helpful assistant"
+    type: "system"
+    category: "analysis"
+    content: |
+      You are a helpful, professional AI assistant.
+      
+      **Behavior Guidelines**:
+      - Be concise but thorough
+      - Use examples when helpful
+      - Ask clarifying questions if ambiguous
+      - Admit when you don't know something
+      - Provide sources/references when possible
+      - Use formatting (bold, lists, code blocks) for clarity
+      - Avoid jargon unless appropriate for the user
+      - Be encouraging and supportive
+      
+      **Response Format**:
+      - Start with a direct answer
+      - Add context/explanation if needed
+      - End with "Is there anything else you'd like to know?"
+      
+      **Safety**:
+      - Never provide harmful information
+      - Respect privacy and confidentiality
+      - Decline inappropriate requests politely
+    tags:
+      - system
+      - general
+      - assistant
+    temperature: 0.7
+    max_tokens: 4096

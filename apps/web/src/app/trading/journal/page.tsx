@@ -5,85 +5,50 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import type { Trade, TradeResult, SetupType } from "@/lib/trading/types";
 import { SETUP_LABELS, TRADING_COLORS } from "@/lib/trading/constants";
 
-// Mock data for demonstration
-const mockTrades: Partial<Trade>[] = [
-  {
-    id: "1",
-    pair: "EUR/USD",
-    direction: "long",
-    setupType: "1a",
-    entryPrice: 1.095,
-    exitPrice: 1.102,
-    stopLoss: 1.092,
-    takeProfit1: 1.102,
-    result: "win",
-    pnlPips: 70,
-    rMultiple: 2.3,
-    entryTime: "2025-12-19T08:30:00Z",
-    exitTime: "2025-12-19T14:45:00Z",
-    entrySession: "london",
-    cycleDay: 3,
-    level: "I",
-  },
-  {
-    id: "2",
-    pair: "GBP/USD",
-    direction: "short",
-    setupType: "2a",
-    entryPrice: 1.265,
-    exitPrice: 1.268,
-    stopLoss: 1.262,
-    takeProfit1: 1.255,
-    result: "loss",
-    pnlPips: -30,
-    rMultiple: -1,
-    entryTime: "2025-12-18T14:15:00Z",
-    exitTime: "2025-12-18T16:30:00Z",
-    entrySession: "newyork",
-    cycleDay: 2,
-    level: "II",
-  },
-  {
-    id: "3",
-    pair: "USD/JPY",
-    direction: "long",
-    setupType: "4a",
-    entryPrice: 149.5,
-    exitPrice: 150.2,
-    stopLoss: 149.0,
-    takeProfit1: 150.5,
-    result: "win",
-    pnlPips: 70,
-    rMultiple: 1.4,
-    entryTime: "2025-12-17T02:30:00Z",
-    exitTime: "2025-12-17T07:00:00Z",
-    entrySession: "asian",
-    cycleDay: 1,
-    level: "I",
-  },
-];
-
 export default function JournalPage() {
   const [filter, setFilter] = useState<"all" | TradeResult>("all");
   const [searchPair, setSearchPair] = useState("");
+  const [trades, setTrades] = useState<Partial<Trade>[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredTrades = mockTrades.filter((trade) => {
+  useEffect(() => {
+    fetchTrades();
+  }, []);
+
+  const fetchTrades = async () => {
+    try {
+      const response = await fetch("/api/trading/journal");
+      if (!response.ok) {
+        throw new Error("Failed to fetch trades");
+      }
+      const data = await response.json();
+      setTrades(data);
+    } catch (err) {
+      console.error("Error fetching trades:", err);
+      setError("Failed to load trades. Please ensure the database is running.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredTrades = trades.filter((trade) => {
     const matchesFilter = filter === "all" || trade.result === filter;
     const matchesSearch = !searchPair || trade.pair?.toLowerCase().includes(searchPair.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
   const stats = {
-    total: mockTrades.length,
-    wins: mockTrades.filter((t) => t.result === "win").length,
-    losses: mockTrades.filter((t) => t.result === "loss").length,
-    winRate: mockTrades.length > 0
-      ? ((mockTrades.filter((t) => t.result === "win").length / mockTrades.length) * 100).toFixed(1)
+    total: trades.length,
+    wins: trades.filter((t) => t.result === "win").length,
+    losses: trades.filter((t) => t.result === "loss").length,
+    winRate: trades.length > 0
+      ? ((trades.filter((t) => t.result === "win").length / trades.length) * 100).toFixed(1)
       : "0",
   };
 
@@ -142,30 +107,46 @@ export default function JournalPage() {
 
       {/* Trades Table */}
       <div className="glass rounded-xl overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-white/10">
-              <th className="text-left p-4 text-xs text-white/40 uppercase tracking-wider">Date</th>
-              <th className="text-left p-4 text-xs text-white/40 uppercase tracking-wider">Pair</th>
-              <th className="text-left p-4 text-xs text-white/40 uppercase tracking-wider">Direction</th>
-              <th className="text-left p-4 text-xs text-white/40 uppercase tracking-wider">Setup</th>
-              <th className="text-left p-4 text-xs text-white/40 uppercase tracking-wider">Entry</th>
-              <th className="text-left p-4 text-xs text-white/40 uppercase tracking-wider">Result</th>
-              <th className="text-right p-4 text-xs text-white/40 uppercase tracking-wider">P/L</th>
-              <th className="text-right p-4 text-xs text-white/40 uppercase tracking-wider">R</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredTrades.map((trade) => (
-              <TradeRow key={trade.id} trade={trade as Trade} />
-            ))}
-          </tbody>
-        </table>
-
-        {filteredTrades.length === 0 && (
+        {loading && (
           <div className="p-8 text-center text-white/40">
-            No trades found matching your filters.
+            Loading trades...
           </div>
+        )}
+
+        {error && (
+          <div className="p-8 text-center text-trading-bearish">
+            {error}
+          </div>
+        )}
+
+        {!loading && !error && (
+          <>
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left p-4 text-xs text-white/40 uppercase tracking-wider">Date</th>
+                  <th className="text-left p-4 text-xs text-white/40 uppercase tracking-wider">Pair</th>
+                  <th className="text-left p-4 text-xs text-white/40 uppercase tracking-wider">Direction</th>
+                  <th className="text-left p-4 text-xs text-white/40 uppercase tracking-wider">Setup</th>
+                  <th className="text-left p-4 text-xs text-white/40 uppercase tracking-wider">Entry</th>
+                  <th className="text-left p-4 text-xs text-white/40 uppercase tracking-wider">Result</th>
+                  <th className="text-right p-4 text-xs text-white/40 uppercase tracking-wider">P/L</th>
+                  <th className="text-right p-4 text-xs text-white/40 uppercase tracking-wider">R</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredTrades.map((trade) => (
+                  <TradeRow key={trade.id} trade={trade as Trade} />
+                ))}
+              </tbody>
+            </table>
+
+            {filteredTrades.length === 0 && !loading && (
+              <div className="p-8 text-center text-white/40">
+                No trades found matching your filters.
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
