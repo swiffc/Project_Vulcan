@@ -1558,6 +1558,157 @@ async def check_completeness(request: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/phase25/check-api661-bundle")
+async def check_api661_bundle(request: dict):
+    """
+    Validate tube bundle assembly per API 661.
+
+    Request body:
+        tube_support_spacing_in: Float (max 72" / 6 ft)
+        has_tube_keepers: Boolean
+        tube_keepers_bolted: Boolean
+        has_air_seals: Boolean
+        lateral_movement_both_dir_mm: Float
+        is_condenser: Boolean
+        tube_slope_mm_per_m: Float
+        header_type: "plug", "cover_plate", "bonnet"
+        design_pressure_psi: Float
+        is_h2_service: Boolean
+        plug_type: "shoulder", "hollow"
+        nozzle_sizes_dn: List[int]
+        has_vent: Boolean
+        has_drain: Boolean
+
+    Returns:
+        API 661 bundle validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.api661_bundle_validator import API661BundleValidator, BundleData
+
+        validator = API661BundleValidator()
+
+        bundle = BundleData(
+            tube_support_spacing_in=request.get("tube_support_spacing_in"),
+            has_tube_keepers=request.get("has_tube_keepers", False),
+            tube_keepers_bolted=request.get("tube_keepers_bolted", False),
+            has_air_seals=request.get("has_air_seals", False),
+            has_p_strips=request.get("has_p_strips", False),
+            lateral_movement_both_dir_mm=request.get("lateral_movement_both_dir_mm"),
+            lateral_movement_one_dir_mm=request.get("lateral_movement_one_dir_mm"),
+            is_condenser=request.get("is_condenser", False),
+            tube_slope_mm_per_m=request.get("tube_slope_mm_per_m"),
+            header_type=request.get("header_type"),
+            design_pressure_psi=request.get("design_pressure_psi"),
+            is_h2_service=request.get("is_h2_service", False),
+            plug_type=request.get("plug_type"),
+            plug_head_type=request.get("plug_head_type"),
+            nozzle_sizes_dn=request.get("nozzle_sizes_dn", []),
+            has_vent=request.get("has_vent", False),
+            vent_at_high_point=request.get("vent_at_high_point", False),
+            has_drain=request.get("has_drain", False),
+            drain_at_low_point=request.get("drain_at_low_point", False),
+        )
+
+        result = validator.validate_bundle(bundle)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"API 661 bundle check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-nema-motor")
+async def check_nema_motor(request: dict):
+    """
+    Validate motor frame dimensions per NEMA MG-1.
+
+    Request body:
+        frame_size: String (e.g., "286T", "324T")
+        horsepower: Float
+        shaft_diameter: Float (inches)
+        shaft_length: Float (inches)
+        mounting_hole_spacing_f: Float (2F dimension)
+        mounting_hole_spacing_h: Float (H dimension)
+        service_factor: Float
+
+    Returns:
+        NEMA motor validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.nema_motor_validator import NEMAMotorValidator, MotorData
+
+        validator = NEMAMotorValidator()
+
+        motor = MotorData(
+            frame_size=request.get("frame_size"),
+            horsepower=request.get("horsepower"),
+            shaft_diameter=request.get("shaft_diameter"),
+            shaft_length=request.get("shaft_length"),
+            mounting_hole_spacing_f=request.get("mounting_hole_spacing_f"),
+            mounting_hole_spacing_h=request.get("mounting_hole_spacing_h"),
+            shaft_height_d=request.get("shaft_height_d"),
+            service_factor=request.get("service_factor"),
+        )
+
+        result = validator.validate_motor(motor)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"NEMA motor check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-sspc-coating")
+async def check_sspc_coating(request: dict):
+    """
+    Validate coating specifications per SSPC standards.
+
+    Request body:
+        surface_prep: String (e.g., "SP-6", "SP-10")
+        primer_type: String (e.g., "zinc_rich", "epoxy")
+        primer_dft_mils: Float
+        intermediate_type: String
+        intermediate_dft_mils: Float
+        topcoat_type: String
+        topcoat_dft_mils: Float
+        total_dft_mils: Float
+        environment: String (e.g., "immersion", "marine", "industrial")
+
+    Returns:
+        SSPC coating validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.sspc_coating_validator import SSPCCoatingValidator, CoatingSpec
+
+        validator = SSPCCoatingValidator()
+
+        spec = CoatingSpec(
+            surface_prep=request.get("surface_prep"),
+            primer_type=request.get("primer_type"),
+            primer_dft_mils=request.get("primer_dft_mils"),
+            intermediate_type=request.get("intermediate_type"),
+            intermediate_dft_mils=request.get("intermediate_dft_mils"),
+            topcoat_type=request.get("topcoat_type"),
+            topcoat_dft_mils=request.get("topcoat_dft_mils"),
+            total_dft_mils=request.get("total_dft_mils"),
+            environment=request.get("environment"),
+            substrate=request.get("substrate", "carbon_steel"),
+        )
+
+        result = validator.validate_coating(spec)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"SSPC coating check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/kill")
 async def kill():
     """Emergency stop - activate kill switch."""
