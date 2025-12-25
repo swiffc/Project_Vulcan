@@ -42,13 +42,18 @@ class BendViolation:
 
 @dataclass
 class BendAnalysisResult:
-    """Complete bend analysis results."""
+    """Complete bend analysis results (Phase 24.11)."""
     total_bends: int = 0
     bends: List[BendInfo] = field(default_factory=list)
     violations: List[BendViolation] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
     k_factor_used: float = 0.0
     grain_direction_warning: bool = False
+    total_bend_allowance_m: float = 0.0
+    total_bend_deduction_m: float = 0.0
+    flat_pattern_length_m: float = 0.0
+    recommended_sequence: List[str] = field(default_factory=list)
+    springback_notes: List[str] = field(default_factory=list)
 
 
 class BendRadiusAnalyzer:
@@ -191,6 +196,51 @@ class BendRadiusAnalyzer:
                 return table[0]["k_factor"]
 
         return self.DEFAULT_K_FACTORS.get(material, 0.44)
+
+    def calculate_bend_allowance(self, radius: float, thickness: float, angle_rad: float, k_factor: float) -> float:
+        """Calculate bend allowance (Phase 24.11)."""
+        import math
+        # BA = angle * (radius + k_factor * thickness)
+        return angle_rad * (radius + k_factor * thickness)
+
+    def calculate_bend_deduction(self, radius: float, thickness: float, angle_rad: float, k_factor: float) -> float:
+        """Calculate bend deduction (Phase 24.11)."""
+        import math
+        # BD = 2 * (radius + thickness) * tan(angle/2) - BA
+        ba = self.calculate_bend_allowance(radius, thickness, angle_rad, k_factor)
+        setback = 2 * (radius + thickness) * math.tan(angle_rad / 2)
+        return setback - ba
+
+    def estimate_springback(self, material: str, radius: float, thickness: float, angle_deg: float) -> float:
+        """Estimate springback angle based on material and R/t ratio (Phase 24.11)."""
+        # Springback factors by material (approximate)
+        springback_factors = {
+            "mild_steel": 0.02,
+            "stainless_304": 0.04,
+            "stainless_316": 0.04,
+            "aluminum_6061": 0.03,
+            "aluminum_5052": 0.025,
+            "copper": 0.01,
+            "brass": 0.015,
+        }
+        factor = springback_factors.get(material, 0.03)
+
+        # Springback increases with R/t ratio
+        rt_ratio = radius / thickness if thickness > 0 else 1
+        springback_multiplier = 1 + (rt_ratio * 0.1)
+
+        return angle_deg * factor * springback_multiplier
+
+    def recommend_bend_sequence(self, bends: List[BendInfo]) -> List[str]:
+        """Recommend bend sequence for manufacturability (Phase 24.11)."""
+        # Sort by angle (smaller angles first), then by distance from edge
+        sorted_bends = sorted(bends, key=lambda b: (abs(b.angle_deg), b.feature_name))
+
+        sequence = []
+        for i, bend in enumerate(sorted_bends, 1):
+            sequence.append(f"{i}. {bend.feature_name} ({bend.angle_deg}°)")
+
+        return sequence
 
     def analyze(self) -> BendAnalysisResult:
         """Analyze all bends in the active sheet metal part."""
