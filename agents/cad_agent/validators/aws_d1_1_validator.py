@@ -164,7 +164,7 @@ class AWSD11Validator:
         """
         result = AWSValidationResult()
 
-        # Run all AWS D1.1 checks
+        # Run all AWS D1.1 checks (14 total)
         checks = [
             self._check_weld_procedures(extraction_result),
             self._check_weld_sizes(extraction_result),
@@ -176,6 +176,11 @@ class AWSD11Validator:
             self._check_csa_compliance(extraction_result),
             self._check_tube_welds(extraction_result),
             self._check_weld_symbols(extraction_result),
+            # New checks
+            self._check_preheat_requirements(extraction_result),
+            self._check_interpass_temperature(extraction_result),
+            self._check_welder_qualification(extraction_result),
+            self._check_filler_metal(extraction_result),
         ]
 
         for check_list in checks:
