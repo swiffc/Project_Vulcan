@@ -83,6 +83,7 @@ try:
         DrawingAnalyzer,
         CostEstimator,
         ComponentAnalyzer,
+        StructuralAnalyzer,
     )
 
     PHASE24_AVAILABLE = True
@@ -743,6 +744,20 @@ async def get_component_analysis():
         return analyzer.to_dict()
     except Exception as e:
         logger.error(f"Component analysis error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase24/structural-analysis")
+async def get_structural_analysis():
+    """ACHE Structural component analysis (Phase 24.22-24.33)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        analyzer = StructuralAnalyzer()
+        return analyzer.to_dict()
+    except Exception as e:
+        logger.error(f"Structural analysis error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
