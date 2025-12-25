@@ -335,3 +335,219 @@ export function formatValidationReport(report: ValidationReport): string {
   
   return lines.join("\n");
 }
+
+// ============================================================================
+// Phase 25 - Drawing Checker API Functions
+// ============================================================================
+
+const DESKTOP_SERVER_URL = process.env.NEXT_PUBLIC_DESKTOP_SERVER_URL || "http://localhost:8765";
+
+/**
+ * Check hole edge distances and spacing (AISC)
+ */
+export async function checkHoles(holes: {
+  diameter: number;
+  edgeDistance?: number;
+  spacing?: number;
+  boltDiameter?: number;
+  partId?: string;
+}[]): Promise<HoleValidationResult> {
+  const response = await fetch(`${DESKTOP_SERVER_URL}/phase25/check-holes`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ holes }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Hole check failed: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Check structural capacity (bolts, welds)
+ */
+export async function checkStructural(data: {
+  checkType: "bolt_shear" | "bolt_bearing" | "fillet_weld" | "net_section";
+  bolt?: {
+    diameter: number;
+    grade?: string;
+    threadsExcluded?: boolean;
+    numBolts?: number;
+    numShearPlanes?: number;
+  };
+  weld?: {
+    legSize: number;
+    length: number;
+  };
+  appliedLoadKips?: number;
+  materialThickness?: number;
+  materialGrade?: string;
+}): Promise<StructuralValidationResult> {
+  const response = await fetch(`${DESKTOP_SERVER_URL}/phase25/check-structural`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Structural check failed: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Check shaft/machining requirements
+ */
+export async function checkShaft(data: {
+  checkType: "shaft" | "keyway" | "retaining_ring" | "chamfer";
+  shaft?: {
+    diameter: number;
+    tolerancePlus?: number;
+    toleranceMinus?: number;
+    surfaceFinishRa?: number;
+    runoutTir?: number;
+  };
+  keyway?: {
+    width: number;
+    depth: number;
+    angularLocation?: number;
+  };
+  shaftDiameter?: number;
+  featureType?: string;
+}): Promise<ShaftValidationResult> {
+  const response = await fetch(`${DESKTOP_SERVER_URL}/phase25/check-shaft`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Shaft check failed: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Check handling/lifting requirements
+ */
+export async function checkHandling(data: {
+  totalWeightLbs: number;
+  lengthIn?: number;
+  widthIn?: number;
+  heightIn?: number;
+  hasLiftingLugs?: boolean;
+  numLiftingLugs?: number;
+  lugCapacityLbs?: number;
+  cgMarked?: boolean;
+  cgLocation?: string;
+  hasRiggingDiagram?: boolean;
+}): Promise<HandlingValidationResult> {
+  const response = await fetch(`${DESKTOP_SERVER_URL}/phase25/check-handling`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Handling check failed: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Check BOM completeness
+ */
+export async function checkBOM(bomItems: {
+  itemNumber: string;
+  partNumber?: string;
+  description?: string;
+  quantity?: number;
+  material?: string;
+}[]): Promise<BOMValidationResult> {
+  const response = await fetch(`${DESKTOP_SERVER_URL}/phase25/check-bom`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ bom_items: bomItems }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`BOM check failed: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Check dimension callouts
+ */
+export async function checkDimensions(dimensions: {
+  value: number;
+  tolerance?: number;
+  tolerancePlus?: number;
+  toleranceMinus?: number;
+  unit?: string;
+}[]): Promise<DimensionValidationResult> {
+  const response = await fetch(`${DESKTOP_SERVER_URL}/phase25/check-dimensions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ dimensions }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Dimension check failed: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Check OSHA safety requirements
+ */
+export async function checkOSHA(data: {
+  guardrails?: {
+    topRailHeight?: number;
+    hasMidRail?: boolean;
+    hasToeBoard?: boolean;
+    toeboardHeight?: number;
+    openingSize?: number;
+  }[];
+  ladders?: {
+    width?: number;
+    rungSpacing?: number;
+    sideRailExtension?: number;
+    height?: number;
+    hasCage?: boolean;
+  }[];
+  platforms?: {
+    width?: number;
+    length?: number;
+    height?: number;
+  }[];
+}): Promise<OSHAValidationResult> {
+  const response = await fetch(`${DESKTOP_SERVER_URL}/phase25/check-osha`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(`OSHA check failed: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Run all Phase 25 checks on a drawing
+ */
+export async function runAllPhase25Checks(request: ValidationRequest): Promise<ValidationResponse> {
+  return validateDrawing({
+    ...request,
+    checks: ["holes", "structural", "shaft", "handling", "bom", "dimensions", "osha"],
+  });
+}
