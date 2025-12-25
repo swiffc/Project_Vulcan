@@ -54,7 +54,8 @@
       "Bash(del .gitindex.lock)",
       "Bash(git branch:*)",
       "Bash(git push:*)",
-      "Bash(gh repo edit:*)"
+      "Bash(gh repo edit:*)",
+      "Bash(winget install:*)"
     ]
   }
 }
