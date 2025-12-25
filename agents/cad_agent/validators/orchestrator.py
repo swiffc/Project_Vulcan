@@ -66,6 +66,49 @@ except ImportError:
     BOMManager = None
     get_bom_manager = None
 
+# Phase 25 - New validators
+try:
+    from .aisc_hole_validator import AISCHoleValidator
+except ImportError:
+    logging.warning("AISCHoleValidator not available")
+    AISCHoleValidator = None
+
+try:
+    from .structural_capacity_validator import StructuralCapacityValidator
+except ImportError:
+    logging.warning("StructuralCapacityValidator not available")
+    StructuralCapacityValidator = None
+
+try:
+    from .shaft_validator import ShaftValidator
+except ImportError:
+    logging.warning("ShaftValidator not available")
+    ShaftValidator = None
+
+try:
+    from .handling_validator import HandlingValidator
+except ImportError:
+    logging.warning("HandlingValidator not available")
+    HandlingValidator = None
+
+try:
+    from .bom_validator import BOMValidator
+except ImportError:
+    logging.warning("BOMValidator not available")
+    BOMValidator = None
+
+try:
+    from .dimension_validator import DimensionValidator
+except ImportError:
+    logging.warning("DimensionValidator not available")
+    DimensionValidator = None
+
+try:
+    from .osha_validator import OSHAValidator
+except ImportError:
+    logging.warning("OSHAValidator not available")
+    OSHAValidator = None
+
 logger = logging.getLogger(__name__)
 
 
