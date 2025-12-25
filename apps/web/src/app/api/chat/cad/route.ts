@@ -164,6 +164,14 @@ export async function POST(request: NextRequest) {
         content: m.content,
       }));
 
+    // Validate we still have messages after sanitization
+    if (anthropicMessages.length === 0) {
+      return NextResponse.json(
+        { error: "No valid messages after sanitization" },
+        { status: 400 }
+      );
+    }
+
     // Create response with tool use
     let response = await client.messages.create({
       model: "claude-sonnet-4-20250514",
