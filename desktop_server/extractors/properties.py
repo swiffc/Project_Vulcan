@@ -1,0 +1,208 @@
+"""
+Properties Extractor
+====================
+Extract all properties from SolidWorks models.
+
+Phase 24.3 Implementation
+"""
+
+import logging
+from typing import Dict, Any, Optional, List
+from dataclasses import dataclass, field
+from datetime import datetime
+
+logger = logging.getLogger("vulcan.extractor.properties")
+
+
+@dataclass
+class StandardProperties:
+    """Standard SolidWorks document properties."""
+    filename: str = ""
+    path: str = ""
+    configuration: str = ""
+    created_date: Optional[datetime] = None
+    modified_date: Optional[datetime] = None
+    sw_version: str = ""
+
+
+@dataclass
+class MassProperties:
+    """Mass properties from SolidWorks."""
+    mass_kg: float = 0.0
+    volume_m3: float = 0.0
+    surface_area_m2: float = 0.0
+    center_of_gravity: tuple = (0.0, 0.0, 0.0)
+    moments_of_inertia: tuple = (0.0, 0.0, 0.0)
+
+
+@dataclass
+class CustomProperties:
+    """Custom properties organized by category."""
+    job_info: Dict[str, str] = field(default_factory=dict)
+    design_data: Dict[str, str] = field(default_factory=dict)
+    tube_bundle: Dict[str, str] = field(default_factory=dict)
+    header_box: Dict[str, str] = field(default_factory=dict)
+    structural: Dict[str, str] = field(default_factory=dict)
+    drawing_info: Dict[str, str] = field(default_factory=dict)
+    paint_coating: Dict[str, str] = field(default_factory=dict)
+    other: Dict[str, str] = field(default_factory=dict)
+
+
+class PropertiesExtractor:
+    """
+    Extract all properties from the active SolidWorks document.
+    Categorizes custom properties for ACHE design context.
+    """
+
+    # Property categorization mapping
+    JOB_INFO_KEYS = ["job", "job#", "customer", "po", "po#", "tag", "tag#", "service"]
+    DESIGN_DATA_KEYS = ["pressure", "temp", "temperature", "mdmt", "corrosion"]
+    TUBE_BUNDLE_KEYS = ["tubes", "pitch", "fins", "passes", "tube_od", "tube_length"]
+    HEADER_BOX_KEYS = ["header", "plug", "plugs", "material", "thickness"]
+    STRUCTURAL_KEYS = ["tube_sheet", "side_frame", "support", "frame"]
+    DRAWING_INFO_KEYS = ["dwg", "dwg#", "rev", "revision", "drawn", "checked"]
+    PAINT_KEYS = ["paint", "primer", "topcoat", "prep", "coating"]
+
+    def __init__(self):
+        self._sw_app = None
+        self._doc = None
+
+    def _connect(self) -> bool:
+        """Connect to SolidWorks COM interface."""
+        try:
+            import win32com.client
+            self._sw_app = win32com.client.GetActiveObject("SldWorks.Application")
+            self._doc = self._sw_app.ActiveDoc
+            return self._doc is not None
+        except Exception as e:
+            logger.error(f"Failed to connect to SolidWorks: {e}")
+            return False
+
+    def get_standard_properties(self) -> StandardProperties:
+        """Extract standard document properties."""
+        if not self._connect():
+            return StandardProperties()
+
+        props = StandardProperties()
+        try:
+            props.path = self._doc.GetPathName() or ""
+            props.filename = props.path.split("\\")[-1] if props.path else ""
+            props.configuration = self._doc.ConfigurationManager.ActiveConfiguration.Name
+
+            # Get file info
+            file_info = self._doc.FileInfo
+            if file_info:
+                props.sw_version = str(self._sw_app.RevisionNumber())
+        except Exception as e:
+            logger.error(f"Error extracting standard properties: {e}")
+
+        return props
+
+    def get_mass_properties(self) -> MassProperties:
+        """Extract mass properties from active document."""
+        if not self._connect():
+            return MassProperties()
+
+        props = MassProperties()
+        try:
+            mass_props = self._doc.Extension.CreateMassProperty()
+            if mass_props:
+                props.mass_kg = mass_props.Mass
+                props.volume_m3 = mass_props.Volume
+                props.surface_area_m2 = mass_props.SurfaceArea
+                cog = mass_props.CenterOfMass
+                if cog:
+                    props.center_of_gravity = (cog[0], cog[1], cog[2])
+        except Exception as e:
+            logger.error(f"Error extracting mass properties: {e}")
+
+        return props
+
+    def _categorize_property(self, key: str) -> str:
+        """Determine which category a property belongs to."""
+        key_lower = key.lower()
+
+        if any(k in key_lower for k in self.JOB_INFO_KEYS):
+            return "job_info"
+        if any(k in key_lower for k in self.DESIGN_DATA_KEYS):
+            return "design_data"
+        if any(k in key_lower for k in self.TUBE_BUNDLE_KEYS):
+            return "tube_bundle"
+        if any(k in key_lower for k in self.HEADER_BOX_KEYS):
+            return "header_box"
+        if any(k in key_lower for k in self.STRUCTURAL_KEYS):
+            return "structural"
+        if any(k in key_lower for k in self.DRAWING_INFO_KEYS):
+            return "drawing_info"
+        if any(k in key_lower for k in self.PAINT_KEYS):
+            return "paint_coating"
+        return "other"
+
+    def get_custom_properties(self, config: str = "") -> CustomProperties:
+        """Extract and categorize custom properties."""
+        if not self._connect():
+            return CustomProperties()
+
+        props = CustomProperties()
+        try:
+            config_name = config or self._doc.ConfigurationManager.ActiveConfiguration.Name
+            custom_prop_mgr = self._doc.Extension.CustomPropertyManager(config_name)
+
+            if not custom_prop_mgr:
+                return props
+
+            # Get all property names
+            prop_names = custom_prop_mgr.GetNames()
+            if not prop_names:
+                return props
+
+            for name in prop_names:
+                val_out = ""
+                resolved_out = ""
+                was_resolved = False
+
+                try:
+                    result = custom_prop_mgr.Get5(name, False, val_out, resolved_out, was_resolved)
+                    value = resolved_out if was_resolved else val_out
+                except Exception:
+                    value = ""
+
+                category = self._categorize_property(name)
+                getattr(props, category)[name] = value
+
+        except Exception as e:
+            logger.error(f"Error extracting custom properties: {e}")
+
+        return props
+
+    def get_all_properties(self) -> Dict[str, Any]:
+        """Get all properties as a dictionary for JSON serialization."""
+        standard = self.get_standard_properties()
+        mass = self.get_mass_properties()
+        custom = self.get_custom_properties()
+
+        return {
+            "standard": {
+                "filename": standard.filename,
+                "path": standard.path,
+                "configuration": standard.configuration,
+                "sw_version": standard.sw_version,
+            },
+            "mass": {
+                "mass_kg": mass.mass_kg,
+                "volume_m3": mass.volume_m3,
+                "surface_area_m2": mass.surface_area_m2,
+                "center_of_gravity": list(mass.center_of_gravity),
+                "moments_of_inertia": list(mass.moments_of_inertia),
+            },
+            "custom": {
+                "job_info": custom.job_info,
+                "design_data": custom.design_data,
+                "tube_bundle": custom.tube_bundle,
+                "header_box": custom.header_box,
+                "structural": custom.structural,
+                "drawing_info": custom.drawing_info,
+                "paint_coating": custom.paint_coating,
+                "other": custom.other,
+            },
+        }
