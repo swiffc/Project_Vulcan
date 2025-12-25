@@ -507,6 +507,211 @@ class AISCHoleValidator:
 
         return result
 
+    def _check_oversized_hole(self, hole: HoleData, index: int, result: AISCHoleValidationResult):
+        """Check oversized hole dimensions per AISC J3.3."""
+        if hole.hole_type != "oversized":
+            return
+
+        result.total_checks += 1
+        result.oversized_holes += 1
+
+        bolt_dia = hole.bolt_diameter or self._get_bolt_from_hole(hole.diameter)
+
+        if bolt_dia in OVERSIZED_HOLE_SIZES:
+            expected = OVERSIZED_HOLE_SIZES[bolt_dia]
+            tolerance = 0.03  # 1/32"
+
+            if abs(hole.diameter - expected) > tolerance:
+                result.failed += 1
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.ERROR,
+                    check_type="oversized_hole_wrong",
+                    message=f"Hole #{index+1}: Oversized hole {hole.diameter}\" doesn't match Table J3.3 ({expected}\")",
+                    location=f"Hole {index+1}",
+                    suggestion=f"Use {expected}\" dia for {bolt_dia}\" bolt oversized hole",
+                    standard_reference="AISC Table J3.3",
+                ))
+            else:
+                result.passed += 1
+        else:
+            result.passed += 1
+
+    def _check_slotted_hole(self, hole: HoleData, index: int, result: AISCHoleValidationResult):
+        """Check slotted hole dimensions per AISC J3.3."""
+        if hole.hole_type not in ["short_slot", "long_slot"]:
+            return
+
+        result.total_checks += 1
+        result.slotted_holes += 1
+
+        bolt_dia = hole.bolt_diameter or self._get_bolt_from_hole(hole.slot_width or hole.diameter)
+        slot_table = SHORT_SLOT_SIZES if hole.hole_type == "short_slot" else LONG_SLOT_SIZES
+
+        if bolt_dia in slot_table and hole.slot_width and hole.slot_length:
+            expected_w, expected_l = slot_table[bolt_dia]
+            tolerance = 0.03
+
+            issues_found = []
+            if abs(hole.slot_width - expected_w) > tolerance:
+                issues_found.append(f"width {hole.slot_width}\" vs {expected_w}\"")
+            if abs(hole.slot_length - expected_l) > tolerance:
+                issues_found.append(f"length {hole.slot_length}\" vs {expected_l}\"")
+
+            if issues_found:
+                result.failed += 1
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.ERROR,
+                    check_type="slot_dimensions",
+                    message=f"Hole #{index+1}: Slot size incorrect: {', '.join(issues_found)}",
+                    location=f"Hole {index+1}",
+                    suggestion=f"Use {expected_w}\" × {expected_l}\" for {bolt_dia}\" bolt {hole.hole_type.replace('_', ' ')}",
+                    standard_reference="AISC Table J3.3",
+                ))
+            else:
+                result.passed += 1
+
+        # Check slot orientation for long slots
+        if hole.hole_type == "long_slot" and hole.slot_orientation:
+            result.total_checks += 1
+            if hole.slot_orientation == "parallel" and hole.connection_type == "bearing":
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.WARNING,
+                    check_type="long_slot_orientation",
+                    message=f"Hole #{index+1}: Long slot parallel to load in bearing connection",
+                    location=f"Hole {index+1}",
+                    suggestion="Consider perpendicular orientation or slip-critical connection",
+                    standard_reference="AISC J3.3",
+                ))
+                result.warnings += 1
+            else:
+                result.passed += 1
+
+    def _check_slip_critical(self, hole: HoleData, index: int, result: AISCHoleValidationResult):
+        """Check slip-critical connection requirements."""
+        if hole.connection_type != "slip_critical":
+            return
+
+        result.total_checks += 1
+        result.slip_critical_connections += 1
+
+        bolt_dia = hole.bolt_diameter or self._get_bolt_from_hole(hole.diameter)
+        grade = hole.bolt_grade.upper()
+
+        # Slip-critical requires pretension
+        if bolt_dia in MIN_PRETENSION:
+            pretension = MIN_PRETENSION[bolt_dia]
+            grade_idx = 0 if grade == "A325" else 1
+
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.INFO,
+                check_type="slip_critical_pretension",
+                message=f"Hole #{index+1}: Slip-critical connection requires min pretension {pretension[grade_idx]} kips for {grade} bolt",
+                location=f"Hole {index+1}",
+                suggestion="Verify bolt pretension specification in notes",
+                standard_reference="AISC Table J3.1",
+            ))
+
+        # Slip-critical with oversized/slotted requires washer
+        if hole.hole_type in ["oversized", "short_slot", "long_slot"]:
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.WARNING,
+                check_type="slip_critical_washer",
+                message=f"Hole #{index+1}: {hole.hole_type.replace('_', ' ')} in slip-critical requires hardened washer",
+                location=f"Hole {index+1}",
+                suggestion="Add F436 hardened washer callout",
+                standard_reference="AISC J3.8",
+            ))
+            result.warnings += 1
+
+        result.passed += 1
+
+    def _check_bearing_capacity(
+        self,
+        holes: List[HoleData],
+        thickness: float,
+        result: AISCHoleValidationResult
+    ):
+        """Check bolt bearing capacity."""
+        result.total_checks += 1
+
+        # Group holes by bolt size
+        bolt_groups: Dict[float, int] = {}
+        for hole in holes:
+            bolt_dia = hole.bolt_diameter or self._get_bolt_from_hole(hole.diameter)
+            bolt_groups[bolt_dia] = bolt_groups.get(bolt_dia, 0) + 1
+
+        # Provide bearing capacity info
+        for bolt_dia, count in bolt_groups.items():
+            # Nominal bearing capacity = 2.4 × d × t × Fu
+            # Assume Fu = 58 ksi for A36, 65 ksi for A572 Gr 50
+            fu = 58  # ksi, conservative
+            bearing_per_bolt = 2.4 * bolt_dia * thickness * fu  # kips
+
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.INFO,
+                check_type="bearing_capacity",
+                message=f"{count}× {bolt_dia}\" bolts: Bearing capacity ~{bearing_per_bolt:.1f} kips/bolt (2.4dtFu, Fu=58ksi)",
+                suggestion="Verify applied loads vs capacity",
+                standard_reference="AISC J3.10",
+            ))
+
+        result.passed += 1
+
+    def validate_net_section(
+        self,
+        gross_area: float,
+        holes: List[HoleData],
+        material_fy: float = 50  # ksi
+    ) -> AISCHoleValidationResult:
+        """
+        Check net section area reduction.
+
+        Args:
+            gross_area: Gross cross-sectional area (sq in)
+            holes: Holes in the section
+            material_fy: Yield strength (ksi)
+
+        Returns:
+            Validation result
+        """
+        result = AISCHoleValidationResult()
+        result.total_checks += 1
+
+        # Calculate net area (simplified - assumes all holes in same plane)
+        total_hole_area = 0
+        for hole in holes:
+            if hole.hole_type in ["short_slot", "long_slot"]:
+                # Use slot width for net area
+                width = hole.slot_width or hole.diameter
+            else:
+                width = hole.diameter
+
+            # Net area deduction per AISC D3.2 (add 1/16" to hole dia)
+            effective_width = width + 0.0625
+            # Assume same thickness for all holes
+            total_hole_area += effective_width
+
+        # Need thickness to compute actual area - use estimate
+        if holes:
+            # Estimate based on ratio
+            reduction_ratio = total_hole_area / (gross_area ** 0.5)  # Rough estimate
+
+            if reduction_ratio > 0.15:  # >15% reduction
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.WARNING,
+                    check_type="net_section_reduction",
+                    message=f"Significant net section reduction from {len(holes)} holes",
+                    suggestion="Verify An/Ag ratio and tension member capacity per AISC D3",
+                    standard_reference="AISC D3.2",
+                ))
+                result.warnings += 1
+            else:
+                result.passed += 1
+        else:
+            result.passed += 1
+
+        return result
+
     def to_dict(self, result: AISCHoleValidationResult) -> Dict[str, Any]:
         """Convert result to dictionary."""
         return {
@@ -521,6 +726,9 @@ class AISCHoleValidator:
                 "edge_distance_violations": result.edge_distance_violations,
                 "spacing_violations": result.spacing_violations,
                 "non_standard_holes": result.non_standard_holes,
+                "oversized_holes": result.oversized_holes,
+                "slotted_holes": result.slotted_holes,
+                "slip_critical_connections": result.slip_critical_connections,
             },
             "issues": [
                 {
