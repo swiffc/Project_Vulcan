@@ -76,6 +76,12 @@ try:
         WeldAnalyzer,
         NozzleAnalyzer,
         ASMECalculator,
+        MatesAnalyzer,
+        StandardsChecker,
+        ThermalAnalyzer,
+        ReportGenerator,
+        DrawingAnalyzer,
+        CostEstimator,
     )
 
     PHASE24_AVAILABLE = True
@@ -703,10 +709,141 @@ async def get_full_analysis():
             "bend_analysis": BendRadiusAnalyzer().to_dict(),
             "interference_check": InterferenceAnalyzer().to_dict(),
             "nozzle_schedule": NozzleAnalyzer().to_dict(),
+            "mates_analysis": MatesAnalyzer().to_dict(),
         }
         return results
     except Exception as e:
         logger.error(f"Full analysis error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase24/mates-analysis")
+async def get_mates_analysis():
+    """Analyze assembly mates (Phase 24.9)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        analyzer = MatesAnalyzer()
+        return analyzer.to_dict()
+    except Exception as e:
+        logger.error(f"Mates analysis error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class StandardsCheckRequest(BaseModel):
+    """Request model for standards check."""
+    tube_support_spacing_m: Optional[float] = None
+    bundle_lateral_movement_mm: Optional[float] = None
+    design_pressure_psi: Optional[float] = None
+    header_type: Optional[str] = None
+    plug_hardness_hb: Optional[int] = None
+    mawp_psi: Optional[float] = None
+    joint_efficiency: Optional[float] = None
+    tema_class: Optional[str] = None
+    ligament_factor: Optional[float] = None
+    handrail_height_in: Optional[float] = None
+    toeboard_height_in: Optional[float] = None
+
+
+@app.post("/phase24/standards-check")
+async def run_standards_check(request: StandardsCheckRequest):
+    """Run standards compliance check (Phase 24.24)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        checker = StandardsChecker()
+        return checker.to_dict(request.dict())
+    except Exception as e:
+        logger.error(f"Standards check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class ThermalAnalysisRequest(BaseModel):
+    """Request model for thermal analysis."""
+    tube_material: str = "carbon_steel"
+    tube_length_in: float = 240.0
+    shell_material: str = "carbon_steel"
+    shell_length_in: float = 240.0
+    design_temp_f: float = 300.0
+    ambient_temp_f: float = 70.0
+    material_pnum: str = "P-1"
+    max_thickness_in: float = 1.0
+
+
+@app.post("/phase24/thermal-analysis")
+async def run_thermal_analysis(request: ThermalAnalysisRequest):
+    """Run thermal expansion analysis (Phase 24.14)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        analyzer = ThermalAnalyzer()
+        return analyzer.to_dict(request.dict())
+    except Exception as e:
+        logger.error(f"Thermal analysis error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/phase24/drawing-analysis")
+async def get_drawing_analysis():
+    """Analyze drawing completeness (Phase 24.18)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        analyzer = DrawingAnalyzer()
+        return analyzer.to_dict()
+    except Exception as e:
+        logger.error(f"Drawing analysis error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class CostEstimateRequest(BaseModel):
+    """Request model for cost estimate."""
+    mass_properties: Optional[Dict[str, Any]] = None
+    material: str = "SA-516-70"
+    weld_weight_lbs: Optional[float] = None
+    total_holes: int = 0
+    avg_hole_diameter_in: float = 1.0
+    plate_thickness_in: float = 1.0
+    component_count: int = 10
+
+
+@app.post("/phase24/cost-estimate")
+async def get_cost_estimate(request: CostEstimateRequest):
+    """Generate cost estimate (Phase 24.28)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        estimator = CostEstimator()
+        return estimator.to_dict(request.dict())
+    except Exception as e:
+        logger.error(f"Cost estimate error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase24/generate-report")
+async def generate_report(format: str = "pdf"):
+    """Generate PDF/Excel report (Phase 24.26)."""
+    if not PHASE24_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Phase 24 not available")
+
+    try:
+        # Gather all model data
+        model_data = {
+            "properties": PropertiesExtractor().get_all_properties(),
+            "hole_analysis": HolePatternExtractor().to_dict(),
+            "bend_analysis": BendRadiusAnalyzer().to_dict(),
+            "mates_analysis": MatesAnalyzer().to_dict(),
+        }
+
+        generator = ReportGenerator()
+        return generator.to_dict(model_data, format)
+    except Exception as e:
+        logger.error(f"Report generation error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
