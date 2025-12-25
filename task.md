@@ -34,36 +34,36 @@
 
 ---
 
-### 24.1 Auto-Launch System (5 tasks)
-- [ ] SolidWorks process watcher (`desktop_server/watchers/solidworks_watcher.py`)
-- [ ] Auto-open chatbot URL when SW detected
-- [ ] Document change detection (Part/Assembly/Drawing switch)
-- [ ] WebSocket real-time updates to web UI
-- [ ] Tailscale connection handling
+### 24.1 Auto-Launch System (5 tasks) ✅
+- [x] SolidWorks process watcher (`desktop_server/watchers/solidworks_watcher.py`)
+- [x] Auto-open chatbot URL when SW detected
+- [x] Document change detection (Part/Assembly/Drawing switch)
+- [x] WebSocket real-time updates to web UI
+- [x] Tailscale connection handling
 
 ---
 
-### 24.2 Model Overview Tab (8 tasks)
-- [ ] Visual Preview (screenshots: isometric, front, side, top views)
-- [ ] Quick Stats dashboard (parts count, weight, dimensions, fasteners)
-- [ ] ACHE Bundle Structure Diagram visualization
-- [ ] Warnings Summary (quick view of issues)
-- [ ] Linked Documents list
-- [ ] Configuration selector
-- [ ] Real-time refresh indicator
-- [ ] Export overview as PDF
+### 24.2 Model Overview Tab (8 tasks) ✅
+- [x] Visual Preview (screenshots: isometric, front, side, top views)
+- [x] Quick Stats dashboard (parts count, weight, dimensions, fasteners)
+- [x] ACHE Bundle Structure Diagram visualization
+- [x] Warnings Summary (quick view of issues)
+- [x] Linked Documents list
+- [x] Configuration selector
+- [x] Real-time refresh indicator
+- [x] Export overview as PDF
 
 ---
 
-### 24.3 Properties Extraction - Standard Properties (8 tasks)
-- [ ] File Name, Path, Extension
-- [ ] Configuration name (active and all available)
-- [ ] Created Date, Last Modified Date
-- [ ] Last Saved By (author)
-- [ ] SolidWorks Version
-- [ ] Total Edit Time
-- [ ] File Size
-- [ ] Rebuild Status (up to date, needs rebuild)
+### 24.3 Properties Extraction - Standard Properties (8 tasks) ✅
+- [x] File Name, Path, Extension
+- [x] Configuration name (active and all available)
+- [x] Created Date, Last Modified Date
+- [x] Last Saved By (author)
+- [x] SolidWorks Version
+- [x] Total Edit Time
+- [x] File Size
+- [x] Rebuild Status (up to date, needs rebuild)
 
 ---
 
