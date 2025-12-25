@@ -843,3 +843,211 @@ class ValidationOrchestrator:
 
         # For now, assume file_id is already a path if client is not available
         return file_id
+
+    # Phase 25 - New validation methods
+
+    async def _validate_holes(self, analysis: Any) -> Dict[str, Any]:
+        """Run AISC hole validation."""
+        if not self.aisc_hole_validator:
+            return {"error": "AISCHoleValidator not available"}
+
+        try:
+            from .aisc_hole_validator import HoleData
+
+            # Extract hole data from analysis
+            holes = []
+            if hasattr(analysis, "holes"):
+                for h in analysis.holes:
+                    holes.append(HoleData(
+                        diameter=h.get("diameter", 0.75),
+                        edge_distance=h.get("edge_distance"),
+                        spacing=h.get("spacing"),
+                        bolt_diameter=h.get("bolt_diameter", h.get("diameter", 0.75) - 0.0625),
+                    ))
+
+            if not holes:
+                return {
+                    "total_checks": 0,
+                    "passed": 0,
+                    "message": "No holes found in drawing analysis",
+                }
+
+            result = self.aisc_hole_validator.validate_holes(holes)
+            return self.aisc_hole_validator.to_dict(result)
+
+        except Exception as e:
+            logger.error(f"Hole validation failed: {e}")
+            return {"error": str(e)}
+
+    async def _validate_structural(self, analysis: Any) -> Dict[str, Any]:
+        """Run structural capacity validation."""
+        if not self.structural_validator:
+            return {"error": "StructuralCapacityValidator not available"}
+
+        try:
+            results = {"checks": []}
+
+            # Check bolt connections if present
+            if hasattr(analysis, "bolts"):
+                from .structural_capacity_validator import BoltData
+                for b in analysis.bolts:
+                    bolt = BoltData(
+                        diameter=b.get("diameter", 0.75),
+                        grade=b.get("grade", "A325"),
+                        num_bolts=b.get("count", 1),
+                    )
+                    result = self.structural_validator.check_bolt_shear(
+                        bolt, b.get("load_kips")
+                    )
+                    results["checks"].append(self.structural_validator.to_dict(result))
+
+            # Check welds if present
+            if hasattr(analysis, "welds"):
+                from .structural_capacity_validator import WeldData
+                for w in analysis.welds:
+                    weld = WeldData(
+                        leg_size=w.get("size", 0.25),
+                        length=w.get("length", 1.0),
+                    )
+                    result = self.structural_validator.check_fillet_weld(
+                        weld, w.get("thickness", 0.5), w.get("load_kips")
+                    )
+                    results["checks"].append(self.structural_validator.to_dict(result))
+
+            return results
+
+        except Exception as e:
+            logger.error(f"Structural validation failed: {e}")
+            return {"error": str(e)}
+
+    async def _validate_shaft(self, analysis: Any) -> Dict[str, Any]:
+        """Run shaft/machining validation."""
+        if not self.shaft_validator:
+            return {"error": "ShaftValidator not available"}
+
+        try:
+            results = {"checks": []}
+
+            if hasattr(analysis, "shafts"):
+                from .shaft_validator import ShaftData
+                for s in analysis.shafts:
+                    shaft = ShaftData(
+                        diameter=s.get("diameter", 1.0),
+                        tolerance_plus=s.get("tolerance_plus"),
+                        tolerance_minus=s.get("tolerance_minus"),
+                        surface_finish_ra=s.get("surface_finish"),
+                        runout_tir=s.get("runout"),
+                    )
+                    feature_type = s.get("feature_type", "general")
+                    result = self.shaft_validator.validate_shaft(shaft, feature_type)
+                    results["checks"].append(self.shaft_validator.to_dict(result))
+
+            if hasattr(analysis, "keyways"):
+                from .shaft_validator import KeywayData
+                for k in analysis.keyways:
+                    keyway = KeywayData(
+                        width=k.get("width", 0.25),
+                        depth=k.get("depth", 0.125),
+                        angular_location=k.get("angular_location"),
+                    )
+                    result = self.shaft_validator.validate_keyway(
+                        keyway, k.get("shaft_diameter", 1.0)
+                    )
+                    results["checks"].append(self.shaft_validator.to_dict(result))
+
+            return results
+
+        except Exception as e:
+            logger.error(f"Shaft validation failed: {e}")
+            return {"error": str(e)}
+
+    async def _validate_handling(self, analysis: Any) -> Dict[str, Any]:
+        """Run handling/lifting validation."""
+        if not self.handling_validator:
+            return {"error": "HandlingValidator not available"}
+
+        try:
+            from .handling_validator import HandlingData
+
+            # Get weight from analysis or estimate
+            weight = 0.0
+            if hasattr(analysis, "weight_lbs"):
+                weight = analysis.weight_lbs
+            elif hasattr(analysis, "estimated_weight"):
+                weight = analysis.estimated_weight
+
+            handling = HandlingData(
+                total_weight_lbs=weight,
+                length_in=getattr(analysis, "length_in", None),
+                width_in=getattr(analysis, "width_in", None),
+                height_in=getattr(analysis, "height_in", None),
+                has_lifting_lugs=getattr(analysis, "has_lifting_lugs", False),
+                num_lifting_lugs=getattr(analysis, "num_lifting_lugs", 0),
+                lug_capacity_lbs=getattr(analysis, "lug_capacity_lbs", None),
+                cg_marked=getattr(analysis, "cg_marked", False),
+                cg_location=getattr(analysis, "cg_location", None),
+                has_rigging_diagram=getattr(analysis, "has_rigging_diagram", False),
+            )
+
+            result = self.handling_validator.validate(handling)
+            return self.handling_validator.to_dict(result)
+
+        except Exception as e:
+            logger.error(f"Handling validation failed: {e}")
+            return {"error": str(e)}
+
+    async def _validate_bom(self, analysis: Any) -> Dict[str, Any]:
+        """Run BOM validation."""
+        if not self.bom_validator:
+            return {"error": "BOMValidator not available"}
+
+        try:
+            bom_items = []
+            if hasattr(analysis, "bom"):
+                bom_items = analysis.bom
+
+            result = self.bom_validator.validate(bom_items)
+            return self.bom_validator.to_dict(result)
+
+        except Exception as e:
+            logger.error(f"BOM validation failed: {e}")
+            return {"error": str(e)}
+
+    async def _validate_dimensions(self, analysis: Any) -> Dict[str, Any]:
+        """Run dimension validation."""
+        if not self.dimension_validator:
+            return {"error": "DimensionValidator not available"}
+
+        try:
+            dimensions = []
+            if hasattr(analysis, "dimensions"):
+                dimensions = analysis.dimensions
+
+            result = self.dimension_validator.validate(dimensions)
+            return self.dimension_validator.to_dict(result)
+
+        except Exception as e:
+            logger.error(f"Dimension validation failed: {e}")
+            return {"error": str(e)}
+
+    async def _validate_osha(self, analysis: Any) -> Dict[str, Any]:
+        """Run OSHA safety validation."""
+        if not self.osha_validator:
+            return {"error": "OSHAValidator not available"}
+
+        try:
+            # Extract safety-related data from analysis
+            safety_data = {}
+            if hasattr(analysis, "guardrails"):
+                safety_data["guardrails"] = analysis.guardrails
+            if hasattr(analysis, "ladders"):
+                safety_data["ladders"] = analysis.ladders
+            if hasattr(analysis, "platforms"):
+                safety_data["platforms"] = analysis.platforms
+
+            result = self.osha_validator.validate(safety_data)
+            return self.osha_validator.to_dict(result)
+
+        except Exception as e:
+            logger.error(f"OSHA validation failed: {e}")
+            return {"error": str(e)}
