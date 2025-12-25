@@ -101,6 +101,20 @@ except ImportError:
     properties_router = None
     PROPERTIES_AVAILABLE = False
 
+try:
+    from .document_exporter import router as document_exporter_router
+    DOCUMENT_EXPORTER_AVAILABLE = True
+except ImportError:
+    document_exporter_router = None
+    DOCUMENT_EXPORTER_AVAILABLE = False
+
+try:
+    from .bom_manager import router as bom_router
+    BOM_AVAILABLE = True
+except ImportError:
+    bom_router = None
+    BOM_AVAILABLE = False
+
 __all__ = [
     "solidworks_router",
     "solidworks_assembly_router",
@@ -116,6 +130,8 @@ __all__ = [
     "configuration_router",
     "measurement_router",
     "properties_router",
+    "document_exporter_router",
+    "bom_router",
     "SOLIDWORKS_AVAILABLE",
     "SOLIDWORKS_ASSEMBLY_AVAILABLE",
     "INVENTOR_AVAILABLE",
@@ -130,4 +146,6 @@ __all__ = [
     "CONFIGURATION_AVAILABLE",
     "MEASUREMENT_AVAILABLE",
     "PROPERTIES_AVAILABLE",
+    "DOCUMENT_EXPORTER_AVAILABLE",
+    "BOM_AVAILABLE",
 ]

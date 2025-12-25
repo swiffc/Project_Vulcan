@@ -83,6 +83,8 @@ try:
         configuration_router,
         measurement_router,
         properties_router,
+        document_exporter_router,
+        bom_router,
     )
 
     CAD_AVAILABLE = True
@@ -102,6 +104,8 @@ except ImportError:
     configuration_router = None
     measurement_router = None
     properties_router = None
+    document_exporter_router = None
+    bom_router = None
     logger.warning("CAD COM adapters not available")
 
 # Global state
@@ -364,6 +368,12 @@ if CAD_AVAILABLE:
     if properties_router:
         app.include_router(properties_router)
         logger.info("Properties reader loaded")
+    if document_exporter_router:
+        app.include_router(document_exporter_router)
+        logger.info("Document exporter loaded")
+    if bom_router:
+        app.include_router(bom_router)
+        logger.info("BOM manager loaded")
     logger.info("CAD COM adapters loaded")
 
 # Include Events router if available
