@@ -41,6 +41,10 @@ from .handling_validator import HandlingValidator, HandlingValidationResult, Han
 
 # Phase 25 - ACHE Standards Database Validators
 from .api661_bundle_validator import API661BundleValidator, API661BundleValidationResult, BundleData, FanData, DriveData
+from .api661_full_scope_validator import (
+    API661FullScopeValidator, API661FullResult, API661FullData,
+    HeaderType, JointType, FinType, DriveType
+)
 from .nema_motor_validator import NEMAMotorValidator, NEMAMotorValidationResult, MotorData
 from .sspc_coating_validator import SSPCCoatingValidator, SSPCValidationResult, CoatingSpec
 from .asme_viii_validator import ASMEVIIIValidator, ASMEVIIIValidationResult, VesselData
@@ -116,6 +120,14 @@ __all__ = [
     "BundleData",
     "FanData",
     "DriveData",
+    # API 661 Full Scope (82 checks)
+    "API661FullScopeValidator",
+    "API661FullResult",
+    "API661FullData",
+    "HeaderType",
+    "JointType",
+    "FinType",
+    "DriveType",
     "NEMAMotorValidator",
     "NEMAMotorValidationResult",
     "MotorData",
