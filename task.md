@@ -67,70 +67,70 @@
 
 ---
 
-### 24.4 Properties Extraction - Mass Properties (10 tasks)
-- [ ] Mass (kg/lbs)
-- [ ] Volume (m³/in³)
-- [ ] Surface Area (m²/in²)
-- [ ] Density (average)
-- [ ] Center of Mass (X, Y, Z coordinates)
-- [ ] Moments of Inertia (Ixx, Iyy, Izz)
-- [ ] Products of Inertia (Ixy, Ixz, Iyz)
-- [ ] Principal Axes of Inertia
-- [ ] Bounding Box dimensions (L × W × H)
-- [ ] Mass properties by configuration
+### 24.4 Properties Extraction - Mass Properties (10 tasks) ✅
+- [x] Mass (kg/lbs)
+- [x] Volume (m³/in³)
+- [x] Surface Area (m²/in²)
+- [x] Density (average)
+- [x] Center of Mass (X, Y, Z coordinates)
+- [x] Moments of Inertia (Ixx, Iyy, Izz)
+- [x] Products of Inertia (Ixy, Ixz, Iyz)
+- [x] Principal Axes of Inertia
+- [x] Bounding Box dimensions (L × W × H)
+- [x] Mass properties by configuration
 
 ---
 
-### 24.5 Properties Extraction - Custom Properties (15 tasks)
+### 24.5 Properties Extraction - Custom Properties (15 tasks) ✅
 
 #### Job Information
-- [ ] Job Number
-- [ ] Customer Name
-- [ ] Project Name
-- [ ] PO Number
-- [ ] Item/Tag Number
-- [ ] Service Description
-- [ ] Unit/Area
+- [x] Job Number
+- [x] Customer Name
+- [x] Project Name
+- [x] PO Number
+- [x] Item/Tag Number
+- [x] Service Description
+- [x] Unit/Area
 
 #### Design Data
-- [ ] Design Code (ASME VIII Div 1, etc.)
-- [ ] Design Pressure
-- [ ] Design Temperature
-- [ ] Operating Pressure
-- [ ] Operating Temperature
-- [ ] Test Pressure (Hydro)
-- [ ] MDMT (Minimum Design Metal Temperature)
-- [ ] Corrosion Allowance
+- [x] Design Code (ASME VIII Div 1, etc.)
+- [x] Design Pressure
+- [x] Design Temperature
+- [x] Operating Pressure
+- [x] Operating Temperature
+- [x] Test Pressure (Hydro)
+- [x] MDMT (Minimum Design Metal Temperature)
+- [x] Corrosion Allowance
 
 ---
 
-### 24.6 Properties Extraction - ACHE-Specific Properties (20 tasks)
+### 24.6 Properties Extraction - ACHE-Specific Properties (20 tasks) ✅
 
 #### Tube Bundle Data
-- [ ] Number of Tubes
-- [ ] Tube OD
-- [ ] Tube BWG (wall thickness)
-- [ ] Tube Length
-- [ ] Tube Material (spec &amp; grade)
-- [ ] Tube Pitch
-- [ ] Pitch Pattern (triangular/square)
-- [ ] Number of Rows
-- [ ] Number of Passes
-- [ ] Tubes Per Row
+- [x] Number of Tubes
+- [x] Tube OD
+- [x] Tube BWG (wall thickness)
+- [x] Tube Length
+- [x] Tube Material (spec &amp; grade)
+- [x] Tube Pitch
+- [x] Pitch Pattern (triangular/square)
+- [x] Number of Rows
+- [x] Number of Passes
+- [x] Tubes Per Row
 
 #### Fin Data
-- [ ] Fin Type (L-foot, embedded, extruded, wrap-on)
-- [ ] Fin Height
-- [ ] Fin Thickness
-- [ ] Fin Density (fins per inch)
-- [ ] Fin Material (aluminum, steel)
+- [x] Fin Type (L-foot, embedded, extruded, wrap-on)
+- [x] Fin Height
+- [x] Fin Thickness
+- [x] Fin Density (fins per inch)
+- [x] Fin Material (aluminum, steel)
 
 #### Header Box Data
-- [ ] Header Type (plug, cover plate, bonnet)
-- [ ] Header Material
-- [ ] Header Thickness
-- [ ] Plug Type (shoulder, taper)
-- [ ] Plug Material
+- [x] Header Type (plug, cover plate, bonnet)
+- [x] Header Material
+- [x] Header Thickness
+- [x] Plug Type (shoulder, taper)
+- [x] Plug Material
 
 ---
 
