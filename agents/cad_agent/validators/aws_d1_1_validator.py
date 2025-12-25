@@ -719,6 +719,10 @@ class AWSD11Validator:
             "AWS-CSA": "Verify Canadian welding standards compliance",
             "AWS-TUBE": "Specify tube weld process (GTAW preferred)",
             "AWS-SYM": "Complete weld symbol with type, size, and procedure",
+            "AWS-PRE": "Add preheat temperature per AWS D1.1 Table 3.2",
+            "AWS-INT": "Specify interpass temperature limit (max 600°F typical)",
+            "AWS-QUAL": "Add welder qualification note (per AWS D1.1 Section 4)",
+            "AWS-FILL": "Specify filler metal classification (E70XX, E71T-X, etc.)",
         }
 
         for prefix, suggestion in suggestions.items():
