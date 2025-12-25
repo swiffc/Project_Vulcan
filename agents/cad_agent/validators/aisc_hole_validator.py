@@ -59,6 +59,77 @@ STANDARD_DRILL_SIZES = [
     1.4375, 1.5, 1.5625, 1.625, 1.75, 1.875, 2.0
 ]
 
+# Oversized hole dimensions per AISC Table J3.3 (inches)
+OVERSIZED_HOLE_SIZES = {
+    # bolt_dia: oversized_hole_dia
+    0.5: 0.625,       # 1/2" bolt = 5/8" hole
+    0.625: 0.8125,    # 5/8" bolt = 13/16" hole
+    0.75: 0.9375,     # 3/4" bolt = 15/16" hole
+    0.875: 1.0625,    # 7/8" bolt = 1-1/16" hole
+    1.0: 1.25,        # 1" bolt = 1-1/4" hole
+    1.125: 1.4375,    # ≥1-1/8" bolt: d + 5/16"
+    1.25: 1.5625,
+    1.375: 1.6875,
+    1.5: 1.8125,
+}
+
+# Short-slotted hole dimensions per AISC Table J3.3
+# (width × length)
+SHORT_SLOT_SIZES = {
+    # bolt_dia: (width, length)
+    0.5: (0.5625, 0.6875),      # 9/16 × 11/16
+    0.625: (0.6875, 0.875),     # 11/16 × 7/8
+    0.75: (0.8125, 1.0),        # 13/16 × 1
+    0.875: (0.9375, 1.125),     # 15/16 × 1-1/8
+    1.0: (1.0625, 1.3125),      # 1-1/16 × 1-5/16
+    1.125: (1.1875, 1.5625),    # ≥1-1/8": d+1/16 × d+7/16
+}
+
+# Long-slotted hole dimensions per AISC Table J3.3
+LONG_SLOT_SIZES = {
+    # bolt_dia: (width, length)
+    0.5: (0.5625, 1.25),        # 9/16 × 1-1/4
+    0.625: (0.6875, 1.5625),    # 11/16 × 1-9/16
+    0.75: (0.8125, 1.875),      # 13/16 × 1-7/8
+    0.875: (0.9375, 2.1875),    # 15/16 × 2-3/16
+    1.0: (1.0625, 2.5),         # 1-1/16 × 2-1/2
+    # ≥1-1/8": width=d+1/16, length=2.5d
+}
+
+# Bolt shear capacity (kips) - A325/A490 bolts
+# Values per AISC Table J3.2 (threads excluded from shear plane)
+BOLT_SHEAR_CAPACITY = {
+    # (bolt_dia, grade): shear_capacity_per_plane
+    (0.5, "A325"): 6.01,
+    (0.625, "A325"): 9.39,
+    (0.75, "A325"): 13.5,
+    (0.875, "A325"): 18.4,
+    (1.0, "A325"): 24.1,
+    (1.125, "A325"): 30.5,
+    (1.25, "A325"): 37.6,
+    (0.5, "A490"): 7.51,
+    (0.625, "A490"): 11.7,
+    (0.75, "A490"): 16.9,
+    (0.875, "A490"): 23.0,
+    (1.0, "A490"): 30.1,
+    (1.125, "A490"): 38.1,
+    (1.25, "A490"): 47.0,
+}
+
+# Minimum pretension (kips) per AISC Table J3.1
+MIN_PRETENSION = {
+    # bolt_dia: (A325, A490)
+    0.5: (12, 15),
+    0.625: (19, 24),
+    0.75: (28, 35),
+    0.875: (39, 49),
+    1.0: (51, 64),
+    1.125: (64, 80),
+    1.25: (81, 102),
+    1.375: (97, 121),
+    1.5: (118, 148),
+}
+
 
 @dataclass
 class HoleData:
