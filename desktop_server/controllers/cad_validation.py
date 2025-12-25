@@ -242,9 +242,9 @@ async def validation_status():
             "available": False,
             "message": "Validation system not installed"
         }
-    
+
     orchestrator = get_orchestrator()
-    
+
     return {
         "available": True,
         "validators": {
@@ -252,6 +252,15 @@ async def validation_status():
             "welding_validator": orchestrator.welding_validator is not None,
             "material_validator": orchestrator.material_validator is not None,
             "ache_validator": orchestrator.ache_validator is not None,
+            "drawing_parser": orchestrator.drawing_parser is not None,
+            # Phase 25 validators
+            "aisc_hole_validator": orchestrator.aisc_hole_validator is not None,
+            "structural_validator": orchestrator.structural_validator is not None,
+            "shaft_validator": orchestrator.shaft_validator is not None,
+            "handling_validator": orchestrator.handling_validator is not None,
+            "bom_validator": orchestrator.bom_validator is not None,
+            "dimension_validator": orchestrator.dimension_validator is not None,
+            "osha_validator": orchestrator.osha_validator is not None,
         },
         "message": "Validation system ready"
     }
