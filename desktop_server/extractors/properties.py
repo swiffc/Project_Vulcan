@@ -27,12 +27,19 @@ class StandardProperties:
 
 @dataclass
 class MassProperties:
-    """Mass properties from SolidWorks."""
+    """Mass properties from SolidWorks (Phase 24.4)."""
     mass_kg: float = 0.0
+    mass_lbs: float = 0.0
     volume_m3: float = 0.0
+    volume_in3: float = 0.0
     surface_area_m2: float = 0.0
+    surface_area_in2: float = 0.0
+    density_kg_m3: float = 0.0
     center_of_gravity: tuple = (0.0, 0.0, 0.0)
-    moments_of_inertia: tuple = (0.0, 0.0, 0.0)
+    moments_of_inertia: tuple = (0.0, 0.0, 0.0)  # Ixx, Iyy, Izz
+    products_of_inertia: tuple = (0.0, 0.0, 0.0)  # Ixy, Ixz, Iyz
+    principal_axes: tuple = (0.0, 0.0, 0.0)
+    bounding_box: tuple = (0.0, 0.0, 0.0)  # L x W x H
 
 
 @dataclass
@@ -99,7 +106,7 @@ class PropertiesExtractor:
         return props
 
     def get_mass_properties(self) -> MassProperties:
-        """Extract mass properties from active document."""
+        """Extract mass properties from active document (Phase 24.4)."""
         if not self._connect():
             return MassProperties()
 
@@ -107,12 +114,50 @@ class PropertiesExtractor:
         try:
             mass_props = self._doc.Extension.CreateMassProperty()
             if mass_props:
+                # Mass
                 props.mass_kg = mass_props.Mass
+                props.mass_lbs = mass_props.Mass * 2.20462
+
+                # Volume
                 props.volume_m3 = mass_props.Volume
+                props.volume_in3 = mass_props.Volume * 61023.7
+
+                # Surface Area
                 props.surface_area_m2 = mass_props.SurfaceArea
+                props.surface_area_in2 = mass_props.SurfaceArea * 1550.0
+
+                # Density
+                if mass_props.Volume > 0:
+                    props.density_kg_m3 = mass_props.Mass / mass_props.Volume
+
+                # Center of Gravity
                 cog = mass_props.CenterOfMass
                 if cog:
                     props.center_of_gravity = (cog[0], cog[1], cog[2])
+
+                # Moments of Inertia
+                moi = mass_props.GetMomentOfInertia()
+                if moi:
+                    props.moments_of_inertia = (moi[0], moi[4], moi[8])  # Ixx, Iyy, Izz
+                    props.products_of_inertia = (moi[1], moi[2], moi[5])  # Ixy, Ixz, Iyz
+
+                # Principal Axes
+                pa = mass_props.GetPrincipalAxesOfInertia()
+                if pa:
+                    props.principal_axes = (pa[0], pa[1], pa[2])
+
+            # Bounding Box
+            try:
+                box = self._doc.GetBox()
+                if box:
+                    props.bounding_box = (
+                        abs(box[3] - box[0]),  # Length
+                        abs(box[4] - box[1]),  # Width
+                        abs(box[5] - box[2]),  # Height
+                    )
+            except Exception:
+                pass
+
         except Exception as e:
             logger.error(f"Error extracting mass properties: {e}")
 
