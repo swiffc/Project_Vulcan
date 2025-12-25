@@ -340,7 +340,7 @@ class HolePatternExtractor:
         return issues
 
     def analyze(self) -> HoleAnalysisResult:
-        """Perform complete hole analysis on active document."""
+        """Perform complete hole analysis on active document (Phase 24.12)."""
         result = HoleAnalysisResult()
 
         hole_features = self._get_hole_features()
@@ -358,15 +358,31 @@ class HolePatternExtractor:
             pattern.holes = holes
             pattern.count = len(holes)
             pattern.pattern_type = self._detect_pattern_type(holes)
+
+            # If circular pattern, calculate bolt circle diameter
+            if pattern.pattern_type == "circular":
+                centers = [(h.center_x, h.center_y) for h in holes]
+                cx = sum(p[0] for p in centers) / len(centers)
+                cy = sum(p[1] for p in centers) / len(centers)
+                distances = [math.sqrt((p[0] - cx)**2 + (p[1] - cy)**2) for p in centers]
+                pattern.bolt_circle_diameter = (sum(distances) / len(distances)) * 2
+
             result.patterns.append(pattern)
 
             # Run checks
             result.ligament_violations = self.check_ligaments(holes)
 
+            # Phase 24.12: Alignment checking
+            result.alignment_issues = self.check_hole_alignment(holes)
+
+            # Phase 24.12: Bolt circle verification
+            if pattern.pattern_type == "circular":
+                result.bolt_circle_verification = self.verify_bolt_circle(holes)
+
         return result
 
     def to_dict(self) -> Dict[str, Any]:
-        """Analyze and return results as dictionary."""
+        """Analyze and return results as dictionary (Phase 24.12)."""
         result = self.analyze()
         return {
             "total_holes": result.total_holes,
@@ -376,11 +392,14 @@ class HolePatternExtractor:
                     "count": p.count,
                     "pitch_x": p.pitch_x,
                     "pitch_y": p.pitch_y,
-                    "bolt_circle_diameter": p.bolt_circle_diameter,
+                    "bolt_circle_diameter_m": p.bolt_circle_diameter,
+                    "bolt_circle_diameter_in": p.bolt_circle_diameter * 39.3701 if p.bolt_circle_diameter else None,
                 }
                 for p in result.patterns
             ],
             "edge_distance_violations": result.edge_distance_violations,
             "ligament_violations": result.ligament_violations,
             "alignment_issues": result.alignment_issues,
+            "bolt_circle_verification": result.bolt_circle_verification,
+            "mating_hole_misalignments": result.mating_hole_misalignments,
         }
