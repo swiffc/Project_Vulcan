@@ -174,6 +174,30 @@ class PDFValidationEngine:
             result.aws_d1_1_results = self.aws_d1_1.to_dict(aws_result)
             self._aggregate_results(result, aws_result)
 
+        if "osha" in standards:
+            logger.info("Running OSHA structural validation...")
+            osha_result = self.osha.validate(extraction)
+            result.osha_results = self.osha.to_dict(osha_result)
+            self._aggregate_results(result, osha_result)
+
+        if "bom" in standards:
+            logger.info("Running BOM validation...")
+            bom_result = self.bom.validate(extraction)
+            result.bom_results = self.bom.to_dict(bom_result)
+            self._aggregate_results(result, bom_result)
+
+        if "dimension" in standards:
+            logger.info("Running dimension validation...")
+            dim_result = self.dimension.validate(extraction)
+            result.dimension_results = self.dimension.to_dict(dim_result)
+            self._aggregate_results(result, dim_result)
+
+        if "completeness" in standards:
+            logger.info("Running completeness validation...")
+            comp_result = self.completeness.validate(extraction)
+            result.completeness_results = self.completeness.to_dict(comp_result)
+            self._aggregate_results(result, comp_result)
+
         # Calculate pass rate
         if result.total_checks > 0:
             result.pass_rate = (result.passed / result.total_checks) * 100
@@ -240,6 +264,10 @@ class PDFValidationEngine:
                 "api_661": result.api_661_results,
                 "asme": result.asme_results,
                 "aws_d1_1": result.aws_d1_1_results,
+                "osha": result.osha_results,
+                "bom": result.bom_results,
+                "dimension": result.dimension_results,
+                "completeness": result.completeness_results,
             },
             "all_issues": result.all_issues,
         }
