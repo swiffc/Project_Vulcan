@@ -44,14 +44,28 @@ class MassProperties:
 
 @dataclass
 class CustomProperties:
-    """Custom properties organized by category."""
+    """Custom properties organized by category (Phase 24.5-24.7)."""
+    # Job Information (24.5)
     job_info: Dict[str, str] = field(default_factory=dict)
+    # Design Data (24.5)
     design_data: Dict[str, str] = field(default_factory=dict)
+    # ACHE Tube Bundle Data (24.6)
     tube_bundle: Dict[str, str] = field(default_factory=dict)
+    # ACHE Fin Data (24.6)
+    fin_data: Dict[str, str] = field(default_factory=dict)
+    # ACHE Header Box Data (24.6)
     header_box: Dict[str, str] = field(default_factory=dict)
+    # Structural Data (24.7)
     structural: Dict[str, str] = field(default_factory=dict)
+    # Drawing Information (24.7)
     drawing_info: Dict[str, str] = field(default_factory=dict)
+    # Paint & Coating (24.7)
     paint_coating: Dict[str, str] = field(default_factory=dict)
+    # Instrumentation (24.15)
+    instrumentation: Dict[str, str] = field(default_factory=dict)
+    # Nozzle Schedule (24.16)
+    nozzle_data: Dict[str, str] = field(default_factory=dict)
+    # Other uncategorized
     other: Dict[str, str] = field(default_factory=dict)
 
 
@@ -61,14 +75,25 @@ class PropertiesExtractor:
     Categorizes custom properties for ACHE design context.
     """
 
-    # Property categorization mapping
-    JOB_INFO_KEYS = ["job", "job#", "customer", "po", "po#", "tag", "tag#", "service"]
-    DESIGN_DATA_KEYS = ["pressure", "temp", "temperature", "mdmt", "corrosion"]
-    TUBE_BUNDLE_KEYS = ["tubes", "pitch", "fins", "passes", "tube_od", "tube_length"]
-    HEADER_BOX_KEYS = ["header", "plug", "plugs", "material", "thickness"]
-    STRUCTURAL_KEYS = ["tube_sheet", "side_frame", "support", "frame"]
-    DRAWING_INFO_KEYS = ["dwg", "dwg#", "rev", "revision", "drawn", "checked"]
-    PAINT_KEYS = ["paint", "primer", "topcoat", "prep", "coating"]
+    # Property categorization mapping (Phase 24.5-24.7)
+    JOB_INFO_KEYS = ["job", "job#", "customer", "project", "po", "po#", "tag", "tag#",
+                     "service", "item", "unit", "area"]
+    DESIGN_DATA_KEYS = ["pressure", "temp", "temperature", "mdmt", "corrosion",
+                        "design_code", "operating", "test", "hydro", "mawp"]
+    TUBE_BUNDLE_KEYS = ["tubes", "tube_od", "tube_bwg", "tube_length", "tube_pitch",
+                        "tube_material", "tube_rows", "tube_passes", "tubes_per_row"]
+    FIN_DATA_KEYS = ["fin", "fin_type", "fin_height", "fin_thickness", "fin_density",
+                     "fin_material", "fins_per_inch"]
+    HEADER_BOX_KEYS = ["header", "plug", "plugs", "header_type", "header_material",
+                       "header_thickness", "plug_type", "plug_material", "bonnet"]
+    STRUCTURAL_KEYS = ["tube_sheet", "tubesheet", "side_frame", "support", "frame",
+                       "tube_support", "baffle"]
+    DRAWING_INFO_KEYS = ["dwg", "dwg#", "rev", "revision", "drawn", "checked",
+                         "approved", "rev_date", "rev_description"]
+    PAINT_KEYS = ["paint", "primer", "topcoat", "prep", "coating", "sspc", "surface"]
+    INSTRUMENTATION_KEYS = ["thermowell", "temp_indicator", "pressure_tap", "vent",
+                            "drain", "pi", "ti", "pt", "tt", "transmitter"]
+    NOZZLE_KEYS = ["nozzle", "flange", "inlet", "outlet", "connection", "rating"]
 
     def __init__(self):
         self._sw_app = None
@@ -164,13 +189,15 @@ class PropertiesExtractor:
         return props
 
     def _categorize_property(self, key: str) -> str:
-        """Determine which category a property belongs to."""
+        """Determine which category a property belongs to (Phase 24.5-24.7)."""
         key_lower = key.lower()
 
         if any(k in key_lower for k in self.JOB_INFO_KEYS):
             return "job_info"
         if any(k in key_lower for k in self.DESIGN_DATA_KEYS):
             return "design_data"
+        if any(k in key_lower for k in self.FIN_DATA_KEYS):
+            return "fin_data"
         if any(k in key_lower for k in self.TUBE_BUNDLE_KEYS):
             return "tube_bundle"
         if any(k in key_lower for k in self.HEADER_BOX_KEYS):
@@ -181,6 +208,10 @@ class PropertiesExtractor:
             return "drawing_info"
         if any(k in key_lower for k in self.PAINT_KEYS):
             return "paint_coating"
+        if any(k in key_lower for k in self.INSTRUMENTATION_KEYS):
+            return "instrumentation"
+        if any(k in key_lower for k in self.NOZZLE_KEYS):
+            return "nozzle_data"
         return "other"
 
     def get_custom_properties(self, config: str = "") -> CustomProperties:
