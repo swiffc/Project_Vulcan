@@ -80,6 +80,27 @@ except ImportError:
     assembly_component_analyzer_router = None
     ASSEMBLY_COMPONENT_ANALYZER_AVAILABLE = False
 
+try:
+    from .configuration_manager import router as configuration_router
+    CONFIGURATION_AVAILABLE = True
+except ImportError:
+    configuration_router = None
+    CONFIGURATION_AVAILABLE = False
+
+try:
+    from .measurement_tools import router as measurement_router
+    MEASUREMENT_AVAILABLE = True
+except ImportError:
+    measurement_router = None
+    MEASUREMENT_AVAILABLE = False
+
+try:
+    from .properties_reader import router as properties_router
+    PROPERTIES_AVAILABLE = True
+except ImportError:
+    properties_router = None
+    PROPERTIES_AVAILABLE = False
+
 __all__ = [
     "solidworks_router",
     "solidworks_assembly_router",
@@ -92,6 +113,9 @@ __all__ = [
     "feature_reader_router",
     "inventor_feature_reader_router",
     "assembly_component_analyzer_router",
+    "configuration_router",
+    "measurement_router",
+    "properties_router",
     "SOLIDWORKS_AVAILABLE",
     "SOLIDWORKS_ASSEMBLY_AVAILABLE",
     "INVENTOR_AVAILABLE",
@@ -103,4 +127,7 @@ __all__ = [
     "FEATURE_READER_AVAILABLE",
     "INVENTOR_FEATURE_READER_AVAILABLE",
     "ASSEMBLY_COMPONENT_ANALYZER_AVAILABLE",
+    "CONFIGURATION_AVAILABLE",
+    "MEASUREMENT_AVAILABLE",
+    "PROPERTIES_AVAILABLE",
 ]
