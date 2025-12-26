@@ -32,6 +32,7 @@ DRAWING_PACKAGE = {
     "sheet_1_assembly": {
         "title_block": {
             "drawing_number": "ACHE-150-001",
+            "part_number": "ACHE-150-001",  # Same as drawing number
             "revision": "B",
             "title": "TUBE BUNDLE ASSEMBLY",
             "subtitle": "Hot Oil Cooler Unit 150",
@@ -39,6 +40,7 @@ DRAWING_PACKAGE = {
             "sheet": "1 of 5",
             "size": "D",  # 22x34
             "drawn_by": "JDS",
+            "date": "2024-12-15",  # Changed from drawn_date
             "drawn_date": "2024-12-15",
             "checked_by": "RMT",
             "checked_date": "2024-12-18",

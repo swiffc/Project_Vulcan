@@ -1,0 +1,769 @@
+{
+  "drawing": {
+    "drawing_number": "ACHE-150-001",
+    "revision": "B",
+    "title": "TUBE BUNDLE ASSEMBLY",
+    "subtitle": "Hot Oil Cooler Unit 150",
+    "scale": "1:10",
+    "sheet": "1 of 5",
+    "size": "D",
+    "drawn_by": "JDS",
+    "drawn_date": "2024-12-15",
+    "checked_by": "RMT",
+    "checked_date": "2024-12-18",
+    "approved_by": "KLB",
+    "approved_date": "2024-12-20",
+    "client": "Refinery Corp",
+    "project": "Hot Oil System Upgrade",
+    "job_number": "J-2024-150",
+    "po_number": "PO-78542",
+    "material": "SEE BOM",
+    "finish": "SSPC-SP10 + PAINT",
+    "weight_lb": 8500,
+    "third_angle_projection": true
+  },
+  "package_contents": {
+    "bom_items": 17,
+    "dimensions": 21,
+    "gdt_callouts": 8,
+    "welds": 6,
+    "surface_finishes": 6,
+    "general_notes": 33
+  },
+  "validation_results": {
+    "documentation": {
+      "success": true,
+      "time_ms": 2027.5404999265447,
+      "data": {
+        "validator": "documentation",
+        "total_checks": 14,
+        "passed": 13,
+        "failed": 0,
+        "warnings": 1,
+        "critical_failures": 0,
+        "title_block_complete": false,
+        "required_notes_present": false,
+        "missing_elements": [
+          "date"
+        ],
+        "issues": [
+          {
+            "severity": "warning",
+            "check_type": "title_block_missing",
+            "message": "Title block missing: date",
+            "suggestion": "Add date to title block",
+            "standard_reference": "ASME Y14.100"
+          }
+        ],
+        "notes_validation": {
+          "validator": "documentation",
+          "total_checks": 7,
+          "passed": 7,
+          "failed": 0,
+          "warnings": 0,
+          "critical_failures": 0,
+          "title_block_complete": false,
+          "required_notes_present": true,
+          "missing_elements": [],
+          "issues": []
+        },
+        "bom_validation": {
+          "validator": "documentation",
+          "total_checks": 19,
+          "passed": 19,
+          "failed": 0,
+          "warnings": 0,
+          "critical_failures": 0,
+          "title_block_complete": false,
+          "required_notes_present": false,
+          "missing_elements": [],
+          "issues": []
+        }
+      },
+      "error": null
+    },
+    "dimensions": {
+      "success": true,
+      "time_ms": 2014.2972000176087,
+      "data": {
+        "validator": "dimension",
+        "total_checks": 7,
+        "passed": 7,
+        "failed": 0,
+        "warnings": 0,
+        "critical_failures": 0,
+        "statistics": {
+          "total_dimensions": 21,
+          "imperial_count": 0,
+          "metric_count": 0,
+          "dual_unit_count": 0,
+          "conversion_errors": 0,
+          "consistency_issues": 0
+        },
+        "issues": []
+      },
+      "error": null
+    },
+    "gdt": {
+      "success": true,
+      "time_ms": 2010.7504000188783,
+      "data": {
+        "validator": "gdt_y14.5",
+        "standard": "ASME Y14.5-2018",
+        "total_checks": 1,
+        "passed": 0,
+        "failed": 1,
+        "warnings": 0,
+        "calculations": {
+          "bonus_tolerance_in": null,
+          "total_tolerance_in": null,
+          "position_deviation_in": null,
+          "virtual_condition_in": null,
+          "resultant_condition_in": null
+        },
+        "issues": [
+          {
+            "severity": "error",
+            "check_type": "position_datum",
+            "message": "Position tolerance requires datum reference frame",
+            "location": null,
+            "suggestion": "Add primary datum at minimum",
+            "standard_reference": "ASME Y14.5-2018 \u00a711.2"
+          }
+        ]
+      },
+      "error": null
+    },
+    "welds": {
+      "success": true,
+      "time_ms": 2022.1906000515446,
+      "data": {
+        "total_checks": 7,
+        "passed": 6,
+        "failed": 0,
+        "warnings": 1,
+        "critical_failures": 0,
+        "pass_rate": 85.71428571428571,
+        "check_results": [
+          {
+            "check_id": "AWS-WPS-001",
+            "check_name": "Weld Procedures",
+            "passed": false,
+            "actual_value": "None found",
+            "expected_value": "WPS reference for each weld",
+            "reference": "AWS D1.1 Section 5",
+            "severity": "warning",
+            "message": "No weld procedure specifications (WPS) found in drawing"
+          },
+          {
+            "check_id": "AWS-SYM-001",
+            "check_name": "Weld Symbol #1",
+            "passed": true,
+            "actual_value": "Type: fillet, Size: 0.75, WPS: WPS-001",
+            "expected_value": "Weld type, size, and procedure specified",
+            "reference": "AWS A2.4",
+            "severity": "info",
+            "message": "Weld symbol 1: fillet 0.75"
+          },
+          {
+            "check_id": "AWS-SYM-002",
+            "check_name": "Weld Symbol #2",
+            "passed": true,
+            "actual_value": "Type: fillet, Size: 0.75, WPS: WPS-001",
+            "expected_value": "Weld type, size, and procedure specified",
+            "reference": "AWS A2.4",
+            "severity": "info",
+            "message": "Weld symbol 2: fillet 0.75"
+          },
+          {
+            "check_id": "AWS-SYM-003",
+            "check_name": "Weld Symbol #3",
+            "passed": true,
+            "actual_value": "Type: fillet, Size: 0.5, WPS: WPS-002",
+            "expected_value": "Weld type, size, and procedure specified",
+            "reference": "AWS A2.4",
+            "severity": "info",
+            "message": "Weld symbol 3: fillet 0.5"
+          },
+          {
+            "check_id": "AWS-SYM-004",
+            "check_name": "Weld Symbol #4",
+            "passed": true,
+            "actual_value": "Type: fillet, Size: 0.125, WPS: WPS-003",
+            "expected_value": "Weld type, size, and procedure specified",
+            "reference": "AWS A2.4",
+            "severity": "info",
+            "message": "Weld symbol 4: fillet 0.125"
+          },
+          {
+            "check_id": "AWS-SYM-005",
+            "check_name": "Weld Symbol #5",
+            "passed": true,
+            "actual_value": "Type: fillet, Size: 0.375, WPS: WPS-004",
+            "expected_value": "Weld type, size, and procedure specified",
+            "reference": "AWS A2.4",
+            "severity": "info",
+            "message": "Weld symbol 5: fillet 0.375"
+          },
+          {
+            "check_id": "AWS-SYM-006",
+            "check_name": "Weld Symbol #6",
+            "passed": true,
+            "actual_value": "Type: fillet, Size: 0.3125, WPS: WPS-004",
+            "expected_value": "Weld type, size, and procedure specified",
+            "reference": "AWS A2.4",
+            "severity": "info",
+            "message": "Weld symbol 6: fillet 0.3125"
+          }
+        ],
+        "issues": [
+          {
+            "severity": "warning",
+            "check_type": "AWS_D1.1",
+            "message": "No weld procedure specifications (WPS) found in drawing",
+            "location": "Weld Procedures",
+            "suggestion": "Add weld procedure specification (WPS) reference to drawing",
+            "standard_reference": "AWS D1.1 Section 5"
+          }
+        ]
+      },
+      "error": null
+    },
+    "bom": {
+      "success": true,
+      "time_ms": 2010.3393000317737,
+      "data": {
+        "validator": "bom",
+        "total_checks": 1,
+        "passed": 0,
+        "failed": 0,
+        "warnings": 1,
+        "critical_failures": 0,
+        "statistics": {
+          "total_items": 0,
+          "items_with_material": 0,
+          "items_missing_material": 0,
+          "duplicate_items": 0,
+          "invalid_part_numbers": 0,
+          "material_consistency": "N/A"
+        },
+        "issues": [
+          {
+            "severity": "warning",
+            "check_type": "bom_presence",
+            "message": "No BOM items found in drawing",
+            "location": null,
+            "suggestion": "Ensure BOM table is visible and text is extractable"
+          }
+        ]
+      },
+      "error": null
+    },
+    "inspection": {
+      "success": true,
+      "time_ms": 2013.7122001033276,
+      "data": {
+        "validator": "inspection_qc",
+        "total_checks": 10,
+        "passed": 8,
+        "failed": 1,
+        "warnings": 1,
+        "critical_failures": 0,
+        "statistics": {
+          "welds_checked": 6,
+          "nde_requirements_missing": 6,
+          "documentation_gaps": 1,
+          "inspection_points": 0
+        },
+        "inspection_plan": [
+          "Part: ACHE-150-001",
+          "========================================",
+          "PRE-FABRICATION:",
+          "  [ ] Material receiving inspection",
+          "  [ ] MTR review and filing",
+          "  [ ] WPS/PQR verification",
+          "",
+          "DURING FABRICATION:",
+          "  [ ] Fit-up inspection",
+          "  [ ] In-process dimensional checks",
+          "",
+          "NDE INSPECTION:",
+          "",
+          "FINAL INSPECTION:",
+          "  [ ] Visual inspection - all welds",
+          "  [ ] Dimensional verification",
+          "  [ ] Surface preparation (if coating)",
+          "  [ ] Coating inspection (if applicable)",
+          "  [ ] Nameplate/marking verification",
+          "  [ ] Documentation package complete"
+        ],
+        "required_documentation": [
+          "MTR (Mill Test Reports)"
+        ],
+        "issues": [
+          {
+            "severity": "error",
+            "check_type": "nde_missing",
+            "message": "Weld W1: Missing NDE - VT",
+            "location": "Weld W1",
+            "suggestion": "Add VT per ASME IX",
+            "standard_reference": "ASME IX"
+          },
+          {
+            "severity": "error",
+            "check_type": "nde_missing",
+            "message": "Weld W2: Missing NDE - VT",
+            "location": "Weld W2",
+            "suggestion": "Add VT per ASME IX",
+            "standard_reference": "ASME IX"
+          },
+          {
+            "severity": "error",
+            "check_type": "nde_missing",
+            "message": "Weld W3: Missing NDE - VT",
+            "location": "Weld W3",
+            "suggestion": "Add VT per ASME IX",
+            "standard_reference": "ASME IX"
+          },
+          {
+            "severity": "error",
+            "check_type": "nde_missing",
+            "message": "Weld W4: Missing NDE - VT",
+            "location": "Weld W4",
+            "suggestion": "Add VT per ASME IX",
+            "standard_reference": "ASME IX"
+          },
+          {
+            "severity": "error",
+            "check_type": "nde_missing",
+            "message": "Weld W5: Missing NDE - VT",
+            "location": "Weld W5",
+            "suggestion": "Add VT per ASME IX",
+            "standard_reference": "ASME IX"
+          },
+          {
+            "severity": "error",
+            "check_type": "nde_missing",
+            "message": "Weld W6: Missing NDE - VT",
+            "location": "Weld W6",
+            "suggestion": "Add VT per ASME IX",
+            "standard_reference": "ASME IX"
+          },
+          {
+            "severity": "warning",
+            "check_type": "no_documentation",
+            "message": "No applicable codes specified for documentation requirements",
+            "location": null,
+            "suggestion": "Specify applicable codes (ASME VIII, AWS D1.1, API 661, etc.)",
+            "standard_reference": null
+          },
+          {
+            "severity": "info",
+            "check_type": "no_critical_dimensions",
+            "message": "No critical dimensions identified for inspection",
+            "location": null,
+            "suggestion": "Identify key dimensions for dimensional inspection",
+            "standard_reference": null
+          },
+          {
+            "severity": "info",
+            "check_type": "mtr_required",
+            "message": "MTR required for material traceability",
+            "location": null,
+            "suggestion": "Collect MTR for all pressure-retaining and structural materials",
+            "standard_reference": null
+          }
+        ]
+      },
+      "error": null
+    },
+    "completeness": {
+      "success": true,
+      "time_ms": 2016.9126000255346,
+      "data": {
+        "validator": "completeness",
+        "total_checks": 10,
+        "passed": 6,
+        "failed": 1,
+        "warnings": 3,
+        "critical_failures": 1,
+        "statistics": {
+          "title_block_complete": false,
+          "title_block_fields_present": 0,
+          "title_block_fields_missing": 10,
+          "revision_history_present": false,
+          "revision_entries": 0,
+          "general_notes_present": true,
+          "general_notes_count": 1,
+          "bom_present": false,
+          "bom_items": 0,
+          "weld_details_present": false,
+          "section_views_present": false,
+          "detail_views_present": false
+        },
+        "issues": [
+          {
+            "severity": "critical",
+            "check_type": "title_block_missing",
+            "message": "Title block missing required field: part_number",
+            "location": "Title Block",
+            "suggestion": "Add part_number to title block"
+          },
+          {
+            "severity": "critical",
+            "check_type": "title_block_missing",
+            "message": "Title block missing required field: revision",
+            "location": "Title Block",
+            "suggestion": "Add revision to title block"
+          },
+          {
+            "severity": "error",
+            "check_type": "title_block_missing",
+            "message": "Title block missing required field: title",
+            "location": "Title Block",
+            "suggestion": "Add title to title block"
+          },
+          {
+            "severity": "error",
+            "check_type": "title_block_missing",
+            "message": "Title block missing required field: date",
+            "location": "Title Block",
+            "suggestion": "Add date to title block"
+          },
+          {
+            "severity": "error",
+            "check_type": "title_block_missing",
+            "message": "Title block missing required field: drawn_by",
+            "location": "Title Block",
+            "suggestion": "Add drawn_by to title block"
+          },
+          {
+            "severity": "warning",
+            "check_type": "title_block_missing",
+            "message": "Title block missing required field: scale",
+            "location": "Title Block",
+            "suggestion": "Add scale to title block"
+          },
+          {
+            "severity": "warning",
+            "check_type": "revision_history_missing",
+            "message": "No revision history found for non-initial revision",
+            "location": "Revision Block",
+            "suggestion": "Add revision history block with ECN information"
+          },
+          {
+            "severity": "info",
+            "check_type": "notes_incomplete",
+            "message": "General notes may be missing: weld, surface finish, paint",
+            "location": "General Notes",
+            "suggestion": "Consider adding these common notes for this drawing type"
+          },
+          {
+            "severity": "info",
+            "check_type": "shop_notes_missing",
+            "message": "No shop/fabrication notes detected",
+            "location": null,
+            "suggestion": "Consider adding fabrication-specific instructions"
+          },
+          {
+            "severity": "warning",
+            "check_type": "weld_details_missing",
+            "message": "No weld symbols extracted from fabrication drawing",
+            "location": null,
+            "suggestion": "Verify weld symbols are present and legible"
+          },
+          {
+            "severity": "info",
+            "check_type": "section_views_not_found",
+            "message": "Section views not detected",
+            "location": null,
+            "suggestion": "Add section views for internal features if applicable"
+          },
+          {
+            "severity": "info",
+            "check_type": "detail_views_not_found",
+            "message": "Detail views not detected",
+            "location": null,
+            "suggestion": "Add detail views for critical features"
+          },
+          {
+            "severity": "warning",
+            "check_type": "scale_missing",
+            "message": "No scale specified in title block",
+            "location": "Title Block",
+            "suggestion": "Add scale to title block"
+          },
+          {
+            "severity": "info",
+            "check_type": "projection_symbol_missing",
+            "message": "Third angle projection symbol not detected",
+            "location": null,
+            "suggestion": "Add projection symbol per ANSI/ASME Y14.3"
+          },
+          {
+            "severity": "info",
+            "check_type": "proprietary_notice_missing",
+            "message": "No proprietary/copyright notice detected",
+            "location": null,
+            "suggestion": "Consider adding proprietary notice for company drawings"
+          }
+        ]
+      },
+      "error": null
+    },
+    "report": {
+      "success": true,
+      "time_ms": 2012.7912999596447,
+      "data": {
+        "format": "json",
+        "content": "{\n  \"metadata\": {\n    \"report_id\": \"VR-20251226-105637\",\n    \"generated_at\": \"2025-12-26T10:56:37.392082\",\n    \"drawing_number\": \"ACHE-150-001\",\n    \"drawing_revision\": \"B\",\n    \"project_name\": \"Hot Oil System Upgrade\",\n    \"validator_version\": \"1.0.0\",\n    \"report_level\": \"detailed\"\n  },\n  \"overall_status\": \"CRITICAL\",\n  \"overall_pass_rate\": 80.0,\n  \"statistics\": {\n    \"total_checks\": 50,\n    \"total_passed\": 40,\n    \"total_failed\": 3,\n    \"total_warnings\": 7,\n    \"total_critical\": 1\n  },\n  \"validator_summaries\": [\n    {\n      \"validator_name\": \"documentation\",\n      \"total_checks\": 14,\n      \"passed\": 13,\n      \"failed\": 0,\n      \"warnings\": 1,\n      \"critical_failures\": 0,\n      \"pass_rate\": 92.85714285714286,\n      \"status\": \"PASS_WITH_WARNINGS\"\n    },\n    {\n      \"validator_name\": \"dimensions\",\n      \"total_checks\": 7,\n      \"passed\": 7,\n      \"failed\": 0,\n      \"warnings\": 0,\n      \"critical_failures\": 0,\n      \"pass_rate\": 100.0,\n      \"status\": \"PASS\"\n    },\n    {\n      \"validator_name\": \"gdt\",\n      \"total_checks\": 1,\n      \"passed\": 0,\n      \"failed\": 1,\n      \"warnings\": 0,\n      \"critical_failures\": 0,\n      \"pass_rate\": 0.0,\n      \"status\": \"FAIL\"\n    },\n    {\n      \"validator_name\": \"welds\",\n      \"total_checks\": 7,\n      \"passed\": 6,\n      \"failed\": 0,\n      \"warnings\": 1,\n      \"critical_failures\": 0,\n      \"pass_rate\": 85.71428571428571,\n      \"status\": \"PASS_WITH_WARNINGS\"\n    },\n    {\n      \"validator_name\": \"bom\",\n      \"total_checks\": 1,\n      \"passed\": 0,\n      \"failed\": 0,\n      \"warnings\": 1,\n      \"critical_failures\": 0,\n      \"pass_rate\": 0.0,\n      \"status\": \"PASS_WITH_WARNINGS\"\n    },\n    {\n      \"validator_name\": \"inspection\",\n      \"total_checks\": 10,\n      \"passed\": 8,\n      \"failed\": 1,\n      \"warnings\": 1,\n      \"critical_failures\": 0,\n      \"pass_rate\": 80.0,\n      \"status\": \"FAIL\"\n    },\n    {\n      \"validator_name\": \"completeness\",\n      \"total_checks\": 10,\n      \"passed\": 6,\n      \"failed\": 1,\n      \"warnings\": 3,\n      \"critical_failures\": 1,\n      \"pass_rate\": 60.0,\n      \"status\": \"CRITICAL\"\n    }\n  ],\n  \"critical_issues\": [\n    {\n      \"severity\": \"critical\",\n      \"check_type\": \"title_block_missing\",\n      \"message\": \"Title block missing required field: part_number\",\n      \"location\": \"Title Block\",\n      \"suggestion\": \"Add part_number to title block\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"critical\",\n      \"check_type\": \"title_block_missing\",\n      \"message\": \"Title block missing required field: revision\",\n      \"location\": \"Title Block\",\n      \"suggestion\": \"Add revision to title block\",\n      \"validator\": \"completeness\"\n    }\n  ],\n  \"all_issues\": [\n    {\n      \"severity\": \"critical\",\n      \"check_type\": \"title_block_missing\",\n      \"message\": \"Title block missing required field: part_number\",\n      \"location\": \"Title Block\",\n      \"suggestion\": \"Add part_number to title block\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"critical\",\n      \"check_type\": \"title_block_missing\",\n      \"message\": \"Title block missing required field: revision\",\n      \"location\": \"Title Block\",\n      \"suggestion\": \"Add revision to title block\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"position_datum\",\n      \"message\": \"Position tolerance requires datum reference frame\",\n      \"location\": null,\n      \"suggestion\": \"Add primary datum at minimum\",\n      \"standard_reference\": \"ASME Y14.5-2018 \\u00a711.2\",\n      \"validator\": \"gdt\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"nde_missing\",\n      \"message\": \"Weld W1: Missing NDE - VT\",\n      \"location\": \"Weld W1\",\n      \"suggestion\": \"Add VT per ASME IX\",\n      \"standard_reference\": \"ASME IX\",\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"nde_missing\",\n      \"message\": \"Weld W2: Missing NDE - VT\",\n      \"location\": \"Weld W2\",\n      \"suggestion\": \"Add VT per ASME IX\",\n      \"standard_reference\": \"ASME IX\",\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"nde_missing\",\n      \"message\": \"Weld W3: Missing NDE - VT\",\n      \"location\": \"Weld W3\",\n      \"suggestion\": \"Add VT per ASME IX\",\n      \"standard_reference\": \"ASME IX\",\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"nde_missing\",\n      \"message\": \"Weld W4: Missing NDE - VT\",\n      \"location\": \"Weld W4\",\n      \"suggestion\": \"Add VT per ASME IX\",\n      \"standard_reference\": \"ASME IX\",\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"nde_missing\",\n      \"message\": \"Weld W5: Missing NDE - VT\",\n      \"location\": \"Weld W5\",\n      \"suggestion\": \"Add VT per ASME IX\",\n      \"standard_reference\": \"ASME IX\",\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"nde_missing\",\n      \"message\": \"Weld W6: Missing NDE - VT\",\n      \"location\": \"Weld W6\",\n      \"suggestion\": \"Add VT per ASME IX\",\n      \"standard_reference\": \"ASME IX\",\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"title_block_missing\",\n      \"message\": \"Title block missing required field: title\",\n      \"location\": \"Title Block\",\n      \"suggestion\": \"Add title to title block\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"title_block_missing\",\n      \"message\": \"Title block missing required field: date\",\n      \"location\": \"Title Block\",\n      \"suggestion\": \"Add date to title block\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"title_block_missing\",\n      \"message\": \"Title block missing required field: drawn_by\",\n      \"location\": \"Title Block\",\n      \"suggestion\": \"Add drawn_by to title block\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"title_block_missing\",\n      \"message\": \"Title block missing: date\",\n      \"suggestion\": \"Add date to title block\",\n      \"standard_reference\": \"ASME Y14.100\",\n      \"validator\": \"documentation\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"AWS_D1.1\",\n      \"message\": \"No weld procedure specifications (WPS) found in drawing\",\n      \"location\": \"Weld Procedures\",\n      \"suggestion\": \"Add weld procedure specification (WPS) reference to drawing\",\n      \"standard_reference\": \"AWS D1.1 Section 5\",\n      \"validator\": \"welds\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"bom_presence\",\n      \"message\": \"No BOM items found in drawing\",\n      \"location\": null,\n      \"suggestion\": \"Ensure BOM table is visible and text is extractable\",\n      \"validator\": \"bom\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"no_documentation\",\n      \"message\": \"No applicable codes specified for documentation requirements\",\n      \"location\": null,\n      \"suggestion\": \"Specify applicable codes (ASME VIII, AWS D1.1, API 661, etc.)\",\n      \"standard_reference\": null,\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"title_block_missing\",\n      \"message\": \"Title block missing required field: scale\",\n      \"location\": \"Title Block\",\n      \"suggestion\": \"Add scale to title block\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"revision_history_missing\",\n      \"message\": \"No revision history found for non-initial revision\",\n      \"location\": \"Revision Block\",\n      \"suggestion\": \"Add revision history block with ECN information\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"weld_details_missing\",\n      \"message\": \"No weld symbols extracted from fabrication drawing\",\n      \"location\": null,\n      \"suggestion\": \"Verify weld symbols are present and legible\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"scale_missing\",\n      \"message\": \"No scale specified in title block\",\n      \"location\": \"Title Block\",\n      \"suggestion\": \"Add scale to title block\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"no_critical_dimensions\",\n      \"message\": \"No critical dimensions identified for inspection\",\n      \"location\": null,\n      \"suggestion\": \"Identify key dimensions for dimensional inspection\",\n      \"standard_reference\": null,\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"mtr_required\",\n      \"message\": \"MTR required for material traceability\",\n      \"location\": null,\n      \"suggestion\": \"Collect MTR for all pressure-retaining and structural materials\",\n      \"standard_reference\": null,\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"notes_incomplete\",\n      \"message\": \"General notes may be missing: weld, surface finish, paint\",\n      \"location\": \"General Notes\",\n      \"suggestion\": \"Consider adding these common notes for this drawing type\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"shop_notes_missing\",\n      \"message\": \"No shop/fabrication notes detected\",\n      \"location\": null,\n      \"suggestion\": \"Consider adding fabrication-specific instructions\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"section_views_not_found\",\n      \"message\": \"Section views not detected\",\n      \"location\": null,\n      \"suggestion\": \"Add section views for internal features if applicable\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"detail_views_not_found\",\n      \"message\": \"Detail views not detected\",\n      \"location\": null,\n      \"suggestion\": \"Add detail views for critical features\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"projection_symbol_missing\",\n      \"message\": \"Third angle projection symbol not detected\",\n      \"location\": null,\n      \"suggestion\": \"Add projection symbol per ANSI/ASME Y14.3\",\n      \"validator\": \"completeness\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"proprietary_notice_missing\",\n      \"message\": \"No proprietary/copyright notice detected\",\n      \"location\": null,\n      \"suggestion\": \"Consider adding proprietary notice for company drawings\",\n      \"validator\": \"completeness\"\n    }\n  ],\n  \"recommendations\": [\n    \"PRIORITY: Address 1 critical issue(s) before release\",\n    \"Review welding specifications against AWS D1.1 requirements\",\n    \"Reference standards: ASME IX, ASME Y14.100, ASME Y14.5-2018 \\u00a711.2, AWS D1.1 Section 5\"\n  ]\n}"
+      },
+      "error": null
+    }
+  },
+  "all_issues": [
+    {
+      "source": "Documentation",
+      "severity": "warning",
+      "check_type": "title_block_missing",
+      "message": "Title block missing: date",
+      "suggestion": "Add date to title block",
+      "standard_reference": "ASME Y14.100"
+    },
+    {
+      "source": "GD&T",
+      "severity": "error",
+      "check_type": "position_datum",
+      "message": "Position tolerance requires datum reference frame",
+      "location": null,
+      "suggestion": "Add primary datum at minimum",
+      "standard_reference": "ASME Y14.5-2018 \u00a711.2"
+    },
+    {
+      "source": "Welds",
+      "severity": "warning",
+      "check_type": "AWS_D1.1",
+      "message": "No weld procedure specifications (WPS) found in drawing",
+      "location": "Weld Procedures",
+      "suggestion": "Add weld procedure specification (WPS) reference to drawing",
+      "standard_reference": "AWS D1.1 Section 5"
+    },
+    {
+      "source": "BOM",
+      "severity": "warning",
+      "check_type": "bom_presence",
+      "message": "No BOM items found in drawing",
+      "location": null,
+      "suggestion": "Ensure BOM table is visible and text is extractable"
+    },
+    {
+      "source": "Inspection",
+      "severity": "error",
+      "check_type": "nde_missing",
+      "message": "Weld W1: Missing NDE - VT",
+      "location": "Weld W1",
+      "suggestion": "Add VT per ASME IX",
+      "standard_reference": "ASME IX"
+    },
+    {
+      "source": "Inspection",
+      "severity": "error",
+      "check_type": "nde_missing",
+      "message": "Weld W2: Missing NDE - VT",
+      "location": "Weld W2",
+      "suggestion": "Add VT per ASME IX",
+      "standard_reference": "ASME IX"
+    },
+    {
+      "source": "Inspection",
+      "severity": "error",
+      "check_type": "nde_missing",
+      "message": "Weld W3: Missing NDE - VT",
+      "location": "Weld W3",
+      "suggestion": "Add VT per ASME IX",
+      "standard_reference": "ASME IX"
+    },
+    {
+      "source": "Inspection",
+      "severity": "error",
+      "check_type": "nde_missing",
+      "message": "Weld W4: Missing NDE - VT",
+      "location": "Weld W4",
+      "suggestion": "Add VT per ASME IX",
+      "standard_reference": "ASME IX"
+    },
+    {
+      "source": "Inspection",
+      "severity": "error",
+      "check_type": "nde_missing",
+      "message": "Weld W5: Missing NDE - VT",
+      "location": "Weld W5",
+      "suggestion": "Add VT per ASME IX",
+      "standard_reference": "ASME IX"
+    },
+    {
+      "source": "Inspection",
+      "severity": "error",
+      "check_type": "nde_missing",
+      "message": "Weld W6: Missing NDE - VT",
+      "location": "Weld W6",
+      "suggestion": "Add VT per ASME IX",
+      "standard_reference": "ASME IX"
+    },
+    {
+      "source": "Inspection",
+      "severity": "warning",
+      "check_type": "no_documentation",
+      "message": "No applicable codes specified for documentation requirements",
+      "location": null,
+      "suggestion": "Specify applicable codes (ASME VIII, AWS D1.1, API 661, etc.)",
+      "standard_reference": null
+    },
+    {
+      "source": "Inspection",
+      "severity": "info",
+      "check_type": "no_critical_dimensions",
+      "message": "No critical dimensions identified for inspection",
+      "location": null,
+      "suggestion": "Identify key dimensions for dimensional inspection",
+      "standard_reference": null
+    },
+    {
+      "source": "Inspection",
+      "severity": "info",
+      "check_type": "mtr_required",
+      "message": "MTR required for material traceability",
+      "location": null,
+      "suggestion": "Collect MTR for all pressure-retaining and structural materials",
+      "standard_reference": null
+    },
+    {
+      "source": "Completeness",
+      "severity": "critical",
+      "check_type": "title_block_missing",
+      "message": "Title block missing required field: part_number",
+      "location": "Title Block",
+      "suggestion": "Add part_number to title block"
+    },
+    {
+      "source": "Completeness",
+      "severity": "critical",
+      "check_type": "title_block_missing",
+      "message": "Title block missing required field: revision",
+      "location": "Title Block",
+      "suggestion": "Add revision to title block"
+    },
+    {
+      "source": "Completeness",
+      "severity": "error",
+      "check_type": "title_block_missing",
+      "message": "Title block missing required field: title",
+      "location": "Title Block",
+      "suggestion": "Add title to title block"
+    },
+    {
+      "source": "Completeness",
+      "severity": "error",
+      "check_type": "title_block_missing",
+      "message": "Title block missing required field: date",
+      "location": "Title Block",
+      "suggestion": "Add date to title block"
+    },
+    {
+      "source": "Completeness",
+      "severity": "error",
+      "check_type": "title_block_missing",
+      "message": "Title block missing required field: drawn_by",
+      "location": "Title Block",
+      "suggestion": "Add drawn_by to title block"
+    },
+    {
+      "source": "Completeness",
+      "severity": "warning",
+      "check_type": "title_block_missing",
+      "message": "Title block missing required field: scale",
+      "location": "Title Block",
+      "suggestion": "Add scale to title block"
+    },
+    {
+      "source": "Completeness",
+      "severity": "warning",
+      "check_type": "revision_history_missing",
+      "message": "No revision history found for non-initial revision",
+      "location": "Revision Block",
+      "suggestion": "Add revision history block with ECN information"
+    },
+    {
+      "source": "Completeness",
+      "severity": "info",
+      "check_type": "notes_incomplete",
+      "message": "General notes may be missing: weld, surface finish, paint",
+      "location": "General Notes",
+      "suggestion": "Consider adding these common notes for this drawing type"
+    },
+    {
+      "source": "Completeness",
+      "severity": "info",
+      "check_type": "shop_notes_missing",
+      "message": "No shop/fabrication notes detected",
+      "location": null,
+      "suggestion": "Consider adding fabrication-specific instructions"
+    },
+    {
+      "source": "Completeness",
+      "severity": "warning",
+      "check_type": "weld_details_missing",
+      "message": "No weld symbols extracted from fabrication drawing",
+      "location": null,
+      "suggestion": "Verify weld symbols are present and legible"
+    },
+    {
+      "source": "Completeness",
+      "severity": "info",
+      "check_type": "section_views_not_found",
+      "message": "Section views not detected",
+      "location": null,
+      "suggestion": "Add section views for internal features if applicable"
+    },
+    {
+      "source": "Completeness",
+      "severity": "info",
+      "check_type": "detail_views_not_found",
+      "message": "Detail views not detected",
+      "location": null,
+      "suggestion": "Add detail views for critical features"
+    },
+    {
+      "source": "Completeness",
+      "severity": "warning",
+      "check_type": "scale_missing",
+      "message": "No scale specified in title block",
+      "location": "Title Block",
+      "suggestion": "Add scale to title block"
+    },
+    {
+      "source": "Completeness",
+      "severity": "info",
+      "check_type": "projection_symbol_missing",
+      "message": "Third angle projection symbol not detected",
+      "location": null,
+      "suggestion": "Add projection symbol per ANSI/ASME Y14.3"
+    },
+    {
+      "source": "Completeness",
+      "severity": "info",
+      "check_type": "proprietary_notice_missing",
+      "message": "No proprietary/copyright notice detected",
+      "location": null,
+      "suggestion": "Consider adding proprietary notice for company drawings"
+    }
+  ],
+  "summary": {
+    "total_validators": 8,
+    "passed": 8,
+    "failed": 0,
+    "critical_issues": 2,
+    "warnings": 8,
+    "total_time_ms": 16128.534100134857
+  }
+}
