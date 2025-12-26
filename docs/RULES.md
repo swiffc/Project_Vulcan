@@ -19,7 +19,7 @@ Give this document to Claude, Cursor, or any AI assistant when working on this p
 7. **Section 7**: Mechanical Engineering Mindset - CRITICAL for CAD
 8. **Section 8**: External Repositories - Reference existing solutions
 9. **Rule 22**: Forward-Looking Documentation - Keep only pending tasks
-10. **Rule 23**: Task Consolidation & File Cleanup - Single source of truth
+10. **Rule 25**: Task Consolidation & File Cleanup - Single source of truth
 
 ### For CAD Tasks (MANDATORY):
 1. Read Section 7 completely
@@ -545,7 +545,7 @@ NEXT_PUBLIC_ORCHESTRATOR_URL=http://localhost:8000
 
 ---
 
-## Rule 23: Task Consolidation & File Cleanup
+## Rule 25: Task Consolidation & File Cleanup
 
 - 📋 **SINGLE SOURCE OF TRUTH**: All pending tasks must be in `task.md`. Do not scatter tasks across multiple files.
 - 🔍 **REGULAR SCANS**: Periodically scan all `.md` files for incomplete tasks (`[ ]`, `TODO`, `FIXME`, `PENDING`) and consolidate them into `task.md`.
