@@ -99,6 +99,8 @@ try:
         solidworks_router,
         solidworks_assembly_router,
         solidworks_drawings_router,
+        solidworks_batch_router,
+        SOLIDWORKS_BATCH_AVAILABLE,
         inventor_router,
         inventor_imates_router,
         inventor_drawings_router,

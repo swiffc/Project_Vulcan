@@ -115,6 +115,13 @@ except ImportError:
     bom_router = None
     BOM_AVAILABLE = False
 
+try:
+    from .solidworks_batch import router as solidworks_batch_router
+    SOLIDWORKS_BATCH_AVAILABLE = True
+except ImportError:
+    solidworks_batch_router = None
+    SOLIDWORKS_BATCH_AVAILABLE = False
+
 __all__ = [
     "solidworks_router",
     "solidworks_assembly_router",
@@ -148,4 +155,6 @@ __all__ = [
     "PROPERTIES_AVAILABLE",
     "DOCUMENT_EXPORTER_AVAILABLE",
     "BOM_AVAILABLE",
+    "solidworks_batch_router",
+    "SOLIDWORKS_BATCH_AVAILABLE",
 ]
