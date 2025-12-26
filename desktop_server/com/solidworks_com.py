@@ -307,7 +307,10 @@ async def screenshot_feature_tree():
     """Capture screenshot of the feature tree panel."""
     try:
         import win32gui
-        from controllers.screen import screenshot_region, RegionRequest
+        import mss
+        from PIL import Image
+        import base64
+        import io
     except ImportError:
         raise HTTPException(status_code=500, detail="Required modules not available")
     
@@ -343,12 +346,23 @@ async def screenshot_feature_tree():
     tree_width = feature_tree_width
     tree_height = window_height - menu_bar_height
     
-    return await screenshot_region(RegionRequest(
-        x=tree_x,
-        y=tree_y,
-        width=tree_width,
-        height=tree_height
-    ))
+    # Capture region
+    with mss.mss() as sct:
+        monitor = {"left": tree_x, "top": tree_y, "width": tree_width, "height": tree_height}
+        sct_img = sct.grab(monitor)
+        img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
+    
+    # Convert to base64
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    image_b64 = base64.b64encode(buffer.getvalue()).decode()
+    
+    return {
+        "status": "ok",
+        "image": image_b64,
+        "width": img.width,
+        "height": img.height
+    }
 
 
 @router.post("/screenshot_property_manager")
@@ -356,7 +370,10 @@ async def screenshot_property_manager():
     """Capture screenshot of the property manager panel."""
     try:
         import win32gui
-        from controllers.screen import screenshot_region, RegionRequest
+        import mss
+        from PIL import Image
+        import base64
+        import io
     except ImportError:
         raise HTTPException(status_code=500, detail="Required modules not available")
     
@@ -392,12 +409,23 @@ async def screenshot_property_manager():
     pm_width = property_manager_width
     pm_height = window_height - menu_bar_height
     
-    return await screenshot_region(RegionRequest(
-        x=pm_x,
-        y=pm_y,
-        width=pm_width,
-        height=pm_height
-    ))
+    # Capture region
+    with mss.mss() as sct:
+        monitor = {"left": pm_x, "top": pm_y, "width": pm_width, "height": pm_height}
+        sct_img = sct.grab(monitor)
+        img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
+    
+    # Convert to base64
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    image_b64 = base64.b64encode(buffer.getvalue()).decode()
+    
+    return {
+        "status": "ok",
+        "image": image_b64,
+        "width": img.width,
+        "height": img.height
+    }
 
 
 @router.post("/new_part")
