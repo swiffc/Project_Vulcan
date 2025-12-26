@@ -12,14 +12,16 @@ Give this document to Claude, Cursor, or any AI assistant when working on this p
 
 1. **Section 1**: Project Overview - Understand the architecture
 2. **Section 2**: Remote Repository References - Check if external repos help
-3. **Section 3**: Tech Stack - Use correct technologies
-4. **Section 4**: Coding Conventions - Follow the patterns
-5. **Section 5**: File & Folder Structure - Put things in the right place
-6. **Section 6**: Safety & Security - Don't break production
+3. **Section 3**: Build Rules - Core development principles
+4. **Section 4**: Project Structure - File organization
+5. **Section 5**: File Naming Conventions - Naming standards
+6. **Section 6**: The Wrapper Process - Cloud-to-local architecture
 7. **Section 7**: Mechanical Engineering Mindset - CRITICAL for CAD
-8. **Section 8**: External Repositories - Reference existing solutions
-9. **Rule 22**: Forward-Looking Documentation - Keep only pending tasks
-10. **Rule 26**: Task Consolidation & File Cleanup - Single source of truth
+8. **Section 8**: CAD Agent Decision Trees - Decision logic
+9. **Section 9**: External Repos to Wrap - Standard parts & data
+10. **Section 10**: Plan Creation Process - Mandatory for CAD work
+11. **Rule 22**: Forward-Looking Documentation - Keep only pending tasks
+12. **Rule 26**: Task Consolidation & File Cleanup - Single source of truth
 
 ### For CAD Tasks (MANDATORY):
 1. Read Section 7 completely
@@ -662,7 +664,7 @@ Project_Vulcan/
 - All knowledge files: `kebab-case`
 - All timestamps: `YYYY-MM-DD_HHMMSS`
 
-## SECTION 5: THE WRAPPER PROCESS (CLOUD-TO-LOCAL)
+## SECTION 6: THE WRAPPER PROCESS (CLOUD-TO-LOCAL)
 
 The "Wrapper" is a bridge that allows the Cloud-based **Brain** to control your local **Muscle** without exposing your PC to the open internet.
 

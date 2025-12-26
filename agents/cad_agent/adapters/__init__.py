@@ -22,11 +22,6 @@ from .notification_store import (
     NotificationStore, get_notification_store, Notification, NotificationType
 )
 
-# Phase 12: Flatter Files Integration
-from .flatter_files_adapter import (
-    FlatterFilesAdapter, get_flatter_files_adapter, FlatterItem, BOMItem
-)
-
 # Phase 15: CAD Drawing Review Bot (ACHE Checker)
 from .standards_db import (
     get_beam_properties, get_angle_properties, get_gauge_thickness,
@@ -101,11 +96,6 @@ __all__ = [
     "get_notification_store",
     "Notification",
     "NotificationType",
-    # Phase 12
-    "FlatterFilesAdapter",
-    "get_flatter_files_adapter",
-    "FlatterItem",
-    "BOMItem",
     # Phase 15: CAD Drawing Review Bot
     "get_beam_properties",
     "get_angle_properties",
