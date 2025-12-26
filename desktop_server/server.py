@@ -169,6 +169,16 @@ except ImportError:
     solidworks_motion_router = None
     solidworks_optimization_router = None
     solidworks_surfaces_router = None
+    solidworks_equations_router = None
+    solidworks_display_router = None
+    solidworks_materials_router = None
+    solidworks_bodies_router = None
+    solidworks_rendering_router = None
+    solidworks_sensors_router = None
+    solidworks_macros_router = None
+    solidworks_design_tables_router = None
+    solidworks_pack_and_go_router = None
+    solidworks_reference_geometry_router = None
     inventor_router = None
     inventor_imates_router = None
     inventor_drawings_router = None
@@ -463,6 +473,36 @@ if CAD_AVAILABLE:
     if SOLIDWORKS_SURFACES_AVAILABLE and solidworks_surfaces_router:
         app.include_router(solidworks_surfaces_router)
         logger.info("SolidWorks Surfaces API loaded (Curvature, zebra, draft)")
+    if SOLIDWORKS_EQUATIONS_AVAILABLE and solidworks_equations_router:
+        app.include_router(solidworks_equations_router)
+        logger.info("SolidWorks Equations API loaded (Global variables, equations)")
+    if SOLIDWORKS_DISPLAY_AVAILABLE and solidworks_display_router:
+        app.include_router(solidworks_display_router)
+        logger.info("SolidWorks Display API loaded (Display states, colors)")
+    if SOLIDWORKS_MATERIALS_AVAILABLE and solidworks_materials_router:
+        app.include_router(solidworks_materials_router)
+        logger.info("SolidWorks Materials API loaded (Material library, assignment)")
+    if SOLIDWORKS_BODIES_AVAILABLE and solidworks_bodies_router:
+        app.include_router(solidworks_bodies_router)
+        logger.info("SolidWorks Bodies API loaded (Multi-body, cut lists)")
+    if SOLIDWORKS_RENDERING_AVAILABLE and solidworks_rendering_router:
+        app.include_router(solidworks_rendering_router)
+        logger.info("SolidWorks Rendering API loaded (Lights, cameras, decals)")
+    if SOLIDWORKS_SENSORS_AVAILABLE and solidworks_sensors_router:
+        app.include_router(solidworks_sensors_router)
+        logger.info("SolidWorks Sensors API loaded (Model sensors, alerts)")
+    if SOLIDWORKS_MACROS_AVAILABLE and solidworks_macros_router:
+        app.include_router(solidworks_macros_router)
+        logger.info("SolidWorks Macros API loaded (Macro execution, recording)")
+    if SOLIDWORKS_DESIGN_TABLES_AVAILABLE and solidworks_design_tables_router:
+        app.include_router(solidworks_design_tables_router)
+        logger.info("SolidWorks Design Tables API loaded (Excel integration)")
+    if SOLIDWORKS_PACK_AND_GO_AVAILABLE and solidworks_pack_and_go_router:
+        app.include_router(solidworks_pack_and_go_router)
+        logger.info("SolidWorks Pack and Go API loaded (File packaging)")
+    if SOLIDWORKS_REFERENCE_GEOMETRY_AVAILABLE and solidworks_reference_geometry_router:
+        app.include_router(solidworks_reference_geometry_router)
+        logger.info("SolidWorks Reference Geometry API loaded (Planes, axes, points)")
     if inventor_router:
         app.include_router(inventor_router)
     if inventor_imates_router:
