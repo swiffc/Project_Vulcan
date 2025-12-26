@@ -50,6 +50,7 @@ Thumbs.db
 # Logs
 *.log
 vulcan_actions.log
+desktop_server/*.log
 
 # Temporary files
 *.tmp
@@ -69,6 +70,12 @@ storage/cad/**/screenshots/
 # Validation reports (temporary output files)
 storage/validation/*.json
 storage/reports/*.json
+
+# SolidWorks temporary files
+~$*.SLDPRT
+~$*.SLDASM
+~$*.SLDPRT
+output/**/~$*
 
 # Credentials (never commit)
 *.pem
