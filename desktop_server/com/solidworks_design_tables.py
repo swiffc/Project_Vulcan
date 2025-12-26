@@ -48,6 +48,80 @@ class UpdateCellRequest(BaseModel):
     value: Any
 
 
+class AddColumnRequest(BaseModel):
+    column_header: str  # e.g., "D1@Sketch1", "$STATE@Feature1", "$PRP@Description"
+    default_value: Optional[Any] = None
+    position: Optional[int] = None  # None = add at end
+
+
+class DeleteRowRequest(BaseModel):
+    row_index: int  # 0-indexed row to delete
+
+
+class DeleteColumnRequest(BaseModel):
+    column_index: int  # 0-indexed column to delete
+
+
+class RenameConfigurationRequest(BaseModel):
+    old_name: str
+    new_name: str
+
+
+class DuplicateConfigurationRequest(BaseModel):
+    source_name: str
+    new_name: str
+    copy_values: bool = True
+
+
+class BatchCreateConfigsRequest(BaseModel):
+    configurations: List[Dict[str, Any]]  # List of {name: str, values: {param: value}}
+
+
+class FeatureSuppressionRequest(BaseModel):
+    configuration_name: str
+    feature_name: str
+    suppressed: bool  # True = suppress, False = unsuppress
+
+
+class CustomPropertyRequest(BaseModel):
+    configuration_name: str
+    property_name: str
+    property_value: str
+    config_specific: bool = True  # True = $PRP, False = $PRPSHEET
+
+
+class ComponentVisibilityRequest(BaseModel):
+    configuration_name: str
+    component_name: str
+    visible: bool
+
+
+class ColorControlRequest(BaseModel):
+    configuration_name: str
+    feature_or_face: str
+    color_rgb: List[int]  # [R, G, B] 0-255
+
+
+class ImportExcelRequest(BaseModel):
+    excel_path: str
+    sheet_name: Optional[str] = None
+    create_configurations: bool = True
+
+
+class LinkTableRequest(BaseModel):
+    excel_path: str
+    update_on_open: bool = True
+
+
+class UpdateMultipleCellsRequest(BaseModel):
+    updates: List[Dict[str, Any]]  # [{row: int, column: int, value: any}, ...]
+
+
+class SortConfigurationsRequest(BaseModel):
+    sort_by: str  # Column header name
+    ascending: bool = True
+
+
 router = APIRouter(prefix="/solidworks-design-tables", tags=["solidworks-design-tables"])
 
 
