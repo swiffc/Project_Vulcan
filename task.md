@@ -162,7 +162,7 @@
 
 ---
 
-## Phase 24: ACHE Design Assistant (213 tasks) - IN PROGRESS (92%)
+## Phase 24: ACHE Design Assistant (213 tasks) - IN PROGRESS (94%)
 
 See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 
@@ -234,19 +234,20 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 - [x] 24.8.6 Complete erection plan
 - [x] 24.8.7 Safety notes generation
 
-### Remaining Tasks (18 tasks)
+### Remaining Tasks (13 tasks)
 - [x] API endpoint integration (25 endpoints added)
 - [x] Unit tests (70 tests, all passing)
 - [x] API documentation (`docs/ACHE_API_REFERENCE.md`)
+- [x] User guide (`docs/ACHE_USER_GUIDE.md`)
 - [x] Optimization endpoint
 - [x] Anchor bolt design endpoint
 - [x] Summary endpoint
 - [x] Batch calculation endpoints
 - [x] Export endpoints (datasheet, BOM)
 - [x] Standards reference endpoint
+- [x] Integration test framework (`tests/test_phase24_api_integration.py`)
 - [ ] UI Panel implementation (web frontend)
 - [ ] End-to-end workflow tests with SolidWorks
-- [ ] Documentation and user guides
 - [ ] Performance optimization
 
 ---
@@ -448,6 +449,10 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 - Export: 3 endpoints (datasheet, BOM, standards)
 
 **Phase 24 Tests: 70 tests (all passing)**
+
+**Phase 24 Documentation:**
+- `docs/ACHE_API_REFERENCE.md` - Complete API reference
+- `docs/ACHE_USER_GUIDE.md` - User guide with examples
 
 **Next Priority**: UI Panel implementation (web frontend)
 
