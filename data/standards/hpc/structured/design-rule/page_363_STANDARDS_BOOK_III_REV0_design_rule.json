@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK III_REV0",
+    "source_page": 363,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE TR\"-CED OR REPRODUCEO",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE TR\"-CED OR REPRODUCEO",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

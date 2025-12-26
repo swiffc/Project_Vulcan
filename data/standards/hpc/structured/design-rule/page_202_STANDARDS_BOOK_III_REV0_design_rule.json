@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK III_REV0",
+    "source_page": 202,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "to be impact tested in accordance with UG84 of ASME Code,",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "include all pertinent data, including sample",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "maximum",
+      "description": "heating rate above 8000 F to 2000 F per hour until 1100-11500 F is",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "minimum",
+      "description": "at 1100-11500 F",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "maximum",
+      "description": "cooling rate from 1100-11500 F to be 2500 F per hour down to 8000 F",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "not be traced or reproduced,",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

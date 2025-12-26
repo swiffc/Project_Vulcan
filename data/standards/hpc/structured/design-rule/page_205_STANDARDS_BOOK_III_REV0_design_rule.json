@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK III_REV0",
+    "source_page": 205,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "should",
+      "description": "be nested into one larger piece with %\" cutting",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "be divided by the area",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "consist of all plates for each particular thickness nested into one",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "be rounded up to the nearest inch",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "be given to purchasing",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "consist of the end plates nested in a single strip with W'",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "not be traced or reproduced,",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

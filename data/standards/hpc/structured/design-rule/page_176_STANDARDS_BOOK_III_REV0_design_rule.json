@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK III_REV0",
+    "source_page": 176,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": null,
+  "rules": [
+    {
+      "requirement_type": "shall",
+      "description": "not",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

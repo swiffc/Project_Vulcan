@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 160,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "shall",
+      "description": "BE RETURNED ON DE­ DRAWING NO",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE TRACED",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "BE RETURNED ON DE\\xad DRAWING NO",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE TRACED\\nOR REPRODUCED OR USED DIRECTLY FAN MOUNT BASE PLATE\\nOR INDIRECTLY IN ANY WAY DE\\xad W405 it\\nTRIMENTAL TO THE INTEREST OF FOR 5 THRU 9 FANS\\nHUDSON PRODUCTS CORPORATION",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 93,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "AV Al:CESSllRT PIPE SlJ'PlIlT (WIIlIlJI G!lN!!!SI ~",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "INSTALL ALL VER'rfCAL STlFITO AlG.ES",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 6,
+      "description": "Lim[ Bll.T ALL fllJl RIGID IlJART[R RllCilI ~ • Q@ 2' -0 DEPTH",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 7,
+      "description": "PLACE LOD!IE IllI.TEO IUD lJI IMT AICJ INSTALL",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 9,
+      "description": "INSTALL TIJl Il£NUNlS, AN IUl9 AHD IUlI:S.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 10,
+      "description": "TIIilTEN ALL AEMAIHINlIlO..TS.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 11,
+      "description": "INSTALL III.£T IELL LAST. (!lEE PUT IELL INSTALLAHlJIl",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 12,
+      "description": "INSTALL AV Al:CESSlIlT PlPE ~ I AV fAN Al:CESSllRT",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 13,
+      "description": "INSTALL fAIl GUARllS [mJ1 AV fAN Al:CESSllRT.",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

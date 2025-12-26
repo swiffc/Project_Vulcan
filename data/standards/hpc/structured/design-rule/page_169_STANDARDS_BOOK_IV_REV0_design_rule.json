@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 169,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "shall",
+      "description": "BE AETURNED ON DE­ DRAWING NO",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE TRACED",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "BE AETURNED ON DE\\xad\\nMAND",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE TRACED\\nOR REPRODUCED OR USED DIRECTLY\\nDR INDIRECTLY IN ANY VVAV DE\\xad\\nTAIMENTAL TO THE INTEREST OF\\nHUDSON PRODUCTS CORPOAATI<::M\"\"\"', '5-7-93']",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

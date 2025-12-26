@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 563,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 0,
+      "description": "0.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 0,
+      "description": "'\"",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 0,
+      "description": "I:t- ­",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "ALL HOLES 11/16\" DIA. -&",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "ALL WELDS: AS NOTED",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "MAT'L SPEC.: ASTM-A36",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "COATING: HOT DIP GALV. PER ASTM-A123",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 0,
+      "description": "WEIGHT",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

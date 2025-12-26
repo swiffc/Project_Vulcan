@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 146,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "shall",
+      "description": "conform to the latest edition of AWS",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "conform to the requirements of CSA standards",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

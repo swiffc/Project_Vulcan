@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 465,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "ON ALL NOZZLES OF NITROGEN PURGED BUNDLES JI",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "BE U~A'w'N",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

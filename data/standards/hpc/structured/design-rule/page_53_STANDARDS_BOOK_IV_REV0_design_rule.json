@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 53,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 2,
+      "description": "Standard part assemblies are prefixed with",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 8,
+      "description": "The Table of Contents is also laid out to make for easy reference",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5873,
+      "description": "Bob Richardson",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

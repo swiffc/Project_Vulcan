@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 55,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "Revised drawing index, sheets 1 thru 11.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Addition of the following steam coil frame standard parts:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 0,
+      "description": "See drawing OB704.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 721,
+      "description": "c. End plate, part W772, for use on steam coil tube supports listed in item \"e\" below. See",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 722,
+      "description": "d. tube support angle, parts W773 thru W787, for use in 1'-6 thru 8'-6 wide steam coil frames.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 723,
+      "description": "e. tube support angle, parts W788 thru W7107, for use in 9'-0 thru 16'-0 wide steam coil frames.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 726,
+      "description": "f. steam coil tube supports 7M04 thru 7M62. See drawings 07M01, 07M02, 07M03 and 07M04.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1997,
+      "description": "For additional steam coil related information see Engineering and",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 11,
+      "description": "The use of these new standards will go into effect immediately on all new jobs that have not been",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5873,
+      "description": "Data Issued",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

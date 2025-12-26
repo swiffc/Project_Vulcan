@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 154,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "shall",
+      "description": "BE RETURNED ON DE­ DRAWING NO",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE TRACED 30 RIGID FAN RING SPLICE",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "BE RETURNED ON DE\\xad DRAWING NO",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE TRACED\\nOR REPRODUCED OR USED DIRECTLY\\nOR INDIRECTLY IN ANY VVAV OE\\xad W306\\nTAIMENTAL TO THE INTEREST OF\\nHUDSON PRODUCTS CORPORATION",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

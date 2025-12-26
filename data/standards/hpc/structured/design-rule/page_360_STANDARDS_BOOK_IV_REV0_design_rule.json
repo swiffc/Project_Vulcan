@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 360,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 8,
+      "description": "I .4167 LF - 5370B I .9167 LF - 53706 I 2.5625 LF - 55652 4AOB I SHAFT.FAN,AP.3\"x2·-6 3/4,4140HT, I 62",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "SHAFTING TO BE 4140HT, TGP, QUENCHED AND",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "DIAMETERS TO BE CONCENTRIC WITHIN .004 TOTAL",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "INSIDE CORNERS AT SHOULDERS HAVE 1/16\" TO",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "DEBURR ALL EDGES ON KEYS AND TAPE IN PLACE.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "TOLERANCE ~ 1/32 UNLESS NOTED.",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

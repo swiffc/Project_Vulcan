@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 380,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "DIAMETERS TO BE CONCENTRIC WITHIN .004",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "DEBURR ALL EDGES ON KEYS AND TAPE IN",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "TOLERANCE ±~ UNLESS NOTED.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 7,
+      "description": "I I O O - - o o t t - - O O i i",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 48,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 5873,
+      "description": "Revision pertains to:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "Distribution:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Mazel(assy) 26-H. Wilcox 63-P. Edwards 82-S. Hinton 101-C. Boxie 120-HPM, Ramos",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Delgado 83-HPM, Ramos 102-B. Stewart 121-HPM, Ramos",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Castillo 122-HPM, Ramos",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Preuss 41-H. Wilcox 66-H. Drab 85-G. Hubenak 104-P. Patel 123-C. Atillano",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Preuss 42-H. Wilcox 67-R. Eastwood 86-L. lordy 105-S. Collins 124-R. Waclawski",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Preuss 45-H. Wilcox 68-R. Evans 87-B. Kluppe1 106-D. Reagan 125-1. Melllhls-MOItE\"j.tl",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Kriegel 107-1.A. Reddy 126-1. Sampa",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Lohman 110-HPM, Ramos 129-HPM, Ramos",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Mazel 54-P. Sookaserm 73-1.G. Galvan 92-R. Lopez 111-HPM, Ramos 132-HPM, Ramos",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Zahradnik 93-M. Luna 112-R. Satterwhite 133-HPM, Ramos",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Mica 56-1. Cash 75-S. Gibson 94-A. Makris 113-S. Serrata 134-STANDARDS",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Mayo 114-Markle(R. Friese)135-STANDARDS",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Goldsmith 96-R. Medina 115-S. Shah 136-STANDARDS",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

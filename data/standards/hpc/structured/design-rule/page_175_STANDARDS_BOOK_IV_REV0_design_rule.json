@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 175,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "shall",
+      "description": "BE RETURNED ON DE DRAWING NO",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT Be TRACED l\"1ACHINERY MOUNT",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "BE RETURNED ON DE\\nMAND",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT Be TRACED\\nOR REPRODUCED OR USED DIRECTLY\\nOR INDIRECTLY IN ANY 'VVAV DE\\nTAIMENTAL TO THE INTEREST OF\\naHtUaDSO NI sPRsODuUCTeS CdORPORJ\\\\TION",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

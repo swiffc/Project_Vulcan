@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 87,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 11,
+      "description": "TUBE SUPPORTS",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "HANGER ASSEMBLIES",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "HANDRAILS AND TOE PLATES",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "HANDRAIL CORNER POSTS",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "LADDER BRACKETS",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "HANDRAIL ASSEMBLIES",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

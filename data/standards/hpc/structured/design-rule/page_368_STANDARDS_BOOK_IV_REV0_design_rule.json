@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 368,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "shall",
+      "description": "BE DRAWN RM 111-1-97",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "BE DRAWN RM\\nR S E H T A U L R L NED N OT ON BE DEM TR A A N C D E",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

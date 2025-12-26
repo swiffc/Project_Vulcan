@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 508,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "shall",
+      "description": "NOr 8l TRACED OR REPRO(1UCEI!,",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOr 8l TRACED OR REPRO(1UCEI!,\\nOR US01 DIRECTLY OR INolREcny IN CHrCK£l} VLG ~-17 -[,1\\nI C / N IN O T \\' R E ( R PO ES A T W A S A n Y e ·N o r Df7R H IM llO E S N O TA N L f\\'1 1 K 0 l0\\\\1C 1 1 l S 1[ A [\\' f G \\'f\\'R \" O fl V R fII J r eG S G If ~ J ! 1 J ~ 6 ~ / \\' ,\\nCUS;DMER\\'S I\\'D f",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

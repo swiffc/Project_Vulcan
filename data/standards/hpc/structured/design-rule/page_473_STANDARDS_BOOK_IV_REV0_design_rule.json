@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK IV_REV0",
+    "source_page": 473,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE TRACED OR",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE TRACED OR\\n4 SPACED REPRODUCED",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "BE DRAWN RM 4-2\\nRETURNED ON DEMANO",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE TRACED OR\\nREPRODUCED",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

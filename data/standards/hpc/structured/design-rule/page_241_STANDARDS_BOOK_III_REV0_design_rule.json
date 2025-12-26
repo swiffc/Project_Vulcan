@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK III_REV0",
+    "source_page": 241,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "shall",
+      "description": "NOT IS~ TRAC~O DR CHECKED FVH 8/01/84 \"'U",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT IS~ TRAC~O DR CHECKED FVH 8/01\\nREPRODUCED",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "IS~\\nR~TURN~O ON O~MANO",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT IS~ TRAC~O DR\\nREPRODUCED",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}
