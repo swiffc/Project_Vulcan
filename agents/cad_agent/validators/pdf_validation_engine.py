@@ -214,6 +214,25 @@ class PDFValidationEngine:
             result.completeness_results = self.completeness.to_dict(comp_result)
             self._aggregate_results(result, comp_result)
 
+        # Phase 26 - HPC Standards validation
+        if "hpc_mechanical" in standards:
+            logger.info("Running HPC mechanical validation...")
+            hpc_mech_result = self.hpc_mechanical.validate(extraction)
+            result.hpc_mechanical_results = self.hpc_mechanical.to_dict(hpc_mech_result)
+            self._aggregate_results(result, hpc_mech_result)
+
+        if "hpc_walkway" in standards:
+            logger.info("Running HPC walkway validation...")
+            hpc_walk_result = self.hpc_walkway.validate(extraction)
+            result.hpc_walkway_results = self.hpc_walkway.to_dict(hpc_walk_result)
+            self._aggregate_results(result, hpc_walk_result)
+
+        if "hpc_header" in standards:
+            logger.info("Running HPC header validation...")
+            hpc_header_result = self.hpc_header.validate(extraction)
+            result.hpc_header_results = self.hpc_header.to_dict(hpc_header_result)
+            self._aggregate_results(result, hpc_header_result)
+
         # Calculate pass rate
         if result.total_checks > 0:
             result.pass_rate = (result.passed / result.total_checks) * 100
@@ -284,6 +303,9 @@ class PDFValidationEngine:
                 "bom": result.bom_results,
                 "dimension": result.dimension_results,
                 "completeness": result.completeness_results,
+                "hpc_mechanical": result.hpc_mechanical_results,
+                "hpc_walkway": result.hpc_walkway_results,
+                "hpc_header": result.hpc_header_results,
             },
             "all_issues": result.all_issues,
         }
