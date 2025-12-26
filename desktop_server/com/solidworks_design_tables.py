@@ -1,15 +1,21 @@
 """
 SolidWorks Design Tables API
 ============================
-Design table management including:
-- Create design tables
+Complete design table management including:
+- Create/delete design tables
 - Read/modify table data
-- Configuration generation
-- Excel integration
+- Configuration generation and management
+- Excel integration (import/export/link)
+- Feature suppression control ($STATE@)
+- Custom properties ($PRP, $PRPSHEET)
+- Component visibility ($SHOW@)
+- Color/appearance control ($COLOR)
+- Batch operations
 """
 
 import logging
-from typing import Optional, Dict, Any, List
+import os
+from typing import Optional, Dict, Any, List, Union
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
