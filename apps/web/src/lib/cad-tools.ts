@@ -3959,6 +3959,40 @@ export async function executeCADTool(
     sw_add_motor: { method: "POST", endpoint: "/com/solidworks/advanced/motion/add_motor" },
     sw_run_motion_study: { method: "POST", endpoint: "/com/solidworks/advanced/motion/run" },
     sw_export_motion_video: { method: "POST", endpoint: "/com/solidworks/advanced/motion/export_video" },
+    // === Flow Simulation ===
+    sw_create_flow_study: { method: "POST", endpoint: "/com/solidworks/advanced/flow/create_study" },
+    sw_add_flow_boundary: { method: "POST", endpoint: "/com/solidworks/advanced/flow/add_boundary" },
+    sw_add_flow_goal: { method: "POST", endpoint: "/com/solidworks/advanced/flow/add_goal" },
+    sw_run_flow: { method: "POST", endpoint: "/com/solidworks/advanced/flow/run" },
+    sw_get_flow_results: { method: "GET", endpoint: "/com/solidworks/advanced/flow/results" },
+    // === Rendering & Visualization ===
+    sw_render_view: { method: "POST", endpoint: "/com/solidworks/advanced/render/render_view" },
+    sw_apply_appearance: { method: "POST", endpoint: "/com/solidworks/advanced/render/apply_appearance" },
+    sw_apply_decal: { method: "POST", endpoint: "/com/solidworks/advanced/render/apply_decal" },
+    sw_set_scene: { method: "POST", endpoint: "/com/solidworks/advanced/render/set_scene" },
+    // === Inspection & DimXpert ===
+    sw_dimxpert: { method: "POST", endpoint: "/com/solidworks/advanced/inspection/dimxpert" },
+    sw_inspection_balloon: { method: "POST", endpoint: "/com/solidworks/advanced/inspection/balloon" },
+    // === Display States ===
+    sw_create_display_state: { method: "POST", endpoint: "/com/solidworks/advanced/display/state" },
+    sw_set_component_display: { method: "POST", endpoint: "/com/solidworks/advanced/display/component" },
+    // === Export & Sharing ===
+    sw_pack_and_go: { method: "POST", endpoint: "/com/solidworks/advanced/export/pack_and_go" },
+    sw_edrawings_export: { method: "POST", endpoint: "/com/solidworks/advanced/export/edrawings" },
+    sw_defeature: { method: "POST", endpoint: "/com/solidworks/advanced/export/defeature" },
+    // === Large Assembly Optimization ===
+    sw_create_speedpak: { method: "POST", endpoint: "/com/solidworks/advanced/assembly/speedpak" },
+    sw_configure_large_assembly_mode: { method: "POST", endpoint: "/com/solidworks/advanced/assembly/large_mode" },
+    // === Design Library ===
+    sw_design_library_item: { method: "POST", endpoint: "/com/solidworks/advanced/library/item" },
+    sw_insert_smart_component: { method: "POST", endpoint: "/com/solidworks/advanced/library/smart_component" },
+    // === Compare & Analysis ===
+    sw_compare_documents: { method: "POST", endpoint: "/com/solidworks/advanced/compare/documents" },
+    sw_run_design_checker: { method: "POST", endpoint: "/com/solidworks/advanced/checker/run" },
+    sw_sustainability_analyze: { method: "POST", endpoint: "/com/solidworks/advanced/sustainability/analyze" },
+    // === Scan to 3D ===
+    sw_import_mesh: { method: "POST", endpoint: "/com/solidworks/advanced/scan/import_mesh" },
+    sw_mesh_to_solid: { method: "POST", endpoint: "/com/solidworks/advanced/scan/mesh_to_solid" },
   };
 
   const mapping = endpointMap[toolName];
