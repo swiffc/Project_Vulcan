@@ -13,11 +13,11 @@
 | Phase 19-23 (Foundation) | 57/58 | 1 (blocked) | 98% |
 | Phase 24 (ACHE Design Assistant) | 0/340 | 340 | 0% |
 | Phase 25 (Drawing Checker) | 80/150 | 70 | 53% |
-| **Standards Database** | **199/199** | **0** | **100%** |
+| **Standards Database** | **213/213** | **0** | **100%** |
 
 ---
 
-## Completed Validators (199/199 checks)
+## Completed Validators (213/213 checks)
 
 | Validator | Checks | Status |
 |-----------|--------|--------|
@@ -180,6 +180,7 @@ Major feature areas:
 | `/phase25/check-tema` | TEMA R/B/C | 6 |
 | `/phase25/check-geometry` | Geometry/Profile | 4 |
 | `/phase25/check-tolerances` | GD&T | 3 |
+| `/phase25/check-gdt` | Full GD&T Y14.5 | 14 |
 | `/phase25/check-sheet-metal` | Sheet Metal | 3 |
 | `/phase25/check-member-capacity` | Structural | 2 |
 | `/phase25/check-structural` | Connections | 6 |
@@ -305,7 +306,7 @@ Major feature areas:
 
 ---
 
-**Standards Database: 100% COMPLETE (199 checks)**
+**Standards Database: 100% COMPLETE (213 checks)**
 
 **Next Priority**: Phase 25.3-25.13 implementation tasks, then Phase 24
 
