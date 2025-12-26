@@ -172,6 +172,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // AUTO-CONNECT: Check SolidWorks status and connect if needed
+    const desktopUrl = process.env.DESKTOP_SERVER_URL || "http://localhost:8000";
+    try {
+      const swStatus = await fetch(`${desktopUrl}/com/solidworks/status`)
+        .then(r => r.json())
+        .catch(() => ({ connected: false }));
+
+      if (!swStatus?.connected) {
+        console.log("[CAD Chat] Auto-connecting to SolidWorks...");
+        const connectResult = await executeCADTool("sw_connect", {});
+        if (connectResult.success) {
+          console.log("[CAD Chat] ✅ Auto-connected to SolidWorks");
+        } else {
+          console.warn("[CAD Chat] ⚠️ Auto-connect failed, but continuing (agent will handle connection)");
+        }
+      } else {
+        console.log("[CAD Chat] SolidWorks already connected");
+      }
+    } catch (error) {
+      console.warn("[CAD Chat] Could not check/connect to SolidWorks:", error);
+      // Continue anyway - agent can handle connection
+    }
+
     // Create response with tool use
     let response = await client.messages.create({
       model: "claude-sonnet-4-20250514",
