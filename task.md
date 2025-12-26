@@ -109,6 +109,7 @@
 ## Feature Gaps (From Analysis)
 
 ### CAD Feature Analysis (PRIORITY: MEDIUM)
+
 - [ ] Feature tree enumeration (cannot list features)
 - [ ] Sketch geometry extraction (cannot read circles, lines, arcs)
 - [ ] Dimension reading from features (cannot get values)
@@ -120,6 +121,7 @@
 **Source**: `FEATURE_ANALYSIS_STATUS.md`
 
 ### Missing APIs (PRIORITY: HIGH)
+
 - [ ] Configuration APIs (3): `list_configurations`, `activate_configuration`, `create_configuration`
 - [ ] Measurement APIs (4): `measure_distance`, `measure_angle`, `get_bounding_box`, `check_clearance`
 - [ ] Custom Properties APIs (2): `list_custom_properties`, `get_custom_property`
