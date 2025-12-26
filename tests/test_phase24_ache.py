@@ -1036,25 +1036,24 @@ class TestASMEBTH1Compliance:
 class TestBatchCalculations:
     """Tests for batch calculation features."""
 
-    def test_multiple_thermal_calculations(self):
-        """Test multiple thermal calculations."""
+    def test_multiple_fan_calculations(self):
+        """Test multiple fan calculations."""
         from agents.cad_agent.ache_assistant import ACHECalculator
 
         calc = ACHECalculator()
         results = []
-        for duty in [500, 1000, 1500]:
-            result = calc.calculate_thermal(
-                duty_kw=duty,
-                process_inlet_temp_c=100,
-                process_outlet_temp_c=60,
-                air_inlet_temp_c=35,
-                air_flow_kg_s=50 * (duty / 500),
-                surface_area_m2=200 * (duty / 500),
+        for flow in [30, 50, 70]:
+            result = calc.calculate_fan_performance(
+                air_flow_m3_s=flow,
+                static_pressure_pa=200,
+                fan_diameter_m=3.0,
+                fan_rpm=300,
+                fan_efficiency=0.75,
             )
             results.append(result)
 
-        # Higher duty should have higher air outlet temp
-        assert results[2].air_outlet_temp_c >= results[0].air_outlet_temp_c
+        # Higher flow should require more power
+        assert results[2].shaft_power_kw >= results[0].shaft_power_kw
 
     def test_parametric_fan_sizing(self):
         """Test parametric fan sizing."""
