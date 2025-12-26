@@ -198,6 +198,16 @@ class ValidationOrchestrator:
         self.dimension_validator = DimensionValidator() if DimensionValidator else None
         self.osha_validator = OSHAValidator() if OSHAValidator else None
 
+        # Phase 25.3-25.13 - Additional validators
+        self.fabrication_validator = FabricationFeasibilityValidator() if FabricationFeasibilityValidator else None
+        self.inspection_validator = InspectionQCValidator() if InspectionQCValidator else None
+        self.cross_part_validator = CrossPartValidator() if CrossPartValidator else None
+        self.materials_validator = MaterialsFinishingValidator() if MaterialsFinishingValidator else None
+        self.fastener_validator = FastenerValidator() if FastenerValidator else None
+        self.rigging_validator = RiggingValidator() if RiggingValidator else None
+        self.documentation_validator = DocumentationValidator() if DocumentationValidator else None
+        self.report_generator = ReportGenerator() if ReportGenerator else None
+
         try:
             from core.flatter_files_client import FlatterFilesClient
 
