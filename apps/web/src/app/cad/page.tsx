@@ -9,6 +9,7 @@ import { RecentValidations } from "@/components/cad/RecentValidations";
 import { ToolsPanel } from "@/components/cad/ToolsPanel";
 import { ACHEPanel } from "@/components/cad/ACHEPanel";
 import { ModelOverview } from "@/components/cad/ModelOverview";
+import { ValidatorDashboard } from "@/components/cad/ValidatorDashboard";
 import { Sidebar } from "@/components/layout/Sidebar";
 
 export interface ValidationResult {
@@ -40,7 +41,7 @@ export interface CategoryResult {
 }
 
 export default function CADPage() {
-  const [activeView, setActiveView] = useState<"overview" | "validate" | "tools" | "ache" | "history">("overview");
+  const [activeView, setActiveView] = useState<"overview" | "validate" | "dashboard" | "tools" | "ache" | "history">("overview");
   const [currentValidation, setCurrentValidation] = useState<ValidationResult | null>(null);
   const [isValidating, setIsValidating] = useState(false);
 
