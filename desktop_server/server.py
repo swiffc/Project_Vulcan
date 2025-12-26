@@ -16,7 +16,7 @@ import socket
 import asyncio
 from datetime import datetime
 from contextlib import asynccontextmanager
-from typing import Dict, Any
+from typing import Dict, Any, Optional, List
 
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
@@ -2875,6 +2875,164 @@ async def get_queue_status():
         "size": COMMAND_QUEUE.qsize(),
         "worker_active": QUEUE_WORKER_TASK is not None and not QUEUE_WORKER_TASK.done(),
     }
+
+
+# =============================================================================
+# PHASE 24: ACHE DESIGN ASSISTANT ENDPOINTS
+# =============================================================================
+
+# Global ACHE event listener instance
+_ache_listener = None
+_ache_detector = None
+_ache_property_reader = None
+
+
+def _get_ache_modules():
+    """Lazy load ACHE modules."""
+    global _ache_listener, _ache_detector, _ache_property_reader
+    if _ache_listener is None:
+        try:
+            from ache.event_listener import ACHEEventListener
+            from ache.detector import ACHEModelDetector
+            from ache.property_reader import ACHEPropertyReader
+            _ache_listener = ACHEEventListener()
+            _ache_detector = ACHEModelDetector()
+            _ache_property_reader = ACHEPropertyReader()
+        except ImportError as e:
+            logger.warning(f"ACHE modules not available: {e}")
+    return _ache_listener, _ache_detector, _ache_property_reader
+
+
+@app.get("/ache/status")
+async def get_ache_status():
+    """
+    Get ACHE Design Assistant status.
+    Phase 24.1 - Auto-launch system status
+    """
+    listener, detector, reader = _get_ache_modules()
+    if listener is None:
+        return {"status": "unavailable", "reason": "ACHE modules not loaded"}
+
+    return {
+        "status": "available",
+        "listener": listener.get_status() if listener else None,
+        "detector_config": detector.get_detection_config() if detector else None,
+    }
+
+
+@app.post("/ache/listener/start")
+async def start_ache_listener():
+    """
+    Start the ACHE model event listener.
+    Phase 24.1.1 - SolidWorks event listener
+    """
+    listener, _, _ = _get_ache_modules()
+    if listener is None:
+        raise HTTPException(status_code=503, detail="ACHE modules not available")
+
+    success = listener.start()
+    return {
+        "started": success,
+        "status": listener.get_status()
+    }
+
+
+@app.post("/ache/listener/stop")
+async def stop_ache_listener():
+    """Stop the ACHE model event listener."""
+    listener, _, _ = _get_ache_modules()
+    if listener is None:
+        raise HTTPException(status_code=503, detail="ACHE modules not available")
+
+    listener.stop()
+    return {"stopped": True}
+
+
+@app.get("/ache/detect")
+async def detect_ache_model():
+    """
+    Detect if current model is an ACHE component.
+    Phase 24.1.2 - ACHE model detection
+    """
+    _, detector, reader = _get_ache_modules()
+    if detector is None or reader is None:
+        raise HTTPException(status_code=503, detail="ACHE modules not available")
+
+    # Get current model properties
+    props = reader.read_properties()
+    if props is None:
+        raise HTTPException(status_code=404, detail="No active model in SolidWorks")
+
+    # Detect if ACHE
+    component_names = [c.name for c in props.components] if props.components else []
+    result = detector.detect(
+        filepath=props.filepath,
+        custom_properties=props.custom_properties,
+        component_names=component_names
+    )
+
+    return {
+        "filepath": props.filepath,
+        "filename": props.filename,
+        "is_ache": result.is_ache,
+        "confidence": result.confidence,
+        "component_type": result.component_type.value,
+        "detection_reasons": result.detection_reasons,
+        "api_661_applicable": result.api_661_applicable,
+        "suggested_validators": result.suggested_validators,
+    }
+
+
+@app.get("/ache/overview")
+async def get_ache_overview():
+    """
+    Get ACHE model overview - comprehensive property extraction.
+    Phase 24.2 - Model Overview Tab
+    """
+    _, detector, reader = _get_ache_modules()
+    if reader is None:
+        raise HTTPException(status_code=503, detail="ACHE modules not available")
+
+    props = reader.read_properties()
+    if props is None:
+        raise HTTPException(status_code=404, detail="No active model in SolidWorks")
+
+    # Add ACHE detection info
+    component_names = [c.name for c in props.components] if props.components else []
+    detection = detector.detect(
+        filepath=props.filepath,
+        custom_properties=props.custom_properties,
+        component_names=component_names
+    ) if detector else None
+
+    overview = reader.to_dict(props)
+    if detection:
+        overview["ache_detection"] = {
+            "is_ache": detection.is_ache,
+            "confidence": detection.confidence,
+            "component_type": detection.component_type.value,
+            "api_661_applicable": detection.api_661_applicable,
+            "suggested_validators": detection.suggested_validators,
+        }
+
+    return overview
+
+
+@app.get("/ache/properties")
+async def get_ache_properties():
+    """
+    Get ACHE-specific properties from current model.
+    Phase 24.3 - Properties Extraction
+    """
+    _, _, reader = _get_ache_modules()
+    if reader is None:
+        raise HTTPException(status_code=503, detail="ACHE modules not available")
+
+    props = reader.read_properties()
+    if props is None:
+        raise HTTPException(status_code=404, detail="No active model in SolidWorks")
+
+    return reader.to_dict(props)
 
 
 if __name__ == "__main__":

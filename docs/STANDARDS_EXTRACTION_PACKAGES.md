@@ -298,3 +298,16 @@ print(f"Extracted {len(elements)} elements")
 **Last Updated**: December 25, 2025  
 **For**: Standards Books Visual Validation Extraction
 
+---
+
+## Full Scope Document
+
+For complete scope including:
+- Data storage & persistence
+- Performance & scalability
+- Integration with existing systems
+- Workflow automation
+- Testing & QA
+
+See: `docs/STANDARDS_EXTRACTION_FULL_SCOPE.md`
+

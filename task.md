@@ -158,18 +158,18 @@
 
 See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 
-### Phase 24.1 - Auto-Launch System (8 tasks)
-- [ ] 24.1.1 SolidWorks event listener for model open
-- [ ] 24.1.2 ACHE model detection (custom property/filename)
+### Phase 24.1 - Auto-Launch System (8 tasks) - IN PROGRESS
+- [x] 24.1.1 SolidWorks event listener for model open
+- [x] 24.1.2 ACHE model detection (custom property/filename)
 - [ ] 24.1.3 Assistant panel auto-launch
 - [ ] 24.1.4 User preference for auto-launch on/off
-- [ ] 24.1.5 Integration with desktop server
+- [x] 24.1.5 Integration with desktop server
 
-### Phase 24.2 - Model Overview Tab (15 tasks)
-- [ ] 24.2.1 Custom property extraction
-- [ ] 24.2.2 Mass properties display
-- [ ] 24.2.3 Bounding box dimensions
-- [ ] 24.2.4 Configuration management
+### Phase 24.2 - Model Overview Tab (15 tasks) - IN PROGRESS
+- [x] 24.2.1 Custom property extraction
+- [x] 24.2.2 Mass properties display
+- [x] 24.2.3 Bounding box dimensions
+- [x] 24.2.4 Configuration management
 - [ ] 24.2.5 Real-time property refresh
 - [ ] 24.2.6 Export to Excel/PDF
 
