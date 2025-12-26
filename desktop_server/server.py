@@ -3444,6 +3444,117 @@ async def design_structural_frame(request: StructuralFrameRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+class ColumnDesignRequest(BaseModel):
+    """Request model for column design."""
+    axial_load_kn: float
+    moment_kn_m: float = 0.0
+    height_m: float
+    k_factor: float = 1.0
+    profile_type: str = "HSS_RECT"  # HSS_RECT or W_SHAPE
+
+
+class BeamDesignRequest(BaseModel):
+    """Request model for beam design."""
+    span_m: float
+    distributed_load_kn_m: float
+    point_loads: Optional[List[Dict[str, float]]] = None
+    deflection_limit: str = "L/240"
+    profile_type: str = "W_SHAPE"
+
+
+@app.post("/ache/design/column")
+async def design_column(request: ColumnDesignRequest):
+    """
+    Design individual column per AISC.
+    Phase 24.5 - Structural Components
+    """
+    _, Designer, _, _, _ = _get_ache_assistant_modules()
+    if Designer is None:
+        raise HTTPException(status_code=503, detail="Structural designer not available")
+
+    try:
+        from agents.cad_agent.ache_assistant.structural import ProfileType
+        designer = Designer()
+
+        profile_type = ProfileType.HSS_RECT if request.profile_type == "HSS_RECT" else ProfileType.W_SHAPE
+
+        column = designer.design_column(
+            axial_load_kn=request.axial_load_kn,
+            moment_kn_m=request.moment_kn_m,
+            height_m=request.height_m,
+            k_factor=request.k_factor,
+            profile_type=profile_type,
+        )
+
+        return {
+            "profile": column.profile,
+            "profile_type": column.profile_type.value,
+            "height_m": column.height_m,
+            "area_mm2": column.area_mm2,
+            "axial_capacity_kn": column.axial_capacity_kn,
+            "moment_capacity_knm": column.moment_capacity_knm,
+            "applied_axial_kn": column.applied_axial_kn,
+            "applied_moment_knm": column.applied_moment_knm,
+            "kl_r": column.kl_r,
+            "is_slender": column.is_slender,
+            "utilization_ratio": column.utilization_ratio,
+            "is_adequate": column.is_adequate,
+            "warnings": column.warnings,
+        }
+    except Exception as e:
+        logger.error(f"Column design error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/ache/design/beam")
+async def design_beam(request: BeamDesignRequest):
+    """
+    Design individual beam per AISC.
+    Phase 24.5 - Structural Components
+    """
+    _, Designer, _, _, _ = _get_ache_assistant_modules()
+    if Designer is None:
+        raise HTTPException(status_code=503, detail="Structural designer not available")
+
+    try:
+        from agents.cad_agent.ache_assistant.structural import ProfileType
+        designer = Designer()
+
+        profile_type = ProfileType.W_SHAPE if request.profile_type == "W_SHAPE" else ProfileType.HSS_RECT
+
+        # Convert point loads if provided
+        point_loads = None
+        if request.point_loads:
+            point_loads = [(p["position_m"], p["load_kn"]) for p in request.point_loads]
+
+        beam = designer.design_beam(
+            span_m=request.span_m,
+            distributed_load_kn_m=request.distributed_load_kn_m,
+            point_loads=point_loads,
+            deflection_limit=request.deflection_limit,
+            profile_type=profile_type,
+        )
+
+        return {
+            "profile": beam.profile,
+            "profile_type": beam.profile_type.value,
+            "span_m": beam.span_m,
+            "area_mm2": beam.area_mm2,
+            "moment_capacity_knm": beam.moment_capacity_knm,
+            "shear_capacity_kn": beam.shear_capacity_kn,
+            "applied_moment_knm": beam.applied_moment_knm,
+            "applied_shear_kn": beam.applied_shear_kn,
+            "deflection_mm": beam.deflection_mm,
+            "deflection_limit_mm": beam.deflection_limit_mm,
+            "utilization_ratio": beam.utilization_ratio,
+            "is_adequate": beam.is_adequate,
+            "warnings": beam.warnings,
+        }
+    except Exception as e:
+        logger.error(f"Beam design error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/ache/design/access")
 async def design_access_system(request: AccessSystemRequest):
     """
