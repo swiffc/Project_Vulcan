@@ -11,7 +11,7 @@
 | Category | Complete | Remaining | % Done |
 |----------|----------|-----------|--------|
 | Phase 19-23 (Foundation) | 57/58 | 1 (blocked) | 98% |
-| Phase 24 (ACHE Design Assistant) | 0/213 | 213 | 0% |
+| Phase 24 (ACHE Design Assistant) | 85/213 | 128 | **40%** |
 | Phase 25 (Drawing Checker) | 150/150 | 0 | **100%** |
 | **Standards Database** | **213/213** | **0** | **100%** |
 
