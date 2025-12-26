@@ -3366,6 +3366,352 @@ export const CAD_TOOLS: Anthropic.Tool[] = [
       required: ["study_name", "output_path"],
     },
   },
+
+  // === Flow Simulation ===
+  {
+    name: "sw_create_flow_study",
+    description: "Create flow simulation study for fluid analysis.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        study_name: { type: "string", description: "Flow study name" },
+        fluid: { type: "string", enum: ["air", "water", "oil", "steam", "custom"], description: "Fluid type" },
+        temperature: { type: "number", description: "Fluid temperature in Kelvin" },
+        pressure: { type: "number", description: "Reference pressure in Pa" },
+      },
+      required: ["study_name"],
+    },
+  },
+  {
+    name: "sw_add_flow_boundary",
+    description: "Add boundary condition to flow simulation.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        study_name: { type: "string", description: "Flow study name" },
+        face_names: { type: "array", items: { type: "string" }, description: "Faces for boundary" },
+        boundary_type: { type: "string", enum: ["inlet_velocity", "inlet_volume", "inlet_pressure", "outlet_pressure", "outlet_volume", "wall", "opening"], description: "Boundary condition type" },
+        value: { type: "number", description: "Boundary value (velocity m/s, pressure Pa, or volume m3/s)" },
+      },
+      required: ["study_name", "face_names", "boundary_type"],
+    },
+  },
+  {
+    name: "sw_add_flow_goal",
+    description: "Add goal to flow simulation.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        study_name: { type: "string", description: "Flow study name" },
+        goal_type: { type: "string", enum: ["pressure", "velocity", "flow_rate", "temperature", "force", "torque"], description: "Goal type" },
+        face_names: { type: "array", items: { type: "string" }, description: "Faces to measure" },
+      },
+      required: ["study_name", "goal_type"],
+    },
+  },
+  {
+    name: "sw_run_flow",
+    description: "Run flow simulation analysis.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        study_name: { type: "string", description: "Flow study name" },
+      },
+      required: ["study_name"],
+    },
+  },
+  {
+    name: "sw_get_flow_results",
+    description: "Get flow simulation results (pressure, velocity, flow rates).",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        study_name: { type: "string", description: "Flow study name" },
+      },
+      required: ["study_name"],
+    },
+  },
+
+  // === Rendering & Visualization ===
+  {
+    name: "sw_render_view",
+    description: "Render current view with photorealistic rendering.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        output_path: { type: "string", description: "Output image path" },
+        resolution: { type: "string", enum: ["640x480", "1280x720", "1920x1080", "3840x2160"], description: "Render resolution" },
+        quality: { type: "string", enum: ["draft", "good", "best"], description: "Render quality" },
+        background: { type: "string", enum: ["white", "black", "transparent", "environment"], description: "Background type" },
+      },
+      required: ["output_path"],
+    },
+  },
+  {
+    name: "sw_apply_appearance",
+    description: "Apply material appearance to faces or bodies.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        face_names: { type: "array", items: { type: "string" }, description: "Face names (empty for all)" },
+        appearance_name: { type: "string", description: "Appearance name (e.g., 'Steel - Polished')" },
+        appearance_path: { type: "string", description: "Custom appearance file path" },
+      },
+      required: ["appearance_name"],
+    },
+  },
+  {
+    name: "sw_apply_decal",
+    description: "Apply decal/image to face.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        face_name: { type: "string", description: "Face to apply decal" },
+        image_path: { type: "string", description: "Decal image file path" },
+        position: { type: "array", items: { type: "number" }, description: "Decal position [x, y]" },
+        size: { type: "array", items: { type: "number" }, description: "Decal size [width, height] in meters" },
+      },
+      required: ["face_name", "image_path"],
+    },
+  },
+  {
+    name: "sw_set_scene",
+    description: "Set rendering scene (lighting, environment, camera).",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        scene_name: { type: "string", enum: ["studio", "sunset", "sunrise", "night", "indoor", "outdoor"], description: "Scene preset" },
+        lighting: { type: "string", enum: ["studio", "natural", "artificial"], description: "Lighting type" },
+        environment_map: { type: "string", description: "Environment map file path" },
+      },
+      required: [],
+    },
+  },
+
+  // === Inspection & DimXpert ===
+  {
+    name: "sw_dimxpert",
+    description: "Run DimXpert automatic dimensioning for manufacturing.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        tolerance_standard: { type: "string", enum: ["ASME Y14.5", "ISO"], description: "Tolerance standard" },
+        dimension_type: { type: "string", enum: ["plus_minus", "limit", "geometric"], description: "Dimension type" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "sw_inspection_balloon",
+    description: "Add inspection balloon to drawing.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        view_name: { type: "string", description: "View name" },
+        feature_name: { type: "string", description: "Feature to balloon" },
+        balloon_number: { type: "number", description: "Balloon number" },
+        position: { type: "array", items: { type: "number" }, description: "Balloon position [x, y]" },
+      },
+      required: ["view_name", "feature_name"],
+    },
+  },
+
+  // === Display States ===
+  {
+    name: "sw_create_display_state",
+    description: "Create or modify display state for component visibility.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        state_name: { type: "string", description: "Display state name" },
+        action: { type: "string", enum: ["create", "update", "activate"], description: "Action" },
+      },
+      required: ["state_name"],
+    },
+  },
+  {
+    name: "sw_set_component_display",
+    description: "Set component display properties in current state.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        component: { type: "string", description: "Component name" },
+        visibility: { type: "boolean", description: "Visible" },
+        transparency: { type: "number", description: "Transparency 0-1" },
+        color: { type: "array", items: { type: "number" }, description: "RGB color [r, g, b] 0-255" },
+      },
+      required: ["component"],
+    },
+  },
+
+  // === Export & Sharing ===
+  {
+    name: "sw_pack_and_go",
+    description: "Pack and Go - package all related files for sharing.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        output_folder: { type: "string", description: "Output folder path" },
+        include_drawings: { type: "boolean", description: "Include drawings" },
+        include_referenced: { type: "boolean", description: "Include referenced files" },
+        flatten_tree: { type: "boolean", description: "Flatten folder structure" },
+      },
+      required: ["output_folder"],
+    },
+  },
+  {
+    name: "sw_edrawings_export",
+    description: "Export to eDrawings format for viewing.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        output_path: { type: "string", description: "Output eDrawings file path" },
+        include_drawings: { type: "boolean", description: "Include drawings" },
+        password_protect: { type: "boolean", description: "Password protect" },
+      },
+      required: ["output_path"],
+    },
+  },
+  {
+    name: "sw_defeature",
+    description: "Defeature part/assembly to remove details for sharing.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        output_path: { type: "string", description: "Output defeatured file path" },
+        remove_features: { type: "array", items: { type: "string" }, description: "Feature names to remove" },
+        remove_components: { type: "array", items: { type: "string" }, description: "Component names to remove" },
+      },
+      required: ["output_path"],
+    },
+  },
+
+  // === Large Assembly Optimization ===
+  {
+    name: "sw_create_speedpak",
+    description: "Create SpeedPak configuration for large assembly performance.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        config_name: { type: "string", description: "SpeedPak configuration name" },
+        include_faces: { type: "boolean", description: "Include face graphics" },
+        include_sketches: { type: "boolean", description: "Include sketches" },
+      },
+      required: ["config_name"],
+    },
+  },
+  {
+    name: "sw_configure_large_assembly_mode",
+    description: "Configure Large Assembly Mode settings.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        enable: { type: "boolean", description: "Enable Large Assembly Mode" },
+        threshold: { type: "number", description: "Component count threshold" },
+        lightweight_components: { type: "boolean", description: "Use lightweight components" },
+        hide_planes: { type: "boolean", description: "Hide reference planes" },
+      },
+      required: ["enable"],
+    },
+  },
+
+  // === Design Library ===
+  {
+    name: "sw_design_library_item",
+    description: "Add item to or retrieve from Design Library.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        action: { type: "string", enum: ["add", "retrieve", "list"], description: "Action" },
+        library_path: { type: "string", description: "Library folder path" },
+        item_name: { type: "string", description: "Item name" },
+        file_path: { type: "string", description: "File to add (for add action)" },
+      },
+      required: ["action"],
+    },
+  },
+  {
+    name: "sw_insert_smart_component",
+    description: "Insert or configure Smart Component with associated features.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        component_path: { type: "string", description: "Smart component file path" },
+        position: { type: "array", items: { type: "number" }, description: "Insertion position [x, y, z]" },
+        auto_insert_features: { type: "boolean", description: "Auto-insert associated features" },
+      },
+      required: ["component_path"],
+    },
+  },
+
+  // === Compare & Analysis ===
+  {
+    name: "sw_compare_documents",
+    description: "Compare two documents and report differences.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        file1_path: { type: "string", description: "First document path" },
+        file2_path: { type: "string", description: "Second document path" },
+        compare_type: { type: "string", enum: ["geometry", "features", "properties", "all"], description: "Comparison type" },
+      },
+      required: ["file1_path", "file2_path"],
+    },
+  },
+  {
+    name: "sw_run_design_checker",
+    description: "Run Design Checker against standards.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        standard: { type: "string", enum: ["ASME Y14.5", "ISO", "custom"], description: "Standard to check" },
+        check_types: { type: "array", items: { type: "string" }, description: "Types of checks to run" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "sw_sustainability_analyze",
+    description: "Run sustainability/environmental impact analysis.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        material: { type: "string", description: "Material name" },
+        manufacturing_process: { type: "string", enum: ["machining", "casting", "injection_molding", "3d_printing"], description: "Manufacturing process" },
+        region: { type: "string", enum: ["north_america", "europe", "asia", "global"], description: "Manufacturing region" },
+      },
+      required: [],
+    },
+  },
+
+  // === Scan to 3D ===
+  {
+    name: "sw_import_mesh",
+    description: "Import mesh/scan data for reverse engineering.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        file_path: { type: "string", description: "Mesh file path (STL, OBJ, PLY, etc.)" },
+        units: { type: "string", enum: ["meters", "millimeters", "inches"], description: "File units" },
+        simplify: { type: "boolean", description: "Simplify mesh" },
+        target_faces: { type: "number", description: "Target face count for simplification" },
+      },
+      required: ["file_path"],
+    },
+  },
+  {
+    name: "sw_mesh_to_solid",
+    description: "Convert mesh to solid body.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        mesh_body_name: { type: "string", description: "Mesh body name" },
+        tolerance: { type: "number", description: "Conversion tolerance in meters" },
+        fill_holes: { type: "boolean", description: "Fill holes in mesh" },
+      },
+      required: ["mesh_body_name"],
+    },
+  },
 ];
 
 /**
