@@ -2095,6 +2095,518 @@ async def check_tema(request: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# =============================================================================
+# PHASE 25.3-25.13 - NEW VALIDATOR ENDPOINTS
+# =============================================================================
+
+
+@app.post("/phase25/check-fabrication")
+async def check_fabrication(request: dict):
+    """
+    Validate part fabrication feasibility.
+
+    Request body:
+        thickness_in: Float - Material thickness
+        length_in: Float - Part length
+        width_in: Float - Part width
+        holes: List[dict] - Hole data [{diameter, x, y}]
+        slots: List[dict] - Slot data [{width, length, x, y}]
+        bends: List[dict] - Bend data [{angle, radius, length}]
+        notches: List[dict] - Notch data [{width, depth}]
+        process: String - "plasma", "laser", "waterjet", "oxyfuel" (optional)
+
+    Returns:
+        Fabrication feasibility results with manufacturability assessment
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.fabrication_feasibility_validator import (
+            FabricationFeasibilityValidator, PartGeometry, FabricationProcess
+        )
+
+        validator = FabricationFeasibilityValidator()
+
+        # Parse process
+        process_str = request.get("process", "plasma").lower()
+        process_map = {
+            "plasma": FabricationProcess.PLASMA,
+            "laser": FabricationProcess.LASER,
+            "waterjet": FabricationProcess.WATERJET,
+            "oxyfuel": FabricationProcess.OXYFUEL,
+        }
+        process = process_map.get(process_str, FabricationProcess.PLASMA)
+
+        geometry = PartGeometry(
+            thickness=request.get("thickness_in", 0.5),
+            length=request.get("length_in", 48),
+            width=request.get("width_in", 24),
+            holes=request.get("holes", []),
+            slots=request.get("slots", []),
+            bends=request.get("bends", []),
+            notches=request.get("notches", []),
+        )
+
+        result = validator.validate_part(geometry, process)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Fabrication check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-inspection")
+async def check_inspection(request: dict):
+    """
+    Validate inspection and QC requirements.
+
+    Request body:
+        welds: List[dict] - Weld inspection data
+        dimensional_features: List[dict] - Critical dimensions
+        surface_requirements: dict - Surface finish requirements
+        pressure_test: dict - Pressure test data (optional)
+        material_certs: List[str] - Required certifications
+
+    Returns:
+        Inspection/QC validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.inspection_qc_validator import (
+            InspectionQCValidator, WeldInspectionData, InspectionPlanData, NDEMethod, WeldCategory
+        )
+
+        validator = InspectionQCValidator()
+
+        # Create inspection plan
+        plan = InspectionPlanData(
+            drawing_number=request.get("drawing_number", ""),
+            revision=request.get("revision", "A"),
+            code=request.get("code", "AWS D1.1"),
+        )
+
+        result = validator.validate_inspection_plan(plan)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Inspection check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-cross-part")
+async def check_cross_part(request: dict):
+    """
+    Validate cross-part interface compatibility.
+
+    Request body:
+        interfaces: List[dict] - Part interface definitions
+            Each: {part_a, part_b, interface_type, hole_patterns, fit_class}
+
+    Returns:
+        Cross-part compatibility results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.cross_part_validator import (
+            CrossPartValidator, PartInterface, HolePattern, InterfaceType, FitClass
+        )
+
+        validator = CrossPartValidator()
+
+        interfaces = []
+        for iface in request.get("interfaces", []):
+            interface = PartInterface(
+                part_a_id=iface.get("part_a", ""),
+                part_b_id=iface.get("part_b", ""),
+                interface_type=InterfaceType(iface.get("interface_type", "bolted")),
+            )
+            interfaces.append(interface)
+
+        result = validator.validate_assembly(interfaces)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Cross-part check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-materials")
+async def check_materials(request: dict):
+    """
+    Validate material specifications and surface finishing.
+
+    Request body:
+        material_spec: String - Material specification (e.g., "A36", "A572-50")
+        thickness_in: Float - Material thickness
+        coating_system: String - Coating system ID (e.g., "C1", "HDG")
+        surface_prep: String - Surface prep level (e.g., "SP6", "SP10")
+        service_environment: String - "mild", "moderate", "severe"
+        galvanizing: dict - Galvanizing requirements (optional)
+
+    Returns:
+        Materials and finishing validation results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.materials_finishing_validator import (
+            MaterialsFinishingValidator, MaterialSpec, CoatingSpec, SurfacePrep
+        )
+
+        validator = MaterialsFinishingValidator()
+
+        # Validate material
+        material = MaterialSpec(
+            specification=request.get("material_spec", "A36"),
+            thickness=request.get("thickness_in"),
+            mtr_required=request.get("mtr_required", False),
+        )
+
+        mat_result = validator.validate_material(
+            material,
+            application=request.get("application", "structural")
+        )
+
+        # Validate coating if specified
+        coating_result = None
+        if request.get("coating_system"):
+            prep_str = request.get("surface_prep", "SP6").upper()
+            prep_map = {
+                "SP1": SurfacePrep.SP1, "SP2": SurfacePrep.SP2, "SP3": SurfacePrep.SP3,
+                "SP5": SurfacePrep.SP5, "SP6": SurfacePrep.SP6, "SP7": SurfacePrep.SP7,
+                "SP10": SurfacePrep.SP10, "SP11": SurfacePrep.SP11, "SP14": SurfacePrep.SP14,
+            }
+
+            coating = CoatingSpec(
+                coating_system=request.get("coating_system"),
+                surface_prep=prep_map.get(prep_str, SurfacePrep.SP6),
+                total_dft_mils=request.get("dft_mils"),
+                service_environment=request.get("service_environment", "moderate"),
+            )
+
+            coating_result = validator.validate_coating_system(
+                coating,
+                service_life_years=request.get("service_life_years", 20)
+            )
+
+        combined = validator.to_dict(mat_result)
+        if coating_result:
+            combined["coating"] = validator.to_dict(coating_result)
+
+        return combined
+
+    except Exception as e:
+        logger.error(f"Materials check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-fasteners")
+async def check_fasteners(request: dict):
+    """
+    Validate fastener and bolted connection specifications.
+
+    Request body:
+        bolts: List[dict] - Bolt specifications
+            Each: {diameter, grade, connection_type, hole_type}
+        connection: dict - Connection data
+            {grip_length, load_kips, load_type, edge_distance, bolt_spacing}
+
+    Returns:
+        Fastener validation results with torque calculations
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.fastener_validator import (
+            FastenerValidator, BoltData, ConnectionData, BoltGrade, ConnectionType, HoleType
+        )
+
+        validator = FastenerValidator()
+
+        # Parse bolts
+        bolts = []
+        for b in request.get("bolts", []):
+            grade_str = b.get("grade", "A325").upper()
+            grade_map = {
+                "A325": BoltGrade.A325, "A490": BoltGrade.A490, "A307": BoltGrade.A307,
+                "F1852": BoltGrade.F1852, "F2280": BoltGrade.F2280,
+            }
+
+            conn_str = b.get("connection_type", "snug_tight").lower()
+            conn_map = {
+                "snug_tight": ConnectionType.SNUG_TIGHT,
+                "pretensioned": ConnectionType.PRETENSIONED,
+                "slip_critical": ConnectionType.SLIP_CRITICAL,
+            }
+
+            hole_str = b.get("hole_type", "STD").upper()
+            hole_map = {
+                "STD": HoleType.STANDARD, "OVS": HoleType.OVERSIZED,
+                "SSL": HoleType.SHORT_SLOT, "LSL": HoleType.LONG_SLOT,
+            }
+
+            bolt = BoltData(
+                diameter=b.get("diameter", 0.75),
+                grade=grade_map.get(grade_str, BoltGrade.A325),
+                length=b.get("length"),
+                connection_type=conn_map.get(conn_str, ConnectionType.SNUG_TIGHT),
+                hole_type=hole_map.get(hole_str, HoleType.STANDARD),
+                specified_torque=b.get("torque"),
+                lubricated=b.get("lubricated", False),
+            )
+            bolts.append(bolt)
+
+        # Create connection
+        conn_data = request.get("connection", {})
+        connection = ConnectionData(
+            bolts=bolts,
+            grip_length=conn_data.get("grip_length", 0),
+            load_kips=conn_data.get("load_kips", 0),
+            load_type=conn_data.get("load_type", "shear"),
+            faying_surface=conn_data.get("faying_surface", "class_a"),
+            edge_distance=conn_data.get("edge_distance"),
+            bolt_spacing=conn_data.get("bolt_spacing"),
+        )
+
+        result = validator.validate_connection(connection)
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"Fastener check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-rigging")
+async def check_rigging(request: dict):
+    """
+    Validate lifting lugs and rigging arrangements per ASME BTH-1.
+
+    Request body:
+        lug: dict - Lifting lug data
+            {plate_thickness, plate_width, hole_diameter, edge_distance,
+             throat_width, material, rated_load_lbs, sling_angle_deg,
+             weld_size, weld_length, load_class}
+        rigging: dict - Rigging arrangement (optional)
+            {total_load_lbs, center_of_gravity, lift_points}
+
+    Returns:
+        Rigging validation with stress calculations
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.rigging_validator import (
+            RiggingValidator, LiftingLugData, RiggingData, LoadClass
+        )
+
+        validator = RiggingValidator()
+
+        lug_data = request.get("lug", {})
+        load_class_str = lug_data.get("load_class", "A").upper()
+        load_class_map = {
+            "A": LoadClass.CLASS_A, "B": LoadClass.CLASS_B,
+            "C": LoadClass.CLASS_C, "D": LoadClass.CLASS_D,
+        }
+
+        lug = LiftingLugData(
+            load_class=load_class_map.get(load_class_str, LoadClass.CLASS_A),
+            plate_thickness=lug_data.get("plate_thickness", 0.5),
+            plate_width=lug_data.get("plate_width", 4),
+            hole_diameter=lug_data.get("hole_diameter", 1.0),
+            edge_distance=lug_data.get("edge_distance", 1.5),
+            throat_width=lug_data.get("throat_width", 3),
+            material=lug_data.get("material", "A36"),
+            rated_load_lbs=lug_data.get("rated_load_lbs", 5000),
+            sling_angle_deg=lug_data.get("sling_angle_deg", 90),
+            weld_size=lug_data.get("weld_size", 0.25),
+            weld_length=lug_data.get("weld_length", 8),
+        )
+
+        result = validator.validate_lifting_lug(lug)
+        output = validator.to_dict(result)
+
+        # Check rigging arrangement if provided
+        if request.get("rigging"):
+            rig_data = request["rigging"]
+            rigging = RiggingData(
+                total_load_lbs=rig_data.get("total_load_lbs", 0),
+                center_of_gravity=tuple(rig_data.get("center_of_gravity", [0, 0, 0])),
+                lift_points=[tuple(p) for p in rig_data.get("lift_points", [])],
+            )
+            rig_result = validator.validate_rigging_arrangement(rigging)
+            output["rigging_arrangement"] = validator.to_dict(rig_result)
+
+        return output
+
+    except Exception as e:
+        logger.error(f"Rigging check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/check-documentation")
+async def check_documentation(request: dict):
+    """
+    Validate drawing documentation completeness.
+
+    Request body:
+        title_block: dict - Title block fields
+            {drawing_number, revision, title, scale, sheet, drawn_by, etc.}
+        notes: dict - Drawing notes
+            {general_notes: [], local_notes: [], flag_notes: []}
+        drawing_type: String - "detail", "assembly", "weldment", etc.
+        documentation_level: String - "commercial", "industrial", "nuclear", etc.
+        bom: List[dict] - Bill of materials (optional)
+
+    Returns:
+        Documentation completeness results
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.documentation_validator import (
+            DocumentationValidator, TitleBlockData, DrawingNotes,
+            DrawingType, DocumentationLevel
+        )
+
+        validator = DocumentationValidator()
+
+        # Parse title block
+        tb_data = request.get("title_block", {})
+        title_block = TitleBlockData(
+            drawing_number=tb_data.get("drawing_number"),
+            revision=tb_data.get("revision"),
+            title=tb_data.get("title"),
+            scale=tb_data.get("scale"),
+            sheet=tb_data.get("sheet"),
+            drawn_by=tb_data.get("drawn_by"),
+            drawn_date=tb_data.get("date"),
+            checked_by=tb_data.get("checked_by"),
+            approved_by=tb_data.get("approved_by"),
+            material=tb_data.get("material"),
+            finish=tb_data.get("finish"),
+        )
+
+        # Parse notes
+        notes_data = request.get("notes", {})
+        notes = DrawingNotes(
+            general_notes=notes_data.get("general_notes", []),
+            local_notes=notes_data.get("local_notes", []),
+            flag_notes=notes_data.get("flag_notes", []),
+            bill_of_materials=request.get("bom", []),
+        )
+
+        # Parse enums
+        type_str = request.get("drawing_type", "detail").lower()
+        type_map = {
+            "detail": DrawingType.DETAIL, "assembly": DrawingType.ASSEMBLY,
+            "weldment": DrawingType.WELDMENT, "machined_part": DrawingType.MACHINED_PART,
+            "sheet_metal": DrawingType.SHEET_METAL, "pressure_vessel": DrawingType.PRESSURE_VESSEL,
+        }
+
+        level_str = request.get("documentation_level", "industrial").lower()
+        level_map = {
+            "commercial": DocumentationLevel.COMMERCIAL,
+            "industrial": DocumentationLevel.INDUSTRIAL,
+            "nuclear": DocumentationLevel.NUCLEAR,
+            "aerospace": DocumentationLevel.AEROSPACE,
+            "pressure": DocumentationLevel.PRESSURE_VESSEL,
+        }
+
+        # Run validations
+        tb_result = validator.validate_title_block(
+            title_block,
+            level=level_map.get(level_str, DocumentationLevel.INDUSTRIAL)
+        )
+
+        notes_result = validator.validate_notes(
+            notes,
+            drawing_type=type_map.get(type_str, DrawingType.DETAIL),
+            level=level_map.get(level_str, DocumentationLevel.INDUSTRIAL)
+        )
+
+        # Combine results
+        output = validator.to_dict(tb_result)
+        output["notes_validation"] = validator.to_dict(notes_result)
+
+        # BOM validation if assembly
+        if request.get("bom") and type_str in ["assembly", "weldment"]:
+            bom_result = validator.validate_bom(
+                request["bom"],
+                drawing_type=type_map.get(type_str, DrawingType.ASSEMBLY)
+            )
+            output["bom_validation"] = validator.to_dict(bom_result)
+
+        return output
+
+    except Exception as e:
+        logger.error(f"Documentation check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/generate-report")
+async def generate_report(request: dict):
+    """
+    Generate comprehensive validation report from multiple validator results.
+
+    Request body:
+        drawing_number: String
+        drawing_revision: String
+        project_name: String (optional)
+        validator_results: dict - Results from individual validators
+            {validator_name: result_dict, ...}
+        format: String - "json", "html", "markdown" (default: json)
+        level: String - "summary", "standard", "detailed" (default: standard)
+
+    Returns:
+        Comprehensive validation report in specified format
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.report_generator import (
+            ReportGenerator, ReportFormat, ReportLevel
+        )
+
+        generator = ReportGenerator()
+
+        # Add all validator results
+        for name, result in request.get("validator_results", {}).items():
+            generator.add_result(name, result)
+
+        # Parse level
+        level_str = request.get("level", "standard").lower()
+        level_map = {
+            "summary": ReportLevel.SUMMARY,
+            "standard": ReportLevel.STANDARD,
+            "detailed": ReportLevel.DETAILED,
+            "debug": ReportLevel.DEBUG,
+        }
+
+        # Generate report
+        report = generator.generate_report(
+            drawing_number=request.get("drawing_number"),
+            drawing_revision=request.get("drawing_revision"),
+            project_name=request.get("project_name"),
+            level=level_map.get(level_str, ReportLevel.STANDARD)
+        )
+
+        # Export in requested format
+        format_str = request.get("format", "json").lower()
+
+        if format_str == "html":
+            return {"format": "html", "content": generator.export_html()}
+        elif format_str == "markdown":
+            return {"format": "markdown", "content": generator.export_markdown()}
+        else:
+            return {"format": "json", "content": generator.export_json()}
+
+    except Exception as e:
+        logger.error(f"Report generation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/kill")
 async def kill():
     """Emergency stop - activate kill switch."""
