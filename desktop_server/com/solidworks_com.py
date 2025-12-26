@@ -239,6 +239,167 @@ async def connect():
     return {"status": "ok", "version": app.RevisionNumber}
 
 
+@router.post("/screenshot_viewport")
+async def screenshot_viewport():
+    """Capture screenshot of only the 3D viewport (excludes toolbars, feature tree)."""
+    try:
+        import win32gui
+        import mss
+        from PIL import Image
+        import base64
+        import io
+    except ImportError:
+        raise HTTPException(status_code=500, detail="Required modules not available")
+    
+    logger.info("Capturing SolidWorks viewport screenshot")
+    
+    # Find SolidWorks window
+    hwnd = None
+    def callback(hwnd_param, _):
+        nonlocal hwnd
+        if win32gui.IsWindowVisible(hwnd_param):
+            title = win32gui.GetWindowText(hwnd_param)
+            if "solidworks" in title.lower():
+                hwnd = hwnd_param
+                return False
+        return True
+    
+    win32gui.EnumWindows(callback, None)
+    
+    if not hwnd:
+        raise HTTPException(status_code=404, detail="SolidWorks window not found")
+    
+    # Get window rect
+    rect = win32gui.GetWindowRect(hwnd)
+    window_width = rect[2] - rect[0]
+    window_height = rect[3] - rect[1]
+    
+    # Estimate viewport region (typically right 70% of window, excluding top menu bar)
+    menu_bar_height = 100
+    feature_tree_width = int(window_width * 0.25)
+    
+    viewport_x = rect[0] + feature_tree_width
+    viewport_y = rect[1] + menu_bar_height
+    viewport_width = window_width - feature_tree_width
+    viewport_height = window_height - menu_bar_height
+    
+    # Capture region
+    with mss.mss() as sct:
+        monitor = {"left": viewport_x, "top": viewport_y, "width": viewport_width, "height": viewport_height}
+        sct_img = sct.grab(monitor)
+        img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
+    
+    # Convert to base64
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    image_b64 = base64.b64encode(buffer.getvalue()).decode()
+    
+    return {
+        "status": "ok",
+        "image": image_b64,
+        "width": img.width,
+        "height": img.height
+    }
+
+
+@router.post("/screenshot_feature_tree")
+async def screenshot_feature_tree():
+    """Capture screenshot of the feature tree panel."""
+    try:
+        import win32gui
+        from controllers.screen import screenshot_region, RegionRequest
+    except ImportError:
+        raise HTTPException(status_code=500, detail="Required modules not available")
+    
+    logger.info("Capturing SolidWorks feature tree screenshot")
+    
+    # Find SolidWorks window
+    hwnd = None
+    def callback(hwnd_param, _):
+        nonlocal hwnd
+        if win32gui.IsWindowVisible(hwnd_param):
+            title = win32gui.GetWindowText(hwnd_param)
+            if "solidworks" in title.lower():
+                hwnd = hwnd_param
+                return False
+        return True
+    
+    win32gui.EnumWindows(callback, None)
+    
+    if not hwnd:
+        raise HTTPException(status_code=404, detail="SolidWorks window not found")
+    
+    # Get window rect
+    rect = win32gui.GetWindowRect(hwnd)
+    window_width = rect[2] - rect[0]
+    window_height = rect[3] - rect[1]
+    
+    # Feature tree is typically left 25% of window, below menu bar
+    menu_bar_height = 100
+    feature_tree_width = int(window_width * 0.25)
+    
+    tree_x = rect[0]
+    tree_y = rect[1] + menu_bar_height
+    tree_width = feature_tree_width
+    tree_height = window_height - menu_bar_height
+    
+    return await screenshot_region(RegionRequest(
+        x=tree_x,
+        y=tree_y,
+        width=tree_width,
+        height=tree_height
+    ))
+
+
+@router.post("/screenshot_property_manager")
+async def screenshot_property_manager():
+    """Capture screenshot of the property manager panel."""
+    try:
+        import win32gui
+        from controllers.screen import screenshot_region, RegionRequest
+    except ImportError:
+        raise HTTPException(status_code=500, detail="Required modules not available")
+    
+    logger.info("Capturing SolidWorks property manager screenshot")
+    
+    # Find SolidWorks window
+    hwnd = None
+    def callback(hwnd_param, _):
+        nonlocal hwnd
+        if win32gui.IsWindowVisible(hwnd_param):
+            title = win32gui.GetWindowText(hwnd_param)
+            if "solidworks" in title.lower():
+                hwnd = hwnd_param
+                return False
+        return True
+    
+    win32gui.EnumWindows(callback, None)
+    
+    if not hwnd:
+        raise HTTPException(status_code=404, detail="SolidWorks window not found")
+    
+    # Get window rect
+    rect = win32gui.GetWindowRect(hwnd)
+    window_width = rect[2] - rect[0]
+    window_height = rect[3] - rect[1]
+    
+    # Property manager is typically right side, ~300px wide
+    property_manager_width = 300
+    menu_bar_height = 100
+    
+    pm_x = rect[2] - property_manager_width
+    pm_y = rect[1] + menu_bar_height
+    pm_width = property_manager_width
+    pm_height = window_height - menu_bar_height
+    
+    return await screenshot_region(RegionRequest(
+        x=pm_x,
+        y=pm_y,
+        width=pm_width,
+        height=pm_height
+    ))
+
+
 @router.post("/new_part")
 async def new_part():
     """Create a new part document."""
