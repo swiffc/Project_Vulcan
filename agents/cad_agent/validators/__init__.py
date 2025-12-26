@@ -66,6 +66,20 @@ from .member_capacity_validator import (
     MemberCapacityValidator, MemberCapacityResult, MemberData
 )
 
+# Phase 25.3-25.12 - New Validators
+from .fabrication_feasibility_validator import (
+    FabricationFeasibilityValidator, FabricationValidationResult,
+    PartGeometry, FabricationProcess
+)
+from .inspection_qc_validator import (
+    InspectionQCValidator, InspectionValidationResult,
+    WeldInspectionData, InspectionPlanData, NDEMethod, WeldCategory
+)
+from .cross_part_validator import (
+    CrossPartValidator, CrossPartValidationResult,
+    PartInterface, HolePattern, InterfaceType, FitClass
+)
+
 __all__ = [
     # Core validators
     "ValidationOrchestrator",
@@ -159,4 +173,21 @@ __all__ = [
     "MemberCapacityValidator",
     "MemberCapacityResult",
     "MemberData",
+    # Phase 25.3-25.12 - New Validators
+    "FabricationFeasibilityValidator",
+    "FabricationValidationResult",
+    "PartGeometry",
+    "FabricationProcess",
+    "InspectionQCValidator",
+    "InspectionValidationResult",
+    "WeldInspectionData",
+    "InspectionPlanData",
+    "NDEMethod",
+    "WeldCategory",
+    "CrossPartValidator",
+    "CrossPartValidationResult",
+    "PartInterface",
+    "HolePattern",
+    "InterfaceType",
+    "FitClass",
 ]
