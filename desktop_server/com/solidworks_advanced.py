@@ -567,6 +567,280 @@ class CostingRequest(BaseModel):
     labor_rate: Optional[float] = Field(None, description="Labor rate per hour")
 
 
+# --- MOTION STUDIES ---
+class MotionStudyRequest(BaseModel):
+    """Create motion study."""
+    study_name: str = Field("Motion Study 1", description="Study name")
+    study_type: Literal["animation", "basic_motion", "motion_analysis"] = "animation"
+
+
+class MotorRequest(BaseModel):
+    """Add motor to motion study."""
+    component: str = Field(..., description="Component to apply motor to")
+    motor_type: Literal["rotary", "linear"] = "rotary"
+    speed: float = Field(60.0, description="RPM for rotary or mm/s for linear")
+    direction: Optional[List[float]] = Field(None, description="Direction vector for linear motor")
+
+
+class MotionKeyframeRequest(BaseModel):
+    """Add motion keyframe."""
+    time: float = Field(..., description="Time in seconds")
+    component: str = Field(..., description="Component to animate")
+    position: Optional[List[float]] = Field(None, description="Position [x, y, z] in meters")
+    rotation: Optional[List[float]] = Field(None, description="Rotation [rx, ry, rz] in degrees")
+
+
+# --- PDM/VAULT INTEGRATION ---
+class PDMCheckInRequest(BaseModel):
+    """Check in file to PDM vault."""
+    file_path: str = Field(..., description="File path to check in")
+    comments: str = Field("", description="Check-in comments")
+    keep_checked_out: bool = Field(False, description="Keep file checked out after check-in")
+
+
+class PDMCheckOutRequest(BaseModel):
+    """Check out file from PDM vault."""
+    file_path: str = Field(..., description="File path to check out")
+    version: Optional[int] = Field(None, description="Specific version to check out (None=latest)")
+
+
+class PDMGetHistoryRequest(BaseModel):
+    """Get file version history from PDM."""
+    file_path: str = Field(..., description="File path")
+
+
+class PDMSearchRequest(BaseModel):
+    """Search PDM vault."""
+    search_text: str = Field(..., description="Search text")
+    search_in: Literal["filename", "description", "custom_properties", "all"] = "all"
+    file_types: List[str] = Field(["sldprt", "sldasm", "slddrw"], description="File extensions to search")
+
+
+# --- RENDERING/PHOTOVIEW 360 ---
+class RenderRequest(BaseModel):
+    """Render current view with PhotoView 360."""
+    output_path: str = Field(..., description="Output image path")
+    width: int = Field(1920, description="Image width in pixels")
+    height: int = Field(1080, description="Image height in pixels")
+    quality: Literal["draft", "good", "better", "best", "maximum"] = "good"
+    output_format: Literal["png", "jpg", "bmp", "tif", "hdr"] = "png"
+
+
+class AppearanceRequest(BaseModel):
+    """Apply appearance/material to face or body."""
+    target: str = Field(..., description="Face, body, or component name")
+    appearance_type: Literal[
+        "plastic_glossy", "plastic_matte", "metal_brushed", "metal_polished", "metal_chrome",
+        "glass", "rubber", "wood_oak", "wood_walnut", "carbon_fiber", "leather",
+        "paint_glossy", "paint_matte", "anodized_aluminum", "stainless_steel_brushed",
+        "copper", "brass", "bronze", "gold", "silver", "titanium"
+    ] = Field(..., description="Appearance type")
+    color: Optional[List[int]] = Field(None, description="RGB color [r, g, b] 0-255")
+    transparency: float = Field(0.0, description="Transparency 0.0-1.0")
+
+
+class DecalRequest(BaseModel):
+    """Apply decal to face."""
+    face_name: str = Field(..., description="Face to apply decal")
+    image_path: str = Field(..., description="Path to decal image")
+    width: float = Field(0.1, description="Decal width in meters")
+    height: float = Field(0.1, description="Decal height in meters")
+    mapping: Literal["label", "projection", "cylindrical", "spherical"] = "label"
+
+
+class SceneRequest(BaseModel):
+    """Set rendering scene/environment."""
+    scene_name: Literal[
+        "studio_softbox", "studio_3point", "courtyard", "field", "kitchen",
+        "parking_lot", "reflections", "presentation", "product_shot", "custom"
+    ] = "studio_softbox"
+    floor_reflections: bool = Field(True, description="Enable floor reflections")
+    floor_shadows: bool = Field(True, description="Enable floor shadows")
+    background_color: Optional[List[int]] = Field(None, description="Background RGB [r, g, b]")
+
+
+# --- INSPECTION/DIMXPERT ---
+class DimXpertRequest(BaseModel):
+    """Run DimXpert auto-dimensioning."""
+    scheme: Literal["plus_minus", "geometric"] = "geometric"
+    tolerance_class: Literal["fine", "medium", "coarse"] = "medium"
+    primary_datum: Optional[str] = Field(None, description="Primary datum feature")
+    secondary_datum: Optional[str] = Field(None, description="Secondary datum feature")
+    tertiary_datum: Optional[str] = Field(None, description="Tertiary datum feature")
+
+
+class InspectionBalloonRequest(BaseModel):
+    """Add inspection balloon to drawing."""
+    dimension_name: str = Field(..., description="Dimension to balloon")
+    characteristic_number: int = Field(..., description="Characteristic/balloon number")
+    tolerance_type: Literal["bilateral", "unilateral", "limit"] = "bilateral"
+
+
+# --- FLOW SIMULATION (FloXpress/Flow Simulation) ---
+class FlowStudyRequest(BaseModel):
+    """Create flow simulation study."""
+    study_name: str = Field("Flow Study", description="Study name")
+    fluid: Literal[
+        "air", "water", "steam", "nitrogen", "oxygen", "co2", "methane",
+        "oil_SAE30", "oil_SAE40", "hydraulic_fluid", "custom"
+    ] = "air"
+    analysis_type: Literal["internal", "external"] = "internal"
+    steady_state: bool = Field(True, description="Steady-state vs transient")
+
+
+class FlowBoundaryRequest(BaseModel):
+    """Set flow boundary condition."""
+    face_names: List[str] = Field(..., description="Faces for boundary condition")
+    boundary_type: Literal[
+        "inlet_velocity", "inlet_mass_flow", "inlet_volume_flow", "inlet_pressure",
+        "outlet_pressure", "outlet_mass_flow", "outlet_environment",
+        "wall_real", "wall_ideal", "symmetry"
+    ] = "inlet_velocity"
+    value: float = Field(..., description="Boundary value (m/s, kg/s, m3/s, Pa)")
+    temperature: Optional[float] = Field(None, description="Fluid temperature (K)")
+
+
+class FlowGoalRequest(BaseModel):
+    """Set flow simulation goal."""
+    goal_type: Literal[
+        "global_average_velocity", "global_average_pressure", "global_average_temperature",
+        "global_mass_flow_rate", "surface_average_velocity", "surface_average_pressure",
+        "point_velocity", "point_pressure", "point_temperature"
+    ] = "global_average_velocity"
+    target_value: Optional[float] = Field(None, description="Target value for convergence")
+    face_names: Optional[List[str]] = Field(None, description="Faces for surface goal")
+
+
+# --- DISPLAY STATES/APPEARANCES ---
+class DisplayStateRequest(BaseModel):
+    """Create or modify display state."""
+    state_name: str = Field(..., description="Display state name")
+    action: Literal["create", "activate", "delete", "duplicate"] = "create"
+    base_state: Optional[str] = Field(None, description="Base state for duplicate")
+
+
+class ComponentDisplayRequest(BaseModel):
+    """Set component display in current display state."""
+    component: str = Field(..., description="Component name")
+    visibility: Literal["show", "hide", "transparent", "wireframe"] = "show"
+    color: Optional[List[int]] = Field(None, description="Override color RGB [r, g, b]")
+    transparency: float = Field(0.0, description="Transparency 0.0-1.0")
+
+
+# --- PACK AND GO/EDRAWINGS ---
+class PackAndGoRequest(BaseModel):
+    """Pack and Go - package files for sharing."""
+    output_folder: str = Field(..., description="Output folder path")
+    include_drawings: bool = Field(True, description="Include drawing files")
+    include_simulations: bool = Field(False, description="Include simulation results")
+    include_toolbox: bool = Field(False, description="Include Toolbox components (copy)")
+    flatten_structure: bool = Field(False, description="Flatten folder structure")
+    prefix: Optional[str] = Field(None, description="Add prefix to filenames")
+    suffix: Optional[str] = Field(None, description="Add suffix to filenames")
+
+
+class EDrawingsRequest(BaseModel):
+    """Publish to eDrawings format."""
+    output_path: str = Field(..., description="Output file path (.eprt, .easm, .edrw)")
+    include_stl: bool = Field(False, description="Include STL data")
+    include_measurements: bool = Field(True, description="Allow measurements")
+    password: Optional[str] = Field(None, description="Optional password protection")
+
+
+# --- LARGE ASSEMBLY OPTIMIZATION ---
+class SpeedPakRequest(BaseModel):
+    """Create SpeedPak configuration for large assemblies."""
+    config_name: str = Field("SpeedPak", description="SpeedPak configuration name")
+    include_faces: bool = Field(True, description="Include visible faces")
+    include_graphics_bodies: bool = Field(True, description="Include graphics bodies")
+
+
+class LargeAssemblyModeRequest(BaseModel):
+    """Configure Large Assembly Mode settings."""
+    enable: bool = Field(True, description="Enable Large Assembly Mode")
+    threshold: int = Field(500, description="Component count threshold")
+    lightweight_mode: Literal["always", "prompt", "never"] = "prompt"
+    hide_components: bool = Field(False, description="Hide components not in view")
+
+
+class DefeatureRequest(BaseModel):
+    """Defeature part for sharing (remove proprietary geometry)."""
+    output_path: str = Field(..., description="Output file path")
+    remove_features: List[str] = Field(default_factory=list, description="Features to remove")
+    simplify_geometry: bool = Field(True, description="Simplify remaining geometry")
+    silhouette_accuracy: Literal["coarse", "medium", "fine"] = "medium"
+
+
+# --- DESIGN LIBRARY ---
+class DesignLibraryRequest(BaseModel):
+    """Add item to or retrieve from Design Library."""
+    action: Literal["add", "get", "search"] = "get"
+    library_path: str = Field(..., description="Path in Design Library")
+    item_name: Optional[str] = Field(None, description="Item name")
+    category: Literal[
+        "features", "parts", "assemblies", "forming_tools", "annotations", "smart_components"
+    ] = "features"
+
+
+class SmartComponentRequest(BaseModel):
+    """Insert or configure Smart Component."""
+    component_path: str = Field(..., description="Smart component file path")
+    auto_size: bool = Field(True, description="Auto-size to hole/edge")
+    configuration: Optional[str] = Field(None, description="Configuration to use")
+
+
+# --- COMPARE DOCUMENTS ---
+class CompareDocumentsRequest(BaseModel):
+    """Compare two documents."""
+    file1_path: str = Field(..., description="First file path")
+    file2_path: str = Field(..., description="Second file path (or version number)")
+    compare_type: Literal["geometry", "bom", "custom_properties", "features"] = "geometry"
+    tolerance: float = Field(0.0001, description="Comparison tolerance in meters")
+
+
+# --- DESIGN CHECKER ---
+class DesignCheckerRequest(BaseModel):
+    """Run Design Checker against standards."""
+    standards_file: Optional[str] = Field(None, description="Standards file path (.swstd)")
+    check_categories: List[Literal[
+        "dimensions", "tolerances", "annotations", "custom_properties", "materials",
+        "drafting_standards", "fonts", "layers", "units"
+    ]] = Field(default_factory=lambda: ["dimensions", "tolerances"], description="Categories to check")
+    auto_correct: bool = Field(False, description="Auto-correct violations if possible")
+
+
+# --- SUSTAINABILITY ---
+class SustainabilityRequest(BaseModel):
+    """Run sustainability/environmental impact analysis."""
+    manufacturing_region: Literal[
+        "north_america", "europe", "asia_pacific", "china", "india", "south_america"
+    ] = "north_america"
+    use_region: Literal[
+        "north_america", "europe", "asia_pacific", "china", "india", "south_america"
+    ] = "north_america"
+    transportation_distance: float = Field(1000, description="Transportation distance in km")
+    product_lifetime: float = Field(10, description="Expected product lifetime in years")
+    electricity_source: Literal[
+        "grid_average", "coal", "natural_gas", "nuclear", "solar", "wind", "hydro"
+    ] = "grid_average"
+
+
+# --- SCAN TO 3D ---
+class MeshImportRequest(BaseModel):
+    """Import mesh/scan data for reverse engineering."""
+    file_path: str = Field(..., description="Mesh file path (.stl, .obj, .ply, .xyz)")
+    units: Literal["mm", "cm", "m", "in", "ft"] = "mm"
+    reduce_mesh: bool = Field(False, description="Reduce mesh complexity")
+    target_triangle_count: Optional[int] = Field(None, description="Target triangle count if reducing")
+
+
+class MeshToSolidRequest(BaseModel):
+    """Convert mesh to solid body."""
+    mesh_feature: str = Field(..., description="Mesh feature name")
+    method: Literal["automatic", "guided", "surface_wizard"] = "automatic"
+    accuracy: Literal["coarse", "medium", "fine"] = "medium"
+
+
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
