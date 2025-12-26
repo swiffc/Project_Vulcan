@@ -44,6 +44,64 @@ When starting a new task, Claude should briefly state:
 
 ---
 
+## TABLE OF CONTENTS
+
+### Quick Navigation
+
+**Sections:**
+- [Section 0: Mandatory Pre-Work Check](#section-0-mandatory-pre-work-check-read-this-first)
+- [Section 1: Project Overview](#section-1-project-overview)
+- [Section 2: Remote Repository References](#section-2-remote-repository-references-the-key-concept)
+- [Section 3: Build Rules](#section-3-build-rules)
+- [Section 4: Project Structure](#section-4-project-structure)
+- [Section 5: File Naming Conventions](#section-5-file-naming-conventions)
+- [Section 6: The Wrapper Process](#section-6-the-wrapper-process-cloud-to-local)
+- [Section 6A: Elite Engineering Patterns](#section-6a-elite-engineering-patterns-for-learning)
+- [Section 7: Mechanical Engineering Mindset](#section-7-mechanical-engineering-mindset-cad-agent)
+- [Section 8: CAD Agent Decision Trees](#section-8-cad-agent-decision-trees)
+- [Section 9: External Repos to Wrap](#section-9-external-repos-to-wrap-standard-parts--engineering-data)
+- [Section 10: Plan Creation Process](#section-10-plan-creation-process-mandatory-for-all-cad-work)
+- [Section 11: AI Agent Capabilities](#section-11-ai-agent-capabilities-self-aware-system)
+- [Section 12: Phase 20 - Autonomous Learning System](#section-12-phase-20---autonomous-learning-system)
+
+**Key Rules (Grouped by Category):**
+
+*Core Development Rules:*
+- Rule 1: No Cloning
+- Rule 2: Search Before Building
+- Rule 4: Physical Control Architecture
+- Rule 6: Separate Knowledge Bases
+- Rule 7: Clean Markdown Formatting
+- Rule 8: Fail-Safe & Human-in-the-Loop
+- Rule 9: Task-First Workflow (PRD-Led)
+- Rule 10: The Supervisor Orchestration Pattern
+- Rule 11: Producer-Reviewer Verification Loops
+- Rule 13: Single Source of Truth (SSOT)
+- Rule 14: Configuration Over Code
+- Rule 15: Single Responsibility & Lazy Loading
+- Rule 16: Externalize Heavy Data
+- Rule 17: AI Context Files
+
+*Documentation & Task Management:*
+- Rule 22: Forward-Looking Documentation
+- Rule 23: Environment Variables
+- Rule 26: Task Consolidation & File Cleanup
+
+*User Experience:*
+- Rule 18: UX Elite - Streaming & Rich Feedback
+- Rule 19: Visual Proof & Inline Media
+- Rule 20: Voice-First Desk Control
+- Rule 21: Standardized Tools (MCP)
+
+*CAD-Specific Rules:*
+- Rule 24: CAD Part Creation Strategies
+- Rule 25: Think Like a Mechanical Engineer
+- Rule 31: Hard Enforce Pre-Work
+- Rule 33: Universal Assembly Logic
+- Rule 34: The "Best Practice" Modeling Hierarchy
+
+---
+
 ## SECTION 1: PROJECT OVERVIEW
 
 ## What This Is
@@ -724,7 +782,7 @@ sequenceDiagram
 > [!IMPORTANT]
 > This pattern keeps the "Heavy" logic (LLMs/Agents) on Render for 24/7 availability and the "Physical" logic (Automation) on your PC where the software actually lives.
 
-## SECTION 6: ELITE ENGINEERING PATTERNS (FOR LEARNING)
+## SECTION 6A: ELITE ENGINEERING PATTERNS (FOR LEARNING)
 
 Since you are building a "Cloud Brain / Local Muscle" system, here are 3 other powerful patterns we will use:
 

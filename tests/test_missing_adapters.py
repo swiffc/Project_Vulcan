@@ -145,7 +145,7 @@ class TestMissingAdapters:
             "arena": False,  # ❌ MISSING (cloud PLM)
             
             # Drawing Management
-            "flatter_files": True,  # ✅ flatter_files_adapter.py
+            "flatter_files": False,  # ❌ REMOVED - Using offline standards DB
             
             # CAD Libraries
             "digital_twin": True,  # ✅ GitHub repo wrappers
