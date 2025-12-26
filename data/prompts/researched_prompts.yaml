@@ -972,3 +972,1686 @@ prompts:
     temperature: 0.4
     max_tokens: 3000
 
+  # ========================================================================
+  # AISC STRUCTURAL PROMPTS
+  # ========================================================================
+  
+  - id: "structural.aisc_beam_designer"
+    name: "AISC Beam Design Expert"
+    description: "Design and validate steel beams per AISC 360-16"
+    type: "chain_of_thought"
+    category: "engineering"
+    content: |
+      Design and validate a steel beam per AISC 360-16:
+      
+      **Beam Requirements:**
+      ${beam_data}
+      
+      **Design Process - Step by Step:**
+      
+      **1. Load Analysis**
+      - Dead load: ${dead_load} kips
+      - Live load: ${live_load} kips
+      - Factored load: 1.2D + 1.6L = ${factored_load} kips
+      - Maximum moment: ${moment} kip-ft
+      - Maximum shear: ${shear} kips
+      
+      **2. Section Selection**
+      - Try shape: ${shape} (e.g., W16X77)
+      - Material: ${material} (A992, A36, A572-50)
+      - Yield strength: Fy = ${fy} ksi
+      - Check AISC Manual Table 3-2 for available shapes
+      
+      **3. Flexural Capacity (AISC F2)**
+      - Check compact section (AISC B4.1):
+        - Flange: bf/2tf ≤ 0.38√(E/Fy)
+        - Web: h/tw ≤ 3.76√(E/Fy)
+      - If compact: Mn = Mp = Fy × Zx
+      - If non-compact: Check inelastic buckling
+      - If slender: Check elastic buckling
+      - Lateral-torsional buckling check (AISC F2.2):
+        - Lb ≤ Lp: Mn = Mp
+        - Lp < Lb ≤ Lr: Inelastic LTB
+        - Lb > Lr: Elastic LTB
+      
+      **4. Shear Capacity (AISC G2)**
+      - For rolled I-shapes: Vn = 0.6Fy × Aw × Cv
+      - Aw = d × tw (web area)
+      - Cv = 1.0 if h/tw ≤ 2.24√(E/Fy)
+      
+      **5. Deflection Check**
+      - Maximum deflection: Δ = 5wL⁴/(384EI)
+      - Limit: L/360 for live load (floors), L/240 for total load
+      - Check IBC Table 1604.3
+      
+      **6. Serviceability**
+      - Check vibration (if applicable)
+      - Check camber requirements
+      
+      **Output JSON:**
+      {
+        "design_status": "pass|fail|warning",
+        "selected_shape": "string",
+        "material": "string",
+        "flexural_check": {
+          "required_moment_kip_ft": number,
+          "available_moment_kip_ft": number,
+          "dcr": number,
+          "status": "pass|fail",
+          "governing_limit": "yielding|ltb|local_buckling"
+        },
+        "shear_check": {
+          "required_shear_kips": number,
+          "available_shear_kips": number,
+          "dcr": number,
+          "status": "pass|fail"
+        },
+        "deflection_check": {
+          "actual_deflection_in": number,
+          "limit_deflection_in": number,
+          "status": "pass|fail"
+        },
+        "aisc_references": ["F2", "G2", "B4.1"],
+        "recommendations": ["string"]
+      }
+    variables:
+      - beam_data
+      - dead_load
+      - live_load
+      - factored_load
+      - moment
+      - shear
+      - shape
+      - material
+      - fy
+    tags:
+      - aisc
+      - structural
+      - beam
+      - design
+      - validation
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 3000
+
+  - id: "structural.aisc_column_designer"
+    name: "AISC Column Design Expert"
+    description: "Design and validate steel columns per AISC 360-16"
+    type: "chain_of_thought"
+    category: "engineering"
+    content: |
+      Design and validate a steel column per AISC 360-16:
+      
+      **Column Requirements:**
+      ${column_data}
+      
+      **Design Process:**
+      
+      **1. Load Analysis**
+      - Axial load: ${axial_load} kips
+      - Moment X: ${moment_x} kip-ft
+      - Moment Y: ${moment_y} kip-ft
+      - K-factor: ${k_factor} (effective length factor)
+      - Unbraced length: ${length} ft
+      - Effective length: KL = ${k_factor} × ${length} = ${effective_length} ft
+      
+      **2. Section Selection**
+      - Try shape: ${shape} (e.g., W14X68)
+      - Material: ${material}
+      - Check AISC Manual Table 4-1 for available shapes
+      
+      **3. Slenderness Check (AISC E3)**
+      - KL/r ≤ 200 (AISC E2 requirement)
+      - rx = ${rx} in, ry = ${ry} in
+      - (KL/r)x = ${klr_x}
+      - (KL/r)y = ${klr_y}
+      - Use maximum: (KL/r)max = ${klr_max}
+      
+      **4. Compression Capacity (AISC E3)**
+      - If (KL/r) ≤ 4.71√(E/Fy): Fcr = [0.658^(Fy/Fe)] × Fy
+      - If (KL/r) > 4.71√(E/Fy): Fcr = 0.877 × Fe
+      - Fe = π²E/(KL/r)² (Euler buckling stress)
+      - Pn = Fcr × Ag (nominal capacity)
+      - φPn = 0.90 × Pn (LRFD design strength)
+      
+      **5. Flexural Capacity**
+      - Check strong-axis bending (AISC F2)
+      - Check weak-axis bending (AISC F6)
+      - Use interaction equation (AISC H1)
+      
+      **6. Combined Forces (AISC H1)**
+      - Interaction equation: Pr/Pc + Mrx/Mcx + Mry/Mcy ≤ 1.0
+      - Pr = required axial load
+      - Pc = available axial capacity
+      - Mrx, Mry = required moments
+      - Mcx, Mcy = available moments
+      
+      **Output JSON:**
+      {
+        "design_status": "pass|fail|warning",
+        "selected_shape": "string",
+        "material": "string",
+        "compression_check": {
+          "required_load_kips": number,
+          "available_load_kips": number,
+          "dcr": number,
+          "klr": number,
+          "status": "pass|fail"
+        },
+        "flexural_check": {
+          "required_moment_kip_ft": number,
+          "available_moment_kip_ft": number,
+          "dcr": number,
+          "status": "pass|fail"
+        },
+        "interaction_check": {
+          "interaction_ratio": number,
+          "limit": 1.0,
+          "status": "pass|fail"
+        },
+        "aisc_references": ["E3", "F2", "H1"],
+        "recommendations": ["string"]
+      }
+    variables:
+      - column_data
+      - axial_load
+      - moment_x
+      - moment_y
+      - k_factor
+      - length
+      - effective_length
+      - shape
+      - material
+      - rx
+      - ry
+      - klr_x
+      - klr_y
+      - klr_max
+    tags:
+      - aisc
+      - structural
+      - column
+      - design
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 3000
+
+  - id: "structural.aisc_connection_designer"
+    name: "AISC Connection Design Expert"
+    description: "Design steel connections per AISC 360-16"
+    type: "chain_of_thought"
+    category: "engineering"
+    content: |
+      Design a steel connection per AISC 360-16:
+      
+      **Connection Requirements:**
+      ${connection_data}
+      
+      **Connection Type:** ${connection_type} (bolted_shear, bolted_moment, welded_shear, welded_moment, shear_tab, clip_angle)
+      
+      **Design Process:**
+      
+      **1. Load Analysis**
+      - Shear load: ${shear_load} kips
+      - Moment load: ${moment_load} kip-ft (if applicable)
+      - Axial load: ${axial_load} kips (if applicable)
+      
+      **2. Bolt Design (if bolted)**
+      - Bolt diameter: ${bolt_dia}" (3/4", 7/8", 1")
+      - Bolt grade: ${bolt_grade} (A325, A490)
+      - Number of bolts: ${bolt_count}
+      - Bolt spacing: ${spacing}" (min 2.67d, max 14t or 7")
+      - Edge distance: ${edge_dist}" (min 1.5d per AISC J3.4)
+      
+      **Bolt Capacity:**
+      - Shear capacity: Rn = Fnv × Ab × number of bolts
+        - Fnv = 54 ksi (A325), 68 ksi (A490)
+        - Ab = π × (d/2)²
+      - Bearing capacity: Rn = 1.2LctFu ≤ 2.4dtFu
+        - Lc = clear distance
+        - t = plate thickness
+        - Fu = ultimate strength
+      - Tension capacity: Rn = Fnt × Ab
+        - Fnt = 90 ksi (A325), 113 ksi (A490)
+      
+      **3. Weld Design (if welded)**
+      - Weld type: ${weld_type} (fillet, groove)
+      - Weld size: ${weld_size}" (leg size for fillet)
+      - Electrode: ${electrode} (E70XX, E80XX)
+      - Weld length: ${weld_length}"
+      
+      **Weld Capacity:**
+      - Fillet weld: Rn = 0.6 × FEXX × 0.707 × weld_size × length
+        - FEXX = 70 ksi (E70XX), 80 ksi (E80XX)
+      - Groove weld: Rn = 0.6 × FEXX × throat × length
+      
+      **4. Plate Design**
+      - Plate thickness: ${plate_thickness}"
+      - Plate material: ${plate_material}
+      - Check block shear (AISC J4.3)
+      - Check net section (AISC J4.1)
+      
+      **5. Connection Geometry**
+      - Gage: ${gage}" (standard: 3", 3.5", 5.5")
+      - Pitch: ${pitch}" (bolt spacing)
+      - Verify geometry fits within member dimensions
+      
+      **Output JSON:**
+      {
+        "design_status": "pass|fail|warning",
+        "connection_type": "string",
+        "bolt_design": {
+          "bolt_size": "string",
+          "bolt_grade": "string",
+          "bolt_count": number,
+          "shear_capacity_kips": number,
+          "bearing_capacity_kips": number,
+          "required_capacity_kips": number,
+          "dcr": number,
+          "status": "pass|fail"
+        },
+        "weld_design": {
+          "weld_type": "string",
+          "weld_size": number,
+          "weld_capacity_kips": number,
+          "required_capacity_kips": number,
+          "dcr": number,
+          "status": "pass|fail"
+        },
+        "plate_design": {
+          "thickness": number,
+          "block_shear_ok": true|false,
+          "net_section_ok": true|false,
+          "status": "pass|fail"
+        },
+        "aisc_references": ["J3", "J4", "J2"],
+        "recommendations": ["string"]
+      }
+    variables:
+      - connection_data
+      - connection_type
+      - shear_load
+      - moment_load
+      - axial_load
+      - bolt_dia
+      - bolt_grade
+      - bolt_count
+      - spacing
+      - edge_dist
+      - weld_type
+      - weld_size
+      - electrode
+      - weld_length
+      - plate_thickness
+      - plate_material
+      - gage
+      - pitch
+    tags:
+      - aisc
+      - structural
+      - connection
+      - bolts
+      - welding
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 3000
+
+  # ========================================================================
+  # ASME PRESSURE VESSEL & PIPING PROMPTS
+  # ========================================================================
+  
+  - id: "pressure.asme_viii_vessel_designer"
+    name: "ASME VIII Pressure Vessel Designer"
+    description: "Design and validate pressure vessels per ASME VIII Div. 1"
+    type: "chain_of_thought"
+    category: "engineering"
+    content: |
+      Design a pressure vessel per ASME VIII Div. 1:
+      
+      **Vessel Requirements:**
+      ${vessel_data}
+      
+      **Design Process:**
+      
+      **1. Design Conditions**
+      - Design pressure: ${design_pressure} PSI
+      - Design temperature: ${design_temp}°F
+      - Operating pressure: ${operating_pressure} PSI
+      - Operating temperature: ${operating_temp}°F
+      - Material: ${material} (SA-516 Gr70, SA-240 Type 316, etc.)
+      - Allowable stress: S = ${allowable_stress} ksi (from ASME II-D)
+      
+      **2. Shell Thickness (UG-27)**
+      - Inside diameter: ${id}" 
+      - Corrosion allowance: ${ca}" (typically 0.125")
+      - Joint efficiency: E = ${joint_efficiency} (0.85 for double-welded butt, 1.0 for seamless)
+      - Minimum thickness: t = (P × R) / (S × E - 0.6P) + CA
+      - t = (${design_pressure} × ${radius}) / (${allowable_stress} × ${joint_efficiency} - 0.6 × ${design_pressure}) + ${ca}
+      - t = ${calculated_thickness}"
+      - Standard plate thickness: ${standard_thickness}" (round up)
+      
+      **3. Head Design**
+      - Head type: ${head_type} (ellipsoidal, hemispherical, torispherical)
+      - Ellipsoidal (2:1): t = (P × D) / (2S × E - 0.2P) + CA
+      - Hemispherical: t = (P × R) / (2S × E - 0.2P) + CA
+      - Torispherical: Use ASME VIII Fig. UG-34
+      
+      **4. Nozzle Reinforcement (UG-37)**
+      - Nozzle diameter: ${nozzle_dia}"
+      - Required reinforcement area: Ar = d × tr × F
+        - d = nozzle diameter
+        - tr = required shell thickness
+        - F = correction factor (1.0 for set-in nozzles)
+      - Available reinforcement: A1 + A2 + A3 + A4 ≥ Ar
+        - A1 = excess shell thickness
+        - A2 = excess nozzle thickness
+        - A3 = weld area
+        - A4 = pad area (if used)
+      
+      **5. Hydrostatic Test (UG-99)**
+      - Test pressure: Pt = 1.3 × MAWP × (St/S)
+        - MAWP = Maximum Allowable Working Pressure
+        - St = stress at test temperature
+        - S = stress at design temperature
+      - Minimum test pressure: 1.25 × MAWP
+      
+      **6. Openings**
+      - Maximum opening without reinforcement: d ≤ 0.5√(R × t)
+      - Multiple openings: Check spacing requirements
+      - Flange connections: Verify ASME B16.5 compatibility
+      
+      **Output JSON:**
+      {
+        "design_status": "pass|fail|warning",
+        "shell_design": {
+          "calculated_thickness_in": number,
+          "standard_thickness_in": number,
+          "corrosion_allowance_in": number,
+          "status": "pass|fail"
+        },
+        "head_design": {
+          "head_type": "string",
+          "calculated_thickness_in": number,
+          "standard_thickness_in": number,
+          "status": "pass|fail"
+        },
+        "nozzle_reinforcement": {
+          "required_area_in2": number,
+          "available_area_in2": number,
+          "reinforcement_adequate": true|false,
+          "status": "pass|fail"
+        },
+        "hydrostatic_test": {
+          "test_pressure_psi": number,
+          "minimum_test_pressure_psi": number,
+          "status": "pass|fail"
+        },
+        "asme_references": ["UG-27", "UG-37", "UG-99"],
+        "recommendations": ["string"]
+      }
+    variables:
+      - vessel_data
+      - design_pressure
+      - design_temp
+      - operating_pressure
+      - operating_temp
+      - material
+      - allowable_stress
+      - id
+      - ca
+      - joint_efficiency
+      - radius
+      - calculated_thickness
+      - standard_thickness
+      - head_type
+      - nozzle_dia
+    tags:
+      - asme-viii
+      - pressure-vessel
+      - design
+      - validation
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 3000
+
+  - id: "piping.asme_b31_3_designer"
+    name: "ASME B31.3 Piping Designer"
+    description: "Design and validate process piping per ASME B31.3"
+    type: "chain_of_thought"
+    category: "engineering"
+    content: |
+      Design process piping per ASME B31.3:
+      
+      **Piping Requirements:**
+      ${piping_data}
+      
+      **Design Process:**
+      
+      **1. Design Conditions**
+      - Design pressure: ${design_pressure} PSIG
+      - Design temperature: ${design_temp}°F
+      - Material: ${material} (A106-B, A312 TP316, etc.)
+      - Allowable stress: S = ${allowable_stress} ksi (from B31.3 Table A-1)
+      - Quality factor: E = ${quality_factor} (from Table A-1B)
+      - Weld joint strength reduction: W = ${weld_factor} (1.0 for seamless)
+      
+      **2. Pipe Wall Thickness (304.1.2)**
+      - Nominal size: ${nominal_size}" (NPS)
+      - Outside diameter: D = ${od}" (from B36.10M)
+      - Minimum thickness: tm = (P × D) / (2(S × E × W + P × Y)) + CA
+        - P = design pressure
+        - Y = coefficient (0.4 for ferritic, 0.7 for austenitic)
+        - CA = corrosion allowance
+      - tm = (${design_pressure} × ${od}) / (2(${allowable_stress} × ${quality_factor} × ${weld_factor} + ${design_pressure} × ${y_coefficient})) + ${ca}
+      - Standard wall: Check schedule (10, 40, 80, 160, XXS)
+      
+      **3. Pressure Rating**
+      - Maximum allowable pressure: P = 2 × S × E × W × t / (D - 2Yt)
+      - Verify P ≥ design pressure
+      
+      **4. Flexibility Analysis (319.4)**
+      - Thermal expansion: ΔL = α × L × ΔT
+        - α = coefficient of thermal expansion
+        - L = pipe length
+        - ΔT = temperature change
+      - Stress range: SE = √(Sb² + 4St²) ≤ SA
+        - Sb = bending stress
+        - St = torsional stress
+        - SA = allowable stress range
+      - SA = f(1.25Sc + 0.25Sh) for sustained loads
+        - Sc = cold allowable stress
+        - Sh = hot allowable stress
+        - f = stress range reduction factor
+      
+      **5. Branch Reinforcement (304.3)**
+      - Branch connection: ${branch_size}" NPS
+      - Required reinforcement area: Ar = th × d1
+        - th = header thickness
+        - d1 = branch inside diameter
+      - Available reinforcement: Check pad, weldolet, or integrally reinforced fitting
+      
+      **6. Flange Rating**
+      - Verify flange rating ≥ design pressure at design temperature
+      - Use ASME B16.5 pressure-temperature ratings
+      
+      **Output JSON:**
+      {
+        "design_status": "pass|fail|warning",
+        "wall_thickness": {
+          "calculated_thickness_in": number,
+          "standard_schedule": "string",
+          "standard_thickness_in": number,
+          "status": "pass|fail"
+        },
+        "pressure_rating": {
+          "max_allowable_pressure_psi": number,
+          "design_pressure_psi": number,
+          "status": "pass|fail"
+        },
+        "flexibility": {
+          "thermal_expansion_in": number,
+          "stress_range_ksi": number,
+          "allowable_stress_range_ksi": number,
+          "status": "pass|fail"
+        },
+        "branch_reinforcement": {
+          "required_area_in2": number,
+          "available_area_in2": number,
+          "reinforcement_adequate": true|false,
+          "status": "pass|fail"
+        },
+        "b31_3_references": ["304.1.2", "319.4", "304.3"],
+        "recommendations": ["string"]
+      }
+    variables:
+      - piping_data
+      - design_pressure
+      - design_temp
+      - material
+      - allowable_stress
+      - quality_factor
+      - weld_factor
+      - nominal_size
+      - od
+      - y_coefficient
+      - ca
+      - branch_size
+    tags:
+      - asme-b31.3
+      - piping
+      - design
+      - process-piping
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 3000
+
+  # ========================================================================
+  # OSHA SAFETY PROMPTS
+  # ========================================================================
+  
+  - id: "safety.osha_handrail_validator"
+    name: "OSHA Handrail Validator"
+    description: "Validate handrails per OSHA 1910.29"
+    type: "structured"
+    category: "validation"
+    content: |
+      Validate handrail design per OSHA 1910.29:
+      
+      **Handrail Data:**
+      ${handrail_data}
+      
+      **OSHA 1910.29 Requirements:**
+      
+      **1. Height Requirements**
+      - Top rail height: ${top_rail_height}" (must be 42" ± 3" from walking surface)
+      - Mid-rail height: ${mid_rail_height}" (must be 21" from walking surface)
+      - Toe board height: ${toe_board_height}" (must be ≥ 3.5" minimum)
+      
+      **2. Load Requirements**
+      - Top rail: 200 lbs applied in any direction
+      - Mid-rail: 150 lbs applied in any direction
+      - Posts: 200 lbs applied in any direction
+      - Spacing: Posts ≤ 8' on center
+      
+      **3. Opening Requirements**
+      - Maximum opening: 19" (to prevent passage of 19" sphere)
+      - Intermediate rails: Required if opening > 19"
+      - Toe board: Required if objects could fall
+      
+      **4. Material Requirements**
+      - Minimum diameter: 1.5" for top rail (pipe/tube)
+      - Minimum thickness: 0.125" for structural members
+      - Material: ${material} (steel, aluminum, composite)
+      
+      **5. End Conditions**
+      - Handrails must extend beyond top/bottom of stairs
+      - Minimum extension: 12" beyond last step
+      - Return to wall or post
+      
+      **Output JSON:**
+      {
+        "validation_status": "pass|fail|warning",
+        "height_checks": {
+          "top_rail_height_in": number,
+          "top_rail_compliant": true|false,
+          "mid_rail_height_in": number,
+          "mid_rail_compliant": true|false,
+          "toe_board_height_in": number,
+          "toe_board_compliant": true|false
+        },
+        "load_checks": {
+          "top_rail_adequate": true|false,
+          "mid_rail_adequate": true|false,
+          "post_spacing_ok": true|false
+        },
+        "opening_checks": {
+          "max_opening_in": number,
+          "opening_compliant": true|false,
+          "intermediate_rails_required": true|false
+        },
+        "issues": [
+          {
+            "check": "string",
+            "requirement": "string",
+            "actual": "string",
+            "status": "pass|fail|warning"
+          }
+        ],
+        "osha_reference": "1910.29",
+        "recommendations": ["string"]
+      }
+    variables:
+      - handrail_data
+      - top_rail_height
+      - mid_rail_height
+      - toe_board_height
+      - material
+    tags:
+      - osha
+      - safety
+      - handrail
+      - validation
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 2000
+
+  - id: "safety.osha_ladder_validator"
+    name: "OSHA Ladder Validator"
+    description: "Validate ladders per OSHA 1910.27"
+    type: "structured"
+    category: "validation"
+    content: |
+      Validate ladder design per OSHA 1910.27:
+      
+      **Ladder Data:**
+      ${ladder_data}
+      
+      **OSHA 1910.27 Requirements:**
+      
+      **1. Fixed Ladder Requirements**
+      - Rung spacing: ${rung_spacing}" (must be 12" ± 2" uniform)
+      - Rung diameter: ${rung_dia}" (must be ≥ 0.75" for metal, ≥ 1.25" for wood)
+      - Side rail clearance: ${side_rail_clearance}" (must be ≥ 7" from wall)
+      - Ladder width: ${ladder_width}" (must be ≥ 16" between side rails)
+      
+      **2. Safety Requirements**
+      - Cage required if height > 20' (OSHA 1910.27(d))
+      - Landing platforms required every 30' or less
+      - Ladder extensions: 3.5' minimum above landing
+      - Clearance: 7" minimum from wall
+      
+      **3. Load Requirements**
+      - Design load: 250 lbs concentrated + 100 lbs/ft distributed
+      - Safety factor: 4:1 minimum
+      
+      **4. Material Requirements**
+      - Rung material: ${rung_material} (steel, aluminum, fiberglass)
+      - Side rail material: ${side_rail_material}
+      - Corrosion protection required for steel
+      
+      **Output JSON:**
+      {
+        "validation_status": "pass|fail|warning",
+        "dimension_checks": {
+          "rung_spacing_ok": true|false,
+          "rung_diameter_ok": true|false,
+          "side_rail_clearance_ok": true|false,
+          "ladder_width_ok": true|false
+        },
+        "safety_checks": {
+          "cage_required": true|false,
+          "cage_provided": true|false,
+          "landing_platforms_ok": true|false,
+          "extension_height_ok": true|false
+        },
+        "load_checks": {
+          "design_load_adequate": true|false,
+          "safety_factor": number
+        },
+        "issues": [
+          {
+            "check": "string",
+            "requirement": "string",
+            "actual": "string",
+            "status": "pass|fail|warning"
+          }
+        ],
+        "osha_reference": "1910.27",
+        "recommendations": ["string"]
+      }
+    variables:
+      - ladder_data
+      - rung_spacing
+      - rung_dia
+      - side_rail_clearance
+      - ladder_width
+      - rung_material
+      - side_rail_material
+    tags:
+      - osha
+      - safety
+      - ladder
+      - validation
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 2000
+
+  # ========================================================================
+  # THERMAL & PERFORMANCE PROMPTS
+  # ========================================================================
+  
+  - id: "thermal.ache_performance_calculator"
+    name: "ACHE Thermal Performance Calculator"
+    description: "Calculate ACHE thermal performance per API 661"
+    type: "chain_of_thought"
+    category: "engineering"
+    content: |
+      Calculate thermal performance for this ACHE design:
+      
+      **Design Data:**
+      ${thermal_data}
+      
+      **Calculation Process:**
+      
+      **1. Heat Duty**
+      - Process flow rate: ${flow_rate} kg/s
+      - Process inlet temp: ${t_in}°C
+      - Process outlet temp: ${t_out}°C
+      - Specific heat: ${cp} J/kg-K
+      - Heat duty: Q = m × cp × (T_in - T_out)
+      - Q = ${flow_rate} × ${cp} × (${t_in} - ${t_out}) = ${duty} kW
+      
+      **2. LMTD Calculation**
+      - Air inlet: ${t_air_in}°C
+      - Air outlet: ${t_air_out}°C
+      - LMTD = (ΔT1 - ΔT2) / ln(ΔT1/ΔT2)
+        - ΔT1 = ${t_in} - ${t_air_out} = ${delta_t1}°C
+        - ΔT2 = ${t_out} - ${t_air_in} = ${delta_t2}°C
+      - LMTD = ${lmtd}°C
+      - Correction factor: F = ${correction_factor} (for crossflow)
+      
+      **3. Overall Heat Transfer Coefficient**
+      - Clean U: ${u_clean} W/m²-K
+      - Fouling factor: ${fouling_factor} m²-K/W
+      - U_fouled = 1 / (1/U_clean + R_fouling)
+      - U_fouled = ${u_fouled} W/m²-K
+      
+      **4. Required Surface Area**
+      - A = Q / (U × F × LMTD)
+      - A = ${duty} / (${u_fouled} × ${correction_factor} × ${lmtd})
+      - A = ${required_area} m²
+      - Actual area: ${actual_area} m²
+      - Overdesign: ((A_actual - A_required) / A_required) × 100 = ${overdesign}%
+      
+      **5. Air-Side Performance**
+      - Air flow rate: ${air_flow} kg/s
+      - Fan diameter: ${fan_dia} m
+      - Fan speed: ${fan_speed} RPM
+      - Tip speed: v = π × D × N / 60 = ${tip_speed} m/s
+      - API 661 limit: ≤ 61 m/s (200 ft/s)
+      
+      **6. Pressure Drop**
+      - Tube-side ΔP: ${tube_dp} kPa
+      - Air-side ΔP: ${air_dp} Pa
+      - Verify within design limits
+      
+      **7. Approach Temperature**
+      - Minimum approach: T_out_process - T_in_air = ${approach}°C
+      - API 661 minimum: 5°C
+      - Verify: ${approach} ≥ 5°C
+      
+      **Output JSON:**
+      {
+        "calculation_status": "pass|fail|warning",
+        "heat_duty": {
+          "duty_kw": number,
+          "duty_mmbtu_hr": number
+        },
+        "thermal_performance": {
+          "lmtd_c": number,
+          "correction_factor": number,
+          "u_clean_w_m2_k": number,
+          "u_fouled_w_m2_k": number
+        },
+        "surface_area": {
+          "required_m2": number,
+          "actual_m2": number,
+          "overdesign_percent": number,
+          "status": "pass|fail"
+        },
+        "air_side": {
+          "tip_speed_m_s": number,
+          "tip_speed_limit_m_s": 61.0,
+          "tip_speed_ok": true|false,
+          "air_dp_pa": number,
+          "status": "pass|fail"
+        },
+        "approach_temperature": {
+          "min_approach_c": number,
+          "minimum_required_c": 5.0,
+          "status": "pass|fail"
+        },
+        "api_661_references": ["Section 5", "Section 6"],
+        "warnings": ["string"],
+        "recommendations": ["string"]
+      }
+    variables:
+      - thermal_data
+      - flow_rate
+      - t_in
+      - t_out
+      - cp
+      - duty
+      - t_air_in
+      - t_air_out
+      - delta_t1
+      - delta_t2
+      - lmtd
+      - correction_factor
+      - u_clean
+      - fouling_factor
+      - u_fouled
+      - required_area
+      - actual_area
+      - overdesign
+      - air_flow
+      - fan_dia
+      - fan_speed
+      - tip_speed
+      - tube_dp
+      - air_dp
+      - approach
+    tags:
+      - ache
+      - thermal
+      - api661
+      - calculation
+      - performance
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 3000
+
+  # ========================================================================
+  # SHAFT & MECHANICAL PROMPTS
+  # ========================================================================
+  
+  - id: "mechanical.shaft_designer"
+    name: "Shaft Design Expert"
+    description: "Design and validate shafts with keyways and stress analysis"
+    type: "chain_of_thought"
+    category: "engineering"
+    content: |
+      Design a shaft for this application:
+      
+      **Shaft Requirements:**
+      ${shaft_data}
+      
+      **Design Process:**
+      
+      **1. Load Analysis**
+      - Torque: T = ${torque} lb-in
+      - Power: P = ${power} HP
+      - Speed: N = ${speed} RPM
+      - Relationship: T = (P × 63025) / N
+      - Bending moment: M = ${moment} lb-in
+      - Axial load: F = ${axial_load} lbs (if applicable)
+      
+      **2. Material Selection**
+      - Material: ${material} (1045, 4140, 316SS)
+      - Yield strength: Sy = ${sy} ksi
+      - Ultimate strength: Su = ${su} ksi
+      - Endurance limit: Se' = 0.5 × Su (for steel)
+      - Surface finish factor: ka = ${surface_factor}
+      - Size factor: kb = ${size_factor}
+      - Corrected endurance: Se = ka × kb × Se'
+      
+      **3. Shaft Diameter (ASME B106)**
+      - For combined bending and torsion:
+        - Equivalent moment: Me = √(M² + (αT)²)
+        - α = 1.0 for steady torque, 0.75 for fluctuating
+      - Minimum diameter: d = [32 × Me / (π × Se)]^(1/3)
+      - d = [32 × ${me} / (π × ${se})]^(1/3) = ${diameter}"
+      
+      **4. Keyway Design**
+      - Key size: ${key_width}" × ${key_height}" (per ANSI B17.1)
+      - Keyway depth: ${keyway_depth}"
+      - Stress concentration: Kt = ${stress_concentration} (typically 2.0-3.0)
+      - Check keyway stress: τ = 16T / (πd³) × Kt
+      - Verify: τ ≤ 0.577 × Sy / FS (shear yield)
+      
+      **5. Deflection Check**
+      - Maximum deflection: δ = (5wL⁴) / (384EI) or (PL³) / (48EI)
+      - Limit: δ ≤ L/1000 for general, L/5000 for precision
+      
+      **6. Critical Speed**
+      - First critical: Nc = (30/π) × √(g/δ)
+        - g = 386 in/s²
+        - δ = static deflection
+      - Operating speed should be < 0.7 × Nc
+      
+      **Output JSON:**
+      {
+        "design_status": "pass|fail|warning",
+        "shaft_design": {
+          "calculated_diameter_in": number,
+          "standard_diameter_in": number,
+          "material": "string",
+          "status": "pass|fail"
+        },
+        "stress_analysis": {
+          "bending_stress_ksi": number,
+          "torsional_stress_ksi": number,
+          "equivalent_stress_ksi": number,
+          "allowable_stress_ksi": number,
+          "safety_factor": number,
+          "status": "pass|fail"
+        },
+        "keyway_design": {
+          "key_size": "string",
+          "keyway_stress_ksi": number,
+          "allowable_stress_ksi": number,
+          "status": "pass|fail"
+        },
+        "deflection": {
+          "max_deflection_in": number,
+          "limit_deflection_in": number,
+          "status": "pass|fail"
+        },
+        "critical_speed": {
+          "critical_speed_rpm": number,
+          "operating_speed_rpm": number,
+          "speed_ratio": number,
+          "status": "pass|fail"
+        },
+        "references": ["ASME B106", "ANSI B17.1"],
+        "recommendations": ["string"]
+      }
+    variables:
+      - shaft_data
+      - torque
+      - power
+      - speed
+      - moment
+      - axial_load
+      - material
+      - sy
+      - su
+      - surface_factor
+      - size_factor
+      - se
+      - me
+      - diameter
+      - key_width
+      - key_height
+      - keyway_depth
+      - stress_concentration
+    tags:
+      - shaft
+      - mechanical
+      - design
+      - keyway
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 3000
+
+  - id: "mechanical.fastener_selector"
+    name: "Fastener Selection Expert"
+    description: "Select and validate fasteners for connections"
+    type: "chain_of_thought"
+    category: "engineering"
+    content: |
+      Select appropriate fasteners for this connection:
+      
+      **Connection Requirements:**
+      ${connection_data}
+      
+      **Selection Process:**
+      
+      **1. Load Analysis**
+      - Shear load: ${shear_load} lbs
+      - Tension load: ${tension_load} lbs
+      - Combined load: Check interaction
+      - Load type: ${load_type} (static, dynamic, fatigue)
+      
+      **2. Bolt Size Selection**
+      - Required capacity: ${required_capacity} lbs
+      - Try bolt: ${bolt_size}" (1/4", 5/16", 3/8", 1/2", 5/8", 3/4", 7/8", 1")
+      - Bolt grade: ${bolt_grade} (A325, A490, Grade 5, Grade 8)
+      
+      **Bolt Capacities:**
+      - Tensile area: At = ${tensile_area} in² (from ASME B18.2.1)
+      - Shear capacity: Rn = Fnv × At × number of bolts
+        - Fnv = 54 ksi (A325), 68 ksi (A490), 84 ksi (Grade 8)
+      - Tension capacity: Rn = Fnt × At
+        - Fnt = 90 ksi (A325), 113 ksi (A490), 150 ksi (Grade 8)
+      - Combined: Check interaction equation
+      
+      **3. Thread Engagement**
+      - Minimum engagement: L = ${min_engagement}" (typically 1.5 × bolt diameter)
+      - Thread length: ${thread_length}"
+      - Verify: L ≥ 1.5d
+      
+      **4. Hole Type**
+      - Standard hole: d + 1/16" (AISC J3.2)
+      - Oversized hole: d + 1/8"
+      - Slotted hole: d + 1/16" × length
+      - Verify clearance for installation
+      
+      **5. Washer Requirements**
+      - Flat washer: Required for oversized/slotted holes
+      - Hardened washer (F436): Required for A325/A490 in slip-critical
+      - Lock washer: For vibration applications
+      
+      **6. Nut Selection**
+      - Match bolt grade (A325 nut with A325 bolt)
+      - Heavy hex nut: Standard
+      - Nyloc nut: For vibration
+      
+      **Output JSON:**
+      {
+        "selection_status": "pass|fail|warning",
+        "bolt_selection": {
+          "bolt_size": "string",
+          "bolt_grade": "string",
+          "bolt_count": number,
+          "tensile_area_in2": number
+        },
+        "capacity_checks": {
+          "shear_capacity_lbs": number,
+          "tension_capacity_lbs": number,
+          "required_capacity_lbs": number,
+          "safety_factor": number,
+          "status": "pass|fail"
+        },
+        "thread_engagement": {
+          "minimum_engagement_in": number,
+          "actual_engagement_in": number,
+          "status": "pass|fail"
+        },
+        "hardware": {
+          "washers_required": true|false,
+          "washer_type": "string",
+          "nut_type": "string"
+        },
+        "references": ["ASME B18.2.1", "AISC J3"],
+        "recommendations": ["string"]
+      }
+    variables:
+      - connection_data
+      - shear_load
+      - tension_load
+      - load_type
+      - required_capacity
+      - bolt_size
+      - bolt_grade
+      - tensile_area
+      - min_engagement
+      - thread_length
+    tags:
+      - fasteners
+      - bolts
+      - connections
+      - selection
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 2500
+
+  # ========================================================================
+  # HEAT EXCHANGER PROMPTS
+  # ========================================================================
+  
+  - id: "heat_exchanger.tema_validator"
+    name: "TEMA Heat Exchanger Validator"
+    description: "Validate shell & tube heat exchangers per TEMA"
+    type: "chain_of_thought"
+    category: "validation"
+    content: |
+      Validate this shell & tube heat exchanger per TEMA:
+      
+      **Heat Exchanger Data:**
+      ${hx_data}
+      
+      **TEMA Classification:**
+      - TEMA Class: ${tema_class} (R, C, or B)
+        - R: Severe service (refineries, chemical)
+        - C: General service (commercial)
+        - B: Chemical process service
+      - Front head: ${front_head} (A, B, C, N, D)
+      - Shell: ${shell} (E, F, G, H, J, K, X)
+      - Rear head: ${rear_head} (L, M, N, P, S, T, U, W)
+      - Example: ${tema_designation} (e.g., AES, BEM, CFU)
+      
+      **Design Checks:**
+      
+      **1. Shell Design**
+      - Shell ID: ${shell_id}"
+      - Shell thickness: ${shell_thickness}" (per ASME VIII)
+      - Baffle spacing: ${baffle_spacing}" (20-100% of shell ID typical)
+      - Baffle cut: ${baffle_cut}% (15-45% typical)
+      - Number of baffles: ${baffle_count}
+      
+      **2. Tube Design**
+      - Tube OD: ${tube_od}" (5/8", 3/4", 1")
+      - Tube thickness: ${tube_thickness}" (BWG or schedule)
+      - Tube length: ${tube_length}ft
+      - Tube count: ${tube_count}
+      - Tube pitch: ${tube_pitch}" (1.25 × OD typical)
+      - Tube layout: ${layout} (30°, 60°, 90°, 45°)
+      
+      **3. Tube Sheet**
+      - Thickness: ${tubesheet_thickness}" (per TEMA RCB-7)
+      - Minimum: 1" for small exchangers, 2" for large
+      - Gasket surface: Verify flatness per TEMA
+      
+      **4. Nozzles**
+      - Shell nozzle: ${shell_nozzle}" NPS
+      - Tube nozzle: ${tube_nozzle}" NPS
+      - Nozzle projection: ${nozzle_projection}" (per TEMA)
+      - Flange rating: ${flange_rating} (150#, 300#, 600#)
+      
+      **5. Expansion Joint**
+      - Required if ΔT > ${delta_t_limit}°F
+      - Actual ΔT: ${delta_t}°F
+      - Expansion joint type: ${expansion_joint_type} (if required)
+      
+      **Output JSON:**
+      {
+        "validation_status": "pass|fail|warning",
+        "tema_classification": {
+          "class": "string",
+          "designation": "string",
+          "front_head": "string",
+          "shell": "string",
+          "rear_head": "string"
+        },
+        "shell_design": {
+          "baffle_spacing_ok": true|false,
+          "baffle_cut_ok": true|false,
+          "status": "pass|fail"
+        },
+        "tube_design": {
+          "tube_pitch_ok": true|false,
+          "tube_count_adequate": true|false,
+          "status": "pass|fail"
+        },
+        "tubesheet": {
+          "thickness_adequate": true|false,
+          "status": "pass|fail"
+        },
+        "expansion_joint": {
+          "required": true|false,
+          "provided": true|false,
+          "status": "pass|fail"
+        },
+        "tema_references": ["RCB-7", "RCB-8"],
+        "issues": [
+          {
+            "check": "string",
+            "requirement": "string",
+            "actual": "string",
+            "status": "pass|fail"
+          }
+        ],
+        "recommendations": ["string"]
+      }
+    variables:
+      - hx_data
+      - tema_class
+      - front_head
+      - shell
+      - rear_head
+      - tema_designation
+      - shell_id
+      - shell_thickness
+      - baffle_spacing
+      - baffle_cut
+      - baffle_count
+      - tube_od
+      - tube_thickness
+      - tube_length
+      - tube_count
+      - tube_pitch
+      - layout
+      - tubesheet_thickness
+      - shell_nozzle
+      - tube_nozzle
+      - nozzle_projection
+      - flange_rating
+      - delta_t_limit
+      - delta_t
+      - expansion_joint_type
+    tags:
+      - tema
+      - heat-exchanger
+      - shell-tube
+      - validation
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 2500
+
+  # ========================================================================
+  # MOTOR & DRIVE PROMPTS
+  # ========================================================================
+  
+  - id: "motor.nema_motor_validator"
+    name: "NEMA Motor Validator"
+    description: "Validate motors per NEMA MG-1"
+    type: "structured"
+    category: "validation"
+    content: |
+      Validate motor selection per NEMA MG-1:
+      
+      **Motor Data:**
+      ${motor_data}
+      
+      **NEMA MG-1 Requirements:**
+      
+      **1. Motor Frame**
+      - Frame size: ${frame_size} (143T, 145T, 182T, 184T, etc.)
+      - Verify NEMA standard frame
+      - Shaft height: ${shaft_height}" (per NEMA Table)
+      - Base dimensions: ${base_length}" × ${base_width}"
+      
+      **2. Motor Rating**
+      - HP: ${hp} HP
+      - Speed: ${speed} RPM (1800, 3600, etc.)
+      - Voltage: ${voltage} V (230/460, 575, etc.)
+      - Phase: ${phase} (1 or 3)
+      - Frequency: ${frequency} Hz (50 or 60)
+      
+      **3. Enclosure Type**
+      - Enclosure: ${enclosure} (TEFC, ODP, XP, etc.)
+        - TEFC: Totally Enclosed Fan Cooled
+        - ODP: Open Drip Proof
+        - XP: Explosion Proof
+      - Verify suitability for environment
+      
+      **4. Service Factor**
+      - Standard service factor: ${service_factor} (typically 1.15 for general purpose)
+      - Required service factor: ${required_sf}
+      - Verify: SF_motor ≥ SF_required
+      
+      **5. Efficiency**
+      - Efficiency: ${efficiency}% (per NEMA Table 12-11)
+      - Energy efficiency: Premium efficiency (IE3) or standard
+      - Power factor: ${power_factor} (typically 0.85-0.95)
+      
+      **6. Starting Torque**
+      - Locked rotor torque: ${lrt}% of full load (per NEMA Table)
+      - Pull-up torque: ${put}% of full load
+      - Breakdown torque: ${bdt}% of full load
+      - Verify adequate for application
+      
+      **Output JSON:**
+      {
+        "validation_status": "pass|fail|warning",
+        "frame_check": {
+          "frame_size": "string",
+          "nema_standard": true|false,
+          "dimensions_ok": true|false,
+          "status": "pass|fail"
+        },
+        "rating_check": {
+          "hp_adequate": true|false,
+          "speed_correct": true|false,
+          "voltage_match": true|false,
+          "status": "pass|fail"
+        },
+        "enclosure_check": {
+          "enclosure_type": "string",
+          "environment_suitable": true|false,
+          "status": "pass|fail"
+        },
+        "service_factor": {
+          "motor_sf": number,
+          "required_sf": number,
+          "adequate": true|false,
+          "status": "pass|fail"
+        },
+        "efficiency": {
+          "efficiency_percent": number,
+          "nema_minimum": number,
+          "status": "pass|fail"
+        },
+        "nema_references": ["MG-1 Table 12-11", "MG-1 Table 10-1"],
+        "issues": [
+          {
+            "check": "string",
+            "requirement": "string",
+            "actual": "string",
+            "status": "pass|fail"
+          }
+        ],
+        "recommendations": ["string"]
+      }
+    variables:
+      - motor_data
+      - frame_size
+      - shaft_height
+      - base_length
+      - base_width
+      - hp
+      - speed
+      - voltage
+      - phase
+      - frequency
+      - enclosure
+      - service_factor
+      - required_sf
+      - efficiency
+      - power_factor
+      - lrt
+      - put
+      - bdt
+    tags:
+      - nema
+      - motor
+      - mg-1
+      - validation
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 2000
+
+  # ========================================================================
+  # COATING & FINISHING PROMPTS
+  # ========================================================================
+  
+  - id: "coating.sspc_system_selector"
+    name: "SSPC Coating System Selector"
+    description: "Select coating systems per SSPC standards"
+    type: "chain_of_thought"
+    category: "engineering"
+    content: |
+      Select appropriate coating system per SSPC:
+      
+      **Application Requirements:**
+      ${coating_data}
+      
+      **Selection Process:**
+      
+      **1. Environment Classification**
+      - Environment: ${environment} (C1, C2, C3, C4, C5-I, C5-M)
+        - C1: Very low corrosivity (interior, dry)
+        - C2: Low corrosivity (interior, low humidity)
+        - C3: Moderate corrosivity (interior, high humidity)
+        - C4: High corrosivity (exterior, industrial)
+        - C5-I: Very high corrosivity (industrial)
+        - C5-M: Very high corrosivity (marine)
+      - Service life: ${service_life} years
+      
+      **2. Surface Preparation (SSPC-SP)**
+      - SP1: Solvent cleaning
+      - SP2: Hand tool cleaning
+      - SP3: Power tool cleaning
+      - SP5: White metal blast (Sa 2.5)
+      - SP6: Commercial blast (Sa 2)
+      - SP7: Brush-off blast (Sa 1)
+      - SP10: Near-white blast (Sa 2.5)
+      - Recommended: ${surface_prep}
+      
+      **3. Coating System Selection**
+      
+      **For C3 Environment (15-25 year life):**
+      - Primer: Epoxy, 3-5 mils
+      - Intermediate: Epoxy or polyurethane, 3-5 mils
+      - Topcoat: Polyurethane, 2-3 mils
+      - Total DFT: 8-13 mils
+      
+      **For C4 Environment (15-25 year life):**
+      - Primer: Zinc-rich epoxy, 3-5 mils
+      - Intermediate: Epoxy, 5-8 mils
+      - Topcoat: Polyurethane or fluoropolymer, 2-3 mils
+      - Total DFT: 10-16 mils
+      
+      **For C5 Environment (15-25 year life):**
+      - Primer: Zinc-rich epoxy, 3-5 mils
+      - Intermediate: Epoxy, 5-10 mils
+      - Topcoat: Fluoropolymer or high-performance polyurethane, 2-4 mils
+      - Total DFT: 10-19 mils
+      
+      **4. Coating Specification**
+      - System: ${coating_system} (e.g., "SSPC-Paint 20")
+      - Primer: ${primer_type}, ${primer_thickness} mils DFT
+      - Intermediate: ${intermediate_type}, ${intermediate_thickness} mils DFT
+      - Topcoat: ${topcoat_type}, ${topcoat_thickness} mils DFT
+      - Total DFT: ${total_dft} mils
+      
+      **5. Quality Control**
+      - Surface profile: ${profile} mils (1.5-4.0 mils typical)
+      - Dry film thickness: Verify per SSPC-PA 2
+      - Adhesion: Per ASTM D4541
+      - Holiday detection: Per SSPC-PA 7 (for immersion service)
+      
+      **Output JSON:**
+      {
+        "selection_status": "pass|fail|warning",
+        "environment": {
+          "classification": "string",
+          "corrosivity": "very_low|low|moderate|high|very_high",
+          "service_life_years": number
+        },
+        "surface_preparation": {
+          "sspc_standard": "string",
+          "description": "string",
+          "profile_mils": number
+        },
+        "coating_system": {
+          "system_name": "string",
+          "primer": {
+            "type": "string",
+            "thickness_mils": number
+          },
+          "intermediate": {
+            "type": "string",
+            "thickness_mils": number
+          },
+          "topcoat": {
+            "type": "string",
+            "thickness_mils": number
+          },
+          "total_dft_mils": number
+        },
+        "quality_control": {
+          "profile_requirement_mils": "string",
+          "dft_verification": "SSPC-PA 2",
+          "adhesion_test": "ASTM D4541"
+        },
+        "sspc_references": ["SSPC-Paint 20", "SSPC-SP 10", "SSPC-PA 2"],
+        "recommendations": ["string"]
+      }
+    variables:
+      - coating_data
+      - environment
+      - service_life
+      - surface_prep
+      - coating_system
+      - primer_type
+      - primer_thickness
+      - intermediate_type
+      - intermediate_thickness
+      - topcoat_type
+      - topcoat_thickness
+      - total_dft
+      - profile
+    tags:
+      - sspc
+      - coating
+      - finishing
+      - corrosion
+    model_hint: "claude-sonnet-4"
+    temperature: 0.3
+    max_tokens: 2500
+
+  # ========================================================================
+  # DOCUMENTATION & QUALITY PROMPTS
+  # ========================================================================
+  
+  - id: "documentation.drawing_completeness_checker"
+    name: "Drawing Completeness Checker"
+    description: "Verify engineering drawings have all required elements"
+    type: "structured"
+    category: "validation"
+    content: |
+      Check this engineering drawing for completeness:
+      
+      **Drawing Data:**
+      ${drawing_data}
+      
+      **Completeness Checklist:**
+      
+      **1. Title Block**
+      - [ ] Drawing number: ${drawing_number}
+      - [ ] Revision: ${revision}
+      - [ ] Title: ${title}
+      - [ ] Date: ${date}
+      - [ ] Drafter: ${drafter}
+      - [ ] Checker: ${checker}
+      - [ ] Approver: ${approver}
+      - [ ] Scale: ${scale}
+      - [ ] Sheet size: ${sheet_size} (A, B, C, D, E)
+      
+      **2. Views**
+      - [ ] Front view present
+      - [ ] Top view present
+      - [ ] Right side view present
+      - [ ] Isometric view (if complex)
+      - [ ] Section views (if needed): ${section_views}
+      - [ ] Detail views: ${detail_views}
+      
+      **3. Dimensions**
+      - [ ] All critical dimensions shown
+      - [ ] Tolerances specified
+      - [ ] Datum features identified
+      - [ ] GD&T callouts present (if required)
+      - [ ] Dual units (imperial/metric) if specified
+      
+      **4. Annotations**
+      - [ ] Material callout: ${material}
+      - [ ] Finish requirements: ${finish}
+      - [ ] General notes: ${notes_count} notes
+      - [ ] Revision notes: ${revision_notes}
+      - [ ] Weld symbols (if applicable)
+      - [ ] Surface finish symbols
+      
+      **5. Bill of Materials**
+      - [ ] BOM table present
+      - [ ] All parts listed
+      - [ ] Quantities specified
+      - [ ] Part numbers complete
+      - [ ] Materials called out
+      
+      **6. Standards References**
+      - [ ] Applicable standards listed
+      - [ ] Code references (ASME, AWS, etc.)
+      - [ ] Company standards referenced
+      
+      **Output JSON:**
+      {
+        "completeness_score": 0-100,
+        "title_block": {
+          "complete": true|false,
+          "missing_fields": ["string"],
+          "status": "pass|fail"
+        },
+        "views": {
+          "required_views_present": true|false,
+          "missing_views": ["string"],
+          "status": "pass|fail"
+        },
+        "dimensions": {
+          "all_dimensions_shown": true|false,
+          "tolerances_specified": true|false,
+          "gdt_present": true|false,
+          "status": "pass|fail"
+        },
+        "annotations": {
+          "material_specified": true|false,
+          "finish_specified": true|false,
+          "notes_complete": true|false,
+          "status": "pass|fail"
+        },
+        "bom": {
+          "present": true|false,
+          "complete": true|false,
+          "status": "pass|fail"
+        },
+        "standards": {
+          "references_present": true|false,
+          "status": "pass|fail"
+        },
+        "missing_elements": ["string"],
+        "recommendations": ["string"]
+      }
+    variables:
+      - drawing_data
+      - drawing_number
+      - revision
+      - title
+      - date
+      - drafter
+      - checker
+      - approver
+      - scale
+      - sheet_size
+      - section_views
+      - detail_views
+      - material
+      - finish
+      - notes_count
+      - revision_notes
+    tags:
+      - documentation
+      - drawing
+      - completeness
+      - validation
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 2000
+
+  - id: "quality.inspection_planner"
+    name: "Inspection & QC Planner"
+    description: "Plan inspection and quality control per AWS D1.1 and ASME"
+    type: "chain_of_thought"
+    category: "validation"
+    content: |
+      Create an inspection plan for this fabrication:
+      
+      **Fabrication Data:**
+      ${fabrication_data}
+      
+      **Inspection Planning:**
+      
+      **1. Weld Category Classification**
+      - Weld category: ${weld_category} (A, B, C, D per AWS D1.1)
+        - Category A: Critical welds (full penetration, high stress)
+        - Category B: Important welds (partial penetration, moderate stress)
+        - Category C: Standard welds (fillet welds, low stress)
+        - Category D: Non-critical welds (attachment welds)
+      - Determine inspection level based on category
+      
+      **2. NDE Methods**
+      - Visual (VT): Required for all welds
+      - Liquid Penetrant (PT): For surface defects
+      - Magnetic Particle (MT): For ferromagnetic materials
+      - Ultrasonic (UT): For internal defects
+      - Radiographic (RT): For critical welds
+      - Recommended: ${nde_methods}
+      
+      **3. Inspection Points**
+      - Pre-weld: Material verification, joint preparation
+      - During weld: Weld parameters, interpass cleaning
+      - Post-weld: Visual, dimensional, NDE
+      - Final: Complete assembly check
+      
+      **4. Acceptance Criteria**
+      - Per AWS D1.1 Table 6.1 (fillet welds)
+      - Per AWS D1.1 Table 6.2 (groove welds)
+      - Per ASME VIII (pressure vessels)
+      - Defect limits: ${defect_limits}
+      
+      **5. Documentation Requirements**
+      - Weld map: Required
+      - Weld procedure records: Required
+      - NDE reports: Required for Category A/B
+      - Material certs: Required
+      - Final inspection report: Required
+      
+      **Output JSON:**
+      {
+        "inspection_plan": {
+          "weld_category": "string",
+          "inspection_level": "string",
+          "nde_methods": ["string"],
+          "inspection_points": [
+            {
+              "stage": "pre_weld|during_weld|post_weld|final",
+              "checks": ["string"],
+              "acceptance_criteria": "string"
+            }
+          ]
+        },
+        "documentation": {
+          "required_documents": ["string"],
+          "records_to_maintain": ["string"]
+        },
+        "acceptance_criteria": {
+          "standard": "AWS D1.1|ASME VIII",
+          "defect_limits": "string"
+        },
+        "references": ["AWS D1.1", "ASME VIII"],
+        "recommendations": ["string"]
+      }
+    variables:
+      - fabrication_data
+      - weld_category
+      - nde_methods
+      - defect_limits
+    tags:
+      - inspection
+      - qc
+      - welding
+      - aws-d1.1
+    model_hint: "claude-sonnet-4"
+    temperature: 0.3
+    max_tokens: 2500
+
