@@ -27,9 +27,9 @@ class DesignRuleExtractor(BaseExtractor):
         page = page_data.get('page', 0)
         
         # Check if this is a design rule page
+        # More lenient - if classified as design_rule, try to extract something
         text_lower = text.lower()
-        if not any(kw in text_lower for kw in ['formula', 'calculation', 'rule', 'procedure', 'how to', 'design']):
-            return None
+        # Always try to extract if we got here (page was classified as design_rule)
         
         result = {
             'metadata': {
