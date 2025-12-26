@@ -2402,11 +2402,25 @@ async def check_inspection(request: dict):
 
         validator = InspectionQCValidator()
 
+        # Parse welds from request
+        welds = []
+        for i, w in enumerate(request.get("welds", [])):
+            cat_str = w.get("category", "primary").upper()
+            category = WeldCategory.CRITICAL if cat_str == "CRITICAL" else WeldCategory.PRIMARY
+            welds.append(WeldInspectionData(
+                weld_id=f"W{i+1}",
+                category=category,
+                length_in=w.get("length", 12),
+                size_in=w.get("size", 0.25),
+                joint_type=w.get("type", "fillet"),
+                code=request.get("code", "AWS D1.1"),
+            ))
+
         # Create inspection plan
         plan = InspectionPlanData(
-            drawing_number=request.get("drawing_number", ""),
-            revision=request.get("revision", "A"),
-            code=request.get("code", "AWS D1.1"),
+            part_number=request.get("drawing_number", "DWG-001"),
+            applicable_codes=[request.get("code", "AWS D1.1")],
+            welds=welds,
         )
 
         result = validator.validate_inspection_plan(plan)
