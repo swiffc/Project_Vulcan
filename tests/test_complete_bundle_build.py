@@ -608,7 +608,7 @@ def run_complete_bundle_validation():
     if critical_issues:
         print(f"\n{'-' * 40}")
         print("CRITICAL ISSUES (Must Fix):")
-        print("─" * 40)
+        print("-" * 40)
         for i, issue in enumerate(critical_issues[:10], 1):
             msg = issue.get("message", issue.get("description", "Unknown"))[:70]
             print(f"  {i}. [{issue.get('source', 'Unknown')}] {msg}")
@@ -619,7 +619,7 @@ def run_complete_bundle_validation():
     if warning_issues:
         print(f"\n{'-' * 40}")
         print("WARNINGS (Should Review):")
-        print("─" * 40)
+        print("-" * 40)
         for i, issue in enumerate(warning_issues[:5], 1):
             msg = issue.get("message", issue.get("description", "Unknown"))[:70]
             print(f"  {i}. [{issue.get('source', 'Unknown')}] {msg}")
@@ -629,7 +629,7 @@ def run_complete_bundle_validation():
     # Validation summary by category
     print(f"\n{'-' * 40}")
     print("VALIDATION BY CATEGORY:")
-    print("─" * 40)
+    print("-" * 40)
 
     categories = [
         ("Process Design", ["api661_bundle", "api661_full"]),
