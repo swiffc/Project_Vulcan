@@ -1,0 +1,974 @@
+version: "1.0"
+created: "2025-12-26"
+description: "Researched prompts for CAD validation, design recommendations, standards compliance, and engineering workflows"
+source: "Research from prompt engineering best practices, engineering standards, and CAD automation patterns"
+
+prompts:
+  # ========================================================================
+  # STANDARDS COMPLIANCE PROMPTS
+  # ========================================================================
+  
+  - id: "standards.ache_validation_expert"
+    name: "ACHE Standards Validation Expert"
+    description: "Expert validation against API 661 and ACHE-specific standards"
+    type: "chain_of_thought"
+    category: "validation"
+    content: |
+      Validate this ACHE (Air-Cooled Heat Exchanger) design against API 661 and HPC standards.
+      
+      **Design Data:**
+      ${design_data}
+      
+      **Validation Process - Step by Step:**
+      
+      **1. Design Basis Verification**
+      - Operating pressure: ${operating_pressure} PSI (verify ≤ design pressure)
+      - Design temperature: ${design_temp}°F (check material limits)
+      - Tube count: ${tube_count} (verify even distribution)
+      - Tube length: ${tube_length}ft (check support spacing ≤ 5.75ft)
+      - Fan configuration: ${fan_config} (forced/induced draft)
+      
+      **2. Mechanical Design Checks**
+      - Header design: Verify nameplate thickness ≥ 0.105" (HPC standard)
+      - Lifting lugs: Quantity ≥ 4 for 50/60 long tubes, spacing ≤ 23ft centerline
+      - Lifting lug part: Verify W708/W709/W710/W711/W712 selection based on load
+      - Machinery mount: Verify length formula and diagonal brace spacing (1" to 6-1/4" in 1/4" increments)
+      - Vibration switch: 1' from fan centerline, 6" from top
+      - Walkway ladder rungs: #6 rebar standard
+      - Toe-plate: PRL 4-1/2" x 2" x 1/4" welded component
+      
+      **3. Standards Compliance**
+      - API 661: Air-cooled heat exchanger requirements
+      - HPC Standards: Book I-IV compliance
+      - ASME Y14.5: Drawing standards
+      - AWS D1.1: Welding requirements
+      - OSHA 1910: Safety requirements
+      
+      **4. Material Verification**
+      - Header material: ${header_material} (verify against pressure/temperature)
+      - Tube material: ${tube_material} (check corrosion resistance)
+      - Frame material: ${frame_material} (structural adequacy)
+      
+      **5. Output Format**
+      Return JSON:
+      {
+        "validation_status": "pass|fail|warning",
+        "critical_issues": [
+          {
+            "check": "string",
+            "standard": "API 661|HPC|ASME",
+            "requirement": "string",
+            "actual": "string",
+            "recommendation": "string"
+          }
+        ],
+        "warnings": [...],
+        "approval_required": true|false
+      }
+    variables:
+      - design_data
+      - operating_pressure
+      - design_temp
+      - tube_count
+      - tube_length
+      - fan_config
+      - header_material
+      - tube_material
+      - frame_material
+    tags:
+      - ache
+      - api661
+      - hpc
+      - validation
+      - standards
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 3000
+
+  - id: "standards.hpc_lifting_lug_selector"
+    name: "HPC Lifting Lug Part Selector"
+    description: "Select appropriate HPC lifting lug part number based on load and dimensions"
+    type: "task"
+    category: "engineering"
+    content: |
+      Select the appropriate HPC lifting lug part number for this application:
+      
+      **Application Requirements:**
+      - Unit weight: ${unit_weight} lbs
+      - Number of lugs: ${lug_count}
+      - Tube length: ${tube_length}ft
+      - Centerline spacing: ${spacing}ft
+      
+      **HPC Standard Parts Available:**
+      | Part | Thickness | Width | Block-Out A | Block-Out B | Block-Out C |
+      |------|-----------|-------|-------------|-------------|-------------|
+      | W708 | 0.75" | 5.5" | 2.875" | 2.875" | 1.0" |
+      | W709 | 0.75" | 7.0" | 3.625" | 2.875" | 1.0" |
+      | W710 | 0.75" | 8.0" | 4.125" | 2.875" | 1.0" |
+      | W711 | 1.0" | 7.0" | 3.625" | 2.875" | 1.25" |
+      | W712 | 1.0" | 8.0" | 4.125" | 2.875" | 1.25" |
+      
+      **Selection Criteria:**
+      1. Load per lug: ${unit_weight} / ${lug_count} = ${load_per_lug} lbs
+      2. Verify 4:1 safety factor (ASME BTH-1)
+      3. Check spacing: Must be ≤ 23ft centerline (HPC standard)
+      4. Default: W708 for standard applications
+      5. Use W709/W710 for wider applications
+      6. Use W711/W712 for heavier loads (1" thickness)
+      
+      **Rules:**
+      - 4 lifting lugs required for units with 50 or 60 long tubes or greater
+      - Maximum centerline spacing: 23.0ft
+      - Default part: W708
+      
+      **Output:**
+      {
+        "selected_part": "W708|W709|W710|W711|W712",
+        "rationale": "string",
+        "load_per_lug_lbs": number,
+        "safety_factor": number,
+        "spacing_compliant": true|false,
+        "alternative_parts": ["part1", "part2"]
+      }
+    variables:
+      - unit_weight
+      - lug_count
+      - tube_length
+      - spacing
+    tags:
+      - hpc
+      - lifting-lug
+      - part-selection
+      - standards
+    model_hint: "claude-sonnet-4"
+    temperature: 0.1
+    max_tokens: 1500
+
+  - id: "standards.asme_b16_5_flange_validator"
+    name: "ASME B16.5 Flange Validator"
+    description: "Validate flange design against ASME B16.5 standard"
+    type: "chain_of_thought"
+    category: "validation"
+    content: |
+      Validate this flange design against ASME B16.5:
+      
+      **Flange Data:**
+      ${flange_data}
+      
+      **Step-by-Step Validation:**
+      
+      **1. Size & Rating Verification**
+      - Nominal size: ${nominal_size}" (verify standard: 1/2" to 24")
+      - Pressure rating: ${rating} (150#, 300#, 600#, 900#, 1500#, 2500#)
+      - Flange type: ${flange_type} (Weld Neck, Slip-On, Socket Weld, Lap Joint, Threaded, Blind)
+      - Face type: ${face_type} (Raised Face, Flat Face, Ring Joint)
+      
+      **2. Dimensional Checks**
+      - Outside diameter (OD): ${od}" (verify against B16.5 Table 1)
+      - Bolt circle diameter (BCD): ${bcd}" (verify against B16.5 Table 1)
+      - Number of bolts: ${bolt_count} (verify against B16.5 Table 1)
+      - Bolt size: ${bolt_size}" (verify against B16.5 Table 1)
+      - Hub diameter: ${hub_dia}" (for Weld Neck only)
+      - Hub length: ${hub_length}" (for Weld Neck only)
+      
+      **3. Material Verification**
+      - Flange material: ${material} (verify Group 1, 2, or 3 per B16.5)
+      - Temperature rating: ${temp}°F (check material limits)
+      - Pressure rating at temperature: ${pressure_at_temp} PSI (verify ≤ design pressure)
+      
+      **4. Surface Finish**
+      - Raised face finish: 125-250 microinches Ra (ASME B16.5 requirement)
+      - Flat face finish: 125-500 microinches Ra
+      - Ring joint groove: Per ASME B16.20
+      
+      **5. Bolt & Gasket**
+      - Bolt material: ${bolt_material} (verify grade matches flange rating)
+      - Gasket type: ${gasket_type} (verify compatibility)
+      - Gasket dimensions: ${gasket_od}" x ${gasket_id}" (verify per B16.20)
+      
+      **Output:**
+      {
+        "validation_status": "pass|fail|warning",
+        "dimensional_compliance": true|false,
+        "material_compliance": true|false,
+        "issues": [
+          {
+            "check": "string",
+            "standard_value": "string",
+            "actual_value": "string",
+            "status": "pass|fail",
+            "recommendation": "string"
+          }
+        ],
+        "b16_5_table_reference": "Table 1|Table 2|Table 3"
+      }
+    variables:
+      - flange_data
+      - nominal_size
+      - rating
+      - flange_type
+      - face_type
+      - od
+      - bcd
+      - bolt_count
+      - bolt_size
+      - hub_dia
+      - hub_length
+      - material
+      - temp
+      - pressure_at_temp
+      - bolt_material
+      - gasket_type
+      - gasket_od
+      - gasket_id
+    tags:
+      - asme
+      - b16.5
+      - flange
+      - validation
+      - standards
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 2500
+
+  # ========================================================================
+  # DESIGN RECOMMENDATION PROMPTS
+  # ========================================================================
+  
+  - id: "design.material_selector"
+    name: "Material Selection Expert"
+    description: "Recommend materials based on application requirements"
+    type: "chain_of_thought"
+    category: "engineering"
+    content: |
+      Recommend the best material for this application:
+      
+      **Application Requirements:**
+      - Operating temperature: ${temp}°F
+      - Operating pressure: ${pressure} PSI
+      - Environment: ${environment} (atmospheric, corrosive, high-temperature, cryogenic)
+      - Load type: ${load_type} (static, dynamic, cyclic)
+      - Required strength: ${yield_strength} ksi minimum
+      - Corrosion resistance: ${corrosion_requirement}
+      - Cost constraint: ${cost_range}
+      - Manufacturing method: ${manufacturing} (machining, casting, welding, forging)
+      
+      **Material Selection Process:**
+      
+      **Step 1: Temperature Range**
+      - Check material operating temperature limits
+      - Verify strength retention at operating temp
+      - Consider thermal expansion coefficient
+      
+      **Step 2: Pressure/Strength Requirements**
+      - Calculate required wall thickness
+      - Verify yield strength ≥ ${yield_strength} ksi
+      - Check ASME code allowable stress
+      
+      **Step 3: Corrosion Resistance**
+      - Match material to environment
+      - Consider coating/plating if needed
+      - Check pitting/cracking resistance
+      
+      **Step 4: Manufacturing Compatibility**
+      - Verify material is suitable for ${manufacturing}
+      - Check weldability (if welding required)
+      - Consider machinability rating
+      
+      **Step 5: Cost Optimization**
+      - Compare material costs
+      - Consider total cost (material + fabrication)
+      - Evaluate alternatives
+      
+      **Common Material Recommendations:**
+      
+      **Carbon Steel:**
+      - ASTM A36: General structural (Fy=36ksi, temp ≤ 650°F)
+      - ASTM A516 Gr70: Pressure vessels (Fy=38ksi, temp ≤ 800°F)
+      - SA-105: Forged flanges/fittings (temp ≤ 1000°F)
+      
+      **Stainless Steel:**
+      - 304SS: General corrosion resistance (temp ≤ 1650°F)
+      - 316SS: Enhanced corrosion (temp ≤ 1650°F)
+      - 321SS: High temperature (temp ≤ 1500°F)
+      
+      **Alloy Steel:**
+      - A387 Gr11: High temperature (temp ≤ 1100°F)
+      - A335 P11: Piping (temp ≤ 1100°F)
+      
+      **Output:**
+      {
+        "recommended_material": "string",
+        "grade": "string",
+        "rationale": "string",
+        "properties": {
+          "yield_strength_ksi": number,
+          "tensile_strength_ksi": number,
+          "max_temp_f": number,
+          "corrosion_resistance": "excellent|good|fair|poor"
+        },
+        "alternatives": [
+          {
+            "material": "string",
+            "pros": ["string"],
+            "cons": ["string"]
+          }
+        ],
+        "cost_estimate": "low|medium|high",
+        "standards_reference": "ASTM|ASME|AISI"
+      }
+    variables:
+      - temp
+      - pressure
+      - environment
+      - load_type
+      - yield_strength
+      - corrosion_requirement
+      - cost_range
+      - manufacturing
+    tags:
+      - material-selection
+      - design
+      - engineering
+      - recommendations
+    model_hint: "claude-sonnet-4"
+    temperature: 0.4
+    max_tokens: 2500
+
+  - id: "design.cost_estimator"
+    name: "CAD Part Cost Estimator"
+    description: "Estimate manufacturing cost for CAD parts"
+    type: "structured"
+    category: "engineering"
+    content: |
+      Estimate the manufacturing cost for this part:
+      
+      **Part Information:**
+      ${part_data}
+      
+      **Cost Estimation Breakdown:**
+      
+      **1. Material Cost**
+      - Material: ${material}
+      - Weight: ${weight} kg
+      - Material cost per kg: $${material_cost_per_kg}
+      - Material cost: ${weight} × $${material_cost_per_kg} = $${material_cost}
+      
+      **2. Manufacturing Cost**
+      - Manufacturing method: ${manufacturing_method}
+      - Setup time: ${setup_hours} hours @ $${setup_rate}/hr = $${setup_cost}
+      - Run time: ${run_hours} hours @ $${run_rate}/hr = $${run_cost}
+      - Tooling cost: $${tooling_cost} (amortized)
+      
+      **3. Finishing Cost**
+      - Surface finish: ${surface_finish}
+      - Coating: ${coating}
+      - Finishing cost: $${finishing_cost}
+      
+      **4. Assembly Cost** (if applicable)
+      - Assembly time: ${assembly_hours} hours @ $${assembly_rate}/hr
+      - Fasteners: $${fastener_cost}
+      
+      **5. Overhead & Margin**
+      - Overhead: ${overhead_percent}% of direct cost
+      - Profit margin: ${profit_percent}%
+      
+      **Output JSON:**
+      {
+        "part_number": "string",
+        "cost_breakdown": {
+          "material": {
+            "cost": number,
+            "weight_kg": number,
+            "cost_per_kg": number
+          },
+          "manufacturing": {
+            "setup_cost": number,
+            "run_cost": number,
+            "tooling_cost": number,
+            "total": number
+          },
+          "finishing": {
+            "cost": number,
+            "description": "string"
+          },
+          "assembly": {
+            "cost": number,
+            "hours": number
+          },
+          "overhead": {
+            "percent": number,
+            "amount": number
+          },
+          "profit_margin": {
+            "percent": number,
+            "amount": number
+          }
+        },
+        "total_cost": number,
+        "unit_cost": number,
+        "cost_per_kg": number,
+        "cost_drivers": ["string"],
+        "cost_reduction_suggestions": ["string"]
+      }
+    variables:
+      - part_data
+      - material
+      - weight
+      - material_cost_per_kg
+      - material_cost
+      - manufacturing_method
+      - setup_hours
+      - setup_rate
+      - setup_cost
+      - run_hours
+      - run_rate
+      - run_cost
+      - tooling_cost
+      - surface_finish
+      - coating
+      - finishing_cost
+      - assembly_hours
+      - assembly_rate
+      - fastener_cost
+      - overhead_percent
+      - profit_percent
+    tags:
+      - cost-estimation
+      - manufacturing
+      - pricing
+      - design
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 2000
+
+  - id: "design.dfm_analyzer"
+    name: "Design for Manufacturing Analyzer"
+    description: "Analyze CAD design for manufacturability issues"
+    type: "chain_of_thought"
+    category: "engineering"
+    content: |
+      Analyze this design for manufacturability:
+      
+      **Design Data:**
+      ${design_data}
+      
+      **DFM Analysis - Step by Step:**
+      
+      **1. Material Selection**
+      - Is material readily available?
+      - Can material be machined/cast/welded easily?
+      - Are there cheaper alternatives?
+      
+      **2. Feature Complexity**
+      - Are there sharp internal corners? (Add radii)
+      - Minimum wall thickness: ${min_wall}mm (verify ≥ 1mm for machining, ≥ 3mm for casting)
+      - Undercuts present? (May require special tooling)
+      - Deep holes? (Length:diameter ratio ≤ 10:1 preferred)
+      
+      **3. Tolerance Analysis**
+      - Are tolerances achievable with standard processes?
+      - Tight tolerances (≤ 0.01mm) require grinding - expensive
+      - Standard tolerances (±0.1mm) achievable with CNC
+      - Loose tolerances (±0.5mm) for rough casting/forging
+      
+      **4. Surface Finish**
+      - Required finish: ${surface_finish} Ra
+      - Standard machining: 1.6-3.2 Ra
+      - Fine machining: 0.4-0.8 Ra
+      - Grinding: 0.1-0.4 Ra
+      - Polishing: < 0.1 Ra (expensive)
+      
+      **5. Manufacturing Method**
+      - ${manufacturing_method} suitability:
+        - **Machining**: Complex shapes, tight tolerances, small batches
+        - **Casting**: Complex internal features, large batches, lower cost
+        - **Welding**: Large assemblies, custom sizes, field fabrication
+        - **Forging**: High strength, simple shapes, large batches
+        - **Sheet Metal**: Thin parts, bends, enclosures
+      
+      **6. Assembly Considerations**
+      - Can parts be assembled easily?
+      - Clearance for tools/access?
+      - Self-locating features?
+      - Standard fasteners used?
+      
+      **7. Cost Optimization**
+      - Can features be simplified?
+      - Can tolerances be relaxed?
+      - Can material be changed?
+      - Can manufacturing method be optimized?
+      
+      **Output:**
+      {
+        "manufacturability_score": 0-100,
+        "manufacturing_method": "machining|casting|welding|forging|sheet_metal",
+        "issues": [
+          {
+            "severity": "critical|warning|info",
+            "feature": "string",
+            "issue": "string",
+            "recommendation": "string",
+            "cost_impact": "high|medium|low"
+          }
+        ],
+        "recommendations": [
+          {
+            "change": "string",
+            "benefit": "string",
+            "cost_savings_estimate": "string"
+          }
+        ],
+        "estimated_manufacturing_cost": number,
+        "complexity_rating": "simple|moderate|complex|very_complex"
+      }
+    variables:
+      - design_data
+      - min_wall
+      - surface_finish
+      - manufacturing_method
+    tags:
+      - dfm
+      - manufacturability
+      - design
+      - optimization
+    model_hint: "claude-sonnet-4"
+    temperature: 0.3
+    max_tokens: 3000
+
+  # ========================================================================
+  # DRAWING ANALYSIS PROMPTS
+  # ========================================================================
+  
+  - id: "drawing.gdt_analyzer"
+    name: "GD&T Symbol Analyzer"
+    description: "Analyze and explain GD&T symbols per ASME Y14.5"
+    type: "few_shot"
+    category: "engineering"
+    content: |
+      Analyze this GD&T symbol from the drawing:
+      
+      **GD&T Symbol:**
+      ${gdt_symbol}
+      
+      **Example 1: Position Tolerance**
+      Input: [⏊|0.010|A|B|C]
+      Output:
+      - Feature: Position (true position)
+      - Tolerance: 0.010" diameter
+      - Datums: A (primary), B (secondary), C (tertiary)
+      - Meaning: Hole center must be within 0.010" diameter cylinder relative to datums A, B, C
+      - Inspection: Use CMM or coordinate measuring machine
+      
+      **Example 2: Flatness**
+      Input: [⏥|0.005]
+      Output:
+      - Feature: Flatness
+      - Tolerance: 0.005"
+      - Meaning: Surface must be flat within 0.005" across entire surface
+      - Inspection: Use surface plate and indicator
+      
+      **Example 3: Perpendicularity**
+      Input: [⊥|0.008|A]
+      Output:
+      - Feature: Perpendicularity
+      - Tolerance: 0.008"
+      - Datum: A
+      - Meaning: Feature must be perpendicular to datum A within 0.008"
+      - Inspection: Use square and indicator
+      
+      **Now analyze:**
+      ${gdt_symbol}
+      
+      **Provide:**
+      1. **Symbol Type**: [Form|Orientation|Location|Runout|Profile]
+      2. **Tolerance Value**: [number with units]
+      3. **Datum References**: [if applicable]
+      4. **Meaning**: [Plain English explanation]
+      5. **Inspection Method**: [How to verify]
+      6. **Common Mistakes**: [What to watch for]
+      7. **Manufacturing Impact**: [How this affects manufacturing]
+    variables:
+      - gdt_symbol
+    tags:
+      - gdt
+      - asme-y14.5
+      - drawing
+      - analysis
+      - few-shot
+    model_hint: "claude-sonnet-4"
+    temperature: 0.3
+    max_tokens: 2000
+
+  - id: "drawing.hole_pattern_validator"
+    name: "Hole Pattern Validator"
+    description: "Validate hole patterns for bolt circles, pitch circles, and alignment"
+    type: "structured"
+    category: "validation"
+    content: |
+      Validate this hole pattern:
+      
+      **Hole Pattern Data:**
+      ${hole_pattern_data}
+      
+      **Validation Checks:**
+      
+      **1. Pattern Type Identification**
+      - Bolt circle (circular pattern)
+      - Rectangular pattern
+      - Linear pattern
+      - Custom pattern
+      
+      **2. Dimensional Verification**
+      - Bolt circle diameter: ${bcd}" (verify against standard)
+      - Number of holes: ${hole_count} (verify even distribution)
+      - Hole diameter: ${hole_dia}" (verify clearance for bolt size)
+      - Pitch: ${pitch}" (verify spacing)
+      
+      **3. Alignment Checks**
+      - Center-to-center spacing: Verify within tolerance (±1/16" typical)
+      - Angular spacing: ${angular_spacing}° (verify 360° / ${hole_count} = ${expected_angle}°)
+      - Concentricity: Verify holes are on true circle
+      
+      **4. Edge Distance**
+      - Minimum edge distance: 1.5 × bolt diameter (AISC J3.4)
+      - Actual edge distance: ${edge_distance}" (verify ≥ ${min_edge_distance}")
+      
+      **5. Standards Compliance**
+      - ASME B16.5: Flange bolt patterns
+      - AISC: Structural bolt patterns
+      - Custom: Verify against drawing requirements
+      
+      **Output JSON:**
+      {
+        "pattern_type": "bolt_circle|rectangular|linear|custom",
+        "validation_status": "pass|fail|warning",
+        "dimensional_checks": {
+          "bcd_compliant": true|false,
+          "hole_count_correct": true|false,
+          "hole_dia_adequate": true|false,
+          "pitch_correct": true|false
+        },
+        "alignment_checks": {
+          "spacing_within_tolerance": true|false,
+          "angular_spacing_correct": true|false,
+          "concentricity_ok": true|false
+        },
+        "edge_distance_checks": {
+          "min_edge_distance": number,
+          "actual_edge_distance": number,
+          "compliant": true|false
+        },
+        "issues": [
+          {
+            "check": "string",
+            "status": "pass|fail|warning",
+            "requirement": "string",
+            "actual": "string",
+            "recommendation": "string"
+          }
+        ],
+        "standards_reference": "ASME B16.5|AISC|Custom"
+      }
+    variables:
+      - hole_pattern_data
+      - bcd
+      - hole_count
+      - hole_dia
+      - pitch
+      - angular_spacing
+      - expected_angle
+      - edge_distance
+      - min_edge_distance
+    tags:
+      - hole-pattern
+      - validation
+      - drawing
+      - bolt-circle
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 2000
+
+  # ========================================================================
+  # WELDING & FABRICATION PROMPTS
+  # ========================================================================
+  
+  - id: "welding.weld_size_calculator"
+    name: "Weld Size Calculator"
+    description: "Calculate required weld sizes per AWS D1.1"
+    type: "task"
+    category: "engineering"
+    content: |
+      Calculate the required weld size for this joint:
+      
+      **Joint Information:**
+      - Joint type: ${joint_type} (butt, fillet, plug, slot)
+      - Material thickness: ${thickness}" (thinner member for fillet welds)
+      - Load: ${load} lbs
+      - Load type: ${load_type} (tension, compression, shear, bending)
+      - Safety factor: ${safety_factor} (typically 2.0-4.0)
+      - Material: ${material} (yield strength: ${yield_strength} ksi)
+      
+      **Calculation Method (AWS D1.1):**
+      
+      **For Fillet Welds:**
+      - Minimum leg size: 0.25 × thickness (but not less than 1/8")
+      - Maximum leg size: 0.7 × thickness (for single pass)
+      - Throat size: leg × 0.707 (for equal leg fillet)
+      - Allowable stress: 0.3 × electrode tensile strength
+      - Required throat: Load / (Allowable stress × Weld length)
+      - Required leg: Required throat / 0.707
+      
+      **For Butt Welds:**
+      - Full penetration: Thickness = material thickness
+      - Partial penetration: Per AWS D1.1 Table 3.2
+      - Groove angle: 60° (single V), 45° (double V)
+      - Root face: 1/8" to 1/4"
+      
+      **Output:**
+      {
+        "weld_type": "fillet|butt|plug|slot",
+        "minimum_size": {
+          "leg_inches": number,
+          "throat_inches": number,
+          "rationale": "string"
+        },
+        "calculated_size": {
+          "leg_inches": number,
+          "throat_inches": number,
+          "based_on": "load|thickness|standard"
+        },
+        "recommended_size": {
+          "leg_inches": number,
+          "throat_inches": number,
+          "rationale": "string"
+        },
+        "aws_d1_1_reference": "Section X.X",
+        "notes": ["string"]
+      }
+    variables:
+      - joint_type
+      - thickness
+      - load
+      - load_type
+      - safety_factor
+      - material
+      - yield_strength
+    tags:
+      - welding
+      - aws-d1.1
+      - calculation
+      - design
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 2000
+
+  # ========================================================================
+  # BOM & ASSEMBLY PROMPTS
+  # ========================================================================
+  
+  - id: "bom.completeness_checker"
+    name: "BOM Completeness Checker"
+    description: "Verify BOM has all required information"
+    type: "structured"
+    category: "validation"
+    content: |
+      Check this Bill of Materials for completeness:
+      
+      **BOM Data:**
+      ${bom_data}
+      
+      **Required Fields Checklist:**
+      - [ ] Part number (unique identifier)
+      - [ ] Description (clear, unambiguous)
+      - [ ] Quantity (correct count)
+      - [ ] Material (specification and grade)
+      - [ ] Finish/Coating (if applicable)
+      - [ ] Dimensions (for raw materials)
+      - [ ] Standard (ASTM, ASME, etc.)
+      - [ ] Vendor/Supplier (if standard part)
+      - [ ] Unit cost (for costing)
+      - [ ] Total cost (quantity × unit cost)
+      
+      **Common Issues to Check:**
+      1. **Missing Information**
+         - Part numbers missing or duplicated
+         - Descriptions too vague
+         - Materials not specified
+         
+      2. **Inconsistencies**
+         - Quantity mismatches between BOM and drawing
+         - Material conflicts (different materials for same part)
+         - Unit mismatches (imperial vs metric)
+         
+      3. **Standards Compliance**
+         - Fasteners missing grade/specification
+         - Materials not following company standards
+         - Missing certifications (e.g., material certs)
+         
+      4. **Costing Issues**
+         - Missing unit costs
+         - Incorrect quantity calculations
+         - Missing freight/shipping costs
+      
+      **Output JSON:**
+      {
+        "completeness_score": 0-100,
+        "missing_fields": [
+          {
+            "part": "string",
+            "missing_field": "string",
+            "severity": "critical|warning|info"
+          }
+        ],
+        "inconsistencies": [
+          {
+            "issue": "string",
+            "parts_affected": ["string"],
+            "recommendation": "string"
+          }
+        ],
+        "standards_issues": [
+          {
+            "part": "string",
+            "issue": "string",
+            "standard_required": "string"
+          }
+        ],
+        "approval_status": "complete|needs_revision|incomplete"
+      }
+    variables:
+      - bom_data
+    tags:
+      - bom
+      - validation
+      - completeness
+      - assembly
+    model_hint: "claude-sonnet-4"
+    temperature: 0.2
+    max_tokens: 2000
+
+  # ========================================================================
+  # STRATEGY & AUTOMATION PROMPTS
+  # ========================================================================
+  
+  - id: "strategy.cad_automation_planner"
+    name: "CAD Automation Strategy Planner"
+    description: "Plan automation strategy for CAD operations"
+    type: "react"
+    category: "code_generation"
+    content: |
+      Plan an automation strategy for this CAD task:
+      
+      **Task Description:**
+      ${task_description}
+      
+      **CAD Software:** ${cad_software} (SolidWorks|Inventor)
+      
+      **Planning Process (ReAct Pattern):**
+      
+      **Step 1: Understand Requirements**
+      ```json
+      {
+        "thought": "I need to understand what the user wants to automate",
+        "action": {
+          "command": "analyze_requirements",
+          "questions": [
+            "What operations need to be automated?",
+            "How many parts/assemblies?",
+            "Are there variations/configurations?",
+            "What's the input data format?",
+            "What's the expected output?"
+          ]
+        }
+      }
+      ```
+      
+      **Step 2: Identify Operations**
+      ```json
+      {
+        "observation": "User wants to create 50 flange parts with varying sizes",
+        "thought": "This requires batch processing with parameter variations",
+        "action": {
+          "command": "identify_operations",
+          "operations": [
+            "Create new part",
+            "Create sketch (circle for OD, ID)",
+            "Extrude to thickness",
+            "Add bolt circle pattern",
+            "Add chamfers",
+            "Set material",
+            "Save with naming convention"
+          ]
+        }
+      }
+      ```
+      
+      **Step 3: Design Automation Flow**
+      ```json
+      {
+        "thought": "Need to create a loop that processes each flange size",
+        "action": {
+          "command": "design_flow",
+          "flow": [
+            "1. Read input data (CSV/Excel with sizes)",
+            "2. For each row:",
+            "   a. Extract parameters (OD, ID, thickness, bolt_count)",
+            "   b. Create part with parameters",
+            "   c. Apply features",
+            "   d. Save part",
+            "3. Generate summary report"
+          ]
+        }
+      }
+      ```
+      
+      **Step 4: Generate Code Structure**
+      ```json
+      {
+        "thought": "Now I'll generate the actual API code",
+        "action": {
+          "command": "generate_code",
+          "code_structure": {
+            "imports": ["win32com.client", "csv", "os"],
+            "functions": [
+              "create_flange(od, id, thickness, bolt_count)",
+              "add_bolt_circle(bcd, hole_count, hole_dia)",
+              "batch_process(input_file)"
+            ],
+            "main_loop": "for each row in CSV: create_flange(...)"
+          }
+        }
+      }
+      ```
+      
+      **Output:**
+      {
+        "automation_strategy": {
+          "approach": "batch_processing|parameter_driven|template_based",
+          "operations": ["string"],
+          "flow_diagram": "string",
+          "estimated_time": "string"
+        },
+        "code_structure": {
+          "functions": ["string"],
+          "data_flow": "string",
+          "error_handling": "string"
+        },
+        "recommendations": [
+          "string"
+        ]
+      }
+    variables:
+      - task_description
+      - cad_software
+    tags:
+      - automation
+      - strategy
+      - cad
+      - react
+      - planning
+    model_hint: "claude-sonnet-4"
+    temperature: 0.4
+    max_tokens: 3000
+
