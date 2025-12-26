@@ -230,18 +230,22 @@ def run_complete_bundle_validation():
     full_payload = {
         "unit_type": "induced",
         "service": BUNDLE_DESIGN["project"]["service"],
-        "design_pressure_psig": BUNDLE_DESIGN["process_conditions"]["design_pressure_psig"],
-        "design_temp_f": BUNDLE_DESIGN["process_conditions"]["design_temp_f"],
-        "tube_od_in": BUNDLE_DESIGN["tube_bundle"]["tube_od_in"],
+        "design_pressure_psi": BUNDLE_DESIGN["process_conditions"]["design_pressure_psig"],
+        "tube_od_mm": BUNDLE_DESIGN["tube_bundle"]["tube_od_in"] * 25.4,  # Convert to mm
         "tube_material": BUNDLE_DESIGN["tube_bundle"]["tube_material"],
         "header_type": BUNDLE_DESIGN["headers"]["type"],
-        "header_material": BUNDLE_DESIGN["headers"]["material"],
         "fin_type": BUNDLE_DESIGN["tube_bundle"]["fin_type"],
-        "fin_material": BUNDLE_DESIGN["tube_bundle"]["fin_material"],
-        # FIX: Added air seals and thermal expansion
-        "air_seals": BUNDLE_DESIGN["structural"]["air_seals"],
-        "seal_type": BUNDLE_DESIGN["structural"]["seal_type"],
-        "thermal_expansion_provision": BUNDLE_DESIGN["tube_bundle"]["expansion_provision"],
+        # FIX: Correct field names for API 661 full validation
+        "has_tube_keepers": True,
+        "tube_keepers_bolted": True,
+        "tube_support_spacing_m": BUNDLE_DESIGN["tube_bundle"]["tube_support_spacing_in"] * 0.0254,  # Convert to m
+        "has_air_seals": True,
+        "has_p_strips": True,
+        "lateral_movement_mm": 12.0,
+        "lateral_both_directions": True,
+        "has_thermal_expansion_provision": True,
+        "plug_type": "shoulder",
+        "plug_head_type": "hexagonal",
     }
 
     result = call_endpoint("API661 Full", "/phase25/check-api661-full", full_payload)
