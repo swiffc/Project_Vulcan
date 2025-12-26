@@ -93,29 +93,32 @@ export function Navigation() {
   }, []);
 
   return (
-    <nav className="glass border-b border-white/10 sticky top-0 z-50">
+    <nav className="glass border-b border-white/10 sticky top-0 z-50" role="navigation" aria-label="Main navigation">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3" aria-label="Project Vulcan Home">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-vulcan-accent to-purple-600 flex items-center justify-center shadow-lg shadow-vulcan-accent/20">
-              <span className="text-xl font-bold text-white">V</span>
+              <span className="text-xl font-bold text-white" aria-hidden="true">V</span>
             </div>
             <div className="hidden sm:block">
               <h1 className="text-lg font-bold text-white">Project Vulcan</h1>
               <p className="text-xs text-white/40">AI Operating System</p>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-1" role="menubar">
             {navItems.map((item) => {
               const isActive = pathname === item.path;
               return (
                 <Link
                   key={item.path}
                   href={item.path}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
+                  aria-label={item.ariaLabel}
+                  aria-current={isActive ? "page" : undefined}
+                  role="menuitem"
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-vulcan-accent focus:ring-offset-2 focus:ring-offset-transparent ${
                     isActive
                       ? "bg-vulcan-accent text-white shadow-lg shadow-vulcan-accent/20"
                       : "text-white/60 hover:text-white hover:bg-white/5"
@@ -130,8 +133,13 @@ export function Navigation() {
 
           {/* Status Indicators */}
           <div className="flex items-center gap-4">
+            {/* Theme Toggle */}
+            <div className="hidden sm:block">
+              <ThemeToggle />
+            </div>
+
             {/* Desktop Server Status */}
-            <div className="hidden sm:flex items-center gap-2 text-sm">
+            <div className="hidden sm:flex items-center gap-2 text-sm" role="status" aria-live="polite">
               <StatusDot status={desktopStatus} />
               <span className="text-white/50">
                 {desktopStatus === "checking" ? "Checking..." :
@@ -140,20 +148,24 @@ export function Navigation() {
             </div>
 
             {/* Mobile Status Dot Only */}
-            <div className="sm:hidden">
+            <div className="sm:hidden" role="status" aria-label={`Desktop server ${desktopStatus}`}>
               <StatusDot status={desktopStatus} />
             </div>
 
             {/* Date */}
-            <span className="text-white/40 text-sm hidden lg:inline">{currentTime}</span>
+            <time className="text-white/40 text-sm hidden lg:inline" dateTime={new Date().toISOString()}>
+              {currentTime}
+            </time>
 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors"
-              aria-label="Toggle menu"
+              className="md:hidden p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors focus:outline-none focus:ring-2 focus:ring-vulcan-accent"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-menu"
             >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 {mobileMenuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 ) : (
@@ -166,7 +178,7 @@ export function Navigation() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-white/10 py-2">
+          <div id="mobile-menu" className="md:hidden border-t border-white/10 py-2" role="menu">
             <div className="flex flex-col gap-1">
               {navItems.map((item) => {
                 const isActive = pathname === item.path;
@@ -175,7 +187,10 @@ export function Navigation() {
                     key={item.path}
                     href={item.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                    aria-label={item.ariaLabel}
+                    aria-current={isActive ? "page" : undefined}
+                    role="menuitem"
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-vulcan-accent ${
                       isActive
                         ? "bg-vulcan-accent text-white shadow-lg shadow-vulcan-accent/20"
                         : "text-white/60 hover:text-white hover:bg-white/5"
@@ -186,6 +201,13 @@ export function Navigation() {
                   </Link>
                 );
               })}
+              {/* Theme toggle in mobile menu */}
+              <div className="px-4 py-3 border-t border-white/10 mt-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-white/60 font-medium">Theme</span>
+                  <ThemeToggle />
+                </div>
+              </div>
             </div>
           </div>
         )}
