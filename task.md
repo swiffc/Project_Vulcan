@@ -303,6 +303,11 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 | `/ache/ai/knowledge` | AI Assistant | Knowledge base query |
 | `/ache/erection/plan` | Erection | Complete erection plan |
 | `/ache/erection/lifting-lug` | Erection | Lifting lug design |
+| `/ache/design/column` | Structural | Column design (AISC) |
+| `/ache/design/beam` | Structural | Beam design (AISC) |
+| `/ache/design/anchor-bolts` | Structural | Anchor bolt design |
+| `/ache/optimize/suggestions` | AI | Optimization suggestions |
+| `/ache/summary` | Reader | ACHE design summary |
 
 ---
 
