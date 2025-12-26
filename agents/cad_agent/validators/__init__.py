@@ -106,6 +106,14 @@ from .report_generator import (
     ReportMetadata, ReportFormat, ReportLevel
 )
 
+# Phase 25 - Full GD&T Validator (ASME Y14.5-2018)
+from .gdt_validator import (
+    GDTValidator, GDTValidationResult,
+    FeatureControlFrame, PositionData, DatumFeature,
+    ToleranceType, MaterialCondition, FeatureType,
+    PROCESS_FORM_CAPABILITY, POSITION_CAPABILITY
+)
+
 __all__ = [
     # Core validators
     "ValidationOrchestrator",
@@ -253,4 +261,15 @@ __all__ = [
     "ReportMetadata",
     "ReportFormat",
     "ReportLevel",
+    # Phase 25 - Full GD&T Validator (ASME Y14.5-2018)
+    "GDTValidator",
+    "GDTValidationResult",
+    "FeatureControlFrame",
+    "PositionData",
+    "DatumFeature",
+    "ToleranceType",
+    "MaterialCondition",
+    "FeatureType",
+    "PROCESS_FORM_CAPABILITY",
+    "POSITION_CAPABILITY",
 ]
