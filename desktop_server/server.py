@@ -101,6 +101,8 @@ try:
         solidworks_drawings_router,
         solidworks_batch_router,
         SOLIDWORKS_BATCH_AVAILABLE,
+        solidworks_advanced_router,
+        SOLIDWORKS_ADVANCED_AVAILABLE,
         inventor_router,
         inventor_imates_router,
         inventor_drawings_router,
@@ -122,6 +124,7 @@ except ImportError:
     solidworks_router = None
     solidworks_assembly_router = None
     solidworks_drawings_router = None
+    solidworks_advanced_router = None
     inventor_router = None
     inventor_imates_router = None
     inventor_drawings_router = None
@@ -389,6 +392,9 @@ if CAD_AVAILABLE:
     if SOLIDWORKS_BATCH_AVAILABLE and solidworks_batch_router:
         app.include_router(solidworks_batch_router)
         logger.info("SolidWorks batch operations loaded")
+    if SOLIDWORKS_ADVANCED_AVAILABLE and solidworks_advanced_router:
+        app.include_router(solidworks_advanced_router)
+        logger.info("SolidWorks advanced features loaded (Routing, Weldments, Sheet Metal, etc.)")
     if inventor_router:
         app.include_router(inventor_router)
     if inventor_imates_router:
