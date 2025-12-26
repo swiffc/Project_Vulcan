@@ -5,3 +5,5 @@ export { QuickStats } from "./QuickStats";
 export { RecentValidations } from "./RecentValidations";
 export { ToolsPanel } from "./ToolsPanel";
 export { ValidatorDashboard } from "./ValidatorDashboard";
+export { MetricsDashboard } from "./MetricsDashboard";
+export { ACHEPanel } from "./ACHEPanel";

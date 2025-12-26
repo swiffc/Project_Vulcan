@@ -4458,6 +4458,372 @@ async def get_api661_reference():
     }
 
 
+# =============================================================================
+# Data Hub Endpoints - Unified Standards, Components, Rules, Templates
+# =============================================================================
+
+# Import data hub components
+try:
+    sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+    from data_hub import (
+        get_standards_hub,
+        ComponentLookup,
+        RulesEngine,
+        TemplateEngine,
+    )
+    DATA_HUB_AVAILABLE = True
+except ImportError:
+    DATA_HUB_AVAILABLE = False
+    logger.warning("Data Hub components not available")
+
+
+class StandardsSearchRequest(BaseModel):
+    """Request model for standards search."""
+    query: str
+    standard: Optional[str] = None
+    category: Optional[str] = None
+    limit: int = 20
+
+
+class ComponentSearchRequest(BaseModel):
+    """Request model for component search."""
+    query: str
+    category: Optional[str] = None
+    fuzzy: bool = False
+
+
+class RulesEvaluationRequest(BaseModel):
+    """Request model for rules evaluation."""
+    data: Dict[str, Any]
+    standard: Optional[str] = None
+    tags: Optional[List[str]] = None
+
+
+class ReportRenderRequest(BaseModel):
+    """Request model for report rendering."""
+    template_id: str
+    data: Dict[str, Any]
+    format: Optional[str] = None
+
+
+@app.get("/data-hub/status")
+async def get_data_hub_status():
+    """Get data hub availability and statistics."""
+    if not DATA_HUB_AVAILABLE:
+        return {"available": False, "error": "Data Hub not loaded"}
+
+    try:
+        hub = get_standards_hub()
+        components = ComponentLookup()
+        rules = RulesEngine()
+        templates = TemplateEngine()
+
+        return {
+            "available": True,
+            "standards_hub": hub.to_dict(),
+            "components": {
+                "beams": len(components.list_beams()),
+                "bolts": len(components.list_bolts()),
+                "materials": len(components.list_materials()),
+                "pipes": len(components.list_pipe_sizes()),
+            },
+            "rules": rules.get_summary(),
+            "templates": templates.list_templates(),
+        }
+    except Exception as e:
+        logger.error(f"Data hub status error: {e}")
+        return {"available": False, "error": str(e)}
+
+
+@app.post("/data-hub/search")
+async def search_standards(request: StandardsSearchRequest):
+    """Search standards database."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        hub = get_standards_hub()
+        results = hub.search(
+            query=request.query,
+            standard=request.standard,
+            category=request.category,
+            limit=request.limit
+        )
+        return {
+            "query": request.query,
+            "count": len(results),
+            "results": [
+                {
+                    "standard": r.standard,
+                    "category": r.category,
+                    "designation": r.designation,
+                    "properties": r.properties,
+                    "reference": r.reference,
+                    "score": r.relevance_score,
+                }
+                for r in results
+            ]
+        }
+    except Exception as e:
+        logger.error(f"Standards search error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/data-hub/beam/{designation}")
+async def get_beam(designation: str):
+    """Get beam properties by designation."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        hub = get_standards_hub()
+        beam = hub.get_beam(designation)
+        if beam:
+            return {"designation": designation, "properties": beam}
+        raise HTTPException(status_code=404, detail=f"Beam {designation} not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/data-hub/bolt/{size}")
+async def get_bolt(size: str):
+    """Get bolt properties by size."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        hub = get_standards_hub()
+        bolt = hub.get_bolt(size)
+        if bolt:
+            return {"size": size, "properties": bolt}
+        raise HTTPException(status_code=404, detail=f"Bolt {size} not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/data-hub/material/{grade}")
+async def get_material(grade: str):
+    """Get material properties by grade."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        hub = get_standards_hub()
+        material = hub.get_material(grade)
+        if material:
+            return {"grade": grade, "properties": material}
+        raise HTTPException(status_code=404, detail=f"Material {grade} not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/data-hub/pipe/{nps}")
+async def get_pipe(nps: str, schedule: str = "40"):
+    """Get pipe dimensions by NPS and schedule."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        hub = get_standards_hub()
+        pipe = hub.get_pipe(nps, schedule)
+        if pipe:
+            return pipe
+        raise HTTPException(status_code=404, detail=f"Pipe NPS {nps} Sch {schedule} not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/data-hub/components/search")
+async def search_components(request: ComponentSearchRequest):
+    """Search component database."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        lookup = ComponentLookup()
+        if request.fuzzy:
+            results = lookup.fuzzy_search(request.query)
+        else:
+            results = lookup.search(request.query, request.category)
+
+        return {
+            "query": request.query,
+            "fuzzy": request.fuzzy,
+            "count": len(results),
+            "results": [r.to_dict() for r in results]
+        }
+    except Exception as e:
+        logger.error(f"Component search error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/data-hub/components/weight")
+async def calculate_weight(designation: str, length_ft: float):
+    """Calculate component weight."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        lookup = ComponentLookup()
+        result = lookup.calculate_beam_weight(designation, length_ft)
+        if result:
+            return result
+        raise HTTPException(status_code=404, detail=f"Component {designation} not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/data-hub/rules")
+async def list_rules(standard: Optional[str] = None, tag: Optional[str] = None):
+    """List available validation rules."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        engine = RulesEngine()
+        if standard:
+            rules = engine.get_rules_by_standard(standard)
+        elif tag:
+            rules = engine.get_rules_by_tag(tag)
+        else:
+            rules = list(engine._rules.values())
+
+        return {
+            "count": len(rules),
+            "standards": engine.list_standards(),
+            "tags": engine.list_tags(),
+            "rules": [r.to_dict() for r in rules[:50]]  # Limit to 50
+        }
+    except Exception as e:
+        logger.error(f"Rules listing error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/data-hub/rules/evaluate")
+async def evaluate_rules(request: RulesEvaluationRequest):
+    """Evaluate validation rules against data."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        engine = RulesEngine()
+        violations = engine.evaluate(
+            data=request.data,
+            standard=request.standard,
+            tags=request.tags
+        )
+
+        return {
+            "evaluated": True,
+            "data_keys": list(request.data.keys()),
+            "violations_count": len(violations),
+            "violations": [v.to_dict() for v in violations]
+        }
+    except Exception as e:
+        logger.error(f"Rules evaluation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/data-hub/templates")
+async def list_templates():
+    """List available report templates."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        engine = TemplateEngine()
+        return {"templates": engine.list_templates()}
+    except Exception as e:
+        logger.error(f"Template listing error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/data-hub/templates/render")
+async def render_template(request: ReportRenderRequest):
+    """Render a report template with data."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        engine = TemplateEngine()
+
+        # Parse format if provided
+        from data_hub.template_engine import OutputFormat
+        fmt = None
+        if request.format:
+            try:
+                fmt = OutputFormat(request.format.lower())
+            except ValueError:
+                raise HTTPException(status_code=400, detail=f"Invalid format: {request.format}")
+
+        output = engine.render(request.template_id, request.data, fmt)
+
+        return {
+            "template_id": request.template_id,
+            "format": request.format or "html",
+            "content": output
+        }
+    except HTTPException:
+        raise
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        logger.error(f"Template render error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/data-hub/validate/bolt-spacing")
+async def validate_bolt_spacing(bolt_size: str, spacing: float):
+    """Validate bolt spacing per AISC J3.3."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        hub = get_standards_hub()
+        result = hub.validate_bolt_spacing(bolt_size, spacing)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/data-hub/validate/edge-distance")
+async def validate_edge_distance(bolt_size: str, edge_dist: float, edge_type: str = "rolled"):
+    """Validate edge distance per AISC J3.4."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        hub = get_standards_hub()
+        result = hub.validate_edge_distance(bolt_size, edge_dist, edge_type)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/data-hub/weld/minimum-fillet")
+async def get_minimum_fillet_weld(thickness: float):
+    """Get minimum fillet weld size per AWS D1.1."""
+    if not DATA_HUB_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Data Hub not available")
+
+    try:
+        hub = get_standards_hub()
+        result = hub.get_minimum_fillet_weld(thickness)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 if __name__ == "__main__":
     import uvicorn
 
