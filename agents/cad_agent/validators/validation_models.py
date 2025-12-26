@@ -105,7 +105,7 @@ class ValidationRequest(BaseModel):
 
     type: Literal["drawing", "assembly", "ache", "custom"]
     file_path: Optional[str] = None
-    file_id: Optional[str] = None  # Flatter Files ID
+    file_id: Optional[str] = None  # External file ID (PDM, etc.)
     checks: List[str] = Field(default_factory=lambda: ["all"])
     severity: Literal["critical", "all"] = "all"
     user_id: str
