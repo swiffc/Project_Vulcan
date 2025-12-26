@@ -2182,7 +2182,9 @@ async def modify_selection_property(req: UpdateSelectionPropertyRequest):
             break
 
     if success:
-        model.EditRebuild3()
+        # Rebuild only if not in batch mode
+        if not getattr(model, '_batch_mode', False):
+            model.EditRebuild3()
         return {
             "status": "ok",
             "property": req.property_name,
