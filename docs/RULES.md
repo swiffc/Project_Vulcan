@@ -543,6 +543,42 @@ NEXT_PUBLIC_ORCHESTRATOR_URL=http://localhost:8000
 
 ---
 
+## Rule 23: Task Consolidation & File Cleanup
+
+- 📋 **SINGLE SOURCE OF TRUTH**: All pending tasks must be in `task.md`. Do not scatter tasks across multiple files.
+- 🔍 **REGULAR SCANS**: Periodically scan all `.md` files for incomplete tasks (`[ ]`, `TODO`, `FIXME`, `PENDING`) and consolidate them into `task.md`.
+- 🗑️ **DELETE STATUS FILES**: Remove old status/progress files after tasks are consolidated:
+  - Files with names like `*_STATUS.md`, `*_PROGRESS.md`, `*_COMPLETE.md`, `*_NEXT_STEPS.md`, `*_IMPLEMENTATION.md`
+  - These are historical records and violate Rule 22
+  - Completed work should be reflected in README.md capabilities, not in separate status files
+- 📝 **CONSOLIDATE BEFORE DELETING**: Before deleting status files, extract any incomplete tasks and add them to `task.md`.
+- ✅ **CLEANUP CHECKLIST**: When cleaning up:
+  1. Scan all `.md` files for incomplete tasks
+  2. Add incomplete tasks to `task.md` with proper categorization
+  3. Remove completed tasks from `task.md` (per Rule 22)
+  4. Delete old status/progress files
+  5. Update README.md to reflect current capabilities
+  6. Verify no duplicate task tracking exists
+
+**Examples of files to delete after consolidation**:
+- `IMPLEMENTATION_STATUS.md`
+- `FEATURE_ANALYSIS_STATUS.md`
+- `STANDARDS_EXTRACTION_PROGRESS.md`
+- `HPC_NEXT_STEPS.md`
+- `HPC_INTEGRATION_COMPLETE.md`
+- `*_COMPLETE_SUMMARY.md`
+- `*_TASK_UPDATE_SUMMARY.md`
+
+**Exception**: Files in `docs/archive/` are historical records and should be preserved.
+
+**When to perform cleanup**:
+- After major feature completion
+- When task.md becomes unwieldy
+- When multiple status files exist for the same work
+- Monthly maintenance (recommended)
+
+---
+
 ## Rule 18: UX Elite - Streaming & Rich Feedback
 
 - **Streaming Responses**: All agent responses must stream word-by-word (ChatGPT-style) to provide instant engagement.
