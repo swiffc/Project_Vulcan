@@ -28,8 +28,8 @@ LIFTING_LUG_REQUIRED_LBS = 500  # Require lugs for assemblies > 500 lbs
 CG_REQUIRED_LBS = 1000  # Require CG marking for assemblies > 1000 lbs
 RIGGING_DIAGRAM_LBS = 2000  # Require rigging diagram > 2000 lbs
 
-# Standard lifting lug capacities (per lug, SWL)
-LIFTING_LUG_CAPACITIES = {
+# Standard lifting lug capacities (per lug, SWL) - fallback if HPC data unavailable
+LIFTING_LUG_CAPACITIES_FALLBACK = {
     # lug_thickness: capacity_lbs (approx, for standard plate lug)
     0.375: 2000,
     0.5: 4000,
@@ -39,6 +39,14 @@ LIFTING_LUG_CAPACITIES = {
     1.25: 25000,
     1.5: 35000,
 }
+
+# HPC-specific requirements
+HPC_LIFTING_LUG_QUANTITY_RULE = {
+    "min_tube_length_ft": 50.0,
+    "required_quantity": 4,
+    "description": "4 lifting lugs for units with 50' or 60' long tubes or greater"
+}
+HPC_MAX_CENTERLINE_SPACING_FT = 23.0
 
 # Maximum shipping dimensions (typical flatbed truck)
 MAX_SHIPPING = {
@@ -59,6 +67,9 @@ class HandlingData:
     has_lifting_lugs: bool = False
     num_lifting_lugs: int = 0
     lug_capacity_lbs: Optional[float] = None
+    lug_part_number: Optional[str] = None  # HPC part number (e.g., "W708")
+    tube_length_ft: Optional[float] = None  # For HPC quantity rule check
+    lug_spacing_ft: Optional[float] = None  # Centerline to centerline spacing
     cg_marked: bool = False
     cg_location: Optional[str] = None  # e.g., "12\" from left end"
     has_rigging_diagram: bool = False
@@ -139,16 +150,40 @@ class HandlingValidator:
                     message=f"Assembly weighs {handling.total_weight_lbs:,.0f} lbs but no lifting lugs shown",
                     suggestion="Add lifting lugs sized for assembly weight",
                 ))
-            elif handling.num_lifting_lugs < 2:
-                result.warnings += 1
-                result.issues.append(ValidationIssue(
-                    severity=ValidationSeverity.WARNING,
-                    check_type="lifting_lugs_count",
-                    message=f"Only {handling.num_lifting_lugs} lifting lug(s) shown - minimum 2 recommended",
-                    suggestion="Add second lifting lug for balanced lift",
-                ))
             else:
-                result.passed += 1
+                # Check HPC quantity rule if tube length provided
+                if handling.tube_length_ft and handling.tube_length_ft >= HPC_LIFTING_LUG_QUANTITY_RULE["min_tube_length_ft"]:
+                    required_qty = HPC_LIFTING_LUG_QUANTITY_RULE["required_quantity"]
+                    if handling.num_lifting_lugs < required_qty:
+                        result.failed += 1
+                        result.issues.append(ValidationIssue(
+                            severity=ValidationSeverity.CRITICAL,
+                            check_type="hpc_lug_quantity",
+                            message=f"HPC standard requires {required_qty} lifting lugs for {handling.tube_length_ft}' tubes (found {handling.num_lifting_lugs})",
+                            suggestion=f"Add {required_qty - handling.num_lifting_lugs} more lifting lug(s) per HPC standards",
+                        ))
+                    else:
+                        result.passed += 1
+                elif handling.num_lifting_lugs < 2:
+                    result.warnings += 1
+                    result.issues.append(ValidationIssue(
+                        severity=ValidationSeverity.WARNING,
+                        check_type="lifting_lugs_count",
+                        message=f"Only {handling.num_lifting_lugs} lifting lug(s) shown - minimum 2 recommended",
+                        suggestion="Add second lifting lug for balanced lift",
+                    ))
+                else:
+                    result.passed += 1
+                
+                # Check HPC spacing requirement
+                if handling.lug_spacing_ft and handling.lug_spacing_ft > HPC_MAX_CENTERLINE_SPACING_FT:
+                    result.failed += 1
+                    result.issues.append(ValidationIssue(
+                        severity=ValidationSeverity.CRITICAL,
+                        check_type="hpc_lug_spacing",
+                        message=f"Lifting lug spacing {handling.lug_spacing_ft:.1f}' exceeds HPC maximum of {HPC_MAX_CENTERLINE_SPACING_FT}'",
+                        suggestion=f"Reduce spacing to {HPC_MAX_CENTERLINE_SPACING_FT}' or less per HPC standards",
+                    ))
         else:
             result.passed += 1
 
@@ -159,25 +194,46 @@ class HandlingValidator:
 
         result.total_checks += 1
 
-        if handling.lug_capacity_lbs is None:
+        # Try to get capacity from HPC standards if part number provided
+        lug_capacity = handling.lug_capacity_lbs
+        if handling.lug_part_number and _hpc_db:
+            hpc_lug = _hpc_db.get_hpc_lifting_lug(handling.lug_part_number)
+            if hpc_lug:
+                # Estimate capacity based on thickness (fallback method)
+                # HPC lugs are typically A36, use conservative estimate
+                thickness = hpc_lug.thickness_in
+                if thickness in LIFTING_LUG_CAPACITIES_FALLBACK:
+                    lug_capacity = LIFTING_LUG_CAPACITIES_FALLBACK[thickness]
+                    # Add note about HPC part
+                    result.issues.append(ValidationIssue(
+                        severity=ValidationSeverity.INFO,
+                        check_type="hpc_lug_identified",
+                        message=f"Identified HPC standard lifting lug {handling.lug_part_number} ({hpc_lug.description})",
+                        suggestion="Verify capacity meets load requirements",
+                    ))
+
+        if lug_capacity is None:
             result.warnings += 1
+            suggestion = f"Add lug SWL rating (min {handling.total_weight_lbs/handling.num_lifting_lugs*2:,.0f} lbs per lug with 2:1 SF)"
+            if handling.lug_part_number:
+                suggestion += f" or verify HPC part {handling.lug_part_number} capacity"
             result.issues.append(ValidationIssue(
                 severity=ValidationSeverity.WARNING,
                 check_type="lug_capacity_unknown",
                 message="Lifting lug capacity not specified on drawing",
-                suggestion=f"Add lug SWL rating (min {handling.total_weight_lbs/handling.num_lifting_lugs*2:,.0f} lbs per lug with 2:1 SF)",
+                suggestion=suggestion,
             ))
         else:
             # Check with 2:1 safety factor per lug
             required_per_lug = handling.total_weight_lbs / handling.num_lifting_lugs * 2
 
-            if handling.lug_capacity_lbs < required_per_lug:
+            if lug_capacity < required_per_lug:
                 result.failed += 1
                 result.critical_failures += 1
                 result.issues.append(ValidationIssue(
                     severity=ValidationSeverity.CRITICAL,
                     check_type="lug_capacity_low",
-                    message=f"Lug capacity {handling.lug_capacity_lbs:,.0f} lbs < required {required_per_lug:,.0f} lbs (2:1 SF)",
+                    message=f"Lug capacity {lug_capacity:,.0f} lbs < required {required_per_lug:,.0f} lbs (2:1 SF)",
                     suggestion="Increase lug size or add more lugs",
                 ))
             else:
