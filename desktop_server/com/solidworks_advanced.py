@@ -51,13 +51,24 @@ class ElectricalRouteRequest(BaseModel):
 
 # --- WELDMENT MODELS ---
 class StructuralMemberRequest(BaseModel):
-    """Insert structural member (weldment profile)."""
-    standard: str = Field("ansi inch", description="Standard: ansi inch, iso, din, jis")
-    profile_type: str = Field("c channel", description="Type: c channel, angle, pipe, square tube, i beam, etc.")
-    size: str = Field("C3 x 4.1", description="Profile size designation")
+    """Insert structural member (weldment profile). Full profile library support."""
+    standard: Literal[
+        "ansi inch", "ansi metric", "iso", "din", "jis", "cisc", "aisc", "bs", "gb"
+    ] = Field("ansi inch", description="Standard library: ansi inch, ansi metric, iso, din, jis, cisc, aisc, bs (British), gb (Chinese)")
+    profile_type: Literal[
+        "c channel", "mc channel", "angle", "pipe", "square tube", "rectangular tube",
+        "i beam", "w beam", "s beam", "wide flange", "t section", "wt section",
+        "flat bar", "round bar", "hex bar", "square bar",
+        "hss round", "hss square", "hss rectangular",
+        "unistrut", "slotted channel", "z section"
+    ] = Field("c channel", description="Profile type")
+    size: str = Field("C3 x 4.1", description="Profile size designation e.g., 'C3 x 4.1', 'W8 x 31', 'L2 x 2 x 1/4', 'HSS4x4x1/4'")
     path_segments: List[str] = Field(..., description="Names of sketch segments to follow")
-    corner_treatment: str = Field("miter", description="Corner: miter, butt, cope, end cap")
+    corner_treatment: Literal["miter", "butt1", "butt2", "cope", "end cap", "none"] = Field("miter", description="Corner treatment")
     apply_corner: bool = Field(True, description="Apply corner treatment")
+    rotation_angle: float = Field(0.0, description="Profile rotation angle in degrees (0-360)")
+    mirror_profile: bool = Field(False, description="Mirror the profile about its axis")
+    merge_arc_segments: bool = Field(True, description="Merge arc segment bodies into single member")
 
 
 class WeldBeadRequest(BaseModel):

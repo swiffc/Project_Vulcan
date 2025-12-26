@@ -401,6 +401,12 @@ if CAD_AVAILABLE:
     if SOLIDWORKS_ADVANCED_AVAILABLE and solidworks_advanced_router:
         app.include_router(solidworks_advanced_router)
         logger.info("SolidWorks advanced features loaded (Routing, Weldments, Sheet Metal, etc.)")
+    if SOLIDWORKS_SIMULATION_AVAILABLE and solidworks_simulation_router:
+        app.include_router(solidworks_simulation_router)
+        logger.info("SolidWorks Simulation API loaded (FEA, Thermal, Frequency)")
+    if SOLIDWORKS_PDM_AVAILABLE and solidworks_pdm_router:
+        app.include_router(solidworks_pdm_router)
+        logger.info("SolidWorks PDM integration loaded (Vault operations)")
     if inventor_router:
         app.include_router(inventor_router)
     if inventor_imates_router:
