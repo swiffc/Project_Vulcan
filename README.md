@@ -24,8 +24,9 @@ One chat interface that controls your entire digital life, powered by LLM-driven
 | **CAD Agent AI** | Parses drawings, builds SolidWorks/Inventor models, validates with 130+ checks | ✅ Active |
 | **Inspector Bot** | LLM-as-Judge auditing, grades outputs, generates improvement reports | ✅ Active |
 | **System Manager** | Background daemon: scheduling, backups, health monitoring, metrics | ✅ Active |
-| **Validation System** | Natural language validation commands (GD&T, welding, material, ACHE) | ✅ Complete |
-| **Strategy Learning** | Autonomous learning loop that evolves CAD strategies based on performance | ✅ **NEW** |
+| **Validation System** | Natural language validation commands (GD&T, welding, material, ACHE, HPC) | ✅ Complete |
+| **Strategy Learning** | Autonomous learning loop that evolves CAD strategies based on performance | ✅ Complete |
+| **HPC Standards** | HPC standards integration (lifting lugs, tie-downs, machinery mounts, walkways, headers) | ✅ **NEW** |
 
 All agents share a **Desktop Control Server** (MCP) that physically operates your Windows PC + **Memory Brain** for persistent RAG knowledge.
 
