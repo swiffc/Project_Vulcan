@@ -24,29 +24,68 @@ logger = logging.getLogger(__name__)
 
 # --- ROUTING MODELS ---
 class PipeRouteRequest(BaseModel):
-    """Create a pipe/tube route between two points."""
+    """Create a pipe/tube route between two points. Full routing specification support."""
     start_point: List[float] = Field(..., description="Start point [x, y, z] in meters")
     end_point: List[float] = Field(..., description="End point [x, y, z] in meters")
-    pipe_standard: str = Field("ANSI", description="Pipe standard: ANSI, ISO, DIN")
-    pipe_size: str = Field("2 inch", description="Nominal pipe size")
-    schedule: str = Field("40", description="Pipe schedule")
-    bend_radius: Optional[float] = Field(None, description="Bend radius in meters")
+    pipe_standard: Literal[
+        "ANSI", "ASME B31.1", "ASME B31.3", "ISO", "DIN", "JIS", "BS", "API", "ASTM"
+    ] = Field("ANSI", description="Pipe standard")
+    pipe_material: Literal[
+        "carbon_steel", "stainless_steel_304", "stainless_steel_316", "copper", "pvc",
+        "cpvc", "aluminum", "brass", "titanium", "inconel", "hastelloy", "duplex"
+    ] = Field("carbon_steel", description="Pipe material")
+    pipe_size: Literal[
+        "1/8 inch", "1/4 inch", "3/8 inch", "1/2 inch", "3/4 inch", "1 inch", "1-1/4 inch",
+        "1-1/2 inch", "2 inch", "2-1/2 inch", "3 inch", "4 inch", "5 inch", "6 inch",
+        "8 inch", "10 inch", "12 inch", "14 inch", "16 inch", "18 inch", "20 inch", "24 inch",
+        "DN6", "DN8", "DN10", "DN15", "DN20", "DN25", "DN32", "DN40", "DN50", "DN65",
+        "DN80", "DN100", "DN125", "DN150", "DN200", "DN250", "DN300", "DN350", "DN400"
+    ] = Field("2 inch", description="Nominal pipe size")
+    schedule: Literal[
+        "5", "5S", "10", "10S", "20", "30", "40", "40S", "60", "80", "80S",
+        "100", "120", "140", "160", "STD", "XS", "XXS"
+    ] = Field("40", description="Pipe schedule/wall thickness")
+    bend_radius: Optional[float] = Field(None, description="Bend radius in meters (default: 1.5D)")
+    connection_type: Literal[
+        "butt_weld", "socket_weld", "threaded", "flanged", "grooved", "compression"
+    ] = Field("butt_weld", description="Connection type")
+    insulation_thickness: Optional[float] = Field(None, description="Insulation thickness in meters")
 
 
 class RouteFittingRequest(BaseModel):
-    """Insert a routing fitting (elbow, tee, flange, valve)."""
-    fitting_type: Literal["elbow", "tee", "reducer", "flange", "valve", "cap", "coupling"]
+    """Insert a routing fitting. Full fitting library support."""
+    fitting_type: Literal[
+        "elbow_90", "elbow_45", "elbow_long_radius", "elbow_short_radius", "elbow_3d",
+        "tee_equal", "tee_reducing", "tee_lateral",
+        "reducer_concentric", "reducer_eccentric",
+        "flange_weld_neck", "flange_slip_on", "flange_blind", "flange_socket_weld", "flange_threaded", "flange_lap_joint",
+        "valve_gate", "valve_globe", "valve_ball", "valve_butterfly", "valve_check", "valve_needle", "valve_plug",
+        "cap", "coupling", "union", "cross", "wye", "swage", "stub_end", "olet_weld", "olet_thread", "olet_socket"
+    ] = Field(..., description="Fitting type")
     position: List[float] = Field(..., description="Position [x, y, z] in meters")
-    size: str = Field("2 inch", description="Fitting size")
-    angle: Optional[float] = Field(90.0, description="Angle for elbows (degrees)")
+    size: str = Field("2 inch", description="Primary fitting size")
+    size2: Optional[str] = Field(None, description="Secondary size for reducers/tees")
+    angle: float = Field(90.0, description="Angle for elbows (degrees)")
+    rating: Literal["150", "300", "400", "600", "900", "1500", "2500", "2000", "3000", "6000"] = Field("150", description="Pressure rating (class)")
+    facing: Literal["raised_face", "flat_face", "ring_joint", "tongue_groove"] = Field("raised_face", description="Flange facing type")
 
 
 class ElectricalRouteRequest(BaseModel):
-    """Create electrical cable/wire route."""
+    """Create electrical cable/wire route. Full electrical routing support."""
     start_connector: str = Field(..., description="Start connector component name")
     end_connector: str = Field(..., description="End connector component name")
-    cable_type: str = Field("18 AWG", description="Cable/wire type")
+    cable_type: Literal[
+        "10 AWG", "12 AWG", "14 AWG", "16 AWG", "18 AWG", "20 AWG", "22 AWG", "24 AWG",
+        "0.5 mm2", "0.75 mm2", "1.0 mm2", "1.5 mm2", "2.5 mm2", "4.0 mm2", "6.0 mm2", "10 mm2",
+        "CAT5e", "CAT6", "CAT6A", "fiber_single", "fiber_multi", "coax_rg6", "coax_rg59"
+    ] = Field("18 AWG", description="Cable/wire type")
+    insulation: Literal[
+        "PVC", "XLPE", "rubber", "silicone", "teflon", "polyethylene"
+    ] = Field("PVC", description="Cable insulation type")
     bundle_diameter: Optional[float] = Field(None, description="Bundle diameter in meters")
+    min_bend_radius: Optional[float] = Field(None, description="Minimum bend radius in meters")
+    shielded: bool = Field(False, description="Shielded cable")
+    wire_count: int = Field(1, description="Number of wires in cable")
 
 
 # --- WELDMENT MODELS ---
