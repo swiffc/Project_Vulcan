@@ -2521,6 +2521,17 @@ export async function executeCADTool(
     sw_insert_component: { method: "POST", endpoint: "/com/solidworks/insert_component" },
     sw_add_mate: { method: "POST", endpoint: "/com/solidworks/add_mate" },
     sw_screenshot: { method: "POST", endpoint: "/screen/screenshot" },
+    sw_screenshot_window: { method: "POST", endpoint: "/screen/window/SolidWorks" },
+    sw_screenshot_viewport: { method: "POST", endpoint: "/com/solidworks/screenshot_viewport" },
+    sw_screenshot_feature_tree: { method: "POST", endpoint: "/com/solidworks/screenshot_feature_tree" },
+    sw_screenshot_property_manager: { method: "POST", endpoint: "/com/solidworks/screenshot_property_manager" },
+    sw_capture_multi_view: { method: "POST", endpoint: "/cad/vision/multi-view" },
+    sw_extract_dimensions_screenshot: { method: "POST", endpoint: "/cad/vision/extract-dimensions" },
+    sw_detect_gdt_symbols: { method: "POST", endpoint: "/cad/vision/detect-gdt-symbols" },
+    sw_detect_annotations: { method: "POST", endpoint: "/cad/vision/detect-annotations" },
+    sw_extract_bom_screenshot: { method: "POST", endpoint: "/cad/vision/extract-bom" },
+    sw_analyze_drawing_sheet: { method: "POST", endpoint: "/cad/vision/analyze-drawing-sheet" },
+    sw_compare_screenshots: { method: "POST", endpoint: "/screen/compare" },
     sw_zoom_fit: { method: "POST", endpoint: "/com/solidworks/zoom_fit" },
     sw_set_view: { method: "POST", endpoint: "/com/solidworks/set_view" },
     // SolidWorks Advanced Features
@@ -2652,14 +2663,25 @@ export async function executeCADTool(
   }
 
   try {
-    const url = `${DESKTOP_URL}${mapping.endpoint}`;
+    // Handle path parameters (e.g., /screen/window/{window_title})
+    let url = `${DESKTOP_URL}${mapping.endpoint}`;
+    if (mapping.endpoint.includes("{window_title}")) {
+      const windowTitle = (toolInput.window_title as string) || "SolidWorks";
+      url = url.replace("{window_title}", windowTitle);
+    }
+    
     const options: RequestInit = {
       method: mapping.method,
       headers: { "Content-Type": "application/json" },
     };
 
     if (mapping.method === "POST" && Object.keys(toolInput).length > 0) {
-      options.body = JSON.stringify(toolInput);
+      // Don't include path parameters in body
+      const bodyInput = { ...toolInput };
+      delete bodyInput.window_title;
+      if (Object.keys(bodyInput).length > 0) {
+        options.body = JSON.stringify(bodyInput);
+      }
     }
 
     console.log(`[CAD Tool] Executing ${toolName} -> ${url}`);

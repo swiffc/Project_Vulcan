@@ -274,7 +274,7 @@ async def analyze_drawing_sheet(req: ScreenshotRequest):
 
 
 class MultiViewRequest(BaseModel):
-    views: List[str] = ["front", "top", "right", "isometric"]
+    views: Optional[List[str]] = None
 
 
 @router.post("/multi-view")
