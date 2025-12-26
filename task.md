@@ -19,14 +19,9 @@
 
 ## 🔥 IMMEDIATE TASKS
 
-### Diagrams to Upload
-- [ ] **Upload `ache_full_scope_configurations.svg` to `/diagrams/`** - Comprehensive 5-section reference:
-  - Section 1: Bundle Orientations (Horizontal, Vertical, A-Frame, V-Frame, W-Frame, Δ-Frame)
-  - Section 2: Header Configurations (Unified vs Split per API 661 7.1.6.1.2)
-  - Section 3: Condenser Tube Slopes (API 661 7.1.1.6/7)
-  - Section 4: Vapor/Condensate Flow Patterns (Co-current, Counter-current, Downflow)
-  - Section 5: Complete Configuration Decision Matrix (7 service types)
-  - File ready: 59KB, 727 lines SVG
+### Diagrams - COMPLETE ✅
+- [x] **`ache_complete_configurations.svg`** uploaded to `/diagrams/` (30KB)
+- [x] **`ache_header_tube_configurations.svg`** uploaded to `/diagrams/` (8KB)
 
 ---
 
