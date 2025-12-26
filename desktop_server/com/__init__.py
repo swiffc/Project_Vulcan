@@ -129,6 +129,20 @@ except ImportError:
     solidworks_advanced_router = None
     SOLIDWORKS_ADVANCED_AVAILABLE = False
 
+try:
+    from .solidworks_simulation import router as solidworks_simulation_router
+    SOLIDWORKS_SIMULATION_AVAILABLE = True
+except ImportError:
+    solidworks_simulation_router = None
+    SOLIDWORKS_SIMULATION_AVAILABLE = False
+
+try:
+    from .solidworks_pdm import router as solidworks_pdm_router
+    SOLIDWORKS_PDM_AVAILABLE = True
+except ImportError:
+    solidworks_pdm_router = None
+    SOLIDWORKS_PDM_AVAILABLE = False
+
 __all__ = [
     "solidworks_router",
     "solidworks_advanced_router",
