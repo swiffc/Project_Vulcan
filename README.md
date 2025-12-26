@@ -262,7 +262,6 @@ Project_Vulcan/
 - **Advanced Validators**: GD&T (28 checks), Welding (32 checks), Material (18 checks), ACHE (130 checks)
 - **Offline Standards DB**: 658 standards (AISC, fasteners, pipes, materials)
 - **PDF Annotation**: Visual error highlighting on drawings
-- **Flatter Files Integration**: Drawing search and download
 - **PDM Integration**: SOLIDWORKS PDM Professional support
 
 ### Work Hub
@@ -541,7 +540,6 @@ python core/cli.py --task "build 6 inch flange"
 
 | Issue | Status | Workaround |
 |-------|--------|------------|
-| **Flatter Files API** | 🛑 Blocked | Using offline standards DB (658 entries) |
 | **PDF Parsing** | ⚠️ Beta | Complex tables sometimes misread |
 | **SolidWorks COM** | ⚠️ Flaky | Restart SolidWorks if "RPC Error" occurs |
 
