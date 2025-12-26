@@ -95,7 +95,8 @@
       "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -m pytest tests/test_validators_unit.py -v --tb=short)",
       "Bash(where:*)",
       "Bash(npm install:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }
