@@ -555,4 +555,885 @@ async def list_available_parameters():
         pythoncom.CoUninitialize()
 
 
+# =============================================================================
+# Column (Parameter) Management
+# =============================================================================
+
+@router.post("/add-column")
+async def add_column(request: AddColumnRequest):
+    """
+    Add a new column (parameter) to the design table.
+
+    column_header examples:
+    - Dimension: "D1@Sketch1"
+    - Feature suppression: "$STATE@Boss-Extrude1"
+    - Custom property: "$PRP@Description"
+    - Sheet property: "$PRPSHEET@Title"
+    - Component visibility: "$SHOW@Part1-1"
+    - Color: "$COLOR@Face<1>"
+    """
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        # Add column
+        col_index = dt.AddColumn(request.column_header, request.position or -1)
+
+        # Set default value for all rows if provided
+        if request.default_value is not None and col_index >= 0:
+            row_count = dt.GetTotalRowCount()
+            for row in range(row_count):
+                dt.SetEntryValue(row, col_index, request.default_value)
+
+        dt.UpdateTable()
+        doc.EditRebuild3()
+
+        return {
+            "success": col_index >= 0,
+            "column_header": request.column_header,
+            "column_index": col_index,
+            "message": f"Column '{request.column_header}' added"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Add column failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.delete("/column")
+async def delete_column(request: DeleteColumnRequest):
+    """Delete a column from the design table."""
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        # Get column name before deleting
+        col_name = dt.GetColumnHeader(request.column_index) if hasattr(dt, 'GetColumnHeader') else None
+
+        result = dt.DeleteColumn(request.column_index)
+        dt.UpdateTable()
+        doc.EditRebuild3()
+
+        return {
+            "success": result,
+            "deleted_column": col_name,
+            "column_index": request.column_index,
+            "message": f"Column {request.column_index} deleted"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Delete column failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+# =============================================================================
+# Row (Configuration) Management
+# =============================================================================
+
+@router.delete("/row")
+async def delete_row(request: DeleteRowRequest):
+    """Delete a row (configuration) from the design table."""
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        # Get config name before deleting
+        cfg_name = dt.GetRowHeader(request.row_index) if hasattr(dt, 'GetRowHeader') else None
+
+        result = dt.DeleteRow(request.row_index)
+        dt.UpdateTable()
+        doc.EditRebuild3()
+
+        return {
+            "success": result,
+            "deleted_configuration": cfg_name,
+            "row_index": request.row_index,
+            "message": f"Row {request.row_index} deleted"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Delete row failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/rename-configuration")
+async def rename_configuration(request: RenameConfigurationRequest):
+    """Rename a configuration in the design table."""
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        # Find row with old name
+        row_count = dt.GetTotalRowCount()
+        row_found = -1
+        for row in range(row_count):
+            if dt.GetRowHeader(row) == request.old_name:
+                row_found = row
+                break
+
+        if row_found < 0:
+            raise HTTPException(status_code=404, detail=f"Configuration '{request.old_name}' not found")
+
+        # Rename
+        dt.SetRowHeader(row_found, request.new_name)
+        dt.UpdateTable()
+        doc.EditRebuild3()
+
+        return {
+            "success": True,
+            "old_name": request.old_name,
+            "new_name": request.new_name,
+            "message": f"Configuration renamed from '{request.old_name}' to '{request.new_name}'"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Rename configuration failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/duplicate-configuration")
+async def duplicate_configuration(request: DuplicateConfigurationRequest):
+    """Duplicate a configuration with a new name."""
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        # Find source row
+        row_count = dt.GetTotalRowCount()
+        col_count = dt.GetTotalColumnCount()
+        source_row = -1
+
+        for row in range(row_count):
+            if dt.GetRowHeader(row) == request.source_name:
+                source_row = row
+                break
+
+        if source_row < 0:
+            raise HTTPException(status_code=404, detail=f"Configuration '{request.source_name}' not found")
+
+        # Add new row
+        new_row = dt.AddRow()
+        if new_row >= 0:
+            dt.SetRowHeader(new_row, request.new_name)
+
+            # Copy values if requested
+            if request.copy_values:
+                for col in range(col_count):
+                    value = dt.GetEntryValue(source_row, col)
+                    dt.SetEntryValue(new_row, col, value)
+
+            dt.UpdateTable()
+            doc.EditRebuild3()
+
+        return {
+            "success": new_row >= 0,
+            "source": request.source_name,
+            "new_configuration": request.new_name,
+            "row_index": new_row,
+            "message": f"Configuration '{request.source_name}' duplicated as '{request.new_name}'"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Duplicate configuration failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/batch-create")
+async def batch_create_configurations(request: BatchCreateConfigsRequest):
+    """
+    Create multiple configurations at once.
+
+    Example request:
+    {
+        "configurations": [
+            {"name": "Small", "values": {"D1@Sketch1": 10, "D2@Sketch1": 5}},
+            {"name": "Medium", "values": {"D1@Sketch1": 20, "D2@Sketch1": 10}},
+            {"name": "Large", "values": {"D1@Sketch1": 30, "D2@Sketch1": 15}}
+        ]
+    }
+    """
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        col_count = dt.GetTotalColumnCount()
+        created = []
+        failed = []
+
+        for config in request.configurations:
+            try:
+                name = config.get("name")
+                values = config.get("values", {})
+
+                row_index = dt.AddRow()
+                if row_index >= 0:
+                    dt.SetRowHeader(row_index, name)
+
+                    # Set values
+                    for col in range(col_count):
+                        param = dt.GetColumnHeader(col)
+                        if param in values:
+                            dt.SetEntryValue(row_index, col, values[param])
+
+                    created.append(name)
+                else:
+                    failed.append({"name": name, "error": "Failed to add row"})
+            except Exception as e:
+                failed.append({"name": config.get("name"), "error": str(e)})
+
+        dt.UpdateTable()
+        doc.EditRebuild3()
+
+        return {
+            "success": len(failed) == 0,
+            "created_count": len(created),
+            "failed_count": len(failed),
+            "created": created,
+            "failed": failed,
+            "message": f"Created {len(created)} configurations"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Batch create failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+# =============================================================================
+# Special Column Types ($STATE@, $PRP@, $SHOW@, $COLOR@)
+# =============================================================================
+
+@router.post("/feature-suppression")
+async def set_feature_suppression(request: FeatureSuppressionRequest):
+    """
+    Control feature suppression via design table.
+    Adds $STATE@<feature> column if not present.
+    """
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        column_header = f"$STATE@{request.feature_name}"
+        value = "S" if request.suppressed else "U"  # S=Suppressed, U=Unsuppressed
+
+        # Find or add column
+        col_count = dt.GetTotalColumnCount()
+        col_index = -1
+        for col in range(col_count):
+            if dt.GetColumnHeader(col) == column_header:
+                col_index = col
+                break
+
+        if col_index < 0:
+            col_index = dt.AddColumn(column_header, -1)
+
+        # Find configuration row
+        row_count = dt.GetTotalRowCount()
+        row_index = -1
+        for row in range(row_count):
+            if dt.GetRowHeader(row) == request.configuration_name:
+                row_index = row
+                break
+
+        if row_index < 0:
+            raise HTTPException(status_code=404, detail=f"Configuration '{request.configuration_name}' not found")
+
+        # Set value
+        dt.SetEntryValue(row_index, col_index, value)
+        dt.UpdateTable()
+        doc.EditRebuild3()
+
+        return {
+            "success": True,
+            "configuration": request.configuration_name,
+            "feature": request.feature_name,
+            "suppressed": request.suppressed,
+            "message": f"Feature '{request.feature_name}' {'suppressed' if request.suppressed else 'unsuppressed'}"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Set feature suppression failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/custom-property")
+async def set_custom_property(request: CustomPropertyRequest):
+    """
+    Control custom properties via design table.
+    Adds $PRP@ or $PRPSHEET@ column if not present.
+    """
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        prefix = "$PRP@" if request.config_specific else "$PRPSHEET@"
+        column_header = f"{prefix}{request.property_name}"
+
+        # Find or add column
+        col_count = dt.GetTotalColumnCount()
+        col_index = -1
+        for col in range(col_count):
+            if dt.GetColumnHeader(col) == column_header:
+                col_index = col
+                break
+
+        if col_index < 0:
+            col_index = dt.AddColumn(column_header, -1)
+
+        # Find configuration row
+        row_count = dt.GetTotalRowCount()
+        row_index = -1
+        for row in range(row_count):
+            if dt.GetRowHeader(row) == request.configuration_name:
+                row_index = row
+                break
+
+        if row_index < 0:
+            raise HTTPException(status_code=404, detail=f"Configuration '{request.configuration_name}' not found")
+
+        # Set value
+        dt.SetEntryValue(row_index, col_index, request.property_value)
+        dt.UpdateTable()
+        doc.EditRebuild3()
+
+        return {
+            "success": True,
+            "configuration": request.configuration_name,
+            "property": request.property_name,
+            "value": request.property_value,
+            "config_specific": request.config_specific,
+            "message": f"Property '{request.property_name}' set to '{request.property_value}'"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Set custom property failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/component-visibility")
+async def set_component_visibility(request: ComponentVisibilityRequest):
+    """
+    Control component visibility via design table (assemblies only).
+    Adds $SHOW@<component> column if not present.
+    """
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        if doc.GetType() != 2:  # Assembly
+            raise HTTPException(status_code=400, detail="Component visibility requires an assembly")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        column_header = f"$SHOW@{request.component_name}"
+        value = "S" if request.visible else "H"  # S=Show, H=Hide
+
+        # Find or add column
+        col_count = dt.GetTotalColumnCount()
+        col_index = -1
+        for col in range(col_count):
+            if dt.GetColumnHeader(col) == column_header:
+                col_index = col
+                break
+
+        if col_index < 0:
+            col_index = dt.AddColumn(column_header, -1)
+
+        # Find configuration row
+        row_count = dt.GetTotalRowCount()
+        row_index = -1
+        for row in range(row_count):
+            if dt.GetRowHeader(row) == request.configuration_name:
+                row_index = row
+                break
+
+        if row_index < 0:
+            raise HTTPException(status_code=404, detail=f"Configuration '{request.configuration_name}' not found")
+
+        # Set value
+        dt.SetEntryValue(row_index, col_index, value)
+        dt.UpdateTable()
+        doc.EditRebuild3()
+
+        return {
+            "success": True,
+            "configuration": request.configuration_name,
+            "component": request.component_name,
+            "visible": request.visible,
+            "message": f"Component '{request.component_name}' {'shown' if request.visible else 'hidden'}"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Set component visibility failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/color-control")
+async def set_color(request: ColorControlRequest):
+    """
+    Control feature/face color via design table.
+    Adds $COLOR@<feature_or_face> column if not present.
+    """
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        column_header = f"$COLOR@{request.feature_or_face}"
+
+        # Convert RGB to SolidWorks color format (BGR integer)
+        r, g, b = request.color_rgb
+        color_value = b * 65536 + g * 256 + r
+
+        # Find or add column
+        col_count = dt.GetTotalColumnCount()
+        col_index = -1
+        for col in range(col_count):
+            if dt.GetColumnHeader(col) == column_header:
+                col_index = col
+                break
+
+        if col_index < 0:
+            col_index = dt.AddColumn(column_header, -1)
+
+        # Find configuration row
+        row_count = dt.GetTotalRowCount()
+        row_index = -1
+        for row in range(row_count):
+            if dt.GetRowHeader(row) == request.configuration_name:
+                row_index = row
+                break
+
+        if row_index < 0:
+            raise HTTPException(status_code=404, detail=f"Configuration '{request.configuration_name}' not found")
+
+        # Set value
+        dt.SetEntryValue(row_index, col_index, color_value)
+        dt.UpdateTable()
+        doc.EditRebuild3()
+
+        return {
+            "success": True,
+            "configuration": request.configuration_name,
+            "feature_or_face": request.feature_or_face,
+            "color_rgb": request.color_rgb,
+            "message": f"Color set for '{request.feature_or_face}'"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Set color failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+# =============================================================================
+# Excel Integration
+# =============================================================================
+
+@router.post("/import-excel")
+async def import_from_excel(request: ImportExcelRequest):
+    """
+    Import data from an Excel file into the design table.
+    """
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        if not os.path.exists(request.excel_path):
+            raise HTTPException(status_code=404, detail=f"Excel file not found: {request.excel_path}")
+
+        # Check if design table exists, create if not
+        dt = doc.GetDesignTable()
+        if not dt:
+            # Create from file
+            dt = doc.InsertDesignTable(2, True, 0, request.excel_path)  # 2 = from file
+        else:
+            # Update from file
+            dt.SetLinkedFile(request.excel_path)
+            dt.UpdateTable()
+
+        doc.EditRebuild3()
+
+        return {
+            "success": dt is not None,
+            "excel_path": request.excel_path,
+            "create_configurations": request.create_configurations,
+            "message": "Excel data imported"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Import Excel failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/link")
+async def link_to_excel(request: LinkTableRequest):
+    """Link the design table to an external Excel file."""
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        if not os.path.exists(request.excel_path):
+            raise HTTPException(status_code=404, detail=f"Excel file not found: {request.excel_path}")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        # Link to file
+        result = dt.SetLinkedFile(request.excel_path)
+
+        return {
+            "success": result,
+            "excel_path": request.excel_path,
+            "update_on_open": request.update_on_open,
+            "message": "Design table linked to Excel file"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Link to Excel failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/break-link")
+async def break_excel_link():
+    """Break the link to an external Excel file."""
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        # Break link
+        result = dt.SetLinkedFile("")
+
+        return {
+            "success": result,
+            "message": "Excel link broken - table is now embedded"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Break link failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/refresh-from-link")
+async def refresh_from_linked_file():
+    """Refresh the design table from the linked Excel file."""
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        linked_file = dt.GetLinkedFile() if hasattr(dt, 'GetLinkedFile') else None
+        if not linked_file:
+            raise HTTPException(status_code=400, detail="Design table is not linked to a file")
+
+        # Refresh from file
+        dt.UpdateTable()
+        doc.EditRebuild3()
+
+        return {
+            "success": True,
+            "linked_file": linked_file,
+            "message": "Design table refreshed from linked file"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Refresh from link failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+# =============================================================================
+# Bulk Operations
+# =============================================================================
+
+@router.post("/update-multiple-cells")
+async def update_multiple_cells(request: UpdateMultipleCellsRequest):
+    """Update multiple cells at once for better performance."""
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        dt = doc.GetDesignTable()
+        if not dt:
+            raise HTTPException(status_code=404, detail="No design table found")
+
+        updated = 0
+        failed = []
+
+        for update in request.updates:
+            try:
+                row = update.get("row")
+                col = update.get("column")
+                value = update.get("value")
+                dt.SetEntryValue(row, col, value)
+                updated += 1
+            except Exception as e:
+                failed.append({"row": row, "column": col, "error": str(e)})
+
+        dt.UpdateTable()
+        doc.EditRebuild3()
+
+        return {
+            "success": len(failed) == 0,
+            "updated_count": updated,
+            "failed_count": len(failed),
+            "failed": failed,
+            "message": f"Updated {updated} cells"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Update multiple cells failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+# =============================================================================
+# Utility Functions
+# =============================================================================
+
+@router.get("/column-types")
+async def get_column_type_reference():
+    """Get reference for special column type prefixes."""
+    return {
+        "column_types": {
+            "dimension": {
+                "format": "D#@FeatureName or DimensionName@FeatureName",
+                "example": "D1@Sketch1",
+                "description": "Controls dimension value"
+            },
+            "feature_suppression": {
+                "format": "$STATE@FeatureName",
+                "example": "$STATE@Boss-Extrude1",
+                "values": "S=Suppressed, U=Unsuppressed",
+                "description": "Controls feature suppression state"
+            },
+            "config_property": {
+                "format": "$PRP@PropertyName",
+                "example": "$PRP@Description",
+                "description": "Configuration-specific custom property"
+            },
+            "sheet_property": {
+                "format": "$PRPSHEET@PropertyName",
+                "example": "$PRPSHEET@Title",
+                "description": "Sheet-level custom property"
+            },
+            "component_visibility": {
+                "format": "$SHOW@ComponentName",
+                "example": "$SHOW@Part1-1",
+                "values": "S=Show, H=Hide",
+                "description": "Controls component visibility (assemblies)"
+            },
+            "color": {
+                "format": "$COLOR@FeatureOrFace",
+                "example": "$COLOR@Boss-Extrude1",
+                "values": "BGR integer value",
+                "description": "Controls feature/face color"
+            },
+            "configuration": {
+                "format": "$CONFIGURATION@PartName",
+                "example": "$CONFIGURATION@Part1-1",
+                "description": "Controls which configuration of a part to use"
+            },
+            "description": {
+                "format": "$DESCRIPTION",
+                "description": "Configuration description"
+            },
+            "user_notes": {
+                "format": "$USER_NOTES",
+                "description": "User notes for configuration"
+            }
+        }
+    }
+
+
+@router.get("/features-for-suppression")
+async def list_features_for_suppression():
+    """List all features that can be controlled via $STATE@ columns."""
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        features = []
+        feature = doc.FirstFeature()
+
+        while feature:
+            feat_type = feature.GetTypeName2()
+            # Skip non-suppressible features
+            if feat_type not in ["OriginProfileFeature", "MaterialFolder", "HistoryFolder"]:
+                features.append({
+                    "name": feature.Name,
+                    "type": feat_type,
+                    "column_header": f"$STATE@{feature.Name}",
+                    "suppressed": feature.IsSuppressed2(1)[0]
+                })
+            feature = feature.GetNextFeature()
+
+        return {
+            "count": len(features),
+            "features": features
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"List features failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.get("/components-for-visibility")
+async def list_components_for_visibility():
+    """List all components that can be controlled via $SHOW@ columns (assemblies)."""
+    try:
+        sw = get_solidworks()
+        doc = sw.ActiveDoc
+        if not doc:
+            raise HTTPException(status_code=404, detail="No document open")
+
+        if doc.GetType() != 2:
+            raise HTTPException(status_code=400, detail="This function requires an assembly")
+
+        components = []
+        comps = doc.GetComponents(False)
+
+        if comps:
+            for comp in comps:
+                components.append({
+                    "name": comp.Name,
+                    "column_header": f"$SHOW@{comp.Name}",
+                    "visible": comp.Visible,
+                    "suppressed": comp.IsSuppressed()
+                })
+
+        return {
+            "count": len(components),
+            "components": components
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"List components failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
 __all__ = ["router"]
