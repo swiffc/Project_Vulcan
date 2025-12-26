@@ -111,14 +111,28 @@ class StructuralMemberRequest(BaseModel):
 
 
 class WeldBeadRequest(BaseModel):
-    """Add weld bead between components."""
-    weld_type: Literal["fillet", "groove", "plug", "slot", "spot"]
+    """Add weld bead between components. Full AWS/ISO weld specification support."""
+    weld_type: Literal[
+        "fillet", "groove_v", "groove_u", "groove_j", "groove_bevel", "groove_flare_v", "groove_flare_bevel",
+        "plug", "slot", "spot", "seam", "stud", "surfacing", "edge", "corner"
+    ] = Field(..., description="Weld type per AWS D1.1/ISO 2553")
     face1: str = Field(..., description="First face to weld")
     face2: str = Field(..., description="Second face to weld")
-    size: float = Field(0.005, description="Weld size in meters (e.g., leg size for fillet)")
+    size: float = Field(0.005, description="Weld size in meters (leg size for fillet, depth for groove)")
+    throat: Optional[float] = Field(None, description="Effective throat thickness in meters")
+    root_opening: float = Field(0.0, description="Root opening/gap in meters")
+    root_face: float = Field(0.0, description="Root face height in meters")
+    groove_angle: float = Field(60.0, description="Groove angle in degrees")
     intermittent: bool = Field(False, description="Intermittent weld pattern")
     length: Optional[float] = Field(None, description="Weld segment length if intermittent")
-    pitch: Optional[float] = Field(None, description="Pitch between segments if intermittent")
+    pitch: Optional[float] = Field(None, description="Pitch/spacing between segments if intermittent")
+    stagger: bool = Field(False, description="Stagger intermittent welds")
+    contour: Literal["flat", "convex", "concave", "none"] = Field("none", description="Weld contour/finish")
+    finishing: Literal["grind", "machine", "chip", "none"] = Field("none", description="Finishing method")
+    weld_process: Literal[
+        "SMAW", "GMAW", "GTAW", "FCAW", "SAW", "RSW", "RSEW", "OFW", "PAW", "EBW", "LBW"
+    ] = Field("GMAW", description="Welding process")
+    filler_metal: Optional[str] = Field(None, description="Filler metal specification (e.g., E70XX, ER70S-6)")
 
 
 class TrimExtendRequest(BaseModel):
