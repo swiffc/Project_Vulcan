@@ -1,6 +1,6 @@
 # Project Vulcan: Active Task List
 
-**Status**: Phase 25 - Drawing Checker System (STANDARDS COMPLETE)
+**Status**: Phase 25 - Drawing Checker System (COMPLETE) | Phase 24 - NEXT
 **Last Updated**: Dec 26, 2025
 **Overall Health**: 10/10 (Production Deployment Ready)
 
@@ -313,6 +313,6 @@ Major feature areas:
 
 **Standards Database: 100% COMPLETE (213 checks)**
 
-**Next Priority**: Phase 25.3-25.13 implementation tasks, then Phase 24
+**Next Priority**: Phase 24 (ACHE Design Assistant) - 340 tasks
 
 **Last Updated**: Dec 26, 2025

@@ -79,7 +79,8 @@
       "Bash(else echo \"❌ MISSING: $f\")",
       "Bash(fi)",
       "Bash(done)",
-      "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" tests/test_phase25_endpoints.py)"
+      "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" tests/test_phase25_endpoints.py)",
+      "Bash(\"/c/Users/D&E Cornealius/AppData/Local/Programs/Python/Python311/python.exe\" tests/test_phase25_endpoints.py)"
     ]
   }
 }
