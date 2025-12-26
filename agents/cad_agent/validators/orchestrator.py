@@ -208,13 +208,6 @@ class ValidationOrchestrator:
         self.documentation_validator = DocumentationValidator() if DocumentationValidator else None
         self.report_generator = ReportGenerator() if ReportGenerator else None
 
-        try:
-            from core.flatter_files_client import FlatterFilesClient
-
-            self.flatter_files_client = FlatterFilesClient()
-        except (ImportError, ValueError):
-            self.flatter_files_client = None
-
         # Progress callbacks
         self._progress_callbacks: List[Callable[[ValidationProgress], None]] = []
 
@@ -231,9 +224,6 @@ class ValidationOrchestrator:
         logger.info(f"  BOM Validator: {'✓' if self.bom_validator else '✗'}")
         logger.info(f"  Dimension Validator: {'✓' if self.dimension_validator else '✗'}")
         logger.info(f"  OSHA Validator: {'✓' if self.osha_validator else '✗'}")
-        logger.info(
-            f"  Flatter Files Client: {'✓' if self.flatter_files_client else '✗'}"
-        )
 
     def register_progress_callback(
         self, callback: Callable[[ValidationProgress], None]
@@ -886,21 +876,11 @@ class ValidationOrchestrator:
             }
 
     async def _resolve_file_id(self, file_id: Optional[str]) -> Optional[str]:
-        """Resolve Flatter Files ID to local path."""
+        """Resolve external file ID to local path."""
         if not file_id:
             return None
 
-        if self.flatter_files_client:
-            import tempfile
-            import os
-
-            download_path = os.path.join(tempfile.gettempdir(), file_id)
-            if await self.flatter_files_client.download_file(file_id, download_path):
-                return download_path
-            else:
-                return None
-
-        # For now, assume file_id is already a path if client is not available
+        # Assume file_id is already a path (PDM or local file)
         return file_id
 
     # Phase 25 - New validation methods
