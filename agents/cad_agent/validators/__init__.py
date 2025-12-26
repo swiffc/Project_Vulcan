@@ -80,6 +80,32 @@ from .cross_part_validator import (
     PartInterface, HolePattern, InterfaceType, FitClass
 )
 
+# Phase 25.5-25.13 - Additional Validators
+from .shaft_validator import (
+    MachiningToleranceValidator, MachiningToleranceResult,
+    MachiningToleranceData, PROCESS_TOLERANCES, FIT_CLASSES
+)
+from .materials_finishing_validator import (
+    MaterialsFinishingValidator, MaterialsValidationResult,
+    MaterialSpec, CoatingSpec, MaterialCategory, SurfacePrep
+)
+from .fastener_validator import (
+    FastenerValidator, FastenerValidationResult,
+    BoltData, ConnectionData, BoltGrade, ConnectionType, HoleType
+)
+from .rigging_validator import (
+    RiggingValidator, RiggingValidationResult,
+    LiftingLugData, RiggingData, LoadClass, LiftingDeviceType
+)
+from .documentation_validator import (
+    DocumentationValidator, DocumentationValidationResult,
+    TitleBlockData, DrawingNotes, DrawingType, DocumentationLevel
+)
+from .report_generator import (
+    ReportGenerator, ValidationReport, ValidatorSummary,
+    ReportMetadata, ReportFormat, ReportLevel
+)
+
 __all__ = [
     # Core validators
     "ValidationOrchestrator",
