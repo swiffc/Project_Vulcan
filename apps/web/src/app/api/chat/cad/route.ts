@@ -216,6 +216,12 @@ export async function POST(request: NextRequest) {
           if (screenshotResult.success && screenshotResult.result?.image) {
             console.log("[CAD Chat] 🔍 Analyzing screenshot with vision...");
             
+            // Extract base64 image data (remove data URL prefix if present)
+            let imageData = screenshotResult.result.image;
+            if (typeof imageData === "string") {
+              imageData = imageData.replace(/^data:image\/\w+;base64,/, "");
+            }
+            
             // Use Claude Vision API to analyze the screenshot
             const visionResponse = await client.messages.create({
               model: "claude-sonnet-4-20250514",
@@ -229,7 +235,7 @@ export async function POST(request: NextRequest) {
                       source: {
                         type: "base64",
                         media_type: "image/png",
-                        data: screenshotResult.result.image.replace(/^data:image\/\w+;base64,/, ""),
+                        data: imageData,
                       },
                     },
                     {
