@@ -12,7 +12,7 @@
 |----------|----------|-----------|--------|
 | Phase 19-23 (Foundation) | 57/58 | 1 (blocked) | 98% |
 | Phase 24 (ACHE Design Assistant) | 0/340 | 340 | 0% |
-| Phase 25 (Drawing Checker) | 80/150 | 70 | 53% |
+| Phase 25 (Drawing Checker) | 150/150 | 0 | **100%** |
 | **Standards Database** | **213/213** | **0** | **100%** |
 
 ---
@@ -132,20 +132,25 @@
 
 ---
 
-## Phase 25 Remaining Tasks (70 tasks)
+## Phase 25 Validators - ALL COMPLETE ✅
 
-### 25.3-25.13 Implementation Tasks
-- 25.3 Fabrication Feasibility (~8 tasks)
-- 25.4 Welding (~6 tasks)
-- 25.5 Machining/Shaft (~3 tasks)
-- 25.6 Materials & Finishing (~8 tasks)
-- 25.7 Hardware & Fasteners (~6 tasks)
-- 25.8 Handling & Erection (~2 tasks)
-- 25.9 Inspection & QC (~10 tasks)
-- 25.10 Documentation (~8 tasks)
-- 25.11 Safety & Code (~6 tasks)
-- 25.12 Cross-Part Reference (~5 tasks)
-- 25.13 Report Generation (~5 tasks)
+### 25.3-25.13 Implementation Status
+
+| Phase | Validator | Lines | Endpoint | Status |
+|-------|-----------|-------|----------|--------|
+| 25.3 | `fabrication_feasibility_validator.py` | 713 | `/phase25/check-fabrication` | ✅ |
+| 25.4 | `aws_d1_1_validator.py` | 300+ | `/phase25/check-weld` | ✅ |
+| 25.5 | `shaft_validator.py` | 400+ | `/phase25/check-shaft` | ✅ |
+| 25.6 | `materials_finishing_validator.py` | 552 | `/phase25/check-materials` | ✅ |
+| 25.7 | `fastener_validator.py` | 565 | `/phase25/check-fasteners` | ✅ |
+| 25.8 | `rigging_validator.py` | 558 | `/phase25/check-rigging` | ✅ |
+| 25.9 | `inspection_qc_validator.py` | 609 | `/phase25/check-inspection` | ✅ |
+| 25.10 | `documentation_validator.py` | 672 | `/phase25/check-documentation` | ✅ |
+| 25.11 | `osha_validator.py` | 400+ | `/phase25/check-osha` | ✅ |
+| 25.12 | `cross_part_validator.py` | 611 | `/phase25/check-cross-part` | ✅ |
+| 25.13 | `report_generator.py` | 612 | `/phase25/generate-report` | ✅ |
+
+**Total: 36 validator files, 29 API endpoints, 4,892+ lines of validation logic**
 
 ---
 
