@@ -1683,4 +1683,786 @@ async def delete_dimension(dimension_name: str):
         pythoncom.CoUninitialize()
 
 
+# =============================================================================
+# Additional View Types
+# =============================================================================
+
+class BrokenOutSectionRequest(BaseModel):
+    view_name: str
+    spline_points: List[List[float]]  # Points defining the boundary
+    depth: float  # Depth of break-out in mm
+
+
+class CropViewRequest(BaseModel):
+    view_name: str
+    crop_points: List[List[float]]  # Points defining crop boundary
+
+
+class AlternatePositionRequest(BaseModel):
+    view_name: str
+    configuration_name: str
+    show_original: bool = True
+
+
+@router.post("/view/broken-out-section")
+async def create_broken_out_section(request: BrokenOutSectionRequest):
+    """
+    Create a broken-out section in a view.
+    Shows internal details without creating a separate section view.
+    """
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        drawing.ActivateView(request.view_name)
+
+        # Create spline sketch for boundary
+        sm = drawing.SketchManager
+        sm.InsertSketch(True)
+
+        # Create closed spline from points
+        points = []
+        for pt in request.spline_points:
+            points.extend([pt[0] / 1000, pt[1] / 1000, 0])
+
+        sm.CreateSpline(points)
+        sm.InsertSketch(False)
+
+        # Create broken-out section
+        section = drawing.InsertBrokenOutSection(
+            request.depth / 1000  # Depth in meters
+        )
+
+        drawing.ClearSelection2(True)
+
+        return {
+            "success": section is not None,
+            "view": request.view_name,
+            "depth_mm": request.depth,
+            "message": "Broken-out section created"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Create broken-out section failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/view/crop")
+async def crop_view(request: CropViewRequest):
+    """Crop a view to show only a specific region."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        drawing.ActivateView(request.view_name)
+
+        # Create sketch for crop boundary
+        sm = drawing.SketchManager
+        sm.InsertSketch(True)
+
+        # Create closed polygon
+        for i in range(len(request.crop_points)):
+            pt1 = request.crop_points[i]
+            pt2 = request.crop_points[(i + 1) % len(request.crop_points)]
+            sm.CreateLine(
+                pt1[0] / 1000, pt1[1] / 1000, 0,
+                pt2[0] / 1000, pt2[1] / 1000, 0
+            )
+
+        sm.InsertSketch(False)
+
+        # Apply crop
+        drawing.CropView()
+
+        drawing.ClearSelection2(True)
+
+        return {
+            "success": True,
+            "view": request.view_name,
+            "message": "View cropped"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Crop view failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/view/alternate-position")
+async def create_alternate_position_view(request: AlternatePositionRequest):
+    """Create an alternate position view showing different configuration."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        view = get_view(drawing, request.view_name)
+        drawing.ActivateView(request.view_name)
+
+        # Create alternate position
+        alt_view = drawing.CreateAlternatePositionView(
+            request.configuration_name,
+            request.show_original
+        )
+
+        drawing.ClearSelection2(True)
+
+        return {
+            "success": alt_view is not None,
+            "view": request.view_name,
+            "configuration": request.configuration_name,
+            "message": "Alternate position view created"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Create alternate position failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+# =============================================================================
+# Additional Dimension Types
+# =============================================================================
+
+class AngularDimensionRequest(BaseModel):
+    view_name: str
+    line1_start: List[float]
+    line1_end: List[float]
+    line2_start: List[float]
+    line2_end: List[float]
+    dimension_position: List[float]
+
+
+class ArcLengthDimensionRequest(BaseModel):
+    view_name: str
+    arc_position: List[float]  # Point on the arc
+    dimension_position: List[float]
+
+
+class ChamferDimensionRequest(BaseModel):
+    view_name: str
+    chamfer_edge_position: List[float]
+    dimension_position: List[float]
+    format: str = "distance_x_angle"  # distance_x_angle, distance_x_distance
+
+
+@router.post("/dimension/angular")
+async def add_angular_dimension(request: AngularDimensionRequest):
+    """Add an angular dimension between two lines."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        drawing.ActivateView(request.view_name)
+
+        # Select first line
+        drawing.Extension.SelectByID2(
+            "", "EDGE",
+            request.line1_start[0] / 1000,
+            request.line1_start[1] / 1000,
+            0, False, 0, None, 0
+        )
+
+        # Select second line
+        drawing.Extension.SelectByID2(
+            "", "EDGE",
+            request.line2_start[0] / 1000,
+            request.line2_start[1] / 1000,
+            0, True, 0, None, 0
+        )
+
+        # Add angular dimension
+        dim = drawing.AddDimension2(
+            request.dimension_position[0] / 1000,
+            request.dimension_position[1] / 1000,
+            0
+        )
+
+        drawing.ClearSelection2(True)
+
+        return {
+            "success": dim is not None,
+            "view": request.view_name,
+            "type": "angular",
+            "message": "Angular dimension added"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Add angular dimension failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/dimension/arc-length")
+async def add_arc_length_dimension(request: ArcLengthDimensionRequest):
+    """Add an arc length dimension."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        drawing.ActivateView(request.view_name)
+
+        # Select arc
+        drawing.Extension.SelectByID2(
+            "", "EDGE",
+            request.arc_position[0] / 1000,
+            request.arc_position[1] / 1000,
+            0, False, 0, None, 0
+        )
+
+        # Add arc length dimension
+        dim = drawing.AddArcLengthDimension(
+            request.dimension_position[0] / 1000,
+            request.dimension_position[1] / 1000,
+            0
+        )
+
+        drawing.ClearSelection2(True)
+
+        return {
+            "success": dim is not None,
+            "view": request.view_name,
+            "type": "arc_length",
+            "message": "Arc length dimension added"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Add arc length dimension failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/dimension/chamfer")
+async def add_chamfer_dimension(request: ChamferDimensionRequest):
+    """Add a chamfer dimension."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        drawing.ActivateView(request.view_name)
+
+        # Select chamfer edge
+        drawing.Extension.SelectByID2(
+            "", "EDGE",
+            request.chamfer_edge_position[0] / 1000,
+            request.chamfer_edge_position[1] / 1000,
+            0, False, 0, None, 0
+        )
+
+        # Add chamfer dimension
+        format_map = {
+            "distance_x_angle": 0,
+            "distance_x_distance": 1
+        }
+        fmt = format_map.get(request.format, 0)
+
+        dim = drawing.AddChamferDimension(
+            request.dimension_position[0] / 1000,
+            request.dimension_position[1] / 1000,
+            0,
+            fmt
+        )
+
+        drawing.ClearSelection2(True)
+
+        return {
+            "success": dim is not None,
+            "view": request.view_name,
+            "type": "chamfer",
+            "format": request.format,
+            "message": "Chamfer dimension added"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Add chamfer dimension failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+# =============================================================================
+# Tables
+# =============================================================================
+
+class HoleTableRequest(BaseModel):
+    view_name: str
+    origin_position: List[float]  # Datum origin
+    table_position: List[float]  # Where to place table
+    tag_holes: bool = True
+
+
+class BendTableRequest(BaseModel):
+    view_name: str
+    table_position: List[float]
+
+
+class WeldmentCutListRequest(BaseModel):
+    view_name: str
+    table_position: List[float]
+
+
+@router.post("/table/hole")
+async def insert_hole_table(request: HoleTableRequest):
+    """Insert a hole table showing hole positions from a datum."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        drawing.ActivateView(request.view_name)
+
+        # Select origin point
+        drawing.Extension.SelectByID2(
+            "", "VERTEX",
+            request.origin_position[0] / 1000,
+            request.origin_position[1] / 1000,
+            0, False, 0, None, 0
+        )
+
+        # Insert hole table
+        table = drawing.InsertHoleTable2(
+            True,  # Use origin
+            request.table_position[0] / 1000,
+            request.table_position[1] / 1000,
+            1,  # Anchor type
+            request.tag_holes
+        )
+
+        drawing.ClearSelection2(True)
+
+        return {
+            "success": table is not None,
+            "view": request.view_name,
+            "table_type": "hole",
+            "message": "Hole table inserted"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Insert hole table failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/table/bend")
+async def insert_bend_table(request: BendTableRequest):
+    """Insert a bend table for sheet metal parts."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        drawing.ActivateView(request.view_name)
+
+        # Select the view
+        drawing.Extension.SelectByID2(
+            request.view_name, "DRAWINGVIEW", 0, 0, 0, False, 0, None, 0
+        )
+
+        # Insert bend table
+        table = drawing.InsertBendTable(
+            True,
+            request.table_position[0] / 1000,
+            request.table_position[1] / 1000,
+            1,  # Anchor type
+            ""  # Template
+        )
+
+        drawing.ClearSelection2(True)
+
+        return {
+            "success": table is not None,
+            "view": request.view_name,
+            "table_type": "bend",
+            "message": "Bend table inserted"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Insert bend table failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/table/weldment-cutlist")
+async def insert_weldment_cutlist(request: WeldmentCutListRequest):
+    """Insert a weldment cut list table."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        drawing.ActivateView(request.view_name)
+
+        # Select the view
+        drawing.Extension.SelectByID2(
+            request.view_name, "DRAWINGVIEW", 0, 0, 0, False, 0, None, 0
+        )
+
+        # Insert weldment cut list
+        table = drawing.InsertWeldmentTable(
+            True,
+            request.table_position[0] / 1000,
+            request.table_position[1] / 1000,
+            1,  # Anchor type
+            ""  # Template
+        )
+
+        drawing.ClearSelection2(True)
+
+        return {
+            "success": table is not None,
+            "view": request.view_name,
+            "table_type": "weldment_cutlist",
+            "message": "Weldment cut list inserted"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Insert weldment cut list failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+# =============================================================================
+# Additional Annotations
+# =============================================================================
+
+class CosmeticThreadRequest(BaseModel):
+    view_name: str
+    edge_position: List[float]  # Point on hole edge
+    thread_standard: str = "ANSI Inch"  # ANSI Inch, ANSI Metric, ISO, etc.
+    thread_size: Optional[str] = None  # e.g., "1/4-20", "M6x1"
+
+
+class DowelPinSymbolRequest(BaseModel):
+    view_name: str
+    position: List[float]
+    diameter: float
+
+
+class MultiJogLeaderRequest(BaseModel):
+    view_name: str
+    points: List[List[float]]  # Leader line points
+    text: str
+    arrow_style: str = "solid"
+
+
+@router.post("/annotation/cosmetic-thread")
+async def add_cosmetic_thread(request: CosmeticThreadRequest):
+    """Add a cosmetic thread annotation to a hole."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        drawing.ActivateView(request.view_name)
+
+        # Select hole edge
+        drawing.Extension.SelectByID2(
+            "", "EDGE",
+            request.edge_position[0] / 1000,
+            request.edge_position[1] / 1000,
+            0, False, 0, None, 0
+        )
+
+        # Insert cosmetic thread
+        thread = drawing.InsertCosmeticThread(
+            request.thread_standard,
+            request.thread_size or ""
+        )
+
+        drawing.ClearSelection2(True)
+
+        return {
+            "success": thread is not None,
+            "view": request.view_name,
+            "standard": request.thread_standard,
+            "size": request.thread_size,
+            "message": "Cosmetic thread added"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Add cosmetic thread failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/annotation/dowel-pin")
+async def add_dowel_pin_symbol(request: DowelPinSymbolRequest):
+    """Add a dowel pin symbol."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        drawing.ActivateView(request.view_name)
+
+        # Insert dowel pin symbol
+        symbol = drawing.InsertDowelSymbol(
+            request.position[0] / 1000,
+            request.position[1] / 1000,
+            0,
+            request.diameter / 1000
+        )
+
+        drawing.ClearSelection2(True)
+
+        return {
+            "success": symbol is not None,
+            "view": request.view_name,
+            "diameter_mm": request.diameter,
+            "message": "Dowel pin symbol added"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Add dowel pin symbol failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/annotation/multi-jog-leader")
+async def add_multi_jog_leader(request: MultiJogLeaderRequest):
+    """Add a leader line with multiple jogs/bends."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        drawing.ActivateView(request.view_name)
+
+        # Create note first
+        note = drawing.InsertNote(request.text)
+
+        if note:
+            # Position note at last point
+            last_pt = request.points[-1]
+            note.SetPosition(last_pt[0] / 1000, last_pt[1] / 1000, 0)
+
+            # Add leader points
+            for i, pt in enumerate(request.points[:-1]):
+                note.AddLeaderPoint(pt[0] / 1000, pt[1] / 1000, 0)
+
+        drawing.ClearSelection2(True)
+
+        return {
+            "success": note is not None,
+            "view": request.view_name,
+            "jog_count": len(request.points) - 1,
+            "message": "Multi-jog leader added"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Add multi-jog leader failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+# =============================================================================
+# Layer Management
+# =============================================================================
+
+class LayerRequest(BaseModel):
+    layer_name: str
+    description: Optional[str] = None
+    color: Optional[int] = None  # RGB as integer
+    line_style: Optional[str] = None
+    line_weight: Optional[float] = None
+
+
+@router.get("/layers")
+async def list_layers():
+    """List all layers in the drawing."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        layer_mgr = drawing.GetLayerManager()
+        layers = []
+
+        layer_count = layer_mgr.GetLayerCount()
+        for i in range(layer_count):
+            layer = layer_mgr.GetLayerAt(i)
+            if layer:
+                layers.append({
+                    "name": layer.Name,
+                    "description": layer.Description,
+                    "visible": layer.Visible,
+                    "color": layer.Color
+                })
+
+        return {
+            "layer_count": len(layers),
+            "layers": layers
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"List layers failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/layer/create")
+async def create_layer(request: LayerRequest):
+    """Create a new layer."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        layer_mgr = drawing.GetLayerManager()
+
+        # Create layer
+        layer = layer_mgr.AddLayer(
+            request.layer_name,
+            request.description or "",
+            request.color or 0,
+            request.line_style or "Continuous",
+            request.line_weight or 0.25
+        )
+
+        return {
+            "success": layer is not None,
+            "layer_name": request.layer_name,
+            "message": f"Layer '{request.layer_name}' created"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Create layer failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/layer/set-current")
+async def set_current_layer(layer_name: str):
+    """Set the current/active layer."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        layer_mgr = drawing.GetLayerManager()
+        result = layer_mgr.SetCurrentLayer(layer_name)
+
+        return {
+            "success": result,
+            "current_layer": layer_name,
+            "message": f"Current layer set to '{layer_name}'"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Set current layer failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+# =============================================================================
+# Drawing Sheets
+# =============================================================================
+
+@router.get("/sheets")
+async def list_sheets():
+    """List all sheets in the drawing."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        sheets = []
+        sheet_names = drawing.GetSheetNames()
+
+        if sheet_names:
+            for name in sheet_names:
+                sheet = drawing.Sheet(name)
+                if sheet:
+                    sheets.append({
+                        "name": name,
+                        "scale": sheet.GetScale2(),
+                        "template": sheet.GetTemplateName(),
+                        "paper_size": sheet.GetSize()
+                    })
+
+        return {
+            "sheet_count": len(sheets),
+            "current_sheet": drawing.GetCurrentSheet().GetName() if drawing.GetCurrentSheet() else None,
+            "sheets": sheets
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"List sheets failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/sheet/activate")
+async def activate_sheet(sheet_name: str):
+    """Activate a sheet by name."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        result = drawing.ActivateSheet(sheet_name)
+
+        return {
+            "success": result,
+            "active_sheet": sheet_name,
+            "message": f"Sheet '{sheet_name}' activated"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Activate sheet failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
+@router.post("/sheet/set-scale")
+async def set_sheet_scale(sheet_name: str, scale_numerator: float, scale_denominator: float):
+    """Set the scale of a sheet."""
+    try:
+        sw = get_solidworks()
+        drawing = get_drawing_doc(sw)
+
+        drawing.ActivateSheet(sheet_name)
+        sheet = drawing.GetCurrentSheet()
+
+        if sheet:
+            sheet.SetScale2(scale_numerator, scale_denominator)
+            drawing.EditRebuild3()
+
+        return {
+            "success": True,
+            "sheet": sheet_name,
+            "scale": f"{scale_numerator}:{scale_denominator}",
+            "message": f"Sheet scale set to {scale_numerator}:{scale_denominator}"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Set sheet scale failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        pythoncom.CoUninitialize()
+
+
 __all__ = ["router"]
