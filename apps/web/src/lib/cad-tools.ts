@@ -2592,6 +2592,9 @@ export async function executeCADTool(
     sw_extract_bom_screenshot: { method: "POST", endpoint: "/cad/vision/extract-bom" },
     sw_analyze_drawing_sheet: { method: "POST", endpoint: "/cad/vision/analyze-drawing-sheet" },
     sw_compare_screenshots: { method: "POST", endpoint: "/screen/compare" },
+    sw_batch_operations: { method: "POST", endpoint: "/com/solidworks/batch/execute" },
+    sw_batch_properties: { method: "POST", endpoint: "/com/solidworks/batch/properties" },
+    sw_batch_dimensions: { method: "POST", endpoint: "/com/solidworks/batch/dimensions" },
     sw_zoom_fit: { method: "POST", endpoint: "/com/solidworks/zoom_fit" },
     sw_set_view: { method: "POST", endpoint: "/com/solidworks/set_view" },
     // SolidWorks Advanced Features
