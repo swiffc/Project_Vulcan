@@ -61,6 +61,15 @@ except ImportError:
     EVENTS_AVAILABLE = False
     events_router = None
 
+# CAD Vision controller
+try:
+    from .cad_vision import router as cad_vision_router
+
+    CAD_VISION_AVAILABLE = True
+except ImportError:
+    CAD_VISION_AVAILABLE = False
+    cad_vision_router = None
+
 __all__ = [
     "mouse_router",
     "keyboard_router",
@@ -78,6 +87,8 @@ __all__ = [
     "MEMORY_AVAILABLE",
     "cad_validation_router",
     "CAD_VALIDATION_AVAILABLE",
+    "cad_vision_router",
+    "CAD_VISION_AVAILABLE",
     "recorder_router",
     "verifier_router",
 ]

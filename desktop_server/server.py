@@ -60,6 +60,8 @@ from controllers import (
     MEMORY_AVAILABLE,
     cad_validation_router,
     CAD_VALIDATION_AVAILABLE,
+    cad_vision_router,
+    CAD_VISION_AVAILABLE,
     recorder_router,
     verifier_router,
     events_router,
@@ -447,6 +449,11 @@ if J2_AVAILABLE:
 if CAD_VALIDATION_AVAILABLE:
     app.include_router(cad_validation_router)
     logger.info("CAD validation controller loaded")
+
+# Include CAD vision router if available
+if CAD_VISION_AVAILABLE:
+    app.include_router(cad_vision_router)
+    logger.info("CAD vision analysis controller loaded")
 
 # Include recorder and verifier routers
 app.include_router(recorder_router)
