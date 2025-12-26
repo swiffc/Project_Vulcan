@@ -747,6 +747,290 @@ class OSHAValidator:
 
         result.passed += 1
 
+    # =========================================================================
+    # PHASE 25.11 - ADDITIONAL STRUCTURAL CHECKS
+    # =========================================================================
+
+    def validate_structural_capacity(
+        self,
+        component_type: str,
+        load_lbs: float,
+        capacity_lbs: Optional[float] = None,
+        safety_factor: float = 2.0
+    ) -> OSHAValidationResult:
+        """
+        Validate structural component capacity.
+
+        Args:
+            component_type: Type of component (grating, beam, column, etc.)
+            load_lbs: Applied load in pounds
+            capacity_lbs: Rated capacity in pounds (optional)
+            safety_factor: Required safety factor
+
+        Returns:
+            Validation result
+        """
+        result = OSHAValidationResult()
+        result.total_checks += 1
+        result.structural_checks += 1
+
+        required_capacity = load_lbs * safety_factor
+
+        if capacity_lbs is not None:
+            if capacity_lbs < required_capacity:
+                result.structural_violations += 1
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.CRITICAL,
+                    check_type="structural_capacity",
+                    message=f"{component_type} capacity {capacity_lbs} lbs < required {required_capacity} lbs (SF={safety_factor})",
+                    suggestion=f"Increase {component_type} capacity or reduce load",
+                ))
+                result.critical_failures += 1
+                result.failed += 1
+            else:
+                utilization = load_lbs / capacity_lbs
+                if utilization > 0.8:
+                    result.issues.append(ValidationIssue(
+                        severity=ValidationSeverity.WARNING,
+                        check_type="high_utilization",
+                        message=f"{component_type} at {utilization*100:.0f}% utilization",
+                        suggestion="Consider increasing capacity margin",
+                    ))
+                    result.warnings += 1
+                else:
+                    result.passed += 1
+        else:
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.WARNING,
+                check_type="capacity_unknown",
+                message=f"{component_type} capacity not specified",
+                suggestion=f"Verify capacity ≥ {required_capacity} lbs",
+            ))
+            result.warnings += 1
+
+        return result
+
+    def validate_grating(
+        self,
+        span_in: float,
+        load_psf: float,
+        bearing_bar_depth: Optional[float] = None,
+        bearing_bar_spacing: Optional[float] = None
+    ) -> OSHAValidationResult:
+        """
+        Validate bar grating capacity per NAAMM.
+
+        Args:
+            span_in: Grating span in inches
+            load_psf: Applied load in PSF
+            bearing_bar_depth: Bearing bar depth in inches
+            bearing_bar_spacing: Bearing bar spacing in inches
+
+        Returns:
+            Validation result
+        """
+        result = OSHAValidationResult()
+        result.total_checks += 1
+        result.structural_checks += 1
+
+        # Standard grating selection table (simplified)
+        # Bearing bar depth required for 50 PSF load at various spans
+        grating_requirements = {
+            # Span (in): min bearing bar depth (in) for 50 PSF
+            24: 0.75,
+            36: 1.00,
+            48: 1.25,
+            60: 1.50,
+            72: 1.75,
+        }
+
+        # Find minimum required depth
+        min_depth = 0.75
+        for max_span, depth in sorted(grating_requirements.items()):
+            if span_in <= max_span:
+                min_depth = depth
+                break
+        else:
+            min_depth = 2.0  # Very long span
+
+        # Adjust for load factor
+        load_factor = load_psf / 50.0
+        min_depth *= (load_factor ** 0.5)  # Approximate scaling
+
+        if bearing_bar_depth is not None:
+            if bearing_bar_depth < min_depth:
+                result.structural_violations += 1
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.WARNING,
+                    check_type="grating_capacity",
+                    message=f"Grating bearing bar {bearing_bar_depth}\" may be undersized for {span_in}\" span at {load_psf} PSF",
+                    suggestion=f"Verify capacity or increase to {min_depth:.2f}\" min depth",
+                    standard_reference="NAAMM MBG 531",
+                ))
+                result.warnings += 1
+            else:
+                result.passed += 1
+        else:
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.INFO,
+                check_type="grating_spec",
+                message=f"For {span_in}\" span at {load_psf} PSF: recommend min {min_depth:.2f}\" bearing bar",
+                standard_reference="NAAMM MBG 531",
+            ))
+            result.passed += 1
+
+        return result
+
+    def validate_anchor_bolts(
+        self,
+        bolt_diameter: float,
+        embedment_depth: float,
+        concrete_strength_psi: float = 3000,
+        load_lbs: float = 0,
+        load_type: str = "tension"
+    ) -> OSHAValidationResult:
+        """
+        Validate anchor bolt capacity per ACI 318.
+
+        Args:
+            bolt_diameter: Bolt diameter in inches
+            embedment_depth: Embedment depth in inches
+            concrete_strength_psi: Concrete compressive strength
+            load_lbs: Applied load
+            load_type: "tension" or "shear"
+
+        Returns:
+            Validation result
+        """
+        result = OSHAValidationResult()
+        result.total_checks += 1
+        result.structural_checks += 1
+
+        # Minimum embedment depth check
+        min_embedment = 4 * bolt_diameter  # Minimum 4d embedment
+
+        if embedment_depth < min_embedment:
+            result.structural_violations += 1
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.WARNING,
+                check_type="anchor_embedment",
+                message=f"Anchor embedment {embedment_depth}\" less than recommended {min_embedment}\" (4d)",
+                suggestion=f"Increase embedment to minimum 4 × bolt diameter",
+                standard_reference="ACI 318 Appendix D",
+            ))
+            result.warnings += 1
+        else:
+            result.passed += 1
+
+        # Simplified capacity check
+        result.total_checks += 1
+        if load_lbs > 0:
+            # Approximate concrete breakout capacity (simplified)
+            import math
+            hef = embedment_depth
+            fc = concrete_strength_psi
+
+            if load_type == "tension":
+                # Simplified concrete breakout: Nb = k × sqrt(f'c) × hef^1.5
+                k = 24  # For cast-in anchors
+                capacity = k * math.sqrt(fc) * (hef ** 1.5)
+            else:  # shear
+                capacity = 0.6 * math.sqrt(fc) * (1.5 * hef) ** 2
+
+            if load_lbs > capacity * 0.75:  # 75% strength reduction factor
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.WARNING,
+                    check_type="anchor_capacity",
+                    message=f"Anchor may be overstressed: {load_lbs} lbs vs ~{capacity * 0.75:.0f} lbs capacity",
+                    suggestion="Verify anchor design per ACI 318 Appendix D",
+                    standard_reference="ACI 318 Appendix D",
+                ))
+                result.warnings += 1
+            else:
+                result.passed += 1
+        else:
+            result.passed += 1
+
+        return result
+
+    def validate_bracing(
+        self,
+        bracing_type: str,
+        member_size: str,
+        unbraced_length_ft: float,
+        load_kips: float = 0
+    ) -> OSHAValidationResult:
+        """
+        Validate bracing member adequacy.
+
+        Args:
+            bracing_type: "x_bracing", "k_bracing", "chevron", "diagonal"
+            member_size: Member designation (e.g., "L3x3x1/4", "W6x15")
+            unbraced_length_ft: Unbraced length in feet
+            load_kips: Applied load in kips
+
+        Returns:
+            Validation result
+        """
+        result = OSHAValidationResult()
+        result.total_checks += 1
+        result.structural_checks += 1
+
+        # L/r limits for compression members
+        lr_limits = {
+            "x_bracing": 200,  # Typically tension-only
+            "k_bracing": 200,
+            "chevron": 200,
+            "diagonal": 200,
+            "compression": 200,
+        }
+
+        max_lr = lr_limits.get(bracing_type, 200)
+
+        # Estimate r (radius of gyration) from member size
+        # Simplified - actual would parse member designation
+        estimated_r = 1.0  # inches (conservative default)
+
+        if "L" in member_size.upper():
+            # Angle - estimate r from leg size
+            try:
+                import re
+                match = re.search(r"L(\d+)", member_size.upper())
+                if match:
+                    leg = float(match.group(1))
+                    estimated_r = leg * 0.2  # Approximate
+            except (ValueError, AttributeError):
+                pass
+
+        unbraced_length_in = unbraced_length_ft * 12
+        lr_ratio = unbraced_length_in / estimated_r
+
+        if lr_ratio > max_lr:
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.WARNING,
+                check_type="bracing_slenderness",
+                message=f"Bracing L/r ≈ {lr_ratio:.0f} may exceed limit of {max_lr}",
+                suggestion=f"Verify L/r ratio or add intermediate bracing",
+                standard_reference="AISC 360 Chapter E",
+            ))
+            result.warnings += 1
+        else:
+            result.passed += 1
+
+        # Check for proper bracing configuration
+        result.total_checks += 1
+        if bracing_type == "k_bracing":
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.INFO,
+                check_type="k_bracing_note",
+                message="K-bracing requires careful analysis of unbalanced forces at beam mid-point",
+                suggestion="Verify beam designed for unbalanced brace forces",
+                standard_reference="AISC Seismic Provisions",
+            ))
+        result.passed += 1
+
+        return result
+
     def to_dict(self, result: OSHAValidationResult) -> Dict[str, Any]:
         """Convert result to dictionary."""
         return {
