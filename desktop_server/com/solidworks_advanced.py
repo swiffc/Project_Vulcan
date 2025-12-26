@@ -447,19 +447,55 @@ class DesignTableRequest(BaseModel):
 
 # --- TOOLBOX ---
 class ToolboxPartRequest(BaseModel):
-    """Insert Toolbox standard part."""
-    standard: Literal["ANSI Inch", "ANSI Metric", "ISO", "DIN", "JIS", "BSI", "GB"] = "ANSI Inch"
-    category: str = Field(..., description="Category: Bolts and Screws, Nuts, Washers, Pins, etc.")
-    part_type: str = Field(..., description="Part type: Hex Bolt, Socket Head Cap Screw, etc.")
+    """Insert Toolbox standard part. Full hardware library support."""
+    standard: Literal[
+        "ANSI Inch", "ANSI Metric", "ISO", "DIN", "JIS", "BSI", "GB", "AS", "GOST", "IS", "KS"
+    ] = Field("ANSI Inch", description="Hardware standard")
+    category: Literal[
+        "Bolts and Screws", "Nuts", "Washers", "Pins", "Keys and Keyways", "Retaining Rings",
+        "O-Rings", "Bearings", "Bushings", "Structural Steel", "Power Transmission",
+        "Jig Bushings", "Cam Followers", "Gears", "Sprockets", "Pulleys"
+    ] = Field(..., description="Hardware category")
+    part_type: Literal[
+        # Bolts
+        "Hex Bolt", "Hex Cap Screw", "Socket Head Cap Screw", "Button Head Cap Screw", "Flat Head Cap Screw",
+        "Carriage Bolt", "Eye Bolt", "U-Bolt", "Stud Bolt", "Lag Screw", "Set Screw",
+        # Screws
+        "Machine Screw", "Sheet Metal Screw", "Self Tapping Screw", "Wood Screw", "Thumb Screw",
+        # Nuts
+        "Hex Nut", "Hex Jam Nut", "Nylon Insert Lock Nut", "Flange Nut", "Wing Nut", "Cap Nut", "Castle Nut", "T-Nut", "Coupling Nut",
+        # Washers
+        "Flat Washer", "Lock Washer", "Fender Washer", "Belleville Washer", "Wave Washer", "Tab Washer",
+        # Pins
+        "Dowel Pin", "Taper Pin", "Clevis Pin", "Cotter Pin", "Spring Pin", "Roll Pin", "Groove Pin",
+        # Retaining Rings
+        "External Retaining Ring", "Internal Retaining Ring", "E-Clip",
+        # Bearings
+        "Ball Bearing", "Roller Bearing", "Needle Bearing", "Thrust Bearing", "Pillow Block"
+    ] = Field(..., description="Specific part type")
     size: str = Field(..., description="Size designation: 1/4-20, M6x1.0, etc.")
     length: Optional[float] = Field(None, description="Length for fasteners in meters")
+    thread_class: Literal["1A", "2A", "3A", "1B", "2B", "3B", "6g", "6H", "4g6g", "4H5H"] = Field("2A", description="Thread class/fit")
+    material: Literal[
+        "steel", "stainless_steel", "brass", "aluminum", "nylon", "titanium", "alloy_steel", "zinc_plated"
+    ] = Field("steel", description="Material")
+    head_type: Optional[Literal["hex", "socket", "phillips", "slotted", "torx", "square"]] = Field(None, description="Drive/head type")
+    grade: Optional[Literal["Grade 2", "Grade 5", "Grade 8", "Class 8.8", "Class 10.9", "Class 12.9", "A2-70", "A4-80"]] = Field(None, description="Fastener grade")
 
 
 class SmartFastenersRequest(BaseModel):
-    """Auto-insert smart fasteners for all holes."""
+    """Auto-insert smart fasteners for all holes. Full smart fastener options."""
     hole_series: bool = Field(True, description="Include hole series")
     add_washers: bool = Field(True, description="Add washers")
     add_nuts: bool = Field(True, description="Add nuts where applicable")
+    standard: Literal["ANSI Inch", "ANSI Metric", "ISO", "DIN"] = Field("ANSI Inch", description="Fastener standard")
+    fastener_type: Literal[
+        "Hex Bolt", "Socket Head Cap Screw", "Button Head", "Flat Head", "Machine Screw"
+    ] = Field("Socket Head Cap Screw", description="Default fastener type")
+    match_thread_to_hole: bool = Field(True, description="Match thread to hole type")
+    lock_washer_type: Optional[Literal["split", "external_tooth", "internal_tooth", "none"]] = Field(None, description="Lock washer type")
+    bottom_stack_component: Optional[str] = Field(None, description="Component for bottom stack")
+    grip_length_option: Literal["automatic", "manual"] = Field("automatic", description="Grip length calculation")
 
 
 # --- SURFACE MODELING ---
