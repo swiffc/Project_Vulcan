@@ -373,6 +373,6 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 
 **Standards Database: 100% COMPLETE (213 checks)**
 
-**Next Priority**: Phase 24 (ACHE Design Assistant) - 340 tasks
+**Next Priority**: Phase 24.1 (Auto-Launch System) - 8 tasks
 
 **Last Updated**: Dec 26, 2025
