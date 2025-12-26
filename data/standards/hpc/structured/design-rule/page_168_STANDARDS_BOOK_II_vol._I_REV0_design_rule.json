@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 168,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "9.1.2 If#7 (bottom panel) is equal to or less than 2'-6 & equal to or greater than 1'-6\",",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "9.1.4 If #7 (bottom panel) is less than 9\" - no air seal",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "9.2.2 If#32 (bottom panel) is equal to or less than 2'-6 & equal to or greater than 1'-6\",",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "9.2.3 If#32 (bottom panel) is less than 1-'6\" & equal to or greater than 9\", use mark 3.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "9.3.2 If#8 (bottom panel) is equal to or less than 2'-6 & equal to or greater than 1'-6\",",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "9.3.3 If#8 (bottom panel) is less than 1-'6\" & equal to or greater than 6\", use mark 6.",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

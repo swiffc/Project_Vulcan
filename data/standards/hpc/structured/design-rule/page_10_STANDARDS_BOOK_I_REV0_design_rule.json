@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 10,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "Index",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Electronic File Index",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Engineering Part Number Management, Rev. 3 Section 3C",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "Descriptions of Engineer-To-Order Parts, Rev. 2 Section 4B",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "The Operation 3010 REVISION-PL was added to Appendix A.7 DHOOO-HPM ROUTER located on",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 23,
+      "description": "2. Minor general revisions were made.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "The description tables were revised to reflect the current part description formats.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "The table listings were alphabetized.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5873,
+      "description": "Distribution :",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Ftundell 116-A. Vasquez 138-J. Trevathan",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

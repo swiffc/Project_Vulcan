@@ -1,0 +1,152 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 198,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "Job No. G999",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Drawing No. 3A",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Model No. Unit width from FFSS 20.5",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "Tube Lng. Input In feet 40",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "No. of rows 4",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 6,
+      "description": "No. of fans 2",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 7,
+      "description": "unit type NSVS",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 8,
+      "description": "Hood hgt. Input In Inches 36",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 9,
+      "description": "Fan dlam. Input In Inches 192",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 10,
+      "description": "Wind load Select wind load (psf)30,35,40,45, 45",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 11,
+      "description": "Plenum mat. code Plenum mat'l. code: 1 = 10 gao blk. 1",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 12,
+      "description": "Summary copies This Is locked at 1 copy 1",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 13,
+      "description": "Unit shipping code Unit shipping code - leave blank If no",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 14,
+      "description": "Drawing revision Leave blank If revision is 0",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 15,
+      "description": "Unit qty. 1",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 16,
+      "description": "First bundle width Inches with decimal point 120.00",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 17,
+      "description": "Bundle clearance Inches with decimal point or leave blank 6.00",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 18,
+      "description": "Second bundle width Inches with decimal point or leave blank 120.00",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 19,
+      "description": "Bundle clearance Inches with decimal point or leave blank",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 20,
+      "description": "Third bundle width Inches with decimal point or leave blank",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 21,
+      "description": "Bundle clearance Inches with decimal point or leave blank",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 22,
+      "description": "Fourth bundle width Inches with decimal point or leave blank",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 23,
+      "description": "Unit CL to D-angle gao Inches with decimal point 234.50",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 24,
+      "description": "Fan guards NS fan guard - leave blank If no",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 25,
+      "description": "Fan ring code Fan ring code - leave blank If galvanized",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "(See example sheets 1 & 2 of print outs)",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "b. Cam drawings - This will make drawing in VersaCad of",
+      "type": "procedure_step"
+    },
+    {
+      "procedure": "RUN HOOD PROGRAM",
+      "description": "5/31/94",
+      "type": "how_to"
+    }
+  ],
+  "rule_type": "procedure"
+}

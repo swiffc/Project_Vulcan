@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. II_REV0",
+    "source_page": 10,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 5938,
+      "description": "Distribution :",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Castillo 117-Waclawski (Davis) 132-HPM, Ramos",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Lohman 111-HPM, Ramos 122-HPM, Ramos 138-J. Trevathan",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Delgado 81-D. Torres",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

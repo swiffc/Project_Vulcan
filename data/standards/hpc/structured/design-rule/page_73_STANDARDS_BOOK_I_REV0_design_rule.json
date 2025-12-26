@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 73,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 10,
+      "description": "The 7A assembly",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 10,
+      "description": "The 7A bolts",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1000,
+      "description": "6.6.7.2 Component: the part number for the components in the BOM. Enter",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 9,
+      "description": "From the 'Action:' field, type A and continue entering more",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

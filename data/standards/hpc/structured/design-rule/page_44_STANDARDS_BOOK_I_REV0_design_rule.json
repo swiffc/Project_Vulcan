@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 44,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "procedure": "use Salaried Timesheet Entry to charge time. Departments",
+      "description": "33 and 34 (Engineering Support and Direct Engineering) should use this procedure to",
+      "type": "how_to"
+    },
+    {
+      "procedure": "charge time. Refer to Drawings in Standards",
+      "description": "Book I, section 3C for infonnation on the where time is to be charged and when to perfonn",
+      "type": "how_to"
+    }
+  ],
+  "rule_type": "procedure"
+}

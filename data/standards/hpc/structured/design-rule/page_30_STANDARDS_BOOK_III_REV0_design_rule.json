@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK III_REV0",
+    "source_page": 30,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "variable": "Weight",
+      "expression": "Box Width x (Partition Thk + Y.\") x End Plate Thk x Density x No. of Busts",
+      "type": "formula"
+    }
+  ],
+  "rule_type": "formula_calculation"
+}

@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK III_REV0",
+    "source_page": 17,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 5873,
+      "description": "Distribution :",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 8,
+      "description": "IIiM8R~9'G.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Trevathan 146-S. Reuther",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 105,
+      "description": "DELGAOO \\\" 11, \\ P.f{)uJAAOS 149-L. Gouin",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "s. '\\.Q/<.sh ........ \"' .. \"'1 ........... ,..",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

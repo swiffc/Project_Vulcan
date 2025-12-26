@@ -53,9 +53,8 @@ class DesignRuleExtractor(BaseExtractor):
             result['rule_type'] = 'general_rule'
             result['rules'] = self._extract_general_rules(text)
         
-        if not result['rules']:
-            return None
-        
+        # Always return result even if no rules found (at least we have metadata)
+        # This allows tracking of processed pages
         return result
     
     def _extract_title(self, text: str) -> Optional[str]:

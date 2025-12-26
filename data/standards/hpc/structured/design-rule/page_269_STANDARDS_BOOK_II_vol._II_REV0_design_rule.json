@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. II_REV0",
+    "source_page": 269,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "must",
+      "description": "be included on the Series",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "must",
+      "description": "be included on the Series",
+      "type": "requirement"
+    },
+    {
+      "condition": "the shipping piece is shop assembled and disassembled for shipping",
+      "action": "list the quantity in three places, the QTY, SHOP ASSY QTY, and",
+      "type": "conditional_rule"
+    }
+  ],
+  "rule_type": "general_rule"
+}

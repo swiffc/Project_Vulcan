@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 19,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 5873,
+      "description": "Distribution :",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Delgado 73-1.G. Galvan 89-H. Stiles 104-P. Patel 139-D. Hewitt",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Lohman 112-R. Satterwhite I40-C. Guillen",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 60,
+      "description": "C. Clinton 68-R. Evans 82-S. Hinton 97-G. Millas 1I7-CDR, Waclawski I44-A. Befrui",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Trevathan I48-C. Yu",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 96,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "for a",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "for the given fan hub",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

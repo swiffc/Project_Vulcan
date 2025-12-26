@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 83,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "only on",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "always correspond with the bundle",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "on forced draft units since those shafts have been standardized",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

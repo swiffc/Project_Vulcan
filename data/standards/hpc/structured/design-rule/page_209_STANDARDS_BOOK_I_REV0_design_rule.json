@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 209,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "variable": "CR",
+      "expression": "Chr$(rcCR)",
+      "type": "formula"
+    },
+    {
+      "variable": "ASSY",
+      "expression": "InputBox$ (\"Enter the part number of the skeleton-level assembly. Use only uppercase letters.\",,)",
+      "type": "formula"
+    },
+    {
+      "variable": "ASSY",
+      "expression": "\"\" THEN °",
+      "type": "formula"
+    },
+    {
+      "variable": "CHOICE",
+      "expression": "1 Then",
+      "type": "formula"
+    },
+    {
+      "variable": "PARTS",
+      "expression": "Then",
+      "type": "formula"
+    }
+  ],
+  "rule_type": "formula_calculation"
+}

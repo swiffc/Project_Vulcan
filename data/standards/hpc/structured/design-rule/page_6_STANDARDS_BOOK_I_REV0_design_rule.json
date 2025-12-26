@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 6,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "Index",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Electronic File Index",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Engineering-Drawing Part Number Management, Rev. 5 Section 3C",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "Engineering-Drawing Part Number Management for HPM, Rev. 0 Section 3D",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "The majority of the revisions entailed removing tasks directed for HPM. The following are the old",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "A minor revision pertains to the description list on Section 6.2 was formatted into a table; the",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "This new procedure was created to effortlessly distinguish HPM task from HPC task. This procedure is",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5873,
+      "description": "Distribution:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Boungnaseng 70-S. Delgado 89-A. Na 103-J. Castillo 128-J. Grisaffi 146-S. Reuther",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

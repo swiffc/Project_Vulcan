@@ -1,0 +1,72 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 15,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "Added Automation Documentation to the Index",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Added the following file names to the Electronic File Index",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Changed the content ofthe following paragraphs: 3.5, 5.12, 5.35, 8.1.3, 8.2, 8.5.1,",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Renumbered paragraph 4.10 to 4.11 and inserted a new paragraph 4.10",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Renumbered paragraphs 5.13 through 5.23 and inserted a new paragraph 5.13",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "Renumbered paragraphs 6.3.4 through 6.3.6 and inserted a new paragraph 6.3.4",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "Renumbered paragraphs 8.6.2 through 8.6.15 and inserted a new paragraph 8.6.2",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 6,
+      "description": "Renumbered paragraphs 8.3 through 8.6 up 0.1 each (and all lower level paragraphs), then",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 7,
+      "description": "Moved paragraphs 8.2.1 through 8.2.5 to below the new paragraph 8.3",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 8,
+      "description": "Deleted table 11 and preceding text",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 9,
+      "description": "Added paragraph A.2.1 (appendix) and table 14.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5873,
+      "description": "Data Issued",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

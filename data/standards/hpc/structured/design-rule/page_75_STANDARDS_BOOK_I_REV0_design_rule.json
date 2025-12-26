@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 75,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 7,
+      "description": "6.9.7 Type the lowest level of parts you want to print. This level refers to the 'Level' of",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 6,
+      "description": "Purchased",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 99,
+      "description": "If you want all parts to be printed, press",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 99,
+      "description": "6.9.8 In the 'Txt' field, type Y if you want BOM text to print or N if you don't want",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

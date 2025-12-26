@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. II_REV0",
+    "source_page": 105,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "minimum",
+      "description": "Thickness, in",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "JlOI be tne<d or reproduced",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "minimum",
+      "description": "Thickness, in', None]",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "minimum",
+      "description": "Thickness, in']",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 29,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "minimum",
+      "description": "of four per unit, with tube lengths equal-to or smaller­",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "maximum",
+      "description": "of eight for 3-fan units",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "when tube length greater-than 32'",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "minimum",
+      "description": "of 2 at each column line",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "must",
+      "description": "not interfere with machinery mount assembly",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

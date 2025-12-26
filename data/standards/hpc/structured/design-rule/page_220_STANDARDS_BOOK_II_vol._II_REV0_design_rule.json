@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. II_REV0",
+    "source_page": 220,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "IF S T S E T E E L E L G A G l A E T E D S E T A A R IL E . REQUIRED, USE AN HPC",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

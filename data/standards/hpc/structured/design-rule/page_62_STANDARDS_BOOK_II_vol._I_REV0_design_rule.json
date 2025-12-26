@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 62,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "variable": "T",
+      "expression": ",: ~I I I ! I J I 3. Sample af header illustrations for Front Elevation and Side View",
+      "type": "formula"
+    },
+    {
+      "variable": "I",
+      "expression": "T r (I Il C - - _ --.....-.. _ ­ - - _ -",
+      "type": "formula"
+    },
+    {
+      "variable": "In",
+      "expression": "c : rt . l . O :. !l . t . l . ...,I \" \";= \" '-: - . - \\.: - .. ­ . .__..!-..L_.J..=:==_----L---l_----L ..L.. S .. T . D . ::.=_L-. 1 .. 1 . S :. D . 4 .= ~__I!J",
+      "type": "formula"
+    }
+  ],
+  "rule_type": "formula_calculation"
+}

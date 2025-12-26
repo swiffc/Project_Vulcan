@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 36,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "and listed as drawing 11 A 1",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "then the Anchor Bolt",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

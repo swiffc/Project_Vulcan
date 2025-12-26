@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 7,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "Index",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Electronic File Index",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Engineering-Drawing Part Number Management, Rev. 4 Section 3C",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Changed procedure title from Engineering Part Number Management Procedure.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "General revision to maintain uniformity.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "LAYOUT DRAWING information replaced MISCELLANEOUS WORK & REVISIONS",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 13,
+      "description": "4. Replaced DHOOO-HPM with DHOOO-LO in Section 6.2.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "Deleted DHOOO-HPM information in Section 5.1 and in Section 8.4 (was 8.4.2); renumbered Section",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "6. The majority of the changes pertain to the Appendix A tables. The tables were revised to reflect current",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5873,
+      "description": "Distribution :",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Grisaffi 140-C. Guillen",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

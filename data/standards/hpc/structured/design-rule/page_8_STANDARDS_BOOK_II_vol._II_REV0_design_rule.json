@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. II_REV0",
+    "source_page": 8,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 5938,
+      "description": "Distribution:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Delgado 76-D. Kling 96-R. Medina l15-S. Shah",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

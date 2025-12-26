@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 54,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 2,
+      "description": "Detennine distance c/c of outmost tubes of the first pass.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Locate offset inlet nozzle at center of first pass and dimension to center of column; round off as required.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "Repeat steps to locate off-set outlet nozzle in relation to the last pass.",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 11,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "Index",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Electronic File Index",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Engineering Part Number Management, Rev. 2 Section 3C",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "In general, the document format and the areas on scrubbing and revising time charges were slightly",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "The majority of the revision pertained to the format structure ofrouters.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5873,
+      "description": "Distribution:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Delgado 76-D. Kling 97-G. Millas 118-M. Wills 140-C. Guillen",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Grisaffi 143-R. Carter",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Castillo 128-1. Grisaffi 148-C. Yu",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Boungnaseng 70-S. Delgado 89-A. Na 104-P. Patel 136-1. Zhang",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Rundell 116-A. Vasquez 138-1. Trevathan",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

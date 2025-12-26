@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 109,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "at motor and one pair",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "at gear locations",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "at both ends of machinery mount and serves as",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "at both ends of machinery mount",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

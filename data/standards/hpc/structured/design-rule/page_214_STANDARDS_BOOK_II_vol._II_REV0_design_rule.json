@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. II_REV0",
+    "source_page": 214,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "ONLY WHEN",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "minimum",
+      "description": "WIDTH TO 8E USED WHENEVER POSSI8LE IS 10 7/B",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "maximum",
+      "description": "WEIGHT TO BE 250 L8S",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

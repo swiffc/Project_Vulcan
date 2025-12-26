@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. II_REV0",
+    "source_page": 148,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "See attached (9) chans for sizes and hole locations on Forced Draft Exhaust Louvers. These",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "See attached chart for Raised Face or Ring Type Joint Flanges with pipe dimensions. Note one",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Cash P. Hovey C. Mock W.Woodruff",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Frantz B. Kluppel D. Reagan (2)",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Furlong L. Laskoskis F. Reynolds",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Galvan III C. Maurer J. Richardson",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Goldsmith 1. Mazel F. Russell",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "/~'\\ Ai HoLt",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 7,
+      "description": "iF LolJ\\J{)I( &A-P.>",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

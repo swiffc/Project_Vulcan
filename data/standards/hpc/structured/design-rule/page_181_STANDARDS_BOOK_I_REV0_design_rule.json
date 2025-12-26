@@ -1,0 +1,102 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 181,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "If the shortcut for the macro has been installed on your desktop, double-click the 'sched.mac'",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Otherwise, skip steps 1 through 3 and proceed to step 4.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Press the 'F5' key and then skip to step 5.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "This macro will do the following:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "run all necessary Impromptu reports",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "create the appropriate MS Excel file (wl1.xls)",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "run and print the Header Design Schedule to the default printer",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "close Impromptu",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "launch MS Project",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "You can also run the macro from within Impromptu by selecting 'Macro...', from the 'Tools'",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "Retrieve the Header Design Schedule from the default printer for your Pc.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "The Microsoft Project file, Drafting Schedule.mpp, is on the server and is available for anyone",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "IfMS Project is running from the server on your PC, open the file,",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "3. Microsoft Project will warn you that the file contains macros. Select the 'Enable Macros'",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "Type 'Ctrl-T'. Skip step 5 and proceed to step 6.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "Type 'Ctrl-Q'.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 6,
+      "description": "You will receive the following warning message:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 7,
+      "description": "Select the 'Yes' button or press [Enter].",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

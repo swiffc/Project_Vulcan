@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 16,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "Electronic File Index - Standards Book I, Revision 3 Index at Front ofBook",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Bill Materials Creation, Revision 2 Section 3B",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 200,
+      "description": "If you have any questions or comments concerning the contents, please contact me at 5873.",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

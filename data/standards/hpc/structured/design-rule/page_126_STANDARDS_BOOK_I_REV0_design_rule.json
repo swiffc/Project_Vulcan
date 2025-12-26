@@ -1,0 +1,117 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 126,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "0075 HPM - ADMINISTRATIVE Not Required",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "0150 REVISION - STR Not Required",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "0300 REVISION - 3 Not Required",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "0500 REVISION - 5 Not Required",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "0610 REVISION - HD Not Required",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "0800 REVISION - 8 Not Required",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "1000 REVISION - 10 Not Required",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "1100 REVISION ­ 11 Not Required",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "2500 REVISION - 25 Not Required",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "2900 REVISION - 29 Not Required",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "3002 HPM REVISION - 2 Not Required",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "I",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "I",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "I",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "I",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "I",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "I",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "I",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "I",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "I",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "I",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

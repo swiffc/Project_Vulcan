@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. II_REV0",
+    "source_page": 18,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "to support the plenum (refer to the drafting",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "between the hangers on all units",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "in all Johnson units and are located near the top",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "to stiffen side, end, and center",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

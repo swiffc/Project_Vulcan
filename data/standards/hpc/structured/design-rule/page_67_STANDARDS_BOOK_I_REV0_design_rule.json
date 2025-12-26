@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 67,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "must",
+      "description": "create a skeleton BOM for all",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "quantities without requiring access to the sales order",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "such as shipping spares, or other loose structural",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 129,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 3,
+      "description": "AIS! .11'.u:o.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "01SI.1144CO,",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "SHAFTlh6 TO BE AISI 1144 COLO DRA~ STRESSPRlXF.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "D II I « A )I M C E A T T E D R R S R TO E A B D E lh C 6 O A C T E N A T JC R Y IC llM W E lT E H I« I ) N . .004 TOTAl I",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "R lN A S D l I l U E S . CORMERS AT 5IO.llERS HAVE 1/16 TO liB",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "IEIllflR AlL EDGES IJl KEYS AI() TAPE IN PLACE IHN",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "F",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "AIS! .11'.u:o.\\n5:1706 .917 Lf KEYSTIJCK. SO.II2·CI018\\n5:1708 .333 Lf KErSTIJCK. SO. 5/8' .CIOI8\\nAV FA M S H AFT\\n5:1705 BARSTIJCK.RICl.3. 01SI.1144CO,\\n53706 KETSTOCK. SO.II2'CI018\", \"FAIl EI«) HAV\\nLEh6TH\\nTYPE TYPE\\n7'-0 3/' N IRI\\n8'-2 7/8\"]",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

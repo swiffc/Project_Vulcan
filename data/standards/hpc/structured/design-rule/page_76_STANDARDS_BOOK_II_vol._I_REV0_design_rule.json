@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 76,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "by customer specifications",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "to meet the",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "by scheduling",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "for short MM lengths, but ensure",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "be taken to ensure that no",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "by scheduling",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "by scheduling (refer to drawing A-3)",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "per job package",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

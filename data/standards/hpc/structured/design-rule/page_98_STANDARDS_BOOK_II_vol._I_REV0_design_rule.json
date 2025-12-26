@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 98,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "minimum",
+      "description": "= 1'-11 (3'-6 MM) BOTTOM ~ '- ~ &4V02",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "minimum",
+      "description": "= 1\\'-11 (3\\'-6 MM) BOTTOM ~ \\'- ~ &4V\\n(FOR FAN RING> MOTOR 1\\'-5 (2\\' -6 MM) PANEL ~\\nFAN (VARIES)\\n\" (\"\\') I~ 2~\\' (TAPERED) FAN RING",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 2,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "Index, Rev 11 Index I, pages 1, 2, and 3",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Engineering-Drawing Part Number Management, Rev 7 Section 3C",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Descriptions of Engineer-To-Order Parts, Rev 3 Section 4B",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Revised the document format and changed the use of engineering part number to drawing part number and",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 0,
+      "description": "2. Deleted sections 3.11 Structural Engineering, 10.22 SETUP FEA, 10.23 RUN FEA, 10.24 FEA REPORTS,",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Added sections 3.11 Proposal Projects, 3.12 Sales Order Projects, 10.18 FEA REPORTS, 10.19 CHECK",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "4. Reorganized section 9.0 DRAFTINGIENGINEERING ROUTERS.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "Revised majority of section numbers to reflect additions and deletions.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 6,
+      "description": "Revised all tables and notations in Appendix A. (minor revisions)",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Revised section 4.0 to incorporate description format tables.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Revised description formats in all tables and added notations to Tables 1,5, and 6.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Deleted Appendix section.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5883,
+      "description": "Distribution:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Delgado 75-S. Gibson 95-1. Rundell 119-1. Grisaffi 140-C. Guillen",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Grisaffi 146-S. Reuther",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Boungnaseng 68-R. Evans 82-S. Hinton IOI-HPM Santos 136-1. Zhang 148-C. Yu",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Trevathan",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

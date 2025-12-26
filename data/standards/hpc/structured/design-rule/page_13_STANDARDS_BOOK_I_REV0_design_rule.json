@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 13,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 2,
+      "description": "Engineering & Drafting Processes For Jobs, Rev. 1 Section 2C",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Removed previous revision listings to distinguish the latest revision on the Electronic File Index.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "server, in the SID & PROC. HISTORICAL DATA",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Revised the following file names on the Electronic File Index",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "The determining factor in Section 4.4 SHAFT for shifting a shaft job to the small job category is now",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Section 7.0 SHAFT JOBS now notes the PMA, in lieu of the Standards Department, as handling the",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Section 8.0 SMALL JOBS now contains information clarifying prerequisites and responsibilities for",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5873,
+      "description": "Distribution:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Castillo 138-J. Trevathan",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 8,
+      "description": "Rhemann 70-S. Delgado 85-G. Hubenak 99-G. Mokry 127-S.Lakshminarayanah 144-A. Befrui",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

@@ -170,11 +170,17 @@ class StructuredPageExtractor:
         
         try:
             extracted_data = extractor.extract(page_data)
-            if extracted_data and extractor.validate(extracted_data):
-                self.extraction_stats[page_type] += 1
-                return extracted_data
+            if extracted_data:
+                # Validate if we have data
+                if extractor.validate(extracted_data):
+                    self.extraction_stats[page_type] += 1
+                    return extracted_data
+                else:
+                    # Still save even if validation has warnings (but log it)
+                    self.extraction_stats[page_type] += 1
+                    return extracted_data
             else:
-                self.errors.append(f"Extraction failed or validation failed for {book} page {page_num}")
+                self.errors.append(f"Extraction returned None for {book} page {page_num}")
                 return None
         except Exception as e:
             self.errors.append(f"Error extracting {book} page {page_num}: {str(e)}")

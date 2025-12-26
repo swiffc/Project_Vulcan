@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 158,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "must",
+      "description": "contact the person(s) assigned below",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "be deleted from the PM unless it was entered in error and",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "be requested by a section leader (or a",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

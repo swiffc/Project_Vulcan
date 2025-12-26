@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 184,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 2,
+      "description": "Test each Impromptu report wll.imr through w15.imr and HDSched.imr individually, per step",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Create a shortcut to the Impromptu macro and save it on the desktop.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "Modify rows 25 and 56 ofthe Impromptu macro as follows:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "replace \"FILE\" with \"n:\\transferfolder\\drafting\\schedule\\hotfiles.cat\" in row 25",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "replace \"FILE\" with \"n:\\transferfolder\\drafting\\schedule\\Drafting Schedule.cat\"",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "replace \"VER\" with \"creator\"",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "replace \"ID\" with the UserID ofthat particular administrator",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "replace \"PW\" with the Password of that particular administrator",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "On row 70 ofthe Impromptu macro, replace the directory for 'winproj.exe' ifMS Project is not",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 6,
+      "description": "Test the Impromptu macro from Impromptu then the shortcut.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 7,
+      "description": "Ifthe user is running MS Project from the server, skip steps 8 through 22.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 8,
+      "description": "Open Microsoft Project.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 9,
+      "description": "From the 'Tools' menu, select 'Macro ~ Macros... Alt +F8'.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 10,
+      "description": "In the 'Macro Name:' box, type 'Drafting_Schedule', then select the 'Create' button.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 11,
+      "description": "Open Notepad.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 12,
+      "description": "From the 'File' menu, select 'Open...'.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 13,
+      "description": "Select the following file and select the 'Open' button:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 14,
+      "description": "Select all text in this text file.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 15,
+      "description": "From the 'Edit' menu, select 'Copy'.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 16,
+      "description": "Active the Microsoft Visual Basic window and select all text.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 17,
+      "description": "From 'Edit' menu, select 'Paste'.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 18,
+      "description": "Save the Microsoft Project macro then close notepad and Microsoft Visual Basic.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 19,
+      "description": "In Microsoft Project, open the macros list per step 9 above.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 20,
+      "description": "Select 'DraftinILSchedule', then select the 'Options' button.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 21,
+      "description": "In the 'Shortcut Key' box at the bottom ofthe 'Macro Options' window, type a 'Q' then",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 22,
+      "description": "Select the 'Close' button.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 23,
+      "description": "Test the Microsoft Project macro from within Microsoft Project. Microsoft Excel should not",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

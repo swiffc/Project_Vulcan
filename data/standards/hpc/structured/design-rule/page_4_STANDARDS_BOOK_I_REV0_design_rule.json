@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 4,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "Engineering-Drawing Part Number Management, Rev. 6 Section 3C",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Engineering-Drawing Part Number Management for RPM, Rev. 1 Section 3D",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "The majority of the revisions entailed removing tasks for checking or scrubbing RPM drawing. The",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 39,
+      "description": "Revised table 6a",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Updated the procedure how and where to charging labor time for RPM Engineers and Drafters.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Revised table 3a by removing operation 0955, 0960, and 0965.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5873,
+      "description": "Distribution:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Grisaffi l40-C. Guillen",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Boungnaseng 70-S. Delgado 89-A. Na 103-1. Castillo l28-J. Grisaffi l46-S. Reuther",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Zhang l48-C. Yu",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Rundell l16-A. Vasquez 137-L. Schroeder 149-R. Faz",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

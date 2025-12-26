@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 157,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "maximum",
+      "description": "#15 = (Front column centers)+2, #17 = [#15] - [#14]",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "minimum",
+      "description": "hole edge distance should be 1W' between fan ring hole",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "maximum",
+      "description": "spacing",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "maximum",
+      "description": "#20 = 2'-3\" maximum spacing",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

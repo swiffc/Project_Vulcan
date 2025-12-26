@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 166,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "for the job",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "have sequential lettering (i",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "for each assembly, drawing, etc",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "must",
+      "description": "also designate any parts that are to be placed on the sal~s order",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "already be in the Parts Master when it is time to enter, assuming",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "have BUY entered",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

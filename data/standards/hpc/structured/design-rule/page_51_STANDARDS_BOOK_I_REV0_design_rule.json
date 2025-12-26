@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 51,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "labor for engineering and drafting is usually less than one hour",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "be treated as a Spare Parts Job",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "by the written contract agreement Hudson Products provides each",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "be copied to all personnel involved with the project",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "include the following persons in the Drafting and Engineering departments",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

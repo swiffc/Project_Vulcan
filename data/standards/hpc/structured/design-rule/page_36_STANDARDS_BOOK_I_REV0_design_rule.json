@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 36,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "procedure": "charge time and perform move tickets; it does",
+      "description": "not address when and whom. Refer to Drawings in Standards Book I, section 3C for",
+      "type": "how_to"
+    },
+    {
+      "procedure": "use Time & Attendance to assign yourselfto work.",
+      "description": "Department 31 (Drafting) should use this procedure to charge time. There are two methods",
+      "type": "how_to"
+    },
+    {
+      "procedure": "perform a move ticket, ifa move ticket is required.",
+      "description": "1.7 Appendix A provides a table that lists all of the work centers and work center stations used",
+      "type": "how_to"
+    }
+  ],
+  "rule_type": "procedure"
+}

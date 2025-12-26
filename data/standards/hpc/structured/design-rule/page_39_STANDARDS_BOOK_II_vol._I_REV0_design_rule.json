@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 39,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "required",
+      "description": "when more than one",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "to completely detail a unit bank",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "on a AP fan, wi VP when Valve Positioner is required on an AV",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "on an AV fan",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "be reviewed to ensure the fan size is within the maximum",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "be shown in even dimension, e",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "minimum",
+      "description": "column spacing for forced draft units should be 6\" greater than the fan",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "illustrate the outside wall panels, door, roof panels, and structural the unit components",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

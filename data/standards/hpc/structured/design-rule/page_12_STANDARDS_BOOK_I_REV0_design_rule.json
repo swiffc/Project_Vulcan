@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 12,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "Engineering & Drafting Processes For Jobs, Rev. 2 Section 2C",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Bills ofMaterials Creation, Rev. 3 Section 3B",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Descriptions of Engineer-To-Order Parts, Rev. 1 Section 4B",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "In general, minor wording changes have taken place.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Sections 4.0 JOB DEFINITIONS, 7.0 SHAFT JOBS and 8.0 SPARE PARTS have been revised",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Document format has been changed.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Removed the 4A for forced draft units.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "Removed the 50A and 40A from the bill structure.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 4,
+      "description": "Moved the tie-rod bar into the 12A.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5,
+      "description": "Placed the actuators and spare shipping parts into the 60A.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Changed procedure title from ETO Part Description Formats.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Added several new parts and reorganized tables.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 5873,
+      "description": "Distribution :",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Delgado 73-J.G. Galvan 89-H. Stiles 103-1. Castillo 138-J. Trevathan",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Zhang 146-S. Reuther",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

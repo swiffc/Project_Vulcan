@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK I_REV0",
+    "source_page": 185,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "should",
+      "description": "remain in the directory shown:",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "required",
+      "description": "to have a copy ofeach ofthese",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "be the following directory:",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "be copied to a new macro saved in the user's version of Microsoft Project",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "should",
+      "description": "be saved in the GLOBAL",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. II_REV0",
+    "source_page": 11,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 5938,
+      "description": "Distribution :",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Trevathan",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Lohman 110-RPM, Ramos 124-R. Waclawski 141-M. LeBlanc",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 0,
+      "description": "Kling 96-R. Medina 115-S. Shah 132-RPM, Ramos",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 0,
+      "description": "Torres 97-G. Millas 116-A. Vasquez 133-RPM, Ramos",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Delgado 82-S. Hinton 98-B. Stiles 117-R. Waclawski 135-Standards",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 0,
+      "description": "Stark 83-RPM, Ramos 99-G. Mokry 120-RPM, Ramos 136-Standards",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

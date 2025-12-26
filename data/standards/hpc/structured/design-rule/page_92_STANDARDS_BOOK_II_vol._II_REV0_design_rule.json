@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. II_REV0",
+    "source_page": 92,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "requirement_type": "shall",
+      "description": "BE H",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "BE\\nRETuRNEe ON DEMAND",
+      "type": "requirement"
+    },
+    {
+      "requirement_type": "shall",
+      "description": "NOT BE\\nTRACEO OR REPRODUceo OR uSED DIRECTLY\\nDR INDIRECTLY IN ANY WAY O~TRIMENTAL\\nTO THE INTERESTS OF HUDSON FRD~UCTS\\nCORPORATION', 'FOR\\nH",
+      "type": "requirement"
+    }
+  ],
+  "rule_type": "general_rule"
+}

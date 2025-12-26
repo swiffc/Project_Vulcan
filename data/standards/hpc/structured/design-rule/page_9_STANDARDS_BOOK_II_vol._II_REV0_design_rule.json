@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. II_REV0",
+    "source_page": 9,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 1,
+      "description": "Addition of two Mechanical Parts Reference sheets to Appendix C.",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 2,
+      "description": "Revision of bolt connection forms to accommodate both the piece mark and description; in the past",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Castillo l20-HPM,Ramos 89-H. Stiles",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Trevathan",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Delgado 76-D. Kling 96-R. Medina l15-S. Shah 129-HPM,Ramos",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Mica C. Thompson M. Beierle L. Krobot C. Clinton H. Wilcox D. Zahn",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

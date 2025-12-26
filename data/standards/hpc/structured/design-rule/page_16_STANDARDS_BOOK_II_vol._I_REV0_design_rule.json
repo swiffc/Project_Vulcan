@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. I_REV0",
+    "source_page": 16,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 5883,
+      "description": "Distribution:",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Boungnaseng n-R. Hebert 86-M. Cooley 11O-HPM,Ramos 124-Ark, D. Davis 138-J. Trevathan",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Delgado 78-S. Gupta 92-HPM,Ramos 117-Ark, D. Davis 128-J. Grisaffi 145-P. Christiono",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 1,
+      "description": "Grisaffi I32-HPM,Ramos",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}

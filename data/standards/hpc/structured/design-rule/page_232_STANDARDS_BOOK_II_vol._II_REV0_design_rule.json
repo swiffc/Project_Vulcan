@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "source_book": "STANDARDS BOOK II vol. II_REV0",
+    "source_page": 232,
+    "extractor": "DesignRuleExtractor",
+    "extraction_type": "design_rule"
+  },
+  "title": "(Standard Design Manual) - Downloaded By: David Cornealius, At: 2025-12-25 14:53",
+  "rules": [
+    {
+      "step_number": 2,
+      "description": ". N A . l L l ~ w o E u l : llS s 3/16 S AL ' : u:ss NOI[)), \" AS NO \" It 1 O 1 \" / 1 fO 6 R ' p 1 . \\I l l L m S :o S 0 ~ C A E JLS O BY cusr SPEC",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 3,
+      "description": "SlllllCTlJRAl Sl'ECJlCA11O",
+      "type": "procedure_step"
+    },
+    {
+      "step_number": 9,
+      "description": "AI.. NU~,8ERS I' () ARE FITI AND/OR 1/IOfi ON JOOS willi MIW~mRS",
+      "type": "procedure_step"
+    }
+  ],
+  "rule_type": "procedure"
+}
