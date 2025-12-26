@@ -528,6 +528,89 @@ Design individual lifting lug per ASME BTH-1.
 
 ---
 
+## Optimization Endpoints
+
+### POST /ache/optimize/suggestions
+
+Get AI-powered design optimization suggestions.
+
+**Request:**
+```json
+{
+  "ache_properties": {},
+  "thermal_results": {},
+  "optimization_targets": ["cost", "efficiency", "footprint"],
+  "constraints": {}
+}
+```
+
+**Response:**
+```json
+{
+  "suggestions": [
+    {
+      "category": "Cost Optimization",
+      "suggestion": "Standardize tube and fin dimensions",
+      "impact": "medium",
+      "estimated_improvement": "5-8% cost reduction"
+    },
+    {
+      "category": "Efficiency Optimization",
+      "suggestion": "Increase fin density for better heat transfer",
+      "impact": "high",
+      "estimated_improvement": "10-15% thermal improvement"
+    }
+  ],
+  "optimization_targets": ["cost", "efficiency", "footprint"],
+  "constraints_applied": {}
+}
+```
+
+### POST /ache/design/anchor-bolts
+
+Design anchor bolts for ACHE support structure.
+
+**Parameters:**
+- `base_shear_kn` (required): Base shear load
+- `uplift_kn` (required): Uplift load
+- `num_bolts` (optional, default 4): Number of bolts
+- `bolt_grade` (optional, default "F1554-36"): Bolt grade
+
+**Response:**
+```json
+{
+  "bolt_diameter_mm": 25.4,
+  "bolt_grade": "F1554-36",
+  "num_bolts": 4,
+  "embedment_depth_mm": 305,
+  "shear_capacity_kn": 150,
+  "tension_capacity_kn": 120,
+  "utilization": 0.75,
+  "is_adequate": true,
+  "base_plate_thickness_mm": 25.4,
+  "warnings": []
+}
+```
+
+### GET /ache/summary
+
+Get complete ACHE design summary from current model.
+
+**Response:**
+```json
+{
+  "equipment_tag": "AC-101",
+  "detected_type": "Air Cooled Heat Exchanger",
+  "has_tube_bundle": true,
+  "has_header_box": true,
+  "has_fan_system": true,
+  "has_support_structure": true,
+  "compliance_status": "pending"
+}
+```
+
+---
+
 ## Error Responses
 
 All endpoints return standard HTTP error codes:
