@@ -13,6 +13,7 @@
 | Phase 19-23 (Foundation) | 57/58 | 1 (blocked) | 98% |
 | Phase 24 (ACHE Design Assistant) | 210/213 | 3 | **97%** |
 | Phase 25 (Drawing Checker) | 150/150 | 0 | **100%** |
+| Phase 26 (HPC Integration) | 26/61 | 35 | **43%** |
 | **Standards Database** | **213/213** | **0** | **100%** |
 
 ---
@@ -464,5 +465,147 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 - Result modal with JSON display and copy
 
 **Next Priority**: End-to-end workflow tests with SolidWorks
+
+---
+
+## Phase 26: HPC Standards Integration (IN PROGRESS)
+
+**Status**: Core Integration Complete (60%) | Orchestration Pending  
+**Last Updated**: Dec 26, 2025
+
+### Phase 26.1 - Data Extraction & Standards Database (COMPLETE ✅)
+
+- [x] 26.1.1 Extract all 1,733 pages from HPC Standards Books I-IV
+- [x] 26.1.2 Extract all 2,198 tables
+- [x] 26.1.3 Extract 31,357 standard parts
+- [x] 26.1.4 Extract 60,979 specifications
+- [x] 26.1.5 Extract 6,780 design rules
+- [x] 26.1.6 Extract specialized data (lifting lugs, tie-downs, locations)
+- [x] 26.1.7 Create master index file (`hpc_standards_complete.json`)
+- [x] 26.1.8 Extend `standards_db_v2.py` with HPC data classes (`HPCLiftingLug`, `HPCTieDownAnchor`)
+- [x] 26.1.9 Add HPC load methods (`_load_hpc_lifting_lugs()`, `_load_hpc_lifting_lug_locations()`, `_load_hpc_tie_down_anchors()`)
+- [x] 26.1.10 Add HPC lookup methods (`get_hpc_lifting_lug()`, `get_hpc_lifting_lug_location()`, `get_hpc_tie_down_anchor()`, etc.)
+- [x] 26.1.11 Add HPC requirements methods (`get_hpc_lifting_lug_requirements()`, `get_hpc_tie_down_movement_requirements()`)
+- [x] 26.1.12 Add list methods (`list_available_hpc_lifting_lugs()`)
+
+### Phase 26.2 - Validator Updates (COMPLETE ✅)
+
+- [x] 26.2.1 Update `handling_validator.py` to use HPC lifting lug data
+- [x] 26.2.2 Replace hardcoded lifting lug capacities with HPC lookups
+- [x] 26.2.3 Add HPC quantity rule check (4 lugs for 50'+ tubes)
+- [x] 26.2.4 Add HPC spacing check (23'-0" maximum centerline spacing)
+- [x] 26.2.5 Add `lug_part_number` and `tube_length_ft` fields to `HandlingData`
+- [x] 26.2.6 Update `rigging_validator.py` to use HPC standards
+- [x] 26.2.7 Add HPC part number validation to `rigging_validator.py`
+- [x] 26.2.8 Add dimension verification against HPC standards
+- [x] 26.2.9 Add block-out dimension validation (A, B, C)
+- [x] 26.2.10 Add `hpc_part_number` and `block_out_dimensions` fields to `LiftingLugData`
+
+### Phase 26.3 - New HPC Validators (COMPLETE ✅)
+
+- [x] 26.3.1 Create `hpc_mechanical_validator.py` (machinery mounts, fans, vibration switches)
+- [x] 26.3.2 Create `hpc_walkway_validator.py` (walkways, ladders, handrails)
+- [x] 26.3.3 Create `hpc_header_validator.py` (header design standards)
+- [x] 26.3.4 Export all HPC validators in `__init__.py`
+
+### Phase 26.4 - Orchestrator Integration (PENDING ⚠️)
+
+- [ ] 26.4.1 Import HPC validators in `orchestrator.py`
+- [ ] 26.4.2 Initialize HPC validators in `ValidationOrchestrator.__init__()`
+- [ ] 26.4.3 Add HPC validators to logging output
+- [ ] 26.4.4 Add validation methods for HPC checks (if needed)
+- [ ] 26.4.5 Test orchestrator with HPC validators
+
+**Estimated Time**: 30 minutes  
+**Priority**: ⭐⭐⭐ HIGH
+
+### Phase 26.5 - PDF Validation Engine Integration (PENDING ⚠️)
+
+- [ ] 26.5.1 Import HPC validators in `pdf_validation_engine.py`
+- [ ] 26.5.2 Initialize HPC validators in `PDFValidationEngine.__init__()`
+- [ ] 26.5.3 Add "hpc" to standards list in `validate()` method
+- [ ] 26.5.4 Add HPC validation calls in `validate()` method
+- [ ] 26.5.5 Aggregate HPC results into `PDFValidationResult`
+- [ ] 26.5.6 Test PDF engine with HPC validators
+
+**Estimated Time**: 1 hour  
+**Priority**: ⭐⭐⭐ HIGH
+
+### Phase 26.6 - Integration Testing (PENDING ⚠️)
+
+- [ ] 26.6.1 Create `tests/test_hpc_integration.py`
+- [ ] 26.6.2 Test HPC lookup methods (`get_hpc_lifting_lug()`, etc.)
+- [ ] 26.6.3 Test validators return correct results
+- [ ] 26.6.4 Test orchestrator calls HPC validators
+- [ ] 26.6.5 Test PDF engine includes HPC checks
+- [ ] 26.6.6 Test end-to-end validation workflow
+- [ ] 26.6.7 Test with real HPC drawings
+
+**Estimated Time**: 2-3 hours  
+**Priority**: ⭐⭐ MEDIUM
+
+### Phase 26.7 - Documentation Updates (PENDING ⚠️)
+
+- [ ] 26.7.1 Update `README.md` with HPC capabilities
+- [ ] 26.7.2 Add HPC validator docs to `docs/ACHE_API_REFERENCE.md`
+- [ ] 26.7.3 Create HPC validator usage examples
+- [ ] 26.7.4 Update API documentation with HPC endpoints (if needed)
+
+**Estimated Time**: 1 hour  
+**Priority**: ⭐ MEDIUM
+
+### Phase 26.8 - Design Recommender Integration (FUTURE 🔮)
+
+- [ ] 26.8.1 Load HPC design rules from `hpc_design_rules.json`
+- [ ] 26.8.2 Integrate HPC rules into design recommender agent
+- [ ] 26.8.3 Use HPC standards for part selection recommendations
+- [ ] 26.8.4 Use HPC standards for sizing recommendations
+- [ ] 26.8.5 Test design recommendations with HPC data
+
+**Estimated Time**: 4-6 hours  
+**Priority**: ⭐⭐ MEDIUM
+
+### Phase 26.9 - Knowledge Base (RAG) Integration (FUTURE 🔮)
+
+- [ ] 26.9.1 Load HPC procedures into ChromaDB
+- [ ] 26.9.2 Create embeddings for HPC standards
+- [ ] 26.9.3 Enable natural language queries for HPC standards
+- [ ] 26.9.4 Test semantic search for HPC content
+
+**Estimated Time**: 3-4 hours  
+**Priority**: ⭐ LOW
+
+### Phase 26.10 - Performance Optimization (FUTURE 🔮)
+
+- [ ] 26.10.1 Create lookup indexes for large datasets (31K+ parts)
+- [ ] 26.10.2 Optimize location lookup algorithms
+- [ ] 26.10.3 Add caching for common queries
+- [ ] 26.10.4 Benchmark performance improvements
+
+**Estimated Time**: 2-3 hours  
+**Priority**: ⭐ LOW
+
+---
+
+## HPC Integration Summary
+
+| Phase | Tasks | Complete | Remaining | Status |
+|-------|-------|----------|-----------|--------|
+| 26.1 - Data Extraction & DB | 12 | 12 | 0 | ✅ 100% |
+| 26.2 - Validator Updates | 10 | 10 | 0 | ✅ 100% |
+| 26.3 - New Validators | 4 | 4 | 0 | ✅ 100% |
+| 26.4 - Orchestrator | 5 | 0 | 5 | ⚠️ 0% |
+| 26.5 - PDF Engine | 6 | 0 | 6 | ⚠️ 0% |
+| 26.6 - Testing | 7 | 0 | 7 | ⚠️ 0% |
+| 26.7 - Documentation | 4 | 0 | 4 | ⚠️ 0% |
+| 26.8 - Design Recommender | 5 | 0 | 5 | 🔮 Future |
+| 26.9 - Knowledge Base | 4 | 0 | 4 | 🔮 Future |
+| 26.10 - Performance | 4 | 0 | 4 | 🔮 Future |
+| **TOTAL** | **61** | **26** | **35** | **43%** |
+
+**Immediate Next Steps:**
+1. Phase 26.4 - Add HPC validators to orchestrator (30 min)
+2. Phase 26.5 - Add HPC validators to PDF engine (1 hour)
+3. Phase 26.6 - Create integration tests (2-3 hours)
 
 **Last Updated**: Dec 26, 2025 - Session 3
