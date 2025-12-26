@@ -1,6 +1,6 @@
 # Project Vulcan: Active Task List
 
-**Status**: Phase 24 - ACHE Design Assistant (97% COMPLETE) | Phase 25 - DONE
+**Status**: Phase 24 - ACHE Design Assistant (97% COMPLETE) | Phase 25 - DONE | Phase 26 - HPC Integration (43% COMPLETE)
 **Last Updated**: Dec 26, 2025 - Session 3
 **Overall Health**: 10/10 (Production Deployment Ready)
 
@@ -19,6 +19,11 @@
 ---
 
 ## 🔥 IMMEDIATE TASKS
+
+### HPC Integration - HIGH PRIORITY ⚠️
+- [ ] **26.4.1-26.4.5** - Add HPC validators to orchestrator (30 min)
+- [ ] **26.5.1-26.5.6** - Add HPC validators to PDF validation engine (1 hour)
+- [ ] **26.6.1-26.6.7** - Create integration tests (2-3 hours)
 
 ### Diagrams - COMPLETE ✅
 - [x] **`ache_complete_configurations.svg`** uploaded to `/diagrams/` (30KB)
@@ -45,10 +50,14 @@
 | `member_capacity_validator.py` | 2 | ✅ Complete |
 | `structural_capacity_validator.py` | 6 | ✅ Complete |
 | `shaft_validator.py` | - | ✅ Complete |
-| `handling_validator.py` | - | ✅ Complete |
+| `handling_validator.py` | - | ✅ Complete (HPC Enhanced) |
+| `rigging_validator.py` | - | ✅ Complete (HPC Enhanced) |
 | `bom_validator.py` | - | ✅ Complete |
 | `dimension_validator.py` | - | ✅ Complete |
 | `gdt_validator.py` | 14 | ✅ **NEW - Full ASME Y14.5-2018** |
+| `hpc_mechanical_validator.py` | - | ✅ **NEW - HPC Standards** |
+| `hpc_walkway_validator.py` | - | ✅ **NEW - HPC Standards** |
+| `hpc_header_validator.py` | - | ✅ **NEW - HPC Standards** |
 
 ---
 
@@ -276,10 +285,14 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 | `/phase25/check-member-capacity` | Structural | 2 |
 | `/phase25/check-structural` | Connections | 6 |
 | `/phase25/check-shaft` | Machining | - |
-| `/phase25/check-handling` | Handling | - |
+| `/phase25/check-handling` | Handling | - | ✅ HPC Enhanced |
+| `/phase25/check-rigging` | Rigging | - | ✅ HPC Enhanced |
 | `/phase25/check-bom` | BOM | - |
 | `/phase25/check-dimensions` | Dimensions | - |
 | `/phase25/check-completeness` | Completeness | - |
+| `/phase25/check-hpc-mechanical` | HPC Mechanical | - | ✅ NEW |
+| `/phase25/check-hpc-walkway` | HPC Walkway | - | ✅ NEW |
+| `/phase25/check-hpc-header` | HPC Header | - | ✅ NEW |
 
 ### Phase 24 ACHE Assistant Endpoints (NEW)
 
