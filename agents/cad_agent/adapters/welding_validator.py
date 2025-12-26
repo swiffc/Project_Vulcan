@@ -555,6 +555,198 @@ def calculate_fillet_weld_strength(
 
 
 # =============================================================================
+# AWS D1.1 WELD ACCESS & CLEARANCE REQUIREMENTS (Phase 25.4)
+# =============================================================================
+
+# Minimum clearances for weld access per AWS D1.1 & fabrication practice
+WELD_ACCESS_REQUIREMENTS = {
+    # Process: (min_electrode_angle_deg, min_nozzle_clearance_in, min_work_space_in)
+    "SMAW": (15, 0.5, 3.0),      # Stick welding
+    "GMAW": (15, 0.75, 4.0),     # MIG welding
+    "FCAW": (15, 0.75, 4.0),     # Flux-cored
+    "GTAW": (15, 0.5, 4.0),      # TIG welding
+    "SAW": (0, 2.0, 6.0),        # Submerged arc (vertical down only)
+}
+
+# Minimum access dimensions for different joint configurations
+JOINT_ACCESS_DIMENSIONS = {
+    # Joint type: (min_side_clearance_in, min_overhead_clearance_in)
+    "fillet_tee": (1.5, 3.0),
+    "fillet_lap": (1.0, 3.0),
+    "fillet_corner": (2.0, 3.0),
+    "groove_butt": (1.0, 3.0),
+    "groove_corner": (2.0, 4.0),
+    "plug_slot": (2.0, 4.0),
+}
+
+# Minimum torch/electrode work angles by position
+POSITION_ANGLE_REQUIREMENTS = {
+    # Position: (min_work_angle_deg, max_travel_angle_deg)
+    "1F": (45, 15),     # Flat fillet
+    "1G": (90, 15),     # Flat groove
+    "2F": (45, 15),     # Horizontal fillet
+    "2G": (90, 15),     # Horizontal groove
+    "3F": (45, 15),     # Vertical fillet
+    "3G": (90, 15),     # Vertical groove
+    "4F": (45, 15),     # Overhead fillet
+    "4G": (90, 15),     # Overhead groove
+}
+
+
+@dataclass
+class WeldAccessData:
+    """Data for weld access analysis."""
+    joint_type: str  # fillet_tee, fillet_lap, groove_butt, etc.
+    position: str  # 1F, 2F, 3F, 4F, 1G, 2G, 3G, 4G
+    side_clearance: float  # inches
+    overhead_clearance: float  # inches
+    electrode_angle_available: float  # degrees
+    process: str = "SMAW"  # SMAW, GMAW, FCAW, GTAW, SAW
+    backing_accessible: bool = True
+    back_gouge_possible: bool = True
+
+
+@dataclass
+class WeldAccessResult:
+    """Result of weld access validation."""
+    access_adequate: bool = True
+    electrode_access_ok: bool = True
+    clearance_ok: bool = True
+    position_feasible: bool = True
+    issues: list = field(default_factory=list)
+    warnings: list = field(default_factory=list)
+    suggestions: list = field(default_factory=list)
+
+
+def validate_weld_access(access_data: WeldAccessData) -> WeldAccessResult:
+    """
+    Validate weld access per AWS D1.1 requirements.
+
+    Checks:
+    1. Minimum electrode/nozzle clearance for process
+    2. Side and overhead clearances for joint type
+    3. Work angle feasibility for position
+    4. Back gouge and backing accessibility
+
+    Args:
+        access_data: WeldAccessData with geometry information
+
+    Returns:
+        WeldAccessResult with pass/fail status and issues
+    """
+    result = WeldAccessResult()
+
+    # Get requirements for process
+    process_req = WELD_ACCESS_REQUIREMENTS.get(access_data.process)
+    if not process_req:
+        result.warnings.append(f"Unknown welding process: {access_data.process}")
+        process_req = WELD_ACCESS_REQUIREMENTS["SMAW"]  # Default to SMAW
+
+    min_electrode_angle, min_nozzle_clearance, min_work_space = process_req
+
+    # Check electrode angle
+    if access_data.electrode_angle_available < min_electrode_angle:
+        result.electrode_access_ok = False
+        result.issues.append(
+            f"Insufficient electrode angle: {access_data.electrode_angle_available}° available, "
+            f"{min_electrode_angle}° minimum required for {access_data.process}"
+        )
+        result.suggestions.append(
+            "Consider: (1) Modify joint design, (2) Use different weld sequence, "
+            "(3) Pre-position parts for better access"
+        )
+
+    # Check joint type clearances
+    joint_req = JOINT_ACCESS_DIMENSIONS.get(access_data.joint_type)
+    if joint_req:
+        req_side, req_overhead = joint_req
+
+        if access_data.side_clearance < req_side:
+            result.clearance_ok = False
+            result.issues.append(
+                f"Insufficient side clearance: {access_data.side_clearance}\" available, "
+                f"{req_side}\" minimum required for {access_data.joint_type}"
+            )
+            result.suggestions.append(
+                "Consider: (1) Relocate adjacent members, (2) Modify weld sequence, "
+                "(3) Use shorter electrode/nozzle"
+            )
+
+        if access_data.overhead_clearance < req_overhead:
+            result.clearance_ok = False
+            result.issues.append(
+                f"Insufficient overhead clearance: {access_data.overhead_clearance}\" available, "
+                f"{req_overhead}\" minimum required for {access_data.joint_type}"
+            )
+
+    # Check position feasibility
+    position_req = POSITION_ANGLE_REQUIREMENTS.get(access_data.position)
+    if position_req:
+        min_work_angle, max_travel_angle = position_req
+        if access_data.electrode_angle_available < min_work_angle:
+            result.position_feasible = False
+            result.warnings.append(
+                f"Position {access_data.position} may be difficult with "
+                f"{access_data.electrode_angle_available}° work angle"
+            )
+
+    # Check backing and back gouge access for CJP welds
+    if "groove" in access_data.joint_type.lower():
+        if not access_data.backing_accessible:
+            result.warnings.append(
+                "Backing not accessible - may need single-sided CJP with special WPS"
+            )
+        if not access_data.back_gouge_possible:
+            result.warnings.append(
+                "Back gouge not possible - verify WPS allows single-sided welding"
+            )
+
+    # Set overall access status
+    result.access_adequate = result.electrode_access_ok and result.clearance_ok
+
+    return result
+
+
+def check_weld_sequence_access(
+    welds: list,
+    assembly_sequence: list
+) -> list:
+    """
+    Check if weld sequence allows adequate access at each step.
+
+    Args:
+        welds: List of weld definitions with access requirements
+        assembly_sequence: Order of assembly/welding operations
+
+    Returns:
+        List of sequence issues and recommendations
+    """
+    issues = []
+
+    for i, step in enumerate(assembly_sequence):
+        weld = next((w for w in welds if w.get("id") == step.get("weld_id")), None)
+        if not weld:
+            continue
+
+        # Check if previous welds block access
+        blocking_welds = [
+            w for w in welds
+            if w.get("blocks_access_to") == weld.get("id")
+            and any(s.get("weld_id") == w.get("id") for s in assembly_sequence[:i])
+        ]
+
+        if blocking_welds:
+            issues.append({
+                "step": i + 1,
+                "weld_id": weld.get("id"),
+                "issue": f"Access blocked by previous welds: {[w.get('id') for w in blocking_welds]}",
+                "suggestion": "Resequence to weld internal joints before closing assemblies"
+            })
+
+    return issues
+
+
+# =============================================================================
 # EXPORTS
 # =============================================================================
 
@@ -570,4 +762,12 @@ __all__ = [
     "get_min_fillet_weld_size",
     "get_max_fillet_size",
     "calculate_fillet_weld_strength",
+    # Phase 25.4 - Weld Access
+    "WeldAccessData",
+    "WeldAccessResult",
+    "validate_weld_access",
+    "check_weld_sequence_access",
+    "WELD_ACCESS_REQUIREMENTS",
+    "JOINT_ACCESS_DIMENSIONS",
+    "POSITION_ANGLE_REQUIREMENTS",
 ]
