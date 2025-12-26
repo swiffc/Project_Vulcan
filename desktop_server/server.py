@@ -2953,6 +2953,137 @@ async def generate_pdf_report(request: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/phase25/export-bom-excel")
+async def export_bom_excel(request: dict):
+    """
+    Export BOM to Excel format.
+
+    Request body:
+        items: List of BOM items with fields:
+            - item/item_number: int
+            - part_number: str
+            - description: str
+            - qty/quantity: int
+            - unit: str (default: EA)
+            - material: str
+            - weight_lbs/weight: float
+            - unit_cost/cost: float
+            - supplier/vendor: str
+            - lead_time_days/lead_time: int
+            - category/type: str
+            - stock_size/size: str
+            - finish/coating: str
+            - drawing_ref/dwg: str
+            - notes/remarks: str
+        metadata: Optional dict with:
+            - assembly_number: str
+            - assembly_name: str
+            - revision: str
+            - project_name: str
+            - customer: str
+            - prepared_by: str
+        include_charts: bool (default: true)
+
+    Returns:
+        Excel file as base64-encoded bytes with summary
+    """
+    try:
+        import sys
+        import base64
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.bom_exporter import BOMExporter, BOMMetadata
+
+        exporter = BOMExporter()
+
+        # Set metadata
+        meta = request.get("metadata", {})
+        exporter.set_metadata(BOMMetadata(
+            assembly_number=meta.get("assembly_number", ""),
+            assembly_name=meta.get("assembly_name", ""),
+            revision=meta.get("revision", ""),
+            project_name=meta.get("project_name", ""),
+            project_number=meta.get("project_number", ""),
+            customer=meta.get("customer", ""),
+            prepared_by=meta.get("prepared_by", ""),
+            date=meta.get("date", ""),
+        ))
+
+        # Load items
+        exporter.from_dict_list(request.get("items", []))
+
+        # Export to Excel
+        include_charts = request.get("include_charts", True)
+        result = exporter.export_excel(filepath=None, include_charts=include_charts)
+
+        if not result.success:
+            raise HTTPException(status_code=500, detail=result.message)
+
+        # Return as base64
+        excel_base64 = base64.b64encode(result.content).decode('utf-8')
+
+        return {
+            "format": "excel",
+            "filename": result.filename,
+            "content_base64": excel_base64,
+            "size_bytes": result.size_bytes,
+            "summary": exporter.get_summary(),
+        }
+
+    except Exception as e:
+        logger.error(f"BOM Excel export error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/export-bom-csv")
+async def export_bom_csv(request: dict):
+    """
+    Export BOM to CSV format.
+
+    Request body:
+        items: List of BOM items (same format as Excel export)
+        metadata: Optional metadata dict
+
+    Returns:
+        CSV file as base64-encoded bytes with summary
+    """
+    try:
+        import sys
+        import base64
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.bom_exporter import BOMExporter, BOMMetadata
+
+        exporter = BOMExporter()
+
+        # Set metadata
+        meta = request.get("metadata", {})
+        exporter.set_metadata(BOMMetadata(
+            assembly_number=meta.get("assembly_number", ""),
+            assembly_name=meta.get("assembly_name", ""),
+            revision=meta.get("revision", ""),
+        ))
+
+        # Load items
+        exporter.from_dict_list(request.get("items", []))
+
+        # Export to CSV
+        result = exporter.export_csv(filepath=None)
+
+        # Return as base64
+        csv_base64 = base64.b64encode(result.content).decode('utf-8')
+
+        return {
+            "format": "csv",
+            "filename": result.filename,
+            "content_base64": csv_base64,
+            "size_bytes": result.size_bytes,
+            "summary": exporter.get_summary(),
+        }
+
+    except Exception as e:
+        logger.error(f"BOM CSV export error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/kill")
 async def kill():
     """Emergency stop - activate kill switch."""
