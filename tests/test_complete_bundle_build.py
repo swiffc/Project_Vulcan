@@ -591,7 +591,7 @@ def run_complete_bundle_validation():
     print(f"Passed:             {passed_tests}")
     print(f"Failed:             {failed_tests}")
     print(f"Total Time:         {total_time/1000:.1f} seconds")
-    print(f"{'─' * 40}")
+    print(f"{'-' * 40}")
 
     # Count issues by severity
     critical_issues = [i for i in all_issues if i.get("severity") == "critical"]
