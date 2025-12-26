@@ -11,7 +11,7 @@
 | Category | Complete | Remaining | % Done |
 |----------|----------|-----------|--------|
 | Phase 19-23 (Foundation) | 57/58 | 1 (blocked) | 98% |
-| Phase 24 (ACHE Design Assistant) | 170/213 | 43 | **80%** |
+| Phase 24 (ACHE Design Assistant) | 173/213 | 40 | **81%** |
 | Phase 25 (Drawing Checker) | 150/150 | 0 | **100%** |
 | **Standards Database** | **213/213** | **0** | **100%** |
 
@@ -275,6 +275,8 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 | `/ache/properties` | Reader | Extract properties |
 | `/ache/calculate/thermal` | Calculator | Thermal performance |
 | `/ache/calculate/fan` | Calculator | Fan power/tip speed |
+| `/ache/calculate/pressure-drop/tube` | Calculator | Tube-side pressure drop |
+| `/ache/calculate/pressure-drop/air` | Calculator | Air-side pressure drop |
 | `/ache/calculate/size` | Calculator | Preliminary sizing |
 | `/ache/design/frame` | Structural | Frame design (AISC) |
 | `/ache/design/access` | Accessories | Platforms/ladders (OSHA) |
