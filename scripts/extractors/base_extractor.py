@@ -4,6 +4,7 @@ Base Extractor Class
 Provides common functionality for all extractors
 """
 import json
+import re
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, List, Optional, Any
