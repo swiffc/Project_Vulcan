@@ -69,14 +69,25 @@
       "default_part": "W708",
       "drawing_references": [
         "F 7REF5 - STD LIFTING LUG",
-        "F 7REF6 - LIFT LUG LOC.ND (Induced Draft)",
-        "F 7REF7 - LIFT LUG LOC.FD (Forced Draft)",
-        "F 7REF8 - 1 FAN ND SUP & LUG LOC.",
-        "F 7REF9 - 2 FAN ND SUP/LUG",
-        "F 7REF10 - 3 FAN ND SUP/LUG",
-        "F 7REF11 - 1 FAN FD SUP/LUG LOC.",
-        "F 7REF13 - 3 FAN FD SUP/LUG"
+        "F 7REF6 - LIFT LUG LOC.ND (Induced Draft) - Contains specific location coordinates",
+        "F 7REF7 - LIFT LUG LOC.FD (Forced Draft) - Contains specific location coordinates",
+        "F 7REF8 - 1 FAN ND SUP & LUG LOC. - Contains specific location coordinates",
+        "F 7REF9 - 2 FAN ND SUP/LUG - Contains specific location coordinates",
+        "F 7REF10 - 3 FAN ND SUP/LUG - Contains specific location coordinates",
+        "F 7REF11 - 1 FAN FD SUP/LUG LOC. - Contains specific location coordinates",
+        "F 7REF13 - 3 FAN FD SUP/LUG - Contains specific location coordinates"
       ],
+      "location_requirements": {
+        "note": "Specific lifting lug location coordinates are defined in Excel drawing files (F 7REF6, F 7REF7, etc.)",
+        "location_source": "Hood Program and Excel reference drawings",
+        "location_updated": "Lifting lug locations have been updated in Hood Program",
+        "location_validation": "Non-standard lifting lug locations must be verified",
+        "max_spacing": {
+          "centerline_to_centerline_ft": 23.0,
+          "description": "Maximum distance centerline to centerline of lifting lugs"
+        },
+        "center_line_reference": "Lifting lug center line location is critical"
+      },
       "notes": [
         "Hood Program defaults to W708 lifting lug",
         "Need to check lifting lug size for air seal block outs",
