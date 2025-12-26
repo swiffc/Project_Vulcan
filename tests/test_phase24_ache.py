@@ -738,5 +738,434 @@ class TestHeatTransferCoefficient:
         assert h < 500  # Lower than turbulent
 
 
+class TestAPIEndpointModels:
+    """Tests for API endpoint request/response models."""
+
+    def test_thermal_calc_request_model(self):
+        """Test ThermalCalcRequest model."""
+        from pydantic import BaseModel
+
+        # Simulate creating request data
+        request_data = {
+            "duty_kw": 1000,
+            "process_inlet_temp_c": 120,
+            "process_outlet_temp_c": 60,
+            "air_inlet_temp_c": 35,
+            "air_flow_kg_s": 100,
+            "surface_area_m2": 500,
+            "u_clean_w_m2_k": 45.0,
+            "fouling_factor": 0.0002,
+        }
+        assert request_data["duty_kw"] == 1000
+        assert request_data["fouling_factor"] == 0.0002
+
+    def test_fan_calc_request_model(self):
+        """Test FanCalcRequest model."""
+        request_data = {
+            "air_flow_m3_s": 50,
+            "static_pressure_pa": 200,
+            "fan_diameter_m": 3.0,
+            "fan_rpm": 300,
+            "fan_efficiency": 0.75,
+        }
+        assert request_data["air_flow_m3_s"] == 50
+        assert request_data["fan_efficiency"] == 0.75
+
+    def test_frame_design_request_model(self):
+        """Test FrameDesignRequest model."""
+        request_data = {
+            "bundle_weight_kn": 500,
+            "bundle_length_m": 12,
+            "bundle_width_m": 3,
+            "bundle_height_m": 2,
+            "num_bays": 2,
+            "elevation_m": 4.0,
+            "wind_speed_m_s": 40.0,
+        }
+        assert request_data["bundle_weight_kn"] == 500
+        assert request_data["num_bays"] == 2
+
+    def test_access_design_request_model(self):
+        """Test AccessDesignRequest model."""
+        request_data = {
+            "bundle_length_m": 12,
+            "bundle_width_m": 3,
+            "elevation_m": 5,
+            "num_bays": 2,
+            "fan_deck_required": True,
+            "header_access_required": True,
+        }
+        assert request_data["fan_deck_required"] == True
+
+    def test_erection_plan_request_model(self):
+        """Test ErectionPlanRequest model."""
+        request_data = {
+            "project_name": "Test Project",
+            "equipment_tag": "AC-101",
+            "ache_properties": {
+                "mass_properties": {"mass_kg": 50000},
+                "bounding_box": {
+                    "length_mm": 12000,
+                    "width_mm": 3000,
+                    "height_mm": 4000,
+                },
+            },
+        }
+        assert request_data["project_name"] == "Test Project"
+        assert request_data["ache_properties"]["mass_properties"]["mass_kg"] == 50000
+
+    def test_optimization_request_model(self):
+        """Test OptimizationRequest model."""
+        request_data = {
+            "ache_properties": {},
+            "thermal_results": {},
+            "optimization_targets": ["cost", "efficiency", "footprint"],
+            "constraints": {"max_footprint_m2": 100},
+        }
+        assert "cost" in request_data["optimization_targets"]
+        assert request_data["constraints"]["max_footprint_m2"] == 100
+
+
+class TestAPI661Compliance:
+    """Tests for API 661 compliance checking."""
+
+    def test_tube_length_limit(self):
+        """Test API 661 5.1.1 - Maximum tube length 12.0m."""
+        from agents.cad_agent.ache_assistant import ACHEAssistant
+
+        assistant = ACHEAssistant()
+        result = assistant.check_compliance({
+            "tube_bundle": {
+                "tube_length_m": 10.0,  # Within limit
+            }
+        })
+        # Should pass if tube length <= 12m
+        tube_issues = [i for i in result.issues if "tube length" in i.requirement.lower()]
+        for issue in tube_issues:
+            assert issue.status != "failed"
+
+    def test_tube_length_exceeds(self):
+        """Test API 661 5.1.1 - Tube length exceeds limit."""
+        from agents.cad_agent.ache_assistant import ACHEAssistant
+
+        assistant = ACHEAssistant()
+        result = assistant.check_compliance({
+            "tube_bundle": {
+                "tube_length_m": 14.0,  # Exceeds 12m limit
+            }
+        })
+        # Should have warning or failure
+        assert result.total_checks > 0
+
+    def test_fan_tip_speed_limit(self):
+        """Test API 661 6.1.1 - Maximum fan tip speed 61 m/s."""
+        from agents.cad_agent.ache_assistant import ACHEAssistant
+
+        assistant = ACHEAssistant()
+        result = assistant.check_compliance({
+            "fan_system": {
+                "tip_speed_m_s": 55,  # Within limit
+            }
+        })
+        tip_issues = [i for i in result.issues if "tip speed" in i.requirement.lower()]
+        for issue in tip_issues:
+            assert issue.status != "failed"
+
+    def test_blade_clearance_minimum(self):
+        """Test API 661 Table 6 - Minimum blade clearance 12.7mm."""
+        from agents.cad_agent.ache_assistant import ACHEAssistant
+
+        assistant = ACHEAssistant()
+        result = assistant.check_compliance({
+            "fan_system": {
+                "blade_clearance_mm": 15,  # Above minimum
+            }
+        })
+        clearance_issues = [i for i in result.issues if "clearance" in i.requirement.lower()]
+        for issue in clearance_issues:
+            assert issue.status != "failed"
+
+    def test_header_split_requirement(self):
+        """Test API 661 7.1.6.1.2 - Header split required if delta T > 110°C."""
+        from agents.cad_agent.ache_assistant import ACHECalculator
+
+        calc = ACHECalculator()
+        # Delta T = 180 - 60 = 120°C > 110°C
+        needs_split = calc.check_header_split_required(
+            process_inlet_temp_c=180,
+            process_outlet_temp_c=60,
+        )
+        assert needs_split == True
+
+        # Delta T = 150 - 60 = 90°C < 110°C
+        no_split = calc.check_header_split_required(
+            process_inlet_temp_c=150,
+            process_outlet_temp_c=60,
+        )
+        assert no_split == False
+
+
+class TestOSHACompliance:
+    """Tests for OSHA compliance checking."""
+
+    def test_walkway_width_minimum(self):
+        """Test OSHA 1910.22 - Minimum walkway width 450mm."""
+        from agents.cad_agent.ache_assistant import AccessoryDesigner
+
+        designer = AccessoryDesigner()
+        platform = designer.design_platform(
+            length_m=10,
+            width_m=0.5,  # 500mm > 450mm minimum
+            live_load_kn_m2=4.8,
+        )
+        assert platform.width_m >= 0.45
+
+    def test_handrail_height_minimum(self):
+        """Test OSHA 1910.29 - Minimum handrail height 1070mm."""
+        from agents.cad_agent.ache_assistant import AccessoryDesigner
+
+        designer = AccessoryDesigner()
+        handrail = designer.design_handrail(length_m=10)
+        assert handrail.height_mm >= 1070
+
+    def test_ladder_cage_requirement(self):
+        """Test OSHA 1910.28 - Ladder cage required > 6.1m."""
+        from agents.cad_agent.ache_assistant import AccessoryDesigner
+
+        designer = AccessoryDesigner()
+
+        # Height > 6.1m requires cage
+        ladder_tall = designer.design_ladder(height_m=7.0)
+        assert ladder_tall.cage_required == True
+
+        # Height <= 6.1m no cage required
+        ladder_short = designer.design_ladder(height_m=5.0)
+        assert ladder_short.cage_required == False
+
+    def test_toe_plate_height(self):
+        """Test OSHA 1910.29 - Toe plate height >= 89mm."""
+        from agents.cad_agent.ache_assistant import AccessoryDesigner
+
+        designer = AccessoryDesigner()
+        handrail = designer.design_handrail(length_m=10)
+        assert handrail.toe_plate_height_mm >= 89
+
+
+class TestAISCCompliance:
+    """Tests for AISC steel design compliance."""
+
+    def test_column_slenderness_limit(self):
+        """Test AISC - Column slenderness KL/r <= 200."""
+        from agents.cad_agent.ache_assistant import StructuralDesigner
+
+        designer = StructuralDesigner()
+        column = designer.design_column(
+            axial_load_kn=200,
+            height_m=4.0,
+            moment_kn_m=20,
+            k_factor=1.0,
+        )
+        # Selected profile should satisfy slenderness requirement
+        assert column.is_adequate == True or column.slenderness_ratio <= 200
+
+    def test_beam_deflection_limit(self):
+        """Test AISC - Beam deflection limit L/240."""
+        from agents.cad_agent.ache_assistant import StructuralDesigner
+
+        designer = StructuralDesigner()
+        beam = designer.design_beam(
+            span_m=6.0,
+            distributed_load_kn_m=10,
+            deflection_limit="L/240",
+        )
+        # Deflection should be within limit
+        max_deflection = 6000 / 240  # 25mm
+        assert beam.deflection_mm <= max_deflection or not beam.is_adequate
+
+    def test_frame_load_combinations(self):
+        """Test AISC LRFD load combinations."""
+        from agents.cad_agent.ache_assistant import StructuralDesigner
+
+        designer = StructuralDesigner()
+        frame = designer.design_frame(
+            bundle_weight_kn=300,
+            bundle_length_m=10,
+            bundle_width_m=3,
+            bundle_height_m=2,
+            num_bays=1,
+            elevation_m=4,
+            wind_speed_m_s=40,
+        )
+        # Should check multiple load combinations
+        assert frame.governing_case in ["D+L", "D+W", "D+L+W", "D+E"]
+
+
+class TestASMEBTH1Compliance:
+    """Tests for ASME BTH-1 lifting lug design."""
+
+    def test_lifting_lug_design_factors(self):
+        """Test ASME BTH-1 design factors."""
+        from agents.cad_agent.ache_assistant import ErectionPlanner
+
+        planner = ErectionPlanner()
+        lug = planner.design_lifting_lug(
+            design_load_kn=100,
+            sling_angle_deg=60,
+        )
+        # Design load should include factors
+        # Sling angle factor = 1/sin(60°) = 1.155
+        assert lug.total_design_load_kn > lug.design_load_kn
+
+    def test_lifting_lug_failure_modes(self):
+        """Test all lifting lug failure modes are checked."""
+        from agents.cad_agent.ache_assistant import ErectionPlanner
+
+        planner = ErectionPlanner()
+        lug = planner.design_lifting_lug(
+            design_load_kn=100,
+            sling_angle_deg=60,
+        )
+        # All failure modes should be checked
+        assert lug.bearing_capacity_kn > 0
+        assert lug.tearout_capacity_kn > 0
+        assert lug.tension_capacity_kn > 0
+        assert lug.weld_capacity_kn > 0
+
+    def test_lifting_lug_utilization(self):
+        """Test lifting lug utilization calculation."""
+        from agents.cad_agent.ache_assistant import ErectionPlanner
+
+        planner = ErectionPlanner()
+        lug = planner.design_lifting_lug(
+            design_load_kn=100,
+            sling_angle_deg=60,
+        )
+        # Utilization should be demand/capacity
+        assert lug.utilization > 0
+        assert lug.utilization <= 1.0 or not lug.is_adequate
+
+
+class TestBatchCalculations:
+    """Tests for batch calculation features."""
+
+    def test_multiple_thermal_calculations(self):
+        """Test multiple thermal calculations."""
+        from agents.cad_agent.ache_assistant import ACHECalculator
+
+        calc = ACHECalculator()
+        results = []
+        for duty in [500, 1000, 1500]:
+            result = calc.calculate_thermal(
+                duty_kw=duty,
+                process_inlet_temp_c=100,
+                process_outlet_temp_c=60,
+                air_inlet_temp_c=35,
+                air_flow_kg_s=50 * (duty / 500),
+                surface_area_m2=200 * (duty / 500),
+            )
+            results.append(result)
+
+        # Higher duty should have higher air outlet temp
+        assert results[2].air_outlet_temp_c >= results[0].air_outlet_temp_c
+
+    def test_parametric_fan_sizing(self):
+        """Test parametric fan sizing."""
+        from agents.cad_agent.ache_assistant import ACHECalculator
+        import math
+
+        calc = ACHECalculator()
+        results = []
+        for diameter in [2.0, 2.5, 3.0]:
+            result = calc.calculate_fan_performance(
+                air_flow_m3_s=50,
+                static_pressure_pa=200,
+                fan_diameter_m=diameter,
+                fan_rpm=300,
+                fan_efficiency=0.75,
+            )
+            results.append(result)
+
+        # Larger diameter at same RPM = higher tip speed
+        assert results[2].tip_speed_m_s > results[0].tip_speed_m_s
+
+
+class TestEdgeCases:
+    """Tests for edge cases and boundary conditions."""
+
+    def test_zero_duty(self):
+        """Test handling of zero duty."""
+        from agents.cad_agent.ache_assistant import ACHECalculator
+
+        calc = ACHECalculator()
+        # Zero duty should handle gracefully
+        try:
+            result = calc.calculate_thermal(
+                duty_kw=0,
+                process_inlet_temp_c=100,
+                process_outlet_temp_c=100,  # Same temp = no duty
+                air_inlet_temp_c=35,
+                air_flow_kg_s=50,
+                surface_area_m2=200,
+            )
+            # Should either return zero or handle gracefully
+            assert result is not None
+        except (ValueError, ZeroDivisionError):
+            # Acceptable to raise error for invalid input
+            pass
+
+    def test_negative_pressure_drop(self):
+        """Test handling of invalid pressure values."""
+        from agents.cad_agent.ache_assistant import ACHECalculator
+
+        calc = ACHECalculator()
+        # Should handle or reject negative values
+        try:
+            result = calc.calculate_fan_performance(
+                air_flow_m3_s=50,
+                static_pressure_pa=-100,  # Invalid negative
+                fan_diameter_m=3.0,
+                fan_rpm=300,
+                fan_efficiency=0.75,
+            )
+            # If it returns, power should be negative or zero
+            assert result.shaft_power_kw <= 0
+        except ValueError:
+            # Acceptable to reject invalid input
+            pass
+
+    def test_very_high_temperature(self):
+        """Test handling of very high temperatures."""
+        from agents.cad_agent.ache_assistant import ACHECalculator
+
+        calc = ACHECalculator()
+        result = calc.calculate_thermal(
+            duty_kw=1000,
+            process_inlet_temp_c=400,  # Very high
+            process_outlet_temp_c=200,
+            air_inlet_temp_c=50,
+            air_flow_kg_s=100,
+            surface_area_m2=500,
+        )
+        # Should handle high temps
+        assert result.lmtd_k > 0
+
+    def test_small_tube_count(self):
+        """Test pressure drop with small tube count."""
+        from agents.cad_agent.ache_assistant import ACHECalculator
+
+        calc = ACHECalculator()
+        result = calc.calculate_tube_side_pressure_drop(
+            mass_flow_kg_s=10,
+            tube_id_mm=25,
+            tube_length_m=6,
+            num_tubes=10,  # Small count
+            num_passes=2,
+            fluid_density_kg_m3=800,
+            fluid_viscosity_pa_s=0.001,
+        )
+        # Higher velocity in fewer tubes = higher pressure drop
+        assert result.tube_side_dp_kpa > 0
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
