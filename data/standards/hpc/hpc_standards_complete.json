@@ -1,0 +1,382 @@
+{
+  "metadata": {
+    "title": "HPC Standards - Complete Scope",
+    "version": "1.0.0",
+    "extracted_date": "2025-12-26",
+    "source": "HPC Standards Books I, II (Vol. I & II), III, IV",
+    "total_pages": 1733,
+    "total_tables": 2198,
+    "description": "Comprehensive HPC standards database covering all extracted standards, specifications, design rules, and standard parts"
+  },
+  "standards_books": {
+    "book_i": {
+      "title": "Standards Book I - Engineering Procedures",
+      "pages": 226,
+      "tables": 11,
+      "focus": "Drawing management, part numbering, checking procedures",
+      "key_content": [
+        "Part numbering rules and formats",
+        "Drawing checking and back-checking procedures",
+        "Engineer-to-order part descriptions",
+        "Electronic file management"
+      ]
+    },
+    "book_ii_vol_i": {
+      "title": "Standards Book II Vol. I - GA & Assembly, Mechanicals",
+      "pages": 211,
+      "tables": 242,
+      "focus": "General arrangement, machinery mounts, fans, shafts, doors",
+      "key_standards": [
+        "Machinery mount configurations (forced/induced draft)",
+        "Vibration switch mounting: 1' from fan centerline, 6\" from top",
+        "Machinery mount length formulas",
+        "Diagonal brace spacing: 1\" to 6-1/4\" in 1/4\" increments",
+        "Fan guard hinge locations",
+        "Shop fit-up holes specifications"
+      ]
+    },
+    "book_ii_vol_ii": {
+      "title": "Standards Book II Vol. II - Structural, Frames, Walkways",
+      "pages": 298,
+      "tables": 449,
+      "focus": "Tube bundle frames, walkways, ladders, handrails, structural frames",
+      "key_standards": [
+        "TBF diverter locations (aligned with clip angle)",
+        "Walkway ladder rungs: #6 rebar standard",
+        "Toe-plate design: PRL 4-1/2\" x 2\" x 1/4\" welded component",
+        "Handrail detailing: plan-view, single line method",
+        "Standard part numbering conventions (W88__ vs W8__)"
+      ]
+    },
+    "book_iii": {
+      "title": "Standards Book III - Header Design",
+      "pages": 433,
+      "tables": 571,
+      "focus": "Header design, welding, joint preparation, standard parts",
+      "key_standards": [
+        "Header nameplate thickness: 0.105\" (reduced from 0.125\" for cost)",
+        "Plug specifications (P430 and others)",
+        "Welding joint preparation details",
+        "Weld procedure specifications",
+        "Tie-down and header anchor details"
+      ]
+    },
+    "book_iv": {
+      "title": "Standards Book IV - Standard Parts Library",
+      "pages": 565,
+      "tables": 925,
+      "focus": "Comprehensive standard parts library (bolted, welded, tube supports)",
+      "key_standards": [
+        "Beam shape changes: S8/S10 → W8/W10 (price/availability)",
+        "Extension rings: 6\" deep for aftermarket fan sales",
+        "Coating table specifications",
+        "Welding requirements: AWS and CSA compliance",
+        "Header stops: W728 (moved from bolted to welded)"
+      ]
+    }
+  },
+  "lifting_lug_standards": {
+    "standard_parts": [
+      {
+        "part_number": "W708",
+        "thickness_in": 0.75,
+        "width_in": 5.5,
+        "description": "3/4\" × 5-1/2\"",
+        "block_out_dimensions": {
+          "A_in": 2.875,
+          "B_in": 2.875,
+          "C_in": 1.0
+        },
+        "notes": "Default lifting lug for Hood Program"
+      },
+      {
+        "part_number": "W709",
+        "thickness_in": 0.75,
+        "width_in": 7.0,
+        "description": "3/4\" × 7\"",
+        "block_out_dimensions": {
+          "A_in": 3.625,
+          "B_in": 2.875,
+          "C_in": 1.0
+        }
+      },
+      {
+        "part_number": "W710",
+        "thickness_in": 0.75,
+        "width_in": 8.0,
+        "description": "3/4\" × 8\"",
+        "block_out_dimensions": {
+          "A_in": 4.125,
+          "B_in": 2.875,
+          "C_in": 1.0
+        }
+      },
+      {
+        "part_number": "W711",
+        "thickness_in": 1.0,
+        "width_in": 7.0,
+        "description": "1\" × 7\"",
+        "block_out_dimensions": {
+          "A_in": 3.625,
+          "B_in": 2.875,
+          "C_in": 1.25
+        }
+      },
+      {
+        "part_number": "W712",
+        "thickness_in": 1.0,
+        "width_in": 8.0,
+        "description": "1\" × 8\"",
+        "block_out_dimensions": {
+          "A_in": 4.125,
+          "B_in": 2.875,
+          "C_in": 1.25
+        }
+      }
+    ],
+    "requirements": {
+      "quantity_rule": "4 lifting lugs for units with 50' or 60' long tubes or greater",
+      "max_centerline_spacing_ft": 23.0,
+      "default_part": "W708",
+      "drawing_references": [
+        "F 7REF5 - STD LIFTING LUG",
+        "F 7REF6 - LIFT LUG LOC.ND (Induced Draft)",
+        "F 7REF7 - LIFT LUG LOC.FD (Forced Draft)",
+        "F 7REF8 - 1 FAN ND SUP & LUG LOC.",
+        "F 7REF9 - 2 FAN ND SUP/LUG",
+        "F 7REF10 - 3 FAN ND SUP/LUG",
+        "F 7REF11 - 1 FAN FD SUP/LUG LOC.",
+        "F 7REF13 - 3 FAN FD SUP/LUG"
+      ],
+      "notes": [
+        "Hood Program defaults to W708 lifting lug",
+        "Need to check lifting lug size for air seal block outs",
+        "Non-standard lifting lug locations must be verified",
+        "Lifting lug center line location is critical"
+      ]
+    },
+    "location_data_file": "hpc_lifting_lug_locations_data.json",
+    "location_data_status": {
+      "location_references_found": true,
+      "specific_coordinates_in_pdf": true,
+      "coordinates_source": "Standards Book II Vol. II, Pages 120, 125-127"
+    }
+  },
+  "tie_down_anchor_details": {
+    "standard_drawing": {
+      "title": "TYPICAL TIE-DOWN AND HEADER ANCHOR DETAILS",
+      "drawing_number": "6B_01_tiedown_R2.dwg",
+      "source": "Standards Book III, Section 6, Page 170"
+    },
+    "standard_parts": {
+      "header_pad_angle": {
+        "part_number": "B701",
+        "description": "Header Pad Angle",
+        "specification": "L 3 x 3 x 1/2 x 0'-6 1/2",
+        "dimensions": {
+          "leg_size_in": 3.0,
+          "thickness_in": 0.5,
+          "length_in": 6.5
+        },
+        "fasteners": {
+          "quantity": 2,
+          "size": "3/4\" diameter",
+          "length_in": 2.0,
+          "grade": "Grade (HS)",
+          "components": ["Bolt", "Nut", "Flat Washer (FW)"]
+        }
+      },
+      "header_anchor_pad": {
+        "part_number": "B703",
+        "description": "Header Anchor Pad",
+        "specification": "L 3 x 3 x 1/2 x 0'-6",
+        "dimensions": {
+          "leg_size_in": 3.0,
+          "thickness_in": 0.5,
+          "length_in": 6.0
+        },
+        "fasteners": {
+          "quantity": 2,
+          "size": "3/4\" diameter",
+          "length_in": 2.0,
+          "grade": "Grade (HS)",
+          "components": ["Bolt", "Nut", "Flat Washer (FW)"]
+        },
+        "model": "8703"
+      },
+      "tie_down_bar": {
+        "part_number": "W615",
+        "description": "Tie-Down Bar",
+        "specification": "2\" x 1\" x 0'-2",
+        "dimensions": {
+          "width_in": 2.0,
+          "thickness_in": 1.0,
+          "length_in": 2.0
+        }
+      },
+      "header_anchor_plate": {
+        "part_number": "W618",
+        "description": "Header Anchor Plate",
+        "model": "W618"
+      }
+    },
+    "movement_requirements": {
+      "standard_movement": {
+        "total_movement_in": 0.625,
+        "description": "5/8\" total movement (standard)"
+      },
+      "non_standard_movement": {
+        "formula": "TOTAL MOVEMENT + 1/16\"",
+        "description": "For non-standard movement, use: TOTAL MOVEMENT + 1/16\""
+      }
+    },
+    "dimensions_and_clearances": {
+      "frame_to_header_clearance_in": 1.0,
+      "anchor_pad_distance_from_header_in": 2.0
+    }
+  },
+  "anchor_bolt_standards": {
+    "anchor_bolt_plans": {
+      "description": "Anchor Bolt Plans are provided for all winterized units without floors and per customer's request",
+      "drawing_reference": "11 S02 (Anchor Bolt Plan)",
+      "requirements": [
+        "All column centerlines and anchor bolts requirements are located on the Anchor Bolt Plan",
+        "Details of column base plate, ladder base shown on Anchor Bolt Plan when space permits",
+        "If space doesn't permit, details shown on plan/plan of plenum",
+        "Anchor Bolt plan is the second General Arrangement drawing if KEY PLAN is required (listed as drawing 11 A 1)"
+      ],
+      "standard_note": "FOUNDATION AND ANCHOR BOLTS: HPC standard note is TO BE PROVIDED BY OTHERS"
+    }
+  },
+  "machinery_mount_standards": {
+    "vibration_switch_mounting": {
+      "location": "1' from fan centerline, 6\" from top",
+      "description": "The center location for vibration switches is standardized to 1' from the fan centerline and 6\" from the top"
+    },
+    "diagonal_brace_spacing": {
+      "range_in": [1.0, 6.25],
+      "increment_in": 0.25,
+      "description": "Spacing from the c-channel stiffener to the plan brace will be in even 1/4\" increments, with the spacing existing between 1\" and 6-1/4\""
+    },
+    "machinery_mount_configurations": {
+      "forced_draft": "Forced draft units",
+      "induced_draft": "Induced draft units",
+      "note": "Machinery mount length formulas available"
+    }
+  },
+  "walkway_standards": {
+    "ladder_rungs": {
+      "material": "#6 rebar",
+      "description": "Walkway ladder rungs: #6 rebar standard"
+    },
+    "toe_plate": {
+      "design": "PRL 4-1/2\" x 2\" x 1/4\" welded component",
+      "description": "Toe-plate design specification"
+    },
+    "handrail_detailing": {
+      "method": "plan-view, single line method",
+      "description": "Handrail detailing method"
+    }
+  },
+  "header_design_standards": {
+    "nameplate_thickness": {
+      "current_in": 0.105,
+      "previous_in": 0.125,
+      "reason": "Cost reduction, ASME compliant",
+      "description": "Header nameplate thickness reduced from 0.125\" to 0.105\""
+    },
+    "plug_specifications": {
+      "examples": ["P430"],
+      "description": "Standard plug specifications available"
+    },
+    "welding": {
+      "joint_preparation": "Welding joint preparation details available",
+      "weld_procedures": "Weld procedure specifications available"
+    }
+  },
+  "standard_parts_library": {
+    "statistics": {
+      "total_parts": 31357,
+      "by_category": {
+        "general": 22372,
+        "structural": 3433,
+        "header": 1845,
+        "mechanical": 1658,
+        "tube_bundle": 1374,
+        "walkway": 675
+      }
+    },
+    "key_changes": {
+      "beam_shapes": {
+        "change": "S8/S10 → W8/W10",
+        "reason": "Price/availability",
+        "description": "Beam shape changes for price and availability"
+      },
+      "extension_rings": {
+        "depth_in": 6.0,
+        "purpose": "For aftermarket fan sales",
+        "description": "Extension rings: 6\" deep for aftermarket fan sales"
+      },
+      "header_stops": {
+        "part_number": "W728",
+        "change": "Moved from bolted to welded section",
+        "description": "Header stops moved from bolted to welded"
+      }
+    },
+    "coating_specifications": {
+      "description": "Coating table specifications available",
+      "note": "I = not galvanized or painted"
+    },
+    "welding_requirements": {
+      "standards": ["AWS", "CSA"],
+      "description": "Welding requirements: AWS and CSA compliance"
+    }
+  },
+  "tube_support_standards": {
+    "max_spacing_ft": 5.75,
+    "description": "Maximum tube support spacing is 5'-9\" (5.75 feet)",
+    "note": "Tube support spacing varies by tube length and configuration"
+  },
+  "extraction_statistics": {
+    "total_pages_extracted": 1733,
+    "total_tables_identified": 2198,
+    "total_parts_extracted": 31357,
+    "total_design_rules_extracted": 6780,
+    "total_specifications_extracted": 60979,
+    "structured_files_created": 1733,
+    "extraction_success_rate": "100.0%",
+    "validation_success_rate": "100.0%"
+  },
+  "data_files": {
+    "lifting_lugs": "hpc_lifting_lugs.json",
+    "lifting_lug_locations": "hpc_lifting_lug_locations_data.json",
+    "tie_down_anchor": "hpc_tie_down_anchor_details.json",
+    "standard_parts": "hpc_standard_parts.json",
+    "design_rules": "hpc_design_rules.json",
+    "specifications": "hpc_specifications.json",
+    "consolidated_location_tables": "consolidated/all_location_tables.json",
+    "consolidated_specifications": "consolidated/all_specifications.json",
+    "consolidated_design_rules": "consolidated/all_design_rules.json",
+    "extraction_index": "consolidated/extraction_index.json"
+  },
+  "integration_notes": {
+    "standards_database": {
+      "file": "agents/cad_agent/adapters/standards_db_v2.py",
+      "note": "Extend StandardsDB with HPC data classes and lookup methods"
+    },
+    "validators": {
+      "handling_validator": "agents/cad_agent/validators/handling_validator.py - Enhance with HPC lifting lug checks",
+      "rigging_validator": "agents/cad_agent/validators/rigging_validator.py - Integrate HPC lifting lug standards",
+      "hpc_mechanical_validator": "Create new validator for machinery mounts, fans, vibration switches",
+      "hpc_walkway_validator": "Create new validator for walkways, ladders, handrails",
+      "hpc_header_validator": "Create new validator for header design standards"
+    },
+    "design_recommender": {
+      "note": "Incorporate HPC design rules into design recommender system"
+    },
+    "knowledge_base": {
+      "note": "Add HPC procedures to RAG system (ChromaDB) for semantic search"
+    }
+  }
+}
+
