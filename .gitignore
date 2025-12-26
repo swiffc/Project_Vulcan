@@ -66,6 +66,10 @@ desktop-server/venv/
 storage/trading/**/screenshots/
 storage/cad/**/screenshots/
 
+# Validation reports (temporary output files)
+storage/validation/*.json
+storage/reports/*.json
+
 # Credentials (never commit)
 *.pem
 *.key
