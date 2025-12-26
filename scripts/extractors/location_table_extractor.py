@@ -101,7 +101,7 @@ class LocationTableExtractor(BaseExtractor):
         requirements = {}
         
         # Look for maximum spacing
-        spacing_match = re.search(r'max.*?spacing.*?(\d+['"]?\s*-?\s*\d+['"]?)', text, re.IGNORECASE)
+        spacing_match = re.search(r'max.*?spacing.*?(\d+[\'"]?\s*-?\s*\d+[\'"]?)', text, re.IGNORECASE)
         if spacing_match:
             spacing_str = spacing_match.group(1)
             spacing_ft = self.parse_dimension(spacing_str)
