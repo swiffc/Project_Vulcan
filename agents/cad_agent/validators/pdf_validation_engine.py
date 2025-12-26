@@ -24,6 +24,11 @@ from .bom_validator import BOMValidator, BOMValidationResult
 from .dimension_validator import DimensionValidator, DimensionValidationResult
 from .drawing_completeness_validator import DrawingCompletenessValidator, CompletenessValidationResult
 
+# Phase 26 - HPC Standards Validators
+from .hpc_mechanical_validator import HPCMechanicalValidator, HPCMechanicalValidationResult
+from .hpc_walkway_validator import HPCWalkwayValidator, HPCWalkwayValidationResult
+from .hpc_header_validator import HPCHeaderValidator, HPCHeaderValidationResult
+
 # Import PDF extractor
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "desktop_server"))
