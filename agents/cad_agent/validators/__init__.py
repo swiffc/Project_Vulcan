@@ -66,6 +66,18 @@ from .member_capacity_validator import (
     MemberCapacityValidator, MemberCapacityResult, MemberData
 )
 
+# HPC Standards Validators
+from .hpc_mechanical_validator import (
+    HPCMechanicalValidator, HPCMechanicalValidationResult,
+    MachineryMountData, FanData
+)
+from .hpc_walkway_validator import (
+    HPCWalkwayValidator, HPCWalkwayValidationResult, WalkwayData
+)
+from .hpc_header_validator import (
+    HPCHeaderValidator, HPCHeaderValidationResult, HeaderData
+)
+
 # Phase 25.3-25.12 - New Validators
 from .fabrication_feasibility_validator import (
     FabricationFeasibilityValidator, FabricationValidationResult,
@@ -191,6 +203,18 @@ __all__ = [
     "TEMAClass",
     # Phase 25 - Final Standards (100% Coverage)
     "GeometryProfileValidator",
+    # HPC Standards Validators
+    "HPCMechanicalValidator",
+    "HPCMechanicalValidationResult",
+    "MachineryMountData",
+    "FanData",
+    "HPCWalkwayValidator",
+    "HPCWalkwayValidationResult",
+    "WalkwayData",
+    "HPCHeaderValidator",
+    "HPCHeaderValidationResult",
+    "HeaderData",
+],
     "GeometryValidationResult",
     "CornerData",
     "CopeData",
