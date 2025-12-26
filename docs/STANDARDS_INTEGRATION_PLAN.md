@@ -201,19 +201,36 @@ Project Vulcan already has:
 
 **Tasks:**
 1. ✅ Extract all PDF content (COMPLETE)
-2. Parse extracted text to identify:
+2. ✅ **Visual Validation Extraction** (IN PROGRESS)
+   - Convert PDF pages to images for verification
+   - Validate table extraction accuracy (2,198 tables)
+   - Capture screenshots of complex pages
+   - Generate visual comparison reports
+   - Identify pages needing manual review
+3. Parse extracted text to identify:
    - Tables and specifications
    - Design rules and formulas
    - Standard part numbers and descriptions
    - Drawing procedures
    - Material specifications
-3. Structure data into JSON schemas
-4. Create markdown documentation for procedures
+4. Structure data into JSON schemas
+5. Create markdown documentation for procedures
 
 **Deliverables:**
+- ✅ Visual validation extraction script (`scripts/visual_validate_standards_extraction.py`)
+- ✅ Page images for all 1,733 pages (`output/standards_scan/visual_validation/page_images/`)
+- ✅ Table validation images with annotations
+- ✅ Validation reports for each PDF
 - Structured JSON files for each standards category
 - Markdown procedure documents
 - Data validation scripts
+
+**Visual Validation Features:**
+- PDF → Image conversion (200 DPI) for all pages
+- Table extraction validation with visual annotations
+- Automatic detection of pages needing manual review
+- Validation accuracy metrics
+- Side-by-side comparison of extracted vs. original content
 
 ---
 
