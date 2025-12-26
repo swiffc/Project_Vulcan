@@ -2353,12 +2353,12 @@ async def check_fabrication(request: dict):
         # Parse process
         process_str = request.get("process", "plasma").lower()
         process_map = {
-            "plasma": FabricationProcess.PLASMA,
-            "laser": FabricationProcess.LASER,
-            "waterjet": FabricationProcess.WATERJET,
-            "oxyfuel": FabricationProcess.OXYFUEL,
+            "plasma": FabricationProcess.PLASMA_CUT,
+            "laser": FabricationProcess.LASER_CUT,
+            "waterjet": FabricationProcess.WATER_JET,
+            "oxyfuel": FabricationProcess.OXY_FUEL,
         }
-        process = process_map.get(process_str, FabricationProcess.PLASMA)
+        process = process_map.get(process_str, FabricationProcess.PLASMA_CUT)
 
         geometry = PartGeometry(
             thickness=request.get("thickness_in", 0.5),

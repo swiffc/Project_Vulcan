@@ -80,14 +80,20 @@ except ImportError:
 class VisualValidationExtractor:
     """Extract PDF content with visual validation and verification."""
     
-    def __init__(self, output_dir: str = "output/standards_scan/visual_validation", dpi: int = 200):
+    def __init__(self, output_dir: str = "output/standards_scan/visual_validation", dpi: int = 200, max_workers: int = 4):
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.dpi = dpi
+        self.max_workers = max_workers
         self.page_images_dir = self.output_dir / "page_images"
         self.page_images_dir.mkdir(exist_ok=True)
         self.table_validation_dir = self.output_dir / "table_validation"
         self.table_validation_dir.mkdir(exist_ok=True)
+        
+        # Memory monitoring
+        if HAS_PSUTIL:
+            self.process = psutil.Process()
+            self.initial_memory = self.process.memory_info().rss / 1024 / 1024  # MB
         
     def extract_with_validation(self, pdf_path: str) -> Dict[str, Any]:
         """
@@ -118,33 +124,35 @@ class VisualValidationExtractor:
             }
         }
         
-        # Step 1: Convert PDF to images for visual validation
+        # Step 1: Convert PDF to images for visual validation (with retry)
         page_images = []
         if HAS_PDF2IMAGE:
             print(f"\n[1/4] Converting PDF to images (DPI: {self.dpi})...")
             try:
-                page_images = convert_from_path(pdf_path, dpi=self.dpi)
+                page_images = self._convert_pdf_with_retry(pdf_path)
                 print(f"  ✓ Converted {len(page_images)} pages to images")
                 
-                # Save page images
-                for i, img in enumerate(page_images, 1):
-                    img_path = self.page_images_dir / f"{Path(pdf_path).stem}_page_{i:04d}.png"
-                    img.save(img_path, 'PNG')
-                    result['validation_report']['pages_with_images'] += 1
+                # Save page images in parallel
+                print(f"  Saving {len(page_images)} page images...")
+                self._save_images_parallel(page_images, pdf_path)
+                result['validation_report']['pages_with_images'] = len(page_images)
             except Exception as e:
                 print(f"  ✗ Error converting to images: {e}")
                 page_images = []
         else:
             print("  ⚠ Skipping image conversion (pdf2image not available)")
         
-        # Step 2: Extract text and tables using pdfplumber
+        # Step 2: Extract text and tables using pdfplumber (with progress)
         print(f"\n[2/4] Extracting text and tables...")
         try:
             with pdfplumber.open(pdf_path) as pdf:
                 result['validation_report']['total_pages'] = len(pdf.pages)
+                total_pages = len(pdf.pages)
                 
-                for i, page in enumerate(pdf.pages, 1):
-                    print(f"  Processing page {i}/{len(pdf.pages)}...", end='\r')
+                # Process pages with progress bar
+                page_iterator = tqdm(enumerate(pdf.pages, 1), total=total_pages, desc="  Extracting") if HAS_TQDM else enumerate(pdf.pages, 1)
+                
+                for i, page in page_iterator:
                     
                     page_data = {
                         'page_number': i,
@@ -219,7 +227,37 @@ class VisualValidationExtractor:
             json.dump(result, f, indent=2, ensure_ascii=False)
         print(f"  ✓ Saved results to: {result_file}")
         
+        # Memory usage report
+        if HAS_PSUTIL:
+            current_memory = self.process.memory_info().rss / 1024 / 1024  # MB
+            memory_used = current_memory - self.initial_memory
+            result['validation_report']['memory_used_mb'] = round(memory_used, 2)
+            print(f"\n  Memory used: {memory_used:.2f} MB")
+        
         return result
+    
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
+    def _convert_pdf_with_retry(self, pdf_path: str) -> List:
+        """Convert PDF to images with retry logic."""
+        return convert_from_path(pdf_path, dpi=self.dpi)
+    
+    def _save_images_parallel(self, images: List, pdf_path: str):
+        """Save page images in parallel."""
+        pdf_name = Path(pdf_path).stem
+        
+        def save_image(args):
+            i, img = args
+            img_path = self.page_images_dir / f"{pdf_name}_page_{i:04d}.png"
+            img.save(img_path, 'PNG')
+            return i
+        
+        # Use ThreadPoolExecutor for I/O-bound task
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            args = [(i, img) for i, img in enumerate(images, 1)]
+            if HAS_TQDM:
+                list(tqdm(executor.map(save_image, args), total=len(images), desc="  Saving images"))
+            else:
+                list(executor.map(save_image, args))
     
     def _validate_table(self, table: List[List]) -> bool:
         """Validate that a table has proper structure."""
