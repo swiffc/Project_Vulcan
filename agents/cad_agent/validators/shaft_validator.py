@@ -445,3 +445,302 @@ class ShaftValidator:
                 for issue in result.issues
             ],
         }
+
+
+# =============================================================================
+# PHASE 25.5 - MACHINING TOLERANCE VALIDATION
+# =============================================================================
+
+# Achievable tolerances by machining process (inches)
+PROCESS_TOLERANCES = {
+    # Process: (typical_tolerance, best_tolerance, surface_finish_ra)
+    "rough_turning": (0.010, 0.005, 250),
+    "finish_turning": (0.002, 0.001, 63),
+    "precision_turning": (0.0005, 0.0002, 32),
+    "rough_milling": (0.010, 0.005, 250),
+    "finish_milling": (0.002, 0.001, 63),
+    "precision_milling": (0.0005, 0.0002, 32),
+    "drilling": (0.005, 0.002, 125),
+    "reaming": (0.001, 0.0005, 63),
+    "boring": (0.001, 0.0003, 32),
+    "grinding_cylindrical": (0.0005, 0.0001, 16),
+    "grinding_surface": (0.0005, 0.0001, 16),
+    "honing": (0.0002, 0.00005, 8),
+    "lapping": (0.0001, 0.00002, 4),
+    "broaching": (0.001, 0.0005, 63),
+    "edm_wire": (0.0005, 0.0001, 32),
+    "edm_sinker": (0.001, 0.0002, 63),
+}
+
+# Standard fit classes per ANSI B4.1 (hole basis)
+FIT_CLASSES = {
+    # Class: (hole_tolerance_grade, shaft_tolerance_grade, clearance_type)
+    "RC1": ("H5", "g4", "close_running"),
+    "RC2": ("H6", "g5", "free_running"),
+    "RC3": ("H7", "f6", "medium_running"),
+    "RC4": ("H8", "f7", "close_sliding"),
+    "RC5": ("H8", "e7", "locational_clearance"),
+    "RC6": ("H9", "e8", "locational_clearance"),
+    "RC7": ("H10", "d9", "loose_running"),
+    "LC1": ("H6", "h5", "locational_clearance"),
+    "LC2": ("H7", "h6", "locational_clearance"),
+    "LC3": ("H8", "h7", "locational_clearance"),
+    "LT1": ("H7", "js6", "locational_transition"),
+    "LT2": ("H8", "js7", "locational_transition"),
+    "LN1": ("H6", "n5", "locational_interference"),
+    "LN2": ("H7", "p6", "locational_interference"),
+    "LN3": ("H7", "r6", "locational_interference"),
+    "FN1": ("H6", "n5", "light_drive"),
+    "FN2": ("H7", "p6", "medium_drive"),
+    "FN3": ("H7", "r6", "heavy_drive"),
+    "FN4": ("H7", "s6", "force_fit"),
+    "FN5": ("H8", "u7", "shrink_fit"),
+}
+
+# ISO tolerance grades (IT grades) - tolerance values at 25mm nominal
+ISO_TOLERANCE_GRADES = {
+    # IT Grade: tolerance in mm at 25mm nominal
+    "IT01": 0.0003,
+    "IT0": 0.0005,
+    "IT1": 0.0008,
+    "IT2": 0.0012,
+    "IT3": 0.002,
+    "IT4": 0.003,
+    "IT5": 0.005,
+    "IT6": 0.008,
+    "IT7": 0.013,
+    "IT8": 0.021,
+    "IT9": 0.033,
+    "IT10": 0.052,
+    "IT11": 0.084,
+    "IT12": 0.130,
+    "IT13": 0.210,
+    "IT14": 0.330,
+    "IT15": 0.520,
+    "IT16": 0.840,
+}
+
+
+@dataclass
+class MachiningToleranceData:
+    """Data for machining tolerance validation."""
+    feature_type: str  # shaft, bore, face, slot, keyway
+    nominal_size: float  # inches
+    tolerance_plus: float  # inches
+    tolerance_minus: float  # inches
+    surface_finish_ra: Optional[int] = None  # microinches
+    fit_class: Optional[str] = None  # RC1, LC2, FN3, etc.
+    process_specified: Optional[str] = None
+
+
+@dataclass
+class MachiningToleranceResult:
+    """Result of machining tolerance validation."""
+    achievable: bool = True
+    recommended_process: Optional[str] = None
+    estimated_cost_factor: float = 1.0  # 1.0 = standard, higher = more expensive
+    issues: List[ValidationIssue] = field(default_factory=list)
+    total_checks: int = 0
+    passed: int = 0
+    warnings: int = 0
+
+
+class MachiningToleranceValidator:
+    """
+    Validates machining tolerances are achievable and cost-effective.
+
+    Phase 25.5 - Checks:
+    1. Tolerance achievable with specified/standard processes
+    2. Surface finish achievable
+    3. Fit class requirements met
+    4. Cost-effective process selection
+    5. Geometric tolerance achievability
+    """
+
+    def __init__(self):
+        pass
+
+    def validate_tolerance(
+        self,
+        data: MachiningToleranceData
+    ) -> MachiningToleranceResult:
+        """
+        Validate if specified tolerance is achievable.
+
+        Args:
+            data: Machining tolerance data
+
+        Returns:
+            Validation result with recommended process
+        """
+        result = MachiningToleranceResult()
+        total_tolerance = abs(data.tolerance_plus) + abs(data.tolerance_minus)
+
+        # Check 1: Find suitable process
+        result.total_checks += 1
+        suitable_processes = []
+
+        for process, (typical, best, finish) in PROCESS_TOLERANCES.items():
+            if best <= total_tolerance:
+                suitable_processes.append((process, typical, best))
+
+        if not suitable_processes:
+            result.achievable = False
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.CRITICAL,
+                check_type="tolerance_unachievable",
+                message=f"Tolerance ±{total_tolerance/2:.5f}\" may not be achievable with standard machining",
+                suggestion="Consider: (1) Lapping/honing, (2) Relaxing tolerance, (3) Special process",
+            ))
+        else:
+            # Sort by cost (simpler processes first)
+            process_cost = {
+                "rough_turning": 1, "rough_milling": 1, "drilling": 1,
+                "finish_turning": 2, "finish_milling": 2, "reaming": 2, "broaching": 2,
+                "precision_turning": 3, "precision_milling": 3, "boring": 3,
+                "grinding_cylindrical": 4, "grinding_surface": 4, "edm_wire": 4, "edm_sinker": 4,
+                "honing": 5, "lapping": 6,
+            }
+            suitable_processes.sort(key=lambda x: process_cost.get(x[0], 10))
+
+            result.recommended_process = suitable_processes[0][0]
+            result.estimated_cost_factor = process_cost.get(result.recommended_process, 1)
+            result.passed += 1
+
+            if result.estimated_cost_factor >= 4:
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.WARNING,
+                    check_type="tolerance_expensive",
+                    message=f"Tolerance requires {result.recommended_process} (cost factor: {result.estimated_cost_factor}x)",
+                    suggestion="Consider if tolerance can be relaxed",
+                ))
+                result.warnings += 1
+
+        # Check 2: Surface finish achievability
+        result.total_checks += 1
+        if data.surface_finish_ra:
+            achievable_finishes = [
+                (p, f) for p, (_, _, f) in PROCESS_TOLERANCES.items()
+                if f <= data.surface_finish_ra
+            ]
+
+            if not achievable_finishes:
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.WARNING,
+                    check_type="finish_difficult",
+                    message=f"Surface finish Ra {data.surface_finish_ra} μin requires special processing",
+                    suggestion="Consider honing or lapping for ultra-fine finishes",
+                ))
+                result.warnings += 1
+            else:
+                result.passed += 1
+        else:
+            result.passed += 1
+
+        # Check 3: Fit class validation
+        result.total_checks += 1
+        if data.fit_class and data.fit_class in FIT_CLASSES:
+            hole_grade, shaft_grade, fit_type = FIT_CLASSES[data.fit_class]
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.INFO,
+                check_type="fit_class_info",
+                message=f"Fit class {data.fit_class}: {fit_type} (Hole: {hole_grade}, Shaft: {shaft_grade})",
+                standard_reference="ANSI B4.1",
+            ))
+            result.passed += 1
+        else:
+            result.passed += 1
+
+        # Check 4: Tolerance symmetry
+        result.total_checks += 1
+        if data.tolerance_plus != 0 and data.tolerance_minus != 0:
+            ratio = abs(data.tolerance_plus / data.tolerance_minus) if data.tolerance_minus != 0 else 999
+            if ratio > 4 or ratio < 0.25:
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.INFO,
+                    check_type="asymmetric_tolerance",
+                    message=f"Asymmetric tolerance +{data.tolerance_plus}/-{data.tolerance_minus}\"",
+                    suggestion="Verify asymmetric tolerance is intentional for fit requirements",
+                ))
+            result.passed += 1
+        else:
+            result.passed += 1
+
+        return result
+
+    def check_geometric_tolerance(
+        self,
+        tolerance_type: str,  # flatness, parallelism, perpendicularity, runout, concentricity
+        tolerance_value: float,  # inches
+        feature_size: float,  # inches (length or diameter)
+    ) -> MachiningToleranceResult:
+        """
+        Check if geometric tolerance is achievable.
+
+        Args:
+            tolerance_type: Type of geometric tolerance
+            tolerance_value: Specified tolerance value
+            feature_size: Size of the feature being toleranced
+
+        Returns:
+            Validation result
+        """
+        result = MachiningToleranceResult()
+
+        # Typical achievable geometric tolerances (inches per inch of length)
+        geo_tolerance_limits = {
+            "flatness": 0.0001,  # per inch of span
+            "parallelism": 0.0002,  # per inch of length
+            "perpendicularity": 0.0002,  # per inch of height
+            "runout": 0.0005,  # TIR on diameter
+            "concentricity": 0.001,  # TIR
+            "cylindricity": 0.0005,  # per inch of length
+            "circularity": 0.0003,  # on diameter
+            "position": 0.001,  # typical position tolerance
+        }
+
+        result.total_checks += 1
+
+        limit_per_unit = geo_tolerance_limits.get(tolerance_type.lower(), 0.001)
+
+        # Scale limit by feature size
+        if tolerance_type.lower() in ["flatness", "parallelism", "perpendicularity", "cylindricity"]:
+            achievable_limit = limit_per_unit * feature_size
+        else:
+            achievable_limit = limit_per_unit
+
+        if tolerance_value < achievable_limit:
+            result.achievable = False
+            result.issues.append(ValidationIssue(
+                severity=ValidationSeverity.WARNING,
+                check_type="geometric_tolerance_tight",
+                message=f"{tolerance_type.title()} tolerance {tolerance_value:.5f}\" very tight for {feature_size}\" feature",
+                suggestion=f"Typical achievable: {achievable_limit:.5f}\" - may require grinding/lapping",
+            ))
+            result.warnings += 1
+        else:
+            result.passed += 1
+
+        return result
+
+    def to_dict(self, result: MachiningToleranceResult) -> Dict[str, Any]:
+        """Convert result to dictionary."""
+        return {
+            "validator": "machining_tolerance",
+            "achievable": result.achievable,
+            "recommended_process": result.recommended_process,
+            "estimated_cost_factor": result.estimated_cost_factor,
+            "total_checks": result.total_checks,
+            "passed": result.passed,
+            "warnings": result.warnings,
+            "issues": [
+                {
+                    "severity": issue.severity.value,
+                    "check_type": issue.check_type,
+                    "message": issue.message,
+                    "suggestion": issue.suggestion,
+                    "standard_reference": issue.standard_reference,
+                }
+                for issue in result.issues
+            ],
+        }
