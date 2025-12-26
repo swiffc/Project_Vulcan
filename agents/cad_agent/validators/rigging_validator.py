@@ -19,6 +19,14 @@ from enum import Enum
 
 from .validation_models import ValidationIssue, ValidationSeverity
 
+# Import HPC standards database
+try:
+    from ..adapters.standards_db_v2 import get_standards_db
+    _hpc_db = get_standards_db()
+except ImportError:
+    _hpc_db = None
+    logging.warning("HPC standards database not available")
+
 logger = logging.getLogger("vulcan.validator.rigging")
 
 
@@ -142,6 +150,10 @@ class LiftingLugData:
     # Weld
     weld_size: float = 0  # fillet weld leg size
     weld_length: float = 0  # total weld length
+    
+    # HPC Standards
+    hpc_part_number: Optional[str] = None  # HPC part number (e.g., "W708")
+    block_out_dimensions: Optional[Dict[str, float]] = None  # A, B, C dimensions
 
 
 @dataclass
@@ -361,6 +373,71 @@ class RiggingValidator:
             tensile_capacity = 0.6 * fy * tensile_area * 1000 if lug.throat_width > 0 else 999999
 
             result.lug_capacity_lbs = min(shear_capacity, bearing_capacity, tensile_capacity) / result.design_factor
+
+        # Check 7: HPC Standards Validation (if HPC part number provided)
+        if lug.hpc_part_number and _hpc_db:
+            result.total_checks += 1
+            hpc_lug = _hpc_db.get_hpc_lifting_lug(lug.hpc_part_number)
+            
+            if hpc_lug:
+                # Verify dimensions match HPC standard
+                dimension_mismatches = []
+                
+                if abs(lug.plate_thickness - hpc_lug.thickness_in) > 0.01:
+                    dimension_mismatches.append(
+                        f"Thickness: {lug.plate_thickness}\" (expected {hpc_lug.thickness_in}\")"
+                    )
+                
+                if abs(lug.plate_width - hpc_lug.width_in) > 0.01:
+                    dimension_mismatches.append(
+                        f"Width: {lug.plate_width}\" (expected {hpc_lug.width_in}\")"
+                    )
+                
+                if dimension_mismatches:
+                    result.issues.append(ValidationIssue(
+                        severity=ValidationSeverity.WARNING,
+                        check_type="hpc_dimension_mismatch",
+                        message=f"HPC part {lug.hpc_part_number} dimensions don't match: {', '.join(dimension_mismatches)}",
+                        suggestion=f"Verify dimensions match HPC standard {lug.hpc_part_number} ({hpc_lug.description})",
+                        standard_reference="HPC Standards Book II Vol. I",
+                    ))
+                    result.warnings += 1
+                else:
+                    result.issues.append(ValidationIssue(
+                        severity=ValidationSeverity.INFO,
+                        check_type="hpc_standard_verified",
+                        message=f"Lifting lug matches HPC standard {lug.hpc_part_number} ({hpc_lug.description})",
+                        suggestion="Block-out dimensions: A={A_in}\", B={B_in}\", C={C_in}\"".format(**hpc_lug.block_out_dimensions),
+                    ))
+                    result.passed += 1
+                
+                # Check block-out dimensions if provided
+                if lug.block_out_dimensions and hpc_lug.block_out_dimensions:
+                    block_mismatches = []
+                    for dim in ["A_in", "B_in", "C_in"]:
+                        if dim in lug.block_out_dimensions and dim in hpc_lug.block_out_dimensions:
+                            if abs(lug.block_out_dimensions[dim] - hpc_lug.block_out_dimensions[dim]) > 0.01:
+                                block_mismatches.append(
+                                    f"{dim}: {lug.block_out_dimensions[dim]}\" (expected {hpc_lug.block_out_dimensions[dim]}\")"
+                                )
+                    
+                    if block_mismatches:
+                        result.issues.append(ValidationIssue(
+                            severity=ValidationSeverity.WARNING,
+                            check_type="hpc_block_out_mismatch",
+                            message=f"Block-out dimensions don't match HPC standard: {', '.join(block_mismatches)}",
+                            suggestion="Verify block-out dimensions match HPC standard for air seal clearance",
+                            standard_reference="HPC Standards Book II Vol. I",
+                        ))
+                        result.warnings += 1
+            else:
+                result.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.WARNING,
+                    check_type="hpc_part_not_found",
+                    message=f"HPC part number {lug.hpc_part_number} not found in standards database",
+                    suggestion="Verify part number or use standard HPC parts: W708, W709, W710, W711, W712",
+                ))
+                result.warnings += 1
 
         return result
 
