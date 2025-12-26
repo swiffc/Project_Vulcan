@@ -84,7 +84,8 @@
       "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -c \"import json,sys; d=json.load\\(sys.stdin\\); paths=[k for k in d.get\\(''paths'',{}\\).keys\\(\\) if ''phase25'' in k]; print\\(f''Phase25 endpoints found: {len\\(paths\\)}''\\); [print\\(f''  {p}''\\) for p in sorted\\(paths\\)]\")",
       "Bash(\"/c/Users/DCornealius/AppData/Local/Programs/Python/Python311/python.exe\" -c \"import json,sys; d=json.load\\(sys.stdin\\); paths=[k for k in d.get\\(''paths'',{}\\).keys\\(\\) if ''phase25'' in k]; print\\(f''Phase25 endpoints found: {len\\(paths\\)}''\\); [print\\(f''  {p}''\\) for p in sorted\\(paths\\)]\")",
       "Bash(netstat:*)",
-      "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -m py_compile:*)"
+      "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -m py_compile:*)",
+      "Bash(\"/c/Users/DCornealius/AppData/Local/Programs/Python/Python311/python.exe\" -m py_compile \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan/agents/cad_agent/ache_assistant/calculator.py\" \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan/agents/cad_agent/ache_assistant/structural.py\" \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan/agents/cad_agent/ache_assistant/accessories.py\" \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan/agents/cad_agent/ache_assistant/ai_assistant.py\" \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan/agents/cad_agent/ache_assistant/erection.py\")"
     ]
   }
 }
