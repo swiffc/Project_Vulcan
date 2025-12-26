@@ -109,6 +109,55 @@ except ImportError:
     logging.warning("OSHAValidator not available")
     OSHAValidator = None
 
+# Phase 25.3-25.13 - New validators
+try:
+    from .fabrication_feasibility_validator import FabricationFeasibilityValidator
+except ImportError:
+    logging.warning("FabricationFeasibilityValidator not available")
+    FabricationFeasibilityValidator = None
+
+try:
+    from .inspection_qc_validator import InspectionQCValidator
+except ImportError:
+    logging.warning("InspectionQCValidator not available")
+    InspectionQCValidator = None
+
+try:
+    from .cross_part_validator import CrossPartValidator
+except ImportError:
+    logging.warning("CrossPartValidator not available")
+    CrossPartValidator = None
+
+try:
+    from .materials_finishing_validator import MaterialsFinishingValidator
+except ImportError:
+    logging.warning("MaterialsFinishingValidator not available")
+    MaterialsFinishingValidator = None
+
+try:
+    from .fastener_validator import FastenerValidator
+except ImportError:
+    logging.warning("FastenerValidator not available")
+    FastenerValidator = None
+
+try:
+    from .rigging_validator import RiggingValidator
+except ImportError:
+    logging.warning("RiggingValidator not available")
+    RiggingValidator = None
+
+try:
+    from .documentation_validator import DocumentationValidator
+except ImportError:
+    logging.warning("DocumentationValidator not available")
+    DocumentationValidator = None
+
+try:
+    from .report_generator import ReportGenerator
+except ImportError:
+    logging.warning("ReportGenerator not available")
+    ReportGenerator = None
+
 logger = logging.getLogger(__name__)
 
 
