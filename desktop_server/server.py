@@ -3264,6 +3264,96 @@ async def calculate_fan_performance(request: FanCalcRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/ache/calculate/pressure-drop/tube")
+async def calculate_tube_pressure_drop(request: PressureDropRequest):
+    """
+    Calculate tube-side pressure drop.
+    Phase 24.4 - Analysis & Calculations
+    """
+    Calculator, _, _, _, _ = _get_ache_assistant_modules()
+    if Calculator is None:
+        raise HTTPException(status_code=503, detail="ACHE calculator not available")
+
+    try:
+        from agents.cad_agent.ache_assistant import FluidProperties
+        calc = Calculator()
+
+        fluid = FluidProperties(
+            density_kg_m3=request.fluid_density_kg_m3,
+            specific_heat_j_kg_k=4186.0,
+            viscosity_pa_s=request.fluid_viscosity_pa_s,
+            thermal_conductivity_w_m_k=0.6,
+            prandtl_number=7.0,
+        )
+
+        results = calc.calculate_tube_side_pressure_drop(
+            mass_flow_kg_s=request.mass_flow_kg_s,
+            fluid=fluid,
+            tube_id_mm=request.tube_id_mm,
+            tube_length_m=request.tube_length_m,
+            num_tubes=request.num_tubes,
+            num_passes=request.num_passes,
+        )
+
+        return {
+            "tube_side_dp_kpa": results.tube_side_dp_kpa,
+            "tube_friction_dp_kpa": results.tube_friction_dp_kpa,
+            "tube_entrance_exit_dp_kpa": results.tube_entrance_exit_dp_kpa,
+            "tube_return_bend_dp_kpa": results.tube_return_bend_dp_kpa,
+            "is_within_limits": results.is_within_limits,
+            "warnings": results.warnings,
+        }
+    except Exception as e:
+        logger.error(f"Pressure drop calculation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class AirPressureDropRequest(BaseModel):
+    """Request model for air-side pressure drop."""
+    air_flow_kg_s: float
+    air_inlet_temp_c: float
+    bundle_face_area_m2: float
+    tube_od_mm: float = 25.4
+    fin_pitch_mm: float = 2.5
+    fin_height_mm: float = 12.7
+    num_tube_rows: int = 4
+
+
+@app.post("/ache/calculate/pressure-drop/air")
+async def calculate_air_pressure_drop(request: AirPressureDropRequest):
+    """
+    Calculate air-side pressure drop across tube bundle.
+    Phase 24.4 - Analysis & Calculations
+    """
+    Calculator, _, _, _, _ = _get_ache_assistant_modules()
+    if Calculator is None:
+        raise HTTPException(status_code=503, detail="ACHE calculator not available")
+
+    try:
+        calc = Calculator()
+
+        results = calc.calculate_air_side_pressure_drop(
+            air_flow_kg_s=request.air_flow_kg_s,
+            air_inlet_temp_c=request.air_inlet_temp_c,
+            bundle_face_area_m2=request.bundle_face_area_m2,
+            tube_od_mm=request.tube_od_mm,
+            fin_pitch_mm=request.fin_pitch_mm,
+            fin_height_mm=request.fin_height_mm,
+            num_tube_rows=request.num_tube_rows,
+        )
+
+        return {
+            "air_side_dp_pa": results.air_side_dp_pa,
+            "bundle_dp_pa": results.bundle_dp_pa,
+            "plenum_dp_pa": results.plenum_dp_pa,
+            "is_within_limits": results.is_within_limits,
+            "warnings": results.warnings,
+        }
+    except Exception as e:
+        logger.error(f"Air pressure drop calculation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/ache/calculate/size")
 async def size_ache(request: ACHESizingRequest):
     """
