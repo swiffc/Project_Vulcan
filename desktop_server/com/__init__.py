@@ -255,6 +255,13 @@ except ImportError:
     solidworks_reference_geometry_router = None
     SOLIDWORKS_REFERENCE_GEOMETRY_AVAILABLE = False
 
+try:
+    from .solidworks_drawings_advanced import router as solidworks_drawings_advanced_router
+    SOLIDWORKS_DRAWINGS_ADVANCED_AVAILABLE = True
+except ImportError:
+    solidworks_drawings_advanced_router = None
+    SOLIDWORKS_DRAWINGS_ADVANCED_AVAILABLE = False
+
 __all__ = [
     "solidworks_router",
     "solidworks_advanced_router",
@@ -329,4 +336,6 @@ __all__ = [
     "SOLIDWORKS_PACK_AND_GO_AVAILABLE",
     "solidworks_reference_geometry_router",
     "SOLIDWORKS_REFERENCE_GEOMETRY_AVAILABLE",
+    "solidworks_drawings_advanced_router",
+    "SOLIDWORKS_DRAWINGS_ADVANCED_AVAILABLE",
 ]
