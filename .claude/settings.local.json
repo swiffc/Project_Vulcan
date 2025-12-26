@@ -72,7 +72,13 @@
       "Bash(git commit:*)",
       "WebSearch",
       "Bash(dir:*)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(for f in fabrication_feasibility_validator.py inspection_qc_validator.py cross_part_validator.py materials_finishing_validator.py fastener_validator.py rigging_validator.py documentation_validator.py report_generator.py gdt_validator.py)",
+      "Bash(do if [ -f \"$f\" ])",
+      "Bash(then echo \"✅ EXISTS: $f\")",
+      "Bash(else echo \"❌ MISSING: $f\")",
+      "Bash(fi)",
+      "Bash(done)"
     ]
   }
 }
