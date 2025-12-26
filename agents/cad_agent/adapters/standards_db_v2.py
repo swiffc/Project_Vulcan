@@ -103,6 +103,28 @@ class PipeProperties:
     weight_per_ft: float
 
 
+@dataclass
+class HPCLiftingLug:
+    """HPC standard lifting lug properties."""
+    part_number: str
+    thickness_in: float
+    width_in: float
+    description: str
+    block_out_dimensions: Dict[str, float]
+    notes: Optional[str] = None
+
+
+@dataclass
+class HPCTieDownAnchor:
+    """HPC tie-down and anchor part properties."""
+    part_number: str
+    description: str
+    specification: str
+    dimensions: Dict[str, Any]
+    fasteners: Optional[Dict[str, Any]] = None
+    application: Optional[str] = None
+
+
 # =============================================================================
 # STANDARDS DATABASE CLASS
 # =============================================================================
