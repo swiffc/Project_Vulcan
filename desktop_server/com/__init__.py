@@ -143,6 +143,48 @@ except ImportError:
     solidworks_pdm_router = None
     SOLIDWORKS_PDM_AVAILABLE = False
 
+try:
+    from .solidworks_constraints import router as solidworks_constraints_router
+    SOLIDWORKS_CONSTRAINTS_AVAILABLE = True
+except ImportError:
+    solidworks_constraints_router = None
+    SOLIDWORKS_CONSTRAINTS_AVAILABLE = False
+
+try:
+    from .solidworks_tolerances import router as solidworks_tolerances_router
+    SOLIDWORKS_TOLERANCES_AVAILABLE = True
+except ImportError:
+    solidworks_tolerances_router = None
+    SOLIDWORKS_TOLERANCES_AVAILABLE = False
+
+try:
+    from .solidworks_threads import router as solidworks_threads_router
+    SOLIDWORKS_THREADS_AVAILABLE = True
+except ImportError:
+    solidworks_threads_router = None
+    SOLIDWORKS_THREADS_AVAILABLE = False
+
+try:
+    from .solidworks_motion import router as solidworks_motion_router
+    SOLIDWORKS_MOTION_AVAILABLE = True
+except ImportError:
+    solidworks_motion_router = None
+    SOLIDWORKS_MOTION_AVAILABLE = False
+
+try:
+    from .solidworks_optimization import router as solidworks_optimization_router
+    SOLIDWORKS_OPTIMIZATION_AVAILABLE = True
+except ImportError:
+    solidworks_optimization_router = None
+    SOLIDWORKS_OPTIMIZATION_AVAILABLE = False
+
+try:
+    from .solidworks_surfaces import router as solidworks_surfaces_router
+    SOLIDWORKS_SURFACES_AVAILABLE = True
+except ImportError:
+    solidworks_surfaces_router = None
+    SOLIDWORKS_SURFACES_AVAILABLE = False
+
 __all__ = [
     "solidworks_router",
     "solidworks_advanced_router",
