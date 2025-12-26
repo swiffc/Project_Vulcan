@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "source": "HPC Standards Book III, Section 6, Page 170",
+    "extracted": "2025-12-26",
+    "description": "Tie-down and header anchor detail standards",
+    "drawing_reference": "6B_01_tiedown_R2.dwg"
+  },
+  "tie_down_anchor_details": {
+    "standard_drawing": {
+      "title": "TYPICAL TIE-DOWN AND HEADER ANCHOR DETAILS",
+      "drawing_number": "6B_01_tiedown_R2.dwg",
+      "source": "Standards Book III, Section 6, Page 170"
+    },
+    "standard_parts": {
+      "header_pad_angle": {
+        "part_number": "B701",
+        "description": "Header Pad Angle",
+        "specification": "L 3 x 3 x 1/2 x 0'-6 1/2",
+        "dimensions": {
+          "leg_size_in": 3.0,
+          "thickness_in": 0.5,
+          "length_ft": 0.542,
+          "length_in": 6.5
+        },
+        "fasteners": {
+          "quantity": 2,
+          "size": "3/4\" diameter",
+          "length_in": 2.0,
+          "grade": "Grade (HS)",
+          "components": ["Bolt", "Nut", "Flat Washer (FW)"]
+        },
+        "application": "Frame mounting - header pad angle"
+      },
+      "header_anchor_pad": {
+        "part_number": "B703",
+        "description": "Header Anchor Pad",
+        "specification": "L 3 x 3 x 1/2 x 0'-6",
+        "dimensions": {
+          "leg_size_in": 3.0,
+          "thickness_in": 0.5,
+          "length_ft": 0.5,
+          "length_in": 6.0
+        },
+        "fasteners": {
+          "quantity": 2,
+          "size": "3/4\" diameter",
+          "length_in": 2.0,
+          "grade": "Grade (HS)",
+          "components": ["Bolt", "Nut", "Flat Washer (FW)"]
+        },
+        "application": "Header anchor pad for tie-down",
+        "notes": [
+          "Created as standard part for header anchor pad",
+          "Tube Frame Component Identification drawing (7870) revised to include this part"
+        ]
+      },
+      "tie_down_bar": {
+        "part_number": "W615",
+        "description": "Tie-Down Bar",
+        "specification": "2\" x 1\" x 0'-2",
+        "dimensions": {
+          "width_in": 2.0,
+          "thickness_in": 1.0,
+          "length_ft": 0.167,
+          "length_in": 2.0
+        },
+        "application": "Tie-down bar for header movement control"
+      },
+      "header_anchor_plate": {
+        "part_number": "W618",
+        "description": "Header Anchor Plate",
+        "model": "W618",
+        "application": "Header anchor plate for tie-down applications"
+      }
+    },
+    "movement_requirements": {
+      "standard_movement": {
+        "total_movement_in": 0.625,
+        "description": "5/8\" total movement (standard)",
+        "note": "FOR STANDARD 5/8\" TOTAL MOVEMENT"
+      },
+      "non_standard_movement": {
+        "formula": "TOTAL MOVEMENT + 1/16\"",
+        "description": "For non-standard movement, use: TOTAL MOVEMENT + 1/16\"",
+        "note": "FOR NON-STANDARD MOVEMENT USE: TOTAL MOVEMENT +1/16"
+      },
+      "angle_size_check": {
+        "requirement": "Check angle size for movement requirements",
+        "note": "2 -0 & CHECK ANGLE SIZE"
+      }
+    },
+    "dimensions_and_clearances": {
+      "frame_to_header": {
+        "clearance_in": 1.0,
+        "description": "1\" clearance between frame and header"
+      },
+      "anchor_pad_placement": {
+        "distance_from_header_in": 2.0,
+        "description": "2\" distance from header for anchor pad"
+      },
+      "tie_down_bar_placement": {
+        "dimensions": {
+          "width_in": 2.0,
+          "thickness_in": 1.0,
+          "length_in": 2.0
+        },
+        "placement": "Between header and anchor pad"
+      }
+    },
+    "installation_notes": {
+      "bolt_installation": [
+        "2 - 3/4\" diameter x 2\" Grade (HS) bolts",
+        "Nuts with flat washers (FW)",
+        "Bolt and flange not shown for clarity in front view"
+      ],
+      "movement_allowance": [
+        "Standard: 5/8\" total movement",
+        "Non-standard: Total movement + 1/16\"",
+        "Check angle size for adequacy"
+      ],
+      "assembly": [
+        "Frame: L 3 x 3 x 1/2 x 0'-6 1/2 (B701) with 2 bolts",
+        "Anchor Pad: L 3 x 3 x 1/2 x 0'-6 (B703) with 2 bolts",
+        "Tie-Down Bar: 2\" x 1\" x 0'-2 (W615)"
+      ]
+    },
+    "related_standards": {
+      "anchor_bolt_plans": {
+        "description": "Anchor Bolt Plans are provided for all winterized units without floors",
+        "drawing_reference": "11 S02 (Anchor Bolt Plan)",
+        "requirements": [
+          "All column centerlines and anchor bolts requirements are located on the Anchor Bolt Plan",
+          "Details of column base plate, ladder base shown on Anchor Bolt Plan when space permits",
+          "Anchor Bolt plan is the second General Arrangement drawing if KEY PLAN is required (listed as drawing 11 A 1)"
+        ]
+      },
+      "foundation_notes": {
+        "standard_note": "FOUNDATION AND ANCHOR BOLTS: HPC standard note is TO BE PROVIDED BY OTHERS"
+      }
+    }
+  },
+  "part_number_references": {
+    "B701": {
+      "description": "Header Pad Angle",
+      "alternate": "B709 (Galvanized version, part B735, assembly drawing 07A01)"
+    },
+    "B703": {
+      "description": "Header Anchor Pad",
+      "model": "8703",
+      "notes": [
+        "Created as standard part for header anchor pad",
+        "Tube Frame Component Identification drawing (7870) revised to include this part"
+      ]
+    },
+    "W615": {
+      "description": "Tie-Down Bar",
+      "specification": "2\" x 1\" x 0'-2"
+    },
+    "W618": {
+      "description": "Header Anchor Plate",
+      "model": "W618",
+      "drawing_references": ["OW618", "OW619"]
+    }
+  }
+}
+
