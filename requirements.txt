@@ -45,6 +45,12 @@ psutil>=7.0.0
 pdf2image>=1.17.0
 pytesseract>=0.3.13
 Pillow>=12.0.0
+pdfplumber>=0.11.0  # Table extraction (Standards Books)
+pymupdf>=1.24.0  # Fast PDF rendering (fitz)
+tabula-py>=2.9.0  # Advanced table extraction (requires Java)
+camelot-py[cv]>=0.11.0  # PDF table extraction (requires Ghostscript)
+unstructured[pdf]>=0.12.0  # Intelligent document parsing
+pdfminer.six>=20231228  # Low-level PDF parsing
 
 # Google Drive Integration
 google-api-python-client>=2.187.0
@@ -63,6 +69,20 @@ ezdxf>=1.4.0  # DXF file analysis
 reportlab>=4.4.0  # PDF generation in validators
 PyPDF2>=3.0.0  # PDF annotation feature
 fluids>=1.0.0  # Pipe fitting calculations (used in standards scripts)
+
+# Standards Extraction & Visual Validation (Phase 1)
+pandas>=2.2.0  # Table data manipulation
+opencv-python>=4.9.0  # Image processing, table detection
+matplotlib>=3.8.0  # Visualization and validation charts
+seaborn>=0.13.0  # Statistical visualizations
+openpyxl>=3.1.0  # Excel export for table validation
+jsonschema>=4.21.0  # JSON schema validation
+tqdm>=4.66.0  # Progress bars for long extractions
+rich>=13.7.0  # Beautiful terminal output
+easyocr>=1.7.0  # Alternative OCR (better for scanned docs)
+weasyprint>=60.0  # HTML to PDF for validation reports
+plotly>=5.18.0  # Interactive visualizations
+jinja2>=3.1.0  # Template engine for reports
 
 # Logging (Phase 19.4.21)
 python-json-logger>=4.0.0  # JSON logging formatter
