@@ -226,10 +226,11 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 - [x] 24.8.6 Complete erection plan
 - [x] 24.8.7 Safety notes generation
 
-### Remaining Tasks (128 tasks)
+### Remaining Tasks (43 tasks)
+- [x] API endpoint integration (17 endpoints added)
+- [x] Unit tests (31 tests, all passing)
 - [ ] UI Panel implementation (web frontend)
-- [ ] API endpoint integration tests
-- [ ] End-to-end workflow tests
+- [ ] End-to-end workflow tests with SolidWorks
 - [ ] Documentation and user guides
 - [ ] Performance optimization
 

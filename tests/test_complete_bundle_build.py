@@ -521,6 +521,10 @@ def run_complete_bundle_validation():
             "approved_by": "PM",
             "material": BUNDLE_DESIGN["headers"]["material"],
             "finish": "SSPC-SP10 + Paint",
+            # FIX: Added client and project info
+            "client": BUNDLE_DESIGN["project"]["client"],
+            "project": BUNDLE_DESIGN["project"]["name"],
+            "job_number": "J-2024-150",
         },
         "notes": {
             "general_notes": [
