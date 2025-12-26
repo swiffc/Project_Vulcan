@@ -86,7 +86,8 @@
       "Bash(netstat:*)",
       "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -m py_compile:*)",
       "Bash(\"/c/Users/DCornealius/AppData/Local/Programs/Python/Python311/python.exe\" -m py_compile \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan/agents/cad_agent/ache_assistant/calculator.py\" \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan/agents/cad_agent/ache_assistant/structural.py\" \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan/agents/cad_agent/ache_assistant/accessories.py\" \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan/agents/cad_agent/ache_assistant/ai_assistant.py\" \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan/agents/cad_agent/ache_assistant/erection.py\")",
-      "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -m py_compile \"C:\\\\Users\\\\D&E Cornealius\\\\Documents\\\\GitHub\\\\Project_Vulcan\\\\desktop_server\\\\server.py\")"
+      "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -m py_compile \"C:\\\\Users\\\\D&E Cornealius\\\\Documents\\\\GitHub\\\\Project_Vulcan\\\\desktop_server\\\\server.py\")",
+      "Bash(\"/c/Users/DCornealius/AppData/Local/Programs/Python/Python311/python.exe\" -m pytest tests/test_phase24_ache.py -v --tb=short)"
     ]
   }
 }
