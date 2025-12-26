@@ -60,24 +60,21 @@ class StructuredPageExtractor:
     def load_page_content(self, output_dir: Path, book: str, page_num: int) -> Optional[Dict]:
         """Load page content from extracted text file"""
         # Find the extracted file for this book
-        # Handle different book name formats
-        book_clean = book.replace('STANDARDS BOOK ', '').replace(' ', '_')
-        # Try different filename patterns
-        possible_filenames = [
-            book.replace(' ', '_') + '_extracted.txt',
-            f'STANDARDS BOOK {book_clean}_extracted.txt',
-            book + '_extracted.txt'
-        ]
+        # Map book names from classification to actual filenames
+        book_to_file = {
+            'STANDARDS BOOK I_REV0': 'STANDARDS BOOK I_REV0_extracted.txt',
+            'STANDARDS BOOK II vol. I_REV0': 'STANDARDS BOOK II vol. I_REV0_extracted.txt',
+            'STANDARDS BOOK II vol. II_REV0': 'STANDARDS BOOK II vol. II_REV0_extracted.txt',
+            'STANDARDS BOOK III_REV0': 'STANDARDS BOOK III_REV0_extracted.txt',
+            'STANDARDS BOOK IV_REV0': 'STANDARDS BOOK IV_REV0_extracted.txt',
+        }
         
-        filepath = None
-        for filename in possible_filenames:
-            test_path = output_dir / filename
-            if test_path.exists():
-                filepath = test_path
-                break
+        filename = book_to_file.get(book)
+        if not filename:
+            # Fallback: try to construct filename
+            filename = book.replace(' ', '_') + '_extracted.txt'
         
-        if not filepath:
-            return None
+        filepath = output_dir / filename
         
         if not filepath.exists():
             return None
