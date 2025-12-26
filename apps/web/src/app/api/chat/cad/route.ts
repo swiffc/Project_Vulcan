@@ -174,8 +174,11 @@ export async function POST(request: NextRequest) {
 
     // AUTO-CONNECT: Check SolidWorks status and connect if needed
     const desktopUrl = process.env.DESKTOP_SERVER_URL || "http://localhost:8000";
+    let swStatus: any = null;
+    let screenshotContext = "";
+    
     try {
-      const swStatus = await fetch(`${desktopUrl}/com/solidworks/status`)
+      swStatus = await fetch(`${desktopUrl}/com/solidworks/status`)
         .then(r => r.json())
         .catch(() => ({ connected: false }));
 
@@ -184,15 +187,83 @@ export async function POST(request: NextRequest) {
         const connectResult = await executeCADTool("sw_connect", {});
         if (connectResult.success) {
           console.log("[CAD Chat] ✅ Auto-connected to SolidWorks");
+          // Re-fetch status after connection
+          swStatus = await fetch(`${desktopUrl}/com/solidworks/status`)
+            .then(r => r.json())
+            .catch(() => ({ connected: false }));
         } else {
           console.warn("[CAD Chat] ⚠️ Auto-connect failed, but continuing (agent will handle connection)");
         }
       } else {
         console.log("[CAD Chat] SolidWorks already connected");
       }
+
+      // AUTO-SCREENSHOT & VISION ANALYSIS: Capture and analyze what's on screen
+      if (swStatus?.connected && swStatus?.has_document) {
+        console.log("[CAD Chat] 📸 Capturing SolidWorks screen for analysis...");
+        try {
+          const screenshotResult = await executeCADTool("sw_screenshot", {});
+          
+          if (screenshotResult.success && screenshotResult.result?.image) {
+            console.log("[CAD Chat] 🔍 Analyzing screenshot with vision...");
+            
+            // Use Claude Vision API to analyze the screenshot
+            const visionResponse = await client.messages.create({
+              model: "claude-sonnet-4-20250514",
+              max_tokens: 1024,
+              messages: [
+                {
+                  role: "user",
+                  content: [
+                    {
+                      type: "image",
+                      source: {
+                        type: "base64",
+                        media_type: "image/png",
+                        data: screenshotResult.result.image.replace(/^data:image\/\w+;base64,/, ""),
+                      },
+                    },
+                    {
+                      type: "text",
+                      text: `Analyze this SolidWorks screen. Provide a detailed description of:
+1. What type of document is open (Part, Assembly, or Drawing)?
+2. What geometry/features are visible in the viewport?
+3. What parts/components are shown (if assembly)?
+4. Any dimensions, annotations, or drawing elements visible?
+5. Overall design intent and key characteristics.
+
+Be specific about dimensions, geometry types, materials (if visible), and any notable design features.`,
+                    },
+                  ],
+                },
+              ],
+            });
+
+            const visionAnalysis = visionResponse.content
+              .filter((block: any) => block.type === "text")
+              .map((block: any) => block.text)
+              .join("\n");
+
+            screenshotContext = `\n\n[VISUAL ANALYSIS OF CURRENT SOLIDWORKS SCREEN]\n${visionAnalysis}\n\nActive Document: ${swStatus.document_name || "Unknown"}\nDocument Type: ${swStatus.document_type || "Unknown"}\n`;
+            
+            console.log("[CAD Chat] ✅ Vision analysis complete");
+          }
+        } catch (error) {
+          console.warn("[CAD Chat] Could not capture/analyze screenshot:", error);
+          // Continue without screenshot context
+        }
+      }
     } catch (error) {
       console.warn("[CAD Chat] Could not check/connect to SolidWorks:", error);
       // Continue anyway - agent can handle connection
+    }
+
+    // Add screenshot context to the first user message if available
+    if (screenshotContext && anthropicMessages.length > 0) {
+      const firstUserMessage = anthropicMessages.find(m => m.role === "user");
+      if (firstUserMessage && typeof firstUserMessage.content === "string") {
+        firstUserMessage.content = screenshotContext + firstUserMessage.content;
+      }
     }
 
     // Create response with tool use
