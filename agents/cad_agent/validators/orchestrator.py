@@ -227,6 +227,11 @@ class ValidationOrchestrator:
         self.documentation_validator = DocumentationValidator() if DocumentationValidator else None
         self.report_generator = ReportGenerator() if ReportGenerator else None
 
+        # Phase 26 - HPC Standards Validators
+        self.hpc_mechanical_validator = HPCMechanicalValidator() if HPCMechanicalValidator else None
+        self.hpc_walkway_validator = HPCWalkwayValidator() if HPCWalkwayValidator else None
+        self.hpc_header_validator = HPCHeaderValidator() if HPCHeaderValidator else None
+
         # Progress callbacks
         self._progress_callbacks: List[Callable[[ValidationProgress], None]] = []
 
@@ -243,6 +248,9 @@ class ValidationOrchestrator:
         logger.info(f"  BOM Validator: {'✓' if self.bom_validator else '✗'}")
         logger.info(f"  Dimension Validator: {'✓' if self.dimension_validator else '✗'}")
         logger.info(f"  OSHA Validator: {'✓' if self.osha_validator else '✗'}")
+        logger.info(f"  HPC Mechanical Validator: {'✓' if self.hpc_mechanical_validator else '✗'}")
+        logger.info(f"  HPC Walkway Validator: {'✓' if self.hpc_walkway_validator else '✗'}")
+        logger.info(f"  HPC Header Validator: {'✓' if self.hpc_header_validator else '✗'}")
 
     def register_progress_callback(
         self, callback: Callable[[ValidationProgress], None]
