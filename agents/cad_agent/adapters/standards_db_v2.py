@@ -540,6 +540,182 @@ class StandardsDB:
                 result[category] = list(items.keys())
         
         return result
+    
+    # =========================================================================
+    # HPC STANDARDS
+    # =========================================================================
+    
+    @lru_cache(maxsize=1)
+    def _load_hpc_lifting_lugs(self) -> Dict[str, Any]:
+        """Load HPC lifting lug standards (cached)."""
+        try:
+            hpc_dir = self.data_dir / "hpc"
+            with open(hpc_dir / "hpc_lifting_lugs.json") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            logger.error("hpc_lifting_lugs.json not found")
+            return {}
+    
+    def get_hpc_lifting_lug(self, part_number: str) -> Optional[HPCLiftingLug]:
+        """
+        Get HPC lifting lug by part number.
+        
+        Args:
+            part_number: Part number (e.g., "W708", "W709")
+        
+        Returns:
+            HPCLiftingLug or None if not found
+        
+        Example:
+            >>> db = StandardsDB()
+            >>> lug = db.get_hpc_lifting_lug("W708")
+            >>> print(f"Thickness: {lug.thickness_in}\", Width: {lug.width_in}\"")
+            Thickness: 0.75", Width: 5.5"
+        """
+        hpc_data = self._load_hpc_lifting_lugs()
+        standards = hpc_data.get("lifting_lug_standards", {})
+        parts = standards.get("standard_parts", [])
+        
+        for part in parts:
+            if part.get("part_number", "").upper() == part_number.upper():
+                return HPCLiftingLug(
+                    part_number=part["part_number"],
+                    thickness_in=part["thickness_in"],
+                    width_in=part["width_in"],
+                    description=part.get("description", ""),
+                    block_out_dimensions=part.get("block_out_dimensions", {}),
+                    notes=part.get("notes")
+                )
+        return None
+    
+    def get_hpc_lifting_lug_requirements(self) -> Dict[str, Any]:
+        """
+        Get HPC lifting lug requirements and rules.
+        
+        Returns:
+            Dictionary with quantity rules, spacing, default part, etc.
+        """
+        hpc_data = self._load_hpc_lifting_lugs()
+        return hpc_data.get("lifting_lug_standards", {}).get("requirements", {})
+    
+    @lru_cache(maxsize=1)
+    def _load_hpc_lifting_lug_locations(self) -> Dict[str, Any]:
+        """Load HPC lifting lug location data (cached)."""
+        try:
+            hpc_dir = self.data_dir / "hpc"
+            with open(hpc_dir / "hpc_lifting_lug_locations_data.json") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            logger.error("hpc_lifting_lug_locations_data.json not found")
+            return {}
+    
+    def get_hpc_lifting_lug_location(
+        self,
+        draft_type: str,
+        fan_count: str,
+        tube_length_ft: float
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Get HPC lifting lug location for a specific configuration.
+        
+        Args:
+            draft_type: "induced_draft" or "forced_draft"
+            fan_count: "one_fan_unit", "two_fan_unit", or "three_fan_unit"
+            tube_length_ft: Tube length in feet
+        
+        Returns:
+            Location data dictionary or None if not found
+        """
+        location_data = self._load_hpc_lifting_lug_locations()
+        locations = location_data.get("lifting_lug_locations", {})
+        
+        draft_data = locations.get(draft_type, {})
+        if draft_type == "forced_draft":
+            # Forced draft has nested structure
+            fan_data = draft_data.get(fan_count, {})
+            loc_list = fan_data.get("locations", [])
+        else:
+            # Induced draft has direct list
+            loc_list = draft_data.get(fan_count, [])
+        
+        # Find closest match (exact or nearest)
+        for loc in loc_list:
+            if loc.get("tube_length_ft") == tube_length_ft:
+                return loc
+        
+        # If no exact match, find nearest
+        closest = None
+        min_diff = float('inf')
+        for loc in loc_list:
+            diff = abs(loc.get("tube_length_ft", 0) - tube_length_ft)
+            if diff < min_diff:
+                min_diff = diff
+                closest = loc
+        
+        return closest
+    
+    @lru_cache(maxsize=1)
+    def _load_hpc_tie_down_anchors(self) -> Dict[str, Any]:
+        """Load HPC tie-down and anchor details (cached)."""
+        try:
+            hpc_dir = self.data_dir / "hpc"
+            with open(hpc_dir / "hpc_tie_down_anchor_details.json") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            logger.error("hpc_tie_down_anchor_details.json not found")
+            return {}
+    
+    def get_hpc_tie_down_anchor(self, part_number: str) -> Optional[HPCTieDownAnchor]:
+        """
+        Get HPC tie-down or anchor part by part number.
+        
+        Args:
+            part_number: Part number (e.g., "B701", "B703", "W615", "W618")
+        
+        Returns:
+            HPCTieDownAnchor or None if not found
+        """
+        hpc_data = self._load_hpc_tie_down_anchors()
+        parts = hpc_data.get("tie_down_anchor_details", {}).get("standard_parts", {})
+        
+        # Map part numbers to keys
+        part_map = {
+            "B701": "header_pad_angle",
+            "B703": "header_anchor_pad",
+            "W615": "tie_down_bar",
+            "W618": "header_anchor_plate"
+        }
+        
+        key = part_map.get(part_number.upper())
+        if not key or key not in parts:
+            return None
+        
+        part_data = parts[key]
+        return HPCTieDownAnchor(
+            part_number=part_data.get("part_number", part_number),
+            description=part_data.get("description", ""),
+            specification=part_data.get("specification", ""),
+            dimensions=part_data.get("dimensions", {}),
+            fasteners=part_data.get("fasteners"),
+            application=part_data.get("application")
+        )
+    
+    def get_hpc_tie_down_movement_requirements(self) -> Dict[str, Any]:
+        """
+        Get HPC tie-down movement requirements.
+        
+        Returns:
+            Dictionary with standard and non-standard movement requirements
+        """
+        hpc_data = self._load_hpc_tie_down_anchors()
+        return hpc_data.get("tie_down_anchor_details", {}).get("movement_requirements", {})
+    
+    def list_available_hpc_lifting_lugs(self) -> List[str]:
+        """Get list of all available HPC lifting lug part numbers."""
+        hpc_data = self._load_hpc_lifting_lugs()
+        standards = hpc_data.get("lifting_lug_standards", {})
+        parts = standards.get("standard_parts", [])
+        return [part.get("part_number") for part in parts if part.get("part_number")]
 
 
 # =============================================================================
@@ -609,6 +785,8 @@ __all__ = [
     "BoltProperties",
     "MaterialProperties",
     "PipeProperties",
+    "HPCLiftingLug",
+    "HPCTieDownAnchor",
     # Backward compatible functions
     "get_beam_properties",
     "get_edge_distance",

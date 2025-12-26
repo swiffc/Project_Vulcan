@@ -12,6 +12,14 @@ from typing import Dict, List, Any, Optional
 
 from .validation_models import ValidationIssue, ValidationSeverity
 
+# Import HPC standards database
+try:
+    from ..adapters.standards_db_v2 import get_standards_db
+    _hpc_db = get_standards_db()
+except ImportError:
+    _hpc_db = None
+    logging.warning("HPC standards database not available")
+
 logger = logging.getLogger("vulcan.validator.handling")
 
 
