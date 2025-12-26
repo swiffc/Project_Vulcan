@@ -506,6 +506,9 @@ if CAD_AVAILABLE:
     if SOLIDWORKS_REFERENCE_GEOMETRY_AVAILABLE and solidworks_reference_geometry_router:
         app.include_router(solidworks_reference_geometry_router)
         logger.info("SolidWorks Reference Geometry API loaded (Planes, axes, points)")
+    if SOLIDWORKS_DRAWINGS_ADVANCED_AVAILABLE and solidworks_drawings_advanced_router:
+        app.include_router(solidworks_drawings_advanced_router)
+        logger.info("SolidWorks Advanced Drawings API loaded (Section/Detail views, GD&T, Auto-dimension)")
     if inventor_router:
         app.include_router(inventor_router)
     if inventor_imates_router:
