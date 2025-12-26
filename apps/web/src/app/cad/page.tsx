@@ -122,6 +122,8 @@ export default function CADPage() {
             </div>
           )}
 
+          {activeView === "dashboard" && <ValidatorDashboard />}
+
           {activeView === "tools" && <ToolsPanel />}
 
           {activeView === "ache" && <ACHEPanel />}
