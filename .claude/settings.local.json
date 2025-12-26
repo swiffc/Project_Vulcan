@@ -82,7 +82,8 @@
       "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" tests/test_phase25_endpoints.py)",
       "Bash(\"/c/Users/D&E Cornealius/AppData/Local/Programs/Python/Python311/python.exe\" tests/test_phase25_endpoints.py)",
       "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -c \"import json,sys; d=json.load\\(sys.stdin\\); paths=[k for k in d.get\\(''paths'',{}\\).keys\\(\\) if ''phase25'' in k]; print\\(f''Phase25 endpoints found: {len\\(paths\\)}''\\); [print\\(f''  {p}''\\) for p in sorted\\(paths\\)]\")",
-      "Bash(\"/c/Users/DCornealius/AppData/Local/Programs/Python/Python311/python.exe\" -c \"import json,sys; d=json.load\\(sys.stdin\\); paths=[k for k in d.get\\(''paths'',{}\\).keys\\(\\) if ''phase25'' in k]; print\\(f''Phase25 endpoints found: {len\\(paths\\)}''\\); [print\\(f''  {p}''\\) for p in sorted\\(paths\\)]\")"
+      "Bash(\"/c/Users/DCornealius/AppData/Local/Programs/Python/Python311/python.exe\" -c \"import json,sys; d=json.load\\(sys.stdin\\); paths=[k for k in d.get\\(''paths'',{}\\).keys\\(\\) if ''phase25'' in k]; print\\(f''Phase25 endpoints found: {len\\(paths\\)}''\\); [print\\(f''  {p}''\\) for p in sorted\\(paths\\)]\")",
+      "Bash(netstat:*)"
     ]
   }
 }
