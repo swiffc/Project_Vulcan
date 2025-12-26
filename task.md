@@ -173,15 +173,15 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 - [ ] 24.2.5 Real-time property refresh
 - [ ] 24.2.6 Export to Excel/PDF
 
-### Phase 24.3 - Properties Extraction (20 tasks)
+### Phase 24.3 - Properties Extraction (20 tasks) - PARTIAL
 - [ ] 24.3.1 Header box dimensions
 - [ ] 24.3.2 Tube bundle parameters
 - [ ] 24.3.3 Fan system parameters
 - [ ] 24.3.4 Structural frame dimensions
 - [ ] 24.3.5 Nozzle schedule extraction
 - [ ] 24.3.6 Material takeoff (MTO)
-- [ ] 24.3.7 Weight summary
-- [ ] 24.3.8 Assembly hierarchy
+- [x] 24.3.7 Weight summary (via mass properties)
+- [x] 24.3.8 Assembly hierarchy (via component traversal)
 
 ### Phase 24.4 - Analysis & Calculations (25 tasks)
 - [ ] 24.4.1 Thermal performance (API 661)
