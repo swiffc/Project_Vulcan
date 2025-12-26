@@ -311,6 +311,10 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 | `/ache/design/anchor-bolts` | Structural | Anchor bolt design |
 | `/ache/optimize/suggestions` | AI | Optimization suggestions |
 | `/ache/summary` | Reader | ACHE design summary |
+| `/ache/calculate/batch/fan` | Calculator | Batch fan calculations |
+| `/ache/export/datasheet` | Export | ACHE datasheet export |
+| `/ache/export/bom` | Export | Bill of Materials |
+| `/ache/standards/api661` | Reference | API 661 quick reference |
 
 ---
 
