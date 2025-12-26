@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 2400" width="1600" height="2400">
+  <defs>
+    <linearGradient id="hotGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff6b6b"/>
+      <stop offset="100%" style="stop-color:#ee5a5a"/>
+    </linearGradient>
+    <linearGradient id="coldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4ecdc4"/>
+      <stop offset="100%" style="stop-color:#45b7aa"/>
+    </linearGradient>
+    <linearGradient id="warmGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffa502"/>
+      <stop offset="100%" style="stop-color:#ff7f00"/>
+    </linearGradient>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+  
+  <rect width="1600" height="2400" fill="#fafafa"/>
+  
+  <text x="800" y="50" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#1a1a2e">ACHE Complete Header and Tube Configuration Guide</text>
+  <text x="800" y="80" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#666">API 661 7th Edition | IOGP S-710 Supplementary Specification</text>
+  
+  <!-- SECTION 1: HEADER TYPES -->
+  <rect x="20" y="100" width="1560" height="440" rx="8" fill="#fff" stroke="#ddd" stroke-width="2"/>
+  <text x="40" y="130" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1a1a2e">1. HEADER TYPES (API 661 Section 7.1.6)</text>
+  
+  <!-- 1A: Plug Header -->
+  <g transform="translate(40, 150)">
+    <rect x="0" y="0" width="350" height="180" rx="5" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/>
+    <text x="175" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2e7d32">A. PLUG HEADER</text>
+    <text x="175" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#388e3c">REQUIRED: P 435 psi (30 bar) or H2 service</text>
+    <rect x="30" y="55" width="290" height="80" fill="#f5f5f5" stroke="#666" stroke-width="1.5"/>
+    <rect x="30" y="55" width="20" height="80" fill="#9e9e9e"/>
+    <rect x="300" y="55" width="20" height="80" fill="#bdbdbd"/>
+    <line x1="50" y1="70" x2="300" y2="70" stroke="#666" stroke-width="8"/>
+    <line x1="50" y1="95" x2="300" y2="95" stroke="#666" stroke-width="8"/>
+    <line x1="50" y1="120" x2="300" y2="120" stroke="#666" stroke-width="8"/>
+    <circle cx="310" cy="70" r="6" fill="#ff9800"/>
+    <circle cx="310" cy="95" r="6" fill="#ff9800"/>
+    <circle cx="310" cy="120" r="6" fill="#ff9800"/>
+    <text x="330" y="95" font-family="Arial, sans-serif" font-size="9" fill="#666">Shoulder plugs</text>
+    <text x="20" y="155" font-family="Arial, sans-serif" font-size="10" fill="#333">Individual tube access</text>
+    <text x="20" y="168" font-family="Arial, sans-serif" font-size="10" fill="#333">NO hollow plugs (7.1.7.2)</text>
+  </g>
+  
+  <!-- 1B: Cover Plate Header -->
+  <g transform="translate(420, 150)">
+    <rect x="0" y="0" width="350" height="180" rx="5" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
+    <text x="175" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#e65100">B. COVER PLATE HEADER</text>
+    <text x="175" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#f57c00">ALLOWED: P less than 435 psi only</text>
+    <rect x="30" y="55" width="290" height="80" fill="#f5f5f5" stroke="#666" stroke-width="1.5"/>
+    <rect x="30" y="55" width="20" height="80" fill="#9e9e9e"/>
+    <rect x="300" y="55" width="20" height="80" fill="#42a5f5" stroke="#1976d2" stroke-width="1" stroke-dasharray="5,3"/>
+    <line x1="50" y1="70" x2="300" y2="70" stroke="#666" stroke-width="8"/>
+    <line x1="50" y1="95" x2="300" y2="95" stroke="#666" stroke-width="8"/>
+    <line x1="50" y1="120" x2="300" y2="120" stroke="#666" stroke-width="8"/>
+    <text x="325" y="95" font-family="Arial, sans-serif" font-size="9" fill="#1976d2">Removable</text>
+    <text x="20" y="155" font-family="Arial, sans-serif" font-size="10" fill="#333">Full bundle access</text>
+    <text x="20" y="168" font-family="Arial, sans-serif" font-size="10" fill="#d32f2f">NOT for H2/toxic/sour</text>
+  </g>
+  
+  <!-- 1C: Bonnet Header -->
+  <g transform="translate(800, 150)">
+    <rect x="0" y="0" width="350" height="180" rx="5" fill="#ffebee" stroke="#f44336" stroke-width="2"/>
+    <text x="175" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#c62828">C. BONNET HEADER</text>
+    <text x="175" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#d32f2f">NOT ALLOWED per IOGP S-710</text>
+    <rect x="30" y="55" width="290" height="80" fill="#ffcdd2" stroke="#f44336" stroke-width="1.5"/>
+    <line x1="50" y1="70" x2="280" y2="70" stroke="#666" stroke-width="8"/>
+    <line x1="50" y1="95" x2="280" y2="95" stroke="#666" stroke-width="8"/>
+    <line x1="50" y1="120" x2="280" y2="120" stroke="#666" stroke-width="8"/>
+    <line x1="240" y1="65" x2="310" y2="125" stroke="#f44336" stroke-width="4"/>
+    <line x1="310" y1="65" x2="240" y2="125" stroke="#f44336" stroke-width="4"/>
+    <text x="20" y="155" font-family="Arial, sans-serif" font-size="10" fill="#c62828">Entire bonnet bolts to tubesheet</text>
+    <text x="20" y="168" font-family="Arial, sans-serif" font-size="10" fill="#c62828">PROHIBITED by S-710</text>
+  </g>
+  
+  <!-- 1D: Manifold Header -->
+  <g transform="translate(1180, 150)">
+    <rect x="0" y="0" width="350" height="180" rx="5" fill="#e3f2fd" stroke="#2196f3" stroke-width="2"/>
+    <text x="175" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1565c0">D. MANIFOLD/PIPE HEADER</text>
+    <text x="175" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#1976d2">HIGH PRESSURE: over 200 bar</text>
+    <ellipse cx="280" cy="95" rx="35" ry="50" fill="#bbdefb" stroke="#1976d2" stroke-width="2"/>
+    <rect x="50" y="55" width="15" height="80" fill="#9e9e9e"/>
+    <line x1="65" y1="70" x2="245" y2="70" stroke="#666" stroke-width="6"/>
+    <line x1="65" y1="95" x2="245" y2="95" stroke="#666" stroke-width="6"/>
+    <line x1="65" y1="120" x2="245" y2="120" stroke="#666" stroke-width="6"/>
+    <text x="280" y="100" font-family="Arial, sans-serif" font-size="9" fill="#1565c0" text-anchor="middle">Large pipe</text>
+    <text x="20" y="155" font-family="Arial, sans-serif" font-size="10" fill="#333">Up to 500+ bar</text>
+    <text x="20" y="168" font-family="Arial, sans-serif" font-size="10" fill="#333">Steam coils, vacuum</text>
+  </g>
+  
+  <!-- SECTION 2: PASS ARRANGEMENTS -->
+  <rect x="20" y="560" width="1560" height="400" rx="8" fill="#fff" stroke="#ddd" stroke-width="2"/>
+  <text x="40" y="590" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1a1a2e">2. PASS ARRANGEMENTS AND FLOW PATTERNS</text>
+  
+  <!-- 2A: Even Pass -->
+  <g transform="translate(40, 610)">
+    <rect x="0" y="0" width="480" height="160" rx="5" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/>
+    <text x="240" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2e7d32">A. EVEN PASS (2, 4, 6 passes)</text>
+    <text x="240" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#388e3c">Inlet and Outlet on SAME header end</text>
+    <rect x="20" y="55" width="440" height="80" fill="#f5f5f5" stroke="#666"/>
+    <rect x="20" y="55" width="30" height="80" fill="#e0e0e0" stroke="#666"/>
+    <rect x="430" y="55" width="30" height="80" fill="#e0e0e0" stroke="#666"/>
+    <line x1="50" y1="70" x2="430" y2="70" stroke="#ff6b6b" stroke-width="8"/>
+    <line x1="50" y1="95" x2="430" y2="95" stroke="#ffa502" stroke-width="8"/>
+    <line x1="50" y1="120" x2="430" y2="120" stroke="#4ecdc4" stroke-width="8"/>
+    <text x="240" y="73" font-family="Arial, sans-serif" font-size="9" fill="#fff" text-anchor="middle">Pass 1</text>
+    <text x="240" y="98" font-family="Arial, sans-serif" font-size="9" fill="#fff" text-anchor="middle">Pass 2</text>
+    <text x="240" y="123" font-family="Arial, sans-serif" font-size="9" fill="#fff" text-anchor="middle">Pass 3-4</text>
+    <text x="10" y="150" font-family="Arial, sans-serif" font-size="10" fill="#c62828">IN</text>
+    <text x="10" y="143" font-family="Arial, sans-serif" font-size="10" fill="#00796b">OUT</text>
+  </g>
+  
+  <!-- 2B: Odd Pass -->
+  <g transform="translate(540, 610)">
+    <rect x="0" y="0" width="480" height="160" rx="5" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
+    <text x="240" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#e65100">B. ODD PASS (1, 3, 5 passes)</text>
+    <text x="240" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#f57c00">Inlet and Outlet on OPPOSITE ends</text>
+    <rect x="20" y="55" width="440" height="80" fill="#f5f5f5" stroke="#666"/>
+    <rect x="20" y="55" width="30" height="80" fill="#e0e0e0" stroke="#666"/>
+    <rect x="430" y="55" width="30" height="80" fill="#e0e0e0" stroke="#666"/>
+    <line x1="50" y1="75" x2="430" y2="75" stroke="#ff6b6b" stroke-width="10"/>
+    <line x1="50" y1="95" x2="430" y2="95" stroke="#ffa502" stroke-width="10"/>
+    <line x1="50" y1="115" x2="430" y2="115" stroke="#4ecdc4" stroke-width="10"/>
+    <text x="5" y="78" font-family="Arial, sans-serif" font-size="9" fill="#c62828">IN</text>
+    <text x="465" y="118" font-family="Arial, sans-serif" font-size="9" fill="#00796b">OUT</text>
+  </g>
+  
+  <!-- 2C: Single Pass -->
+  <g transform="translate(1040, 610)">
+    <rect x="0" y="0" width="480" height="160" rx="5" fill="#e3f2fd" stroke="#2196f3" stroke-width="2"/>
+    <text x="240" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1565c0">C. SINGLE PASS</text>
+    <text x="240" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#1976d2">All tubes parallel | Condenser slope applies</text>
+    <rect x="20" y="55" width="440" height="80" fill="#f5f5f5" stroke="#666"/>
+    <rect x="20" y="55" width="30" height="80" fill="#ff6b6b" stroke="#c62828"/>
+    <rect x="430" y="55" width="30" height="80" fill="#4ecdc4" stroke="#00796b"/>
+    <line x1="50" y1="70" x2="430" y2="70" stroke="#666" stroke-width="6"/>
+    <line x1="50" y1="85" x2="430" y2="85" stroke="#666" stroke-width="6"/>
+    <line x1="50" y1="100" x2="430" y2="100" stroke="#666" stroke-width="6"/>
+    <line x1="50" y1="115" x2="430" y2="115" stroke="#666" stroke-width="6"/>
+    <text x="240" y="150" font-family="Arial, sans-serif" font-size="10" fill="#1565c0" text-anchor="middle">Condenser: ALL tubes slope 10 mm/m toward outlet</text>
+  </g>
+  
+  <!-- Pass Notes -->
+  <g transform="translate(40, 790)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">Pass Selection:</text>
+    <text x="0" y="18" font-family="Arial, sans-serif" font-size="10" fill="#333">4+ passes = counter-current (F=1.0) | 1-3 passes use LMTD correction | Even pass = simpler piping</text>
+  </g>
+  
+  <!-- SECTION 3: SPLIT HEADERS -->
+  <rect x="20" y="980" width="1560" height="480" rx="8" fill="#fff" stroke="#ddd" stroke-width="2"/>
+  <text x="40" y="1010" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1a1a2e">3. SPLIT HEADER CONFIGURATIONS (API 661 Section 7.1.6.1.2)</text>
+  <text x="40" y="1035" font-family="Arial, sans-serif" font-size="14" fill="#c62828" font-weight="bold">SPLIT HEADERS REQUIRED when delta-T between adjacent passes exceeds 110C (200F)</text>
+  
+  <!-- 3A: Two-Box Split -->
+  <g transform="translate(40, 1060)">
+    <rect x="0" y="0" width="480" height="180" rx="5" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/>
+    <text x="240" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2e7d32">A. TWO-BOX SPLIT (Standard)</text>
+    <text x="240" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#388e3c">2-pass equivalent with physical separation</text>
+    <rect x="20" y="55" width="440" height="50" fill="#ffebee" stroke="#c62828" stroke-width="2"/>
+    <text x="240" y="85" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#c62828">INLET HEADER (HOT) - Pass 1</text>
+    <rect x="20" y="115" width="440" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="2"/>
+    <text x="240" y="145" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#1976d2">OUTLET HEADER (COLD) - Pass 2</text>
+    <text x="240" y="108" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Physical gap (thermal isolation)</text>
+  </g>
+  
+  <!-- 3B: Three-Box Split -->
+  <g transform="translate(540, 1060)">
+    <rect x="0" y="0" width="480" height="180" rx="5" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
+    <text x="240" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#e65100">B. THREE-BOX SPLIT</text>
+    <text x="240" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#f57c00">3-pass with intermediate temperature isolation</text>
+    <rect x="20" y="50" width="440" height="35" fill="#ffcdd2" stroke="#c62828" stroke-width="1.5"/>
+    <text x="240" y="72" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#c62828">Pass 1 (Hottest)</text>
+    <rect x="20" y="90" width="440" height="35" fill="#ffe0b2" stroke="#ff9800" stroke-width="1.5"/>
+    <text x="240" y="112" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#e65100">Pass 2 (Intermediate)</text>
+    <rect x="20" y="130" width="440" height="35" fill="#bbdefb" stroke="#1976d2" stroke-width="1.5"/>
+    <text x="240" y="152" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#1976d2">Pass 3 (Coldest)</text>
+  </g>
+  
+  <!-- 3C: Four-Box Stacked -->
+  <g transform="translate(1040, 1060)">
+    <rect x="0" y="0" width="480" height="180" rx="5" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2"/>
+    <text x="240" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#7b1fa2">C. STACKED SPLIT (4+ passes)</text>
+    <text x="240" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#8e24aa">Multiple isolated headers for extreme delta-T</text>
+    <rect x="20" y="50" width="440" height="28" fill="#ffcdd2" stroke="#c62828" stroke-width="1"/>
+    <text x="240" y="68" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#c62828">Pass 1</text>
+    <rect x="20" y="82" width="440" height="28" fill="#ffe0b2" stroke="#ff9800" stroke-width="1"/>
+    <text x="240" y="100" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#e65100">Pass 2</text>
+    <rect x="20" y="114" width="440" height="28" fill="#c8e6c9" stroke="#4caf50" stroke-width="1"/>
+    <text x="240" y="132" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#2e7d32">Pass 3</text>
+    <rect x="20" y="146" width="440" height="28" fill="#bbdefb" stroke="#1976d2" stroke-width="1"/>
+    <text x="240" y="164" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#1976d2">Pass 4</text>
+  </g>
+  
+  <!-- Split Decision Box -->
+  <g transform="translate(40, 1260)">
+    <rect x="0" y="0" width="750" height="180" fill="#fff" stroke="#ccc" rx="5"/>
+    <text x="20" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333">Split Header Decision Flow:</text>
+    <rect x="20" y="40" width="180" height="40" rx="5" fill="#e3f2fd" stroke="#1976d2"/>
+    <text x="110" y="65" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#1565c0">Calculate delta-T between passes</text>
+    <line x1="200" y1="60" x2="240" y2="60" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <rect x="240" y="40" width="100" height="40" rx="20" fill="#fff9c4" stroke="#f9a825"/>
+    <text x="290" y="65" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#f57f17">dT over 110C?</text>
+    <line x1="290" y1="80" x2="290" y2="110" stroke="#4caf50" stroke-width="2"/>
+    <text x="305" y="100" font-family="Arial, sans-serif" font-size="9" fill="#4caf50">YES</text>
+    <rect x="240" y="110" width="100" height="50" rx="5" fill="#c8e6c9" stroke="#4caf50"/>
+    <text x="290" y="135" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#2e7d32" font-weight="bold">SPLIT</text>
+    <text x="290" y="150" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#2e7d32">REQUIRED</text>
+    <line x1="340" y1="60" x2="380" y2="60" stroke="#ff9800" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <text x="365" y="50" font-family="Arial, sans-serif" font-size="9" fill="#ff9800">NO</text>
+    <rect x="380" y="40" width="100" height="50" rx="5" fill="#fff3e0" stroke="#ff9800"/>
+    <text x="430" y="60" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#e65100" font-weight="bold">UNIFIED</text>
+    <text x="430" y="75" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#e65100">ALLOWED</text>
+    <line x1="480" y1="65" x2="520" y2="65" stroke="#c62828" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <rect x="520" y="40" width="110" height="55" rx="5" fill="#ffebee" stroke="#c62828"/>
+    <text x="575" y="60" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#c62828">Per 7.1.6.1.3:</text>
+    <text x="575" y="75" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#c62828">Analysis REQUIRED</text>
+    <text x="575" y="88" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#c62828">regardless of dT</text>
+  </g>
+  
+  <!-- SECTION 4: SPECIAL CONFIGURATIONS -->
+  <rect x="20" y="1480" width="1560" height="400" rx="8" fill="#fff" stroke="#ddd" stroke-width="2"/>
+  <text x="40" y="1510" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1a1a2e">4. SPECIAL TUBE CONFIGURATIONS</text>
+  
+  <!-- 4A: U-Tube -->
+  <g transform="translate(40, 1530)">
+    <rect x="0" y="0" width="360" height="160" rx="5" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/>
+    <text x="180" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2e7d32">A. U-TUBE BUNDLE</text>
+    <text x="180" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#388e3c">Thermal expansion relief built-in</text>
+    <rect x="20" y="55" width="40" height="90" fill="#e0e0e0" stroke="#666"/>
+    <path d="M 60,70 L 280,70 Q 320,70 320,90 Q 320,110 280,110 L 60,110" fill="none" stroke="#ff6b6b" stroke-width="6"/>
+    <path d="M 60,130 L 260,130 Q 300,130 300,145 L 300,145" fill="none" stroke="#4ecdc4" stroke-width="6"/>
+    <text x="320" y="95" font-family="Arial, sans-serif" font-size="9" fill="#666">U-bend allows</text>
+    <text x="320" y="107" font-family="Arial, sans-serif" font-size="9" fill="#666">free expansion</text>
+  </g>
+  
+  <!-- 4B: Serpentine -->
+  <g transform="translate(420, 1530)">
+    <rect x="0" y="0" width="360" height="160" rx="5" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
+    <text x="180" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#e65100">B. SERPENTINE COIL</text>
+    <text x="180" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#f57c00">Single tube per pass | Viscous fluids</text>
+    <path d="M 30,65 L 300,65 Q 330,65 330,85 Q 330,105 300,105 L 60,105 Q 30,105 30,125 Q 30,145 60,145 L 300,145" fill="none" stroke="#666" stroke-width="6"/>
+    <circle cx="30" cy="65" r="6" fill="#ff6b6b" stroke="#c62828"/>
+    <circle cx="300" cy="145" r="6" fill="#4ecdc4" stroke="#00796b"/>
+    <text x="30" y="52" font-family="Arial, sans-serif" font-size="9" fill="#c62828" text-anchor="middle">IN</text>
+    <text x="300" y="158" font-family="Arial, sans-serif" font-size="9" fill="#00796b" text-anchor="middle">OUT</text>
+  </g>
+  
+  <!-- 4C: Condenser Slope -->
+  <g transform="translate(800, 1530)">
+    <rect x="0" y="0" width="360" height="160" rx="5" fill="#e3f2fd" stroke="#2196f3" stroke-width="2"/>
+    <text x="180" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1565c0">C. CONDENSER SLOPE</text>
+    <text x="180" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#1976d2">Tube slope for condensate drainage</text>
+    <rect x="20" y="55" width="30" height="80" fill="#e0e0e0" stroke="#666"/>
+    <rect x="310" y="60" width="30" height="80" fill="#e0e0e0" stroke="#666"/>
+    <line x1="50" y1="70" x2="310" y2="75" stroke="#666" stroke-width="6"/>
+    <line x1="50" y1="90" x2="310" y2="95" stroke="#666" stroke-width="6"/>
+    <line x1="50" y1="110" x2="310" y2="115" stroke="#666" stroke-width="6"/>
+    <circle cx="295" cy="77" r="3" fill="#42a5f5"/>
+    <circle cx="300" cy="97" r="3" fill="#42a5f5"/>
+    <circle cx="305" cy="117" r="3" fill="#42a5f5"/>
+    <text x="180" y="152" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#1976d2">Slope 10 mm/m toward outlet</text>
+  </g>
+  
+  <!-- 4D: D-Type Header -->
+  <g transform="translate(1180, 1530)">
+    <rect x="0" y="0" width="360" height="160" rx="5" fill="#fce4ec" stroke="#e91e63" stroke-width="2"/>
+    <text x="180" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#c2185b">D. D-TYPE HEADER</text>
+    <text x="180" y="42" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#d81b60">Half-pipe welded to tubesheet</text>
+    <rect x="160" y="55" width="15" height="90" fill="#9e9e9e" stroke="#666"/>
+    <path d="M 175,55 Q 250,55 250,100 Q 250,145 175,145" fill="#f8bbd9" stroke="#c2185b" stroke-width="2"/>
+    <line x1="30" y1="75" x2="160" y2="75" stroke="#666" stroke-width="5"/>
+    <line x1="30" y1="100" x2="160" y2="100" stroke="#666" stroke-width="5"/>
+    <line x1="30" y1="125" x2="160" y2="125" stroke="#666" stroke-width="5"/>
+    <text x="180" y="155" font-family="Arial, sans-serif" font-size="9" fill="#c2185b" text-anchor="middle">Simple, economical for low-P</text>
+  </g>
+  
+  <!-- Configuration Notes -->
+  <g transform="translate(40, 1710)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">Configuration Selection:</text>
+    <text x="0" y="18" font-family="Arial, sans-serif" font-size="10" fill="#333">U-Tube: Thermal expansion critical, cyclic service | Serpentine: Viscous fluids, high pour-point</text>
+    <text x="0" y="33" font-family="Arial, sans-serif" font-size="10" fill="#333">Condenser: Single-pass ALL tubes sloped, Multi-pass LAST PASS only | D-Type: Low pressure, simple</text>
+  </g>
+  
+  <!-- SECTION 5: BUNDLE DETAILS -->
+  <rect x="20" y="1900" width="1560" height="380" rx="8" fill="#fff" stroke="#ddd" stroke-width="2"/>
+  <text x="40" y="1930" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1a1a2e">5. TUBE BUNDLE MECHANICAL DETAILS</text>
+  
+  <!-- 5A: Tube Support -->
+  <g transform="translate(40, 1950)">
+    <rect x="0" y="0" width="480" height="150" rx="5" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/>
+    <text x="240" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#2e7d32">A. TUBE SUPPORT REQUIREMENTS</text>
+    <rect x="20" y="40" width="440" height="60" fill="#f5f5f5" stroke="#666"/>
+    <rect x="20" y="40" width="15" height="60" fill="#795548"/>
+    <rect x="445" y="40" width="15" height="60" fill="#795548"/>
+    <rect x="120" y="40" width="6" height="60" fill="#9e9e9e"/>
+    <rect x="230" y="40" width="6" height="60" fill="#9e9e9e"/>
+    <rect x="340" y="40" width="6" height="60" fill="#9e9e9e"/>
+    <line x1="35" y1="55" x2="445" y2="55" stroke="#666" stroke-width="5"/>
+    <line x1="35" y1="75" x2="445" y2="75" stroke="#666" stroke-width="5"/>
+    <line x1="35" y1="95" x2="445" y2="95" stroke="#666" stroke-width="5"/>
+    <rect x="118" y="35" width="10" height="6" fill="#ff9800"/>
+    <rect x="228" y="35" width="10" height="6" fill="#ff9800"/>
+    <rect x="338" y="35" width="10" height="6" fill="#ff9800"/>
+    <text x="175" y="120" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">Spacing 1.83m (6 ft) max</text>
+    <text x="20" y="140" font-family="Arial, sans-serif" font-size="10" fill="#ff9800">Tube keepers BOLTED (not welded)</text>
+    <text x="280" y="140" font-family="Arial, sans-serif" font-size="10" fill="#333">P-strips/air seals required</text>
+  </g>
+  
+  <!-- 5B: Bundle Movement -->
+  <g transform="translate(540, 1950)">
+    <rect x="0" y="0" width="480" height="150" rx="5" fill="#e3f2fd" stroke="#2196f3" stroke-width="2"/>
+    <text x="240" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1565c0">B. THERMAL EXPANSION ALLOWANCE</text>
+    <rect x="40" y="45" width="400" height="50" fill="#f5f5f5" stroke="#666"/>
+    <rect x="40" y="45" width="20" height="50" fill="#c62828"/>
+    <text x="50" y="115" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#c62828">FIXED (Inlet)</text>
+    <line x1="440" y1="70" x2="470" y2="70" stroke="#4caf50" stroke-width="3" marker-end="url(#arrowhead)"/>
+    <text x="455" y="60" font-family="Arial, sans-serif" font-size="9" fill="#4caf50">Axial</text>
+    <line x1="240" y1="95" x2="240" y2="125" stroke="#ff9800" stroke-width="3" marker-end="url(#arrowhead)"/>
+    <line x1="240" y1="45" x2="240" y2="30" stroke="#ff9800" stroke-width="3" marker-end="url(#arrowhead)"/>
+    <text x="260" y="120" font-family="Arial, sans-serif" font-size="9" fill="#ff9800">Transverse</text>
+    <text x="20" y="140" font-family="Arial, sans-serif" font-size="10" fill="#333">Lateral: 6mm both dirs OR 12.7mm one direction</text>
+  </g>
+  
+  <!-- 5C: Tube-to-Tubesheet Joints -->
+  <g transform="translate(1040, 1950)">
+    <rect x="0" y="0" width="480" height="150" rx="5" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/>
+    <text x="240" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#e65100">C. TUBE-TO-TUBESHEET JOINTS</text>
+    <rect x="20" y="35" width="440" height="100" fill="#fff" stroke="#ccc"/>
+    <line x1="20" y1="55" x2="460" y2="55" stroke="#ccc"/>
+    <line x1="130" y1="35" x2="130" y2="135" stroke="#ccc"/>
+    <line x1="295" y1="35" x2="295" y2="135" stroke="#ccc"/>
+    <text x="75" y="48" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#333">Type</text>
+    <text x="212" y="48" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#333">Method</text>
+    <text x="377" y="48" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#333">Application</text>
+    <text x="75" y="70" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Expanded</text>
+    <text x="212" y="70" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Roller expansion</text>
+    <text x="377" y="70" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Standard</text>
+    <text x="75" y="85" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Seal welded</text>
+    <text x="212" y="85" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Exp + 1-pass TIG</text>
+    <text x="377" y="85" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Leak prevention</text>
+    <text x="75" y="100" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Strength weld</text>
+    <text x="212" y="100" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">2-pass TIG</text>
+    <text x="377" y="100" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">High-P / Fixed</text>
+    <text x="75" y="115" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Exp + seal</text>
+    <text x="212" y="115" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Both methods</text>
+    <text x="377" y="115" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Fouling/corrosive</text>
+    <text x="240" y="145" font-family="Arial, sans-serif" font-size="9" fill="#e65100" text-anchor="middle">Two grooves required per IOGP S-710</text>
+  </g>
+  
+  <!-- Footer -->
+  <g transform="translate(40, 2120)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">Quick Reference:</text>
+    <text x="0" y="18" font-family="Arial, sans-serif" font-size="10" fill="#333">API 661 7th Ed (2013) | IOGP S-710 (JIP33) | ASME VIII App 13 | WRC 107/297</text>
+    <text x="0" y="36" font-family="Arial, sans-serif" font-size="10" fill="#666">Split header: dT over 110C (200F) | Condenser slope: 10 mm/m | Tube support: 1.83m (6 ft) max</text>
+  </g>
+  
+  <text x="1560" y="2380" font-family="Arial, sans-serif" font-size="10" text-anchor="end" fill="#999">Project Vulcan | Rev 2.0 | Dec 2025</text>
+</svg>

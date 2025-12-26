@@ -17,6 +17,19 @@
 
 ---
 
+## 🔥 IMMEDIATE TASKS
+
+### Diagrams to Upload
+- [ ] **Upload `ache_full_scope_configurations.svg` to `/diagrams/`** - Comprehensive 5-section reference:
+  - Section 1: Bundle Orientations (Horizontal, Vertical, A-Frame, V-Frame, W-Frame, Δ-Frame)
+  - Section 2: Header Configurations (Unified vs Split per API 661 7.1.6.1.2)
+  - Section 3: Condenser Tube Slopes (API 661 7.1.1.6/7)
+  - Section 4: Vapor/Condensate Flow Patterns (Co-current, Counter-current, Downflow)
+  - Section 5: Complete Configuration Decision Matrix (7 service types)
+  - File ready: 59KB, 727 lines SVG
+
+---
+
 ## Completed Validators (213/213 checks)
 
 | Validator | Checks | Status |
@@ -400,6 +413,7 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 |------|----------|---------|
 | `api661_full_scope.md` | `/standards/` | 82 validator checks, complete API 661 |
 | `ache_header_tube_configurations.svg` | `/diagrams/` | Split headers, tube slope, header types |
+| `ache_full_scope_configurations.svg` | `/diagrams/` | **NEW** - Full 5-section reference (pending upload) |
 
 ---
 
