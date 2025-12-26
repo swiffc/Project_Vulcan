@@ -122,8 +122,16 @@ except ImportError:
     solidworks_batch_router = None
     SOLIDWORKS_BATCH_AVAILABLE = False
 
+try:
+    from .solidworks_advanced import router as solidworks_advanced_router
+    SOLIDWORKS_ADVANCED_AVAILABLE = True
+except ImportError:
+    solidworks_advanced_router = None
+    SOLIDWORKS_ADVANCED_AVAILABLE = False
+
 __all__ = [
     "solidworks_router",
+    "solidworks_advanced_router",
     "solidworks_assembly_router",
     "inventor_router",
     "inventor_imates_router",
@@ -157,4 +165,6 @@ __all__ = [
     "BOM_AVAILABLE",
     "solidworks_batch_router",
     "SOLIDWORKS_BATCH_AVAILABLE",
+    "solidworks_advanced_router",
+    "SOLIDWORKS_ADVANCED_AVAILABLE",
 ]
