@@ -3034,6 +3034,200 @@ async def export_bom_excel(request: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/phase25/validate-beam")
+async def validate_beam(request: dict):
+    """
+    Validate beam design per AISC 360-16.
+
+    Request body:
+        shape: str (e.g., "W16X77")
+        span_ft: float
+        unbraced_length_ft: float
+        moment_kip_ft: float
+        shear_kips: float
+        axial_kips: float (optional, default 0)
+        material: str (optional, default "A992")
+        deflection_limit: str (optional, default "floor_live")
+        calculated_deflection_in: float (optional)
+
+    Returns:
+        Validation result with DCR calculations
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.aisc_structural_validator import AISCStructuralValidator, BeamData
+
+        validator = AISCStructuralValidator()
+        beam = BeamData(
+            shape=request.get("shape", "W16X77"),
+            span_ft=request.get("span_ft", 20),
+            unbraced_length_ft=request.get("unbraced_length_ft", request.get("span_ft", 20)),
+            moment_kip_ft=request.get("moment_kip_ft", 0),
+            shear_kips=request.get("shear_kips", 0),
+            axial_kips=request.get("axial_kips", 0),
+            material=request.get("material", "A992"),
+            deflection_limit=request.get("deflection_limit", "floor_live"),
+            calculated_deflection_in=request.get("calculated_deflection_in", 0),
+        )
+
+        result = validator.validate_beam(beam)
+        return result.to_dict()
+
+    except Exception as e:
+        logger.error(f"Beam validation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/validate-column")
+async def validate_column(request: dict):
+    """
+    Validate column design per AISC 360-16.
+
+    Request body:
+        shape: str (e.g., "W14X68")
+        height_ft: float
+        axial_load_kips: float
+        moment_x_kip_ft: float (optional)
+        moment_y_kip_ft: float (optional)
+        k_factor: float (optional, default 1.0)
+        material: str (optional, default "A992")
+
+    Returns:
+        Validation result with slenderness and capacity calculations
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.aisc_structural_validator import AISCStructuralValidator, ColumnData
+
+        validator = AISCStructuralValidator()
+        column = ColumnData(
+            shape=request.get("shape", "W14X68"),
+            height_ft=request.get("height_ft", 12),
+            axial_load_kips=request.get("axial_load_kips", 0),
+            moment_x_kip_ft=request.get("moment_x_kip_ft", 0),
+            moment_y_kip_ft=request.get("moment_y_kip_ft", 0),
+            k_factor=request.get("k_factor", 1.0),
+            material=request.get("material", "A992"),
+        )
+
+        result = validator.validate_column(column)
+        return result.to_dict()
+
+    except Exception as e:
+        logger.error(f"Column validation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/validate-connection")
+async def validate_steel_connection(request: dict):
+    """
+    Validate steel connection per AISC 360-16 Chapter J.
+
+    Request body:
+        connection_type: str ("bolted_shear", "welded_shear", etc.)
+        load_kips: float
+        bolt_diameter: float (optional, default 0.75)
+        bolt_grade: str (optional, default "A325")
+        num_bolts: int (optional, default 4)
+        weld_size: float (optional, default 0.25)
+        weld_length: float (optional)
+        electrode: str (optional, default "E70XX")
+        plate_thickness: float (optional, default 0.5)
+        plate_material: str (optional, default "A36")
+
+    Returns:
+        Validation result with capacity calculations
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.aisc_structural_validator import (
+            AISCStructuralValidator, ConnectionData, ConnectionType
+        )
+
+        conn_type_map = {
+            "bolted_shear": ConnectionType.BOLTED_SHEAR,
+            "bolted_moment": ConnectionType.BOLTED_MOMENT,
+            "welded_shear": ConnectionType.WELDED_SHEAR,
+            "welded_moment": ConnectionType.WELDED_MOMENT,
+            "shear_tab": ConnectionType.SHEAR_TAB,
+            "clip_angle": ConnectionType.CLIP_ANGLE,
+        }
+
+        validator = AISCStructuralValidator()
+        conn = ConnectionData(
+            connection_type=conn_type_map.get(request.get("connection_type", "bolted_shear"),
+                                              ConnectionType.BOLTED_SHEAR),
+            load_kips=request.get("load_kips", 0),
+            bolt_diameter=request.get("bolt_diameter", 0.75),
+            bolt_grade=request.get("bolt_grade", "A325"),
+            num_bolts=request.get("num_bolts", 4),
+            weld_size=request.get("weld_size", 0.25),
+            weld_length=request.get("weld_length", 0),
+            electrode=request.get("electrode", "E70XX"),
+            plate_thickness=request.get("plate_thickness", 0.5),
+            plate_material=request.get("plate_material", "A36"),
+        )
+
+        result = validator.validate_connection(conn)
+        return result.to_dict()
+
+    except Exception as e:
+        logger.error(f"Connection validation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/phase25/validate-base-plate")
+async def validate_base_plate(request: dict):
+    """
+    Validate base plate design per AISC Design Guide 1.
+
+    Request body:
+        plate_length: float
+        plate_width: float
+        plate_thickness: float
+        column_depth: float
+        column_bf: float
+        axial_load_kips: float
+        moment_kip_ft: float (optional)
+        concrete_fc_psi: float (optional, default 3000)
+        material: str (optional, default "A36")
+        anchor_diameter: float (optional, default 0.75)
+        anchor_embedment: float (optional, default 9)
+
+    Returns:
+        Validation result with bearing and bending calculations
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.aisc_structural_validator import AISCStructuralValidator, BasePlateData
+
+        validator = AISCStructuralValidator()
+        bp = BasePlateData(
+            plate_length=request.get("plate_length", 12),
+            plate_width=request.get("plate_width", 12),
+            plate_thickness=request.get("plate_thickness", 1.0),
+            column_depth=request.get("column_depth", 8),
+            column_bf=request.get("column_bf", 8),
+            axial_load_kips=request.get("axial_load_kips", 0),
+            moment_kip_ft=request.get("moment_kip_ft", 0),
+            concrete_fc_psi=request.get("concrete_fc_psi", 3000),
+            material=request.get("material", "A36"),
+            anchor_diameter=request.get("anchor_diameter", 0.75),
+            anchor_embedment=request.get("anchor_embedment", 9),
+        )
+
+        result = validator.validate_base_plate(bp)
+        return result.to_dict()
+
+    except Exception as e:
+        logger.error(f"Base plate validation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/phase25/generate-markup")
 async def generate_drawing_markup(request: dict):
     """
