@@ -103,6 +103,10 @@ try:
         SOLIDWORKS_BATCH_AVAILABLE,
         solidworks_advanced_router,
         SOLIDWORKS_ADVANCED_AVAILABLE,
+        solidworks_simulation_router,
+        SOLIDWORKS_SIMULATION_AVAILABLE,
+        solidworks_pdm_router,
+        SOLIDWORKS_PDM_AVAILABLE,
         inventor_router,
         inventor_imates_router,
         inventor_drawings_router,
@@ -125,6 +129,8 @@ except ImportError:
     solidworks_assembly_router = None
     solidworks_drawings_router = None
     solidworks_advanced_router = None
+    solidworks_simulation_router = None
+    solidworks_pdm_router = None
     inventor_router = None
     inventor_imates_router = None
     inventor_drawings_router = None

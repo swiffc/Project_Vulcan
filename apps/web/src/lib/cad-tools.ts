@@ -2609,16 +2609,33 @@ export const CAD_TOOLS: Anthropic.Tool[] = [
   // === Weldments ===
   {
     name: "sw_insert_structural_member",
-    description: "Insert weldment structural member along sketch path segments.",
+    description: "Insert weldment structural member along sketch path segments. Supports all standard profiles.",
     input_schema: {
       type: "object" as const,
       properties: {
-        standard: { type: "string", description: "Standard: ansi inch, iso, din, jis" },
-        profile_type: { type: "string", description: "Type: c channel, angle, pipe, square tube, i beam" },
-        size: { type: "string", description: "Profile size designation e.g., 'C3 x 4.1'" },
+        standard: {
+          type: "string",
+          enum: ["ansi inch", "ansi metric", "iso", "din", "jis", "cisc", "aisc", "bs", "gb"],
+          description: "Standard library: ansi inch, ansi metric, iso, din, jis, cisc, aisc, bs (British), gb (Chinese)"
+        },
+        profile_type: {
+          type: "string",
+          enum: [
+            "c channel", "mc channel", "angle", "pipe", "square tube", "rectangular tube",
+            "i beam", "w beam", "s beam", "wide flange", "t section", "wt section",
+            "flat bar", "round bar", "hex bar", "square bar",
+            "hss round", "hss square", "hss rectangular",
+            "unistrut", "slotted channel", "z section"
+          ],
+          description: "Profile type: c channel, mc channel, angle, pipe, square tube, rectangular tube, i beam, w beam, s beam, wide flange, t section, wt section, flat bar, round bar, hex bar, square bar, hss round, hss square, hss rectangular, unistrut, slotted channel, z section"
+        },
+        size: { type: "string", description: "Profile size designation e.g., 'C3 x 4.1', 'W8 x 31', 'L2 x 2 x 1/4', 'HSS4x4x1/4'" },
         path_segments: { type: "array", items: { type: "string" }, description: "Names of sketch segments to follow" },
-        corner_treatment: { type: "string", description: "Corner: miter, butt, cope, end cap" },
+        corner_treatment: { type: "string", enum: ["miter", "butt1", "butt2", "cope", "end cap", "none"], description: "Corner treatment: miter, butt1, butt2, cope, end cap, none" },
         apply_corner: { type: "boolean", description: "Apply corner treatment" },
+        rotation_angle: { type: "number", description: "Profile rotation angle in degrees (0-360)" },
+        mirror_profile: { type: "boolean", description: "Mirror the profile about its axis" },
+        merge_arc_segments: { type: "boolean", description: "Merge arc segment bodies into single member" },
       },
       required: ["path_segments"],
     },

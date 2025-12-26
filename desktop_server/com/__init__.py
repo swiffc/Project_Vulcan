@@ -181,4 +181,8 @@ __all__ = [
     "SOLIDWORKS_BATCH_AVAILABLE",
     "solidworks_advanced_router",
     "SOLIDWORKS_ADVANCED_AVAILABLE",
+    "solidworks_simulation_router",
+    "SOLIDWORKS_SIMULATION_AVAILABLE",
+    "solidworks_pdm_router",
+    "SOLIDWORKS_PDM_AVAILABLE",
 ]
