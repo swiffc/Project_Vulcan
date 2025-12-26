@@ -195,6 +195,13 @@ def run_complete_bundle_validation():
         "header_type": BUNDLE_DESIGN["headers"]["type"],
         "design_pressure": BUNDLE_DESIGN["process_conditions"]["design_pressure_psig"],
         "design_temp": BUNDLE_DESIGN["process_conditions"]["design_temp_f"],
+        # FIX: Added tube keeper and support details
+        "tube_keepers": BUNDLE_DESIGN["tube_bundle"]["tube_keepers"],
+        "tube_support_spacing": BUNDLE_DESIGN["tube_bundle"]["tube_support_spacing_in"],
+        "lateral_movement_provision": BUNDLE_DESIGN["tube_bundle"]["lateral_movement_provision"],
+        "plug_type": BUNDLE_DESIGN["headers"]["plug_type"],
+        "vent_connection": BUNDLE_DESIGN["headers"]["vent_connection"],
+        "drain_connection": BUNDLE_DESIGN["headers"]["drain_connection"],
     }
 
     result = call_endpoint("API661 Bundle", "/phase25/check-api661-bundle", bundle_payload)
@@ -226,6 +233,10 @@ def run_complete_bundle_validation():
         "header_material": BUNDLE_DESIGN["headers"]["material"],
         "fin_type": BUNDLE_DESIGN["tube_bundle"]["fin_type"],
         "fin_material": BUNDLE_DESIGN["tube_bundle"]["fin_material"],
+        # FIX: Added air seals and thermal expansion
+        "air_seals": BUNDLE_DESIGN["structural"]["air_seals"],
+        "seal_type": BUNDLE_DESIGN["structural"]["seal_type"],
+        "thermal_expansion_provision": BUNDLE_DESIGN["tube_bundle"]["expansion_provision"],
     }
 
     result = call_endpoint("API661 Full", "/phase25/check-api661-full", full_payload)

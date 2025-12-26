@@ -11,7 +11,7 @@
 | Category | Complete | Remaining | % Done |
 |----------|----------|-----------|--------|
 | Phase 19-23 (Foundation) | 57/58 | 1 (blocked) | 98% |
-| Phase 24 (ACHE Design Assistant) | 85/213 | 128 | **40%** |
+| Phase 24 (ACHE Design Assistant) | 170/213 | 43 | **80%** |
 | Phase 25 (Drawing Checker) | 150/150 | 0 | **100%** |
 | **Standards Database** | **213/213** | **0** | **100%** |
 
@@ -154,7 +154,7 @@
 
 ---
 
-## Phase 24: ACHE Design Assistant (213 tasks) - IN PROGRESS (40%)
+## Phase 24: ACHE Design Assistant (213 tasks) - IN PROGRESS (80%)
 
 See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 
@@ -261,6 +261,28 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 | `/phase25/check-bom` | BOM | - |
 | `/phase25/check-dimensions` | Dimensions | - |
 | `/phase25/check-completeness` | Completeness | - |
+
+### Phase 24 ACHE Assistant Endpoints (NEW)
+
+| Endpoint | Module | Description |
+|----------|--------|-------------|
+| `/ache/status` | Core | ACHE system status |
+| `/ache/listener/start` | Event | Start model listener |
+| `/ache/listener/stop` | Event | Stop model listener |
+| `/ache/detect` | Detector | Detect ACHE model |
+| `/ache/overview` | Reader | Model overview |
+| `/ache/properties` | Reader | Extract properties |
+| `/ache/calculate/thermal` | Calculator | Thermal performance |
+| `/ache/calculate/fan` | Calculator | Fan power/tip speed |
+| `/ache/calculate/size` | Calculator | Preliminary sizing |
+| `/ache/design/frame` | Structural | Frame design (AISC) |
+| `/ache/design/access` | Accessories | Platforms/ladders (OSHA) |
+| `/ache/compliance/check` | AI Assistant | API 661 compliance |
+| `/ache/ai/recommendations` | AI Assistant | Design recommendations |
+| `/ache/ai/troubleshoot/{problem}` | AI Assistant | Troubleshooting |
+| `/ache/ai/knowledge` | AI Assistant | Knowledge base query |
+| `/ache/erection/plan` | Erection | Complete erection plan |
+| `/ache/erection/lifting-lug` | Erection | Lifting lug design |
 
 ---
 
