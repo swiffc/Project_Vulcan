@@ -84,15 +84,23 @@ class StructuredPageExtractor:
             content = f.read()
         
         # Find the specific page
-        page_pattern = rf'={60,}\s*PAGE\s+{page_num}\s*={60,}'
-        match = re.search(page_pattern, content)
+        # Pattern: Look for "PAGE N" between separator lines
+        page_pattern = rf'={60,}\s*\n\s*PAGE\s+{page_num}\s*\n\s*={60,}'
+        match = re.search(page_pattern, content, re.MULTILINE)
+        
+        if not match:
+            # Try simpler pattern: just "PAGE N" followed by separator
+            page_pattern = rf'PAGE\s+{page_num}\s*\n\s*={60,}'
+            match = re.search(page_pattern, content, re.MULTILINE)
         
         if not match:
             return None
         
-        # Extract page content
+        # Extract page content (start after the separator line after PAGE N)
         start_pos = match.end()
-        next_page_match = re.search(rf'={60,}\s*PAGE\s+{page_num + 1}\s*={60,}', content[start_pos:])
+        # Find next page marker
+        next_page_pattern = rf'PAGE\s+{page_num + 1}\s*\n\s*={60,}'
+        next_page_match = re.search(next_page_pattern, content[start_pos:], re.MULTILINE)
         
         if next_page_match:
             page_text = content[start_pos:start_pos + next_page_match.start()]
