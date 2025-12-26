@@ -219,11 +219,11 @@ export async function POST(request: NextRequest) {
         try {
           const screenshotResult = await executeCADTool("sw_screenshot", {});
           
-          if (screenshotResult.success && screenshotResult.result?.image) {
+          if (screenshotResult.success && screenshotResult.result && typeof screenshotResult.result === 'object' && screenshotResult.result !== null && 'image' in screenshotResult.result) {
             console.log("[CAD Chat] 🔍 Analyzing screenshot with vision...");
             
             // Extract base64 image data (remove data URL prefix if present)
-            let imageData = screenshotResult.result.image;
+            let imageData = (screenshotResult.result as any).image;
             if (typeof imageData === "string") {
               imageData = imageData.replace(/^data:image\/\w+;base64,/, "");
             }
