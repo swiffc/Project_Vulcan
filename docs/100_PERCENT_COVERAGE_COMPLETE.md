@@ -129,7 +129,7 @@
 | Costing | 2 | 2 | ✅ 100% |
 | Batch Operations | 3 | 3 | ✅ 100% |
 | Vision Analysis | 11 | 11 | ✅ 100% |
-| **TOTAL** | **200+** | **295+** | ✅ **100%** |
+| **TOTAL** | **200+** | **251** | ✅ **100%** |
 
 ---
 
@@ -197,7 +197,7 @@ All new tools correctly map to backend endpoints:
 
 **100% Coverage**: Every backend endpoint is now accessible as a frontend tool!
 
-The CAD chatbot now has **complete access** to all SolidWorks and Inventor capabilities through **295+ tools**.
+The CAD chatbot now has **complete access** to all SolidWorks and Inventor capabilities through **251 tools**.
 
 **Status**: 🟢 **PRODUCTION READY - FULL FEATURE SET**
 

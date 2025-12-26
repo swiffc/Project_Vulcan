@@ -143,6 +143,12 @@ except ImportError:
     solidworks_advanced_router = None
     solidworks_simulation_router = None
     solidworks_pdm_router = None
+    solidworks_constraints_router = None
+    solidworks_tolerances_router = None
+    solidworks_threads_router = None
+    solidworks_motion_router = None
+    solidworks_optimization_router = None
+    solidworks_surfaces_router = None
     inventor_router = None
     inventor_imates_router = None
     inventor_drawings_router = None
@@ -419,6 +425,24 @@ if CAD_AVAILABLE:
     if SOLIDWORKS_PDM_AVAILABLE and solidworks_pdm_router:
         app.include_router(solidworks_pdm_router)
         logger.info("SolidWorks PDM integration loaded (Vault operations)")
+    if SOLIDWORKS_CONSTRAINTS_AVAILABLE and solidworks_constraints_router:
+        app.include_router(solidworks_constraints_router)
+        logger.info("SolidWorks Constraints API loaded (Sketch constraints)")
+    if SOLIDWORKS_TOLERANCES_AVAILABLE and solidworks_tolerances_router:
+        app.include_router(solidworks_tolerances_router)
+        logger.info("SolidWorks Tolerances API loaded (GD&T, stackup)")
+    if SOLIDWORKS_THREADS_AVAILABLE and solidworks_threads_router:
+        app.include_router(solidworks_threads_router)
+        logger.info("SolidWorks Threads API loaded (Cosmetic threads, helix)")
+    if SOLIDWORKS_MOTION_AVAILABLE and solidworks_motion_router:
+        app.include_router(solidworks_motion_router)
+        logger.info("SolidWorks Motion API loaded (Motors, springs, contact)")
+    if SOLIDWORKS_OPTIMIZATION_AVAILABLE and solidworks_optimization_router:
+        app.include_router(solidworks_optimization_router)
+        logger.info("SolidWorks Optimization API loaded (DOE, parameter sweep)")
+    if SOLIDWORKS_SURFACES_AVAILABLE and solidworks_surfaces_router:
+        app.include_router(solidworks_surfaces_router)
+        logger.info("SolidWorks Surfaces API loaded (Curvature, zebra, draft)")
     if inventor_router:
         app.include_router(inventor_router)
     if inventor_imates_router:
