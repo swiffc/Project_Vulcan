@@ -3497,6 +3497,76 @@ export async function executeCADTool(
     inv_sheet_metal_flange: { method: "POST", endpoint: "/com/inventor/sheet_metal_flange" },
     sw_add_configuration: { method: "POST", endpoint: "/com/solidworks/add_configuration" },
     sw_add_structural_member: { method: "POST", endpoint: "/com/solidworks/add_structural_member" },
+    // === Routing (Pipe, Tube, Electrical) ===
+    sw_create_pipe_route: { method: "POST", endpoint: "/com/solidworks/advanced/routing/create_pipe_route" },
+    sw_insert_fitting: { method: "POST", endpoint: "/com/solidworks/advanced/routing/insert_fitting" },
+    sw_create_electrical_route: { method: "POST", endpoint: "/com/solidworks/advanced/routing/create_electrical_route" },
+    sw_flatten_route: { method: "POST", endpoint: "/com/solidworks/advanced/routing/flatten_route" },
+    sw_get_route_properties: { method: "GET", endpoint: "/com/solidworks/advanced/routing/get_route_properties" },
+    // === Weldments ===
+    sw_insert_structural_member: { method: "POST", endpoint: "/com/solidworks/advanced/weldment/insert_structural_member" },
+    sw_add_weld_bead: { method: "POST", endpoint: "/com/solidworks/advanced/weldment/add_weld_bead" },
+    sw_trim_extend_member: { method: "POST", endpoint: "/com/solidworks/advanced/weldment/trim_extend" },
+    sw_add_gusset: { method: "POST", endpoint: "/com/solidworks/advanced/weldment/add_gusset" },
+    sw_add_end_cap: { method: "POST", endpoint: "/com/solidworks/advanced/weldment/add_end_cap" },
+    sw_get_weldment_cut_list: { method: "GET", endpoint: "/com/solidworks/advanced/weldment/get_cut_list" },
+    // === Sheet Metal (Full) ===
+    sw_base_flange: { method: "POST", endpoint: "/com/solidworks/advanced/sheet_metal/base_flange" },
+    sw_edge_flange: { method: "POST", endpoint: "/com/solidworks/advanced/sheet_metal/edge_flange" },
+    sw_hem: { method: "POST", endpoint: "/com/solidworks/advanced/sheet_metal/hem" },
+    sw_jog: { method: "POST", endpoint: "/com/solidworks/advanced/sheet_metal/jog" },
+    sw_lofted_bend: { method: "POST", endpoint: "/com/solidworks/advanced/sheet_metal/lofted_bend" },
+    sw_flat_pattern: { method: "POST", endpoint: "/com/solidworks/advanced/sheet_metal/flat_pattern" },
+    sw_corner_relief: { method: "POST", endpoint: "/com/solidworks/advanced/sheet_metal/corner_relief" },
+    sw_get_bend_table: { method: "GET", endpoint: "/com/solidworks/advanced/sheet_metal/get_bend_table" },
+    // === Drawing Tools (Full) ===
+    sw_section_view: { method: "POST", endpoint: "/com/solidworks/advanced/drawing/section_view" },
+    sw_detail_view: { method: "POST", endpoint: "/com/solidworks/advanced/drawing/detail_view" },
+    sw_auxiliary_view: { method: "POST", endpoint: "/com/solidworks/advanced/drawing/auxiliary_view" },
+    sw_add_gdt: { method: "POST", endpoint: "/com/solidworks/advanced/drawing/add_gdt" },
+    sw_add_datum: { method: "POST", endpoint: "/com/solidworks/advanced/drawing/add_datum" },
+    sw_add_surface_finish: { method: "POST", endpoint: "/com/solidworks/advanced/drawing/add_surface_finish" },
+    sw_add_weld_symbol: { method: "POST", endpoint: "/com/solidworks/advanced/drawing/add_weld_symbol" },
+    sw_auto_balloon: { method: "POST", endpoint: "/com/solidworks/advanced/drawing/auto_balloon" },
+    sw_hole_table: { method: "POST", endpoint: "/com/solidworks/advanced/drawing/hole_table" },
+    sw_bend_table: { method: "POST", endpoint: "/com/solidworks/advanced/drawing/bend_table" },
+    sw_ordinate_dimensions: { method: "POST", endpoint: "/com/solidworks/advanced/drawing/ordinate_dimensions" },
+    // === Simulation/FEA ===
+    sw_create_simulation_study: { method: "POST", endpoint: "/com/solidworks/advanced/simulation/create_study" },
+    sw_add_fixture: { method: "POST", endpoint: "/com/solidworks/advanced/simulation/add_fixture" },
+    sw_add_load: { method: "POST", endpoint: "/com/solidworks/advanced/simulation/add_load" },
+    sw_create_mesh: { method: "POST", endpoint: "/com/solidworks/advanced/simulation/create_mesh" },
+    sw_run_simulation: { method: "POST", endpoint: "/com/solidworks/advanced/simulation/run" },
+    sw_get_simulation_results: { method: "GET", endpoint: "/com/solidworks/advanced/simulation/get_results" },
+    // === Design Tables & Equations ===
+    sw_add_equation: { method: "POST", endpoint: "/com/solidworks/advanced/equations/add" },
+    sw_add_global_variable: { method: "POST", endpoint: "/com/solidworks/advanced/equations/global_variable" },
+    sw_list_equations: { method: "GET", endpoint: "/com/solidworks/advanced/equations/list" },
+    sw_insert_design_table: { method: "POST", endpoint: "/com/solidworks/advanced/design_table/insert" },
+    // === Toolbox ===
+    sw_insert_toolbox_part: { method: "POST", endpoint: "/com/solidworks/advanced/toolbox/insert_part" },
+    sw_smart_fasteners: { method: "POST", endpoint: "/com/solidworks/advanced/toolbox/smart_fasteners" },
+    sw_list_toolbox_standards: { method: "GET", endpoint: "/com/solidworks/advanced/toolbox/standards" },
+    // === Surface Modeling ===
+    sw_extruded_surface: { method: "POST", endpoint: "/com/solidworks/advanced/surface/extrude" },
+    sw_lofted_surface: { method: "POST", endpoint: "/com/solidworks/advanced/surface/loft" },
+    sw_filled_surface: { method: "POST", endpoint: "/com/solidworks/advanced/surface/fill" },
+    sw_offset_surface: { method: "POST", endpoint: "/com/solidworks/advanced/surface/offset" },
+    sw_trim_surface: { method: "POST", endpoint: "/com/solidworks/advanced/surface/trim" },
+    sw_knit_surfaces: { method: "POST", endpoint: "/com/solidworks/advanced/surface/knit" },
+    // === Mold Tools ===
+    sw_parting_line: { method: "POST", endpoint: "/com/solidworks/advanced/mold/parting_line" },
+    sw_parting_surface: { method: "POST", endpoint: "/com/solidworks/advanced/mold/parting_surface" },
+    sw_core_cavity: { method: "POST", endpoint: "/com/solidworks/advanced/mold/core_cavity" },
+    sw_draft_analysis: { method: "GET", endpoint: "/com/solidworks/advanced/mold/draft_analysis" },
+    // === Costing ===
+    sw_run_costing: { method: "POST", endpoint: "/com/solidworks/advanced/costing/analyze" },
+    sw_get_costing_operations: { method: "GET", endpoint: "/com/solidworks/advanced/costing/operations" },
+    // === Motion Studies ===
+    sw_create_motion_study: { method: "POST", endpoint: "/com/solidworks/advanced/motion/create_study" },
+    sw_add_motor: { method: "POST", endpoint: "/com/solidworks/advanced/motion/add_motor" },
+    sw_run_motion_study: { method: "POST", endpoint: "/com/solidworks/advanced/motion/run" },
+    sw_export_motion_video: { method: "POST", endpoint: "/com/solidworks/advanced/motion/export_video" },
   };
 
   const mapping = endpointMap[toolName];
