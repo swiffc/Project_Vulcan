@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { Navigation } from "@/components/layout/Navigation";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { QueryProvider } from "@/lib/providers/query-provider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -37,19 +38,27 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body className={inter.className}>
-        <ErrorBoundary>
-          <div className="min-h-screen flex flex-col">
-            <Navigation />
-            <main className="flex-1">{children}</main>
-          </div>
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              className: "glass text-white text-sm",
-              duration: 3000,
-            }}
-          />
-        </ErrorBoundary>
+        <QueryProvider>
+          <ErrorBoundary>
+            {/* Skip link for accessibility */}
+            <a href="#main-content" className="skip-link">
+              Skip to main content
+            </a>
+            <div className="min-h-screen flex flex-col">
+              <Navigation />
+              <main id="main-content" className="flex-1" role="main">
+                {children}
+              </main>
+            </div>
+            <Toaster
+              position="bottom-right"
+              toastOptions={{
+                className: "glass text-white text-sm",
+                duration: 3000,
+              }}
+            />
+          </ErrorBoundary>
+        </QueryProvider>
         <script
           dangerouslySetInnerHTML={{
             __html: `
