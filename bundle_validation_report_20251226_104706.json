@@ -1,0 +1,1005 @@
+{
+  "project": {
+    "name": "Hot Oil Cooler - Unit 150",
+    "drawing_number": "ACHE-150-001",
+    "revision": "B",
+    "client": "Refinery Corp",
+    "service": "Hot Oil Cooling"
+  },
+  "design": {
+    "project": {
+      "name": "Hot Oil Cooler - Unit 150",
+      "drawing_number": "ACHE-150-001",
+      "revision": "B",
+      "client": "Refinery Corp",
+      "service": "Hot Oil Cooling"
+    },
+    "process_conditions": {
+      "fluid": "Thermal Oil",
+      "flow_rate_lb_hr": 250000,
+      "inlet_temp_f": 450,
+      "outlet_temp_f": 200,
+      "design_pressure_psig": 150,
+      "design_temp_f": 500,
+      "corrosion_allowance_in": 0.0625
+    },
+    "tube_bundle": {
+      "tube_od_in": 1.0,
+      "tube_bwg": 12,
+      "tube_wall_in": 0.109,
+      "tube_length_ft": 30,
+      "tube_pitch_in": 2.5,
+      "tube_pattern": "triangular",
+      "tube_count": 196,
+      "passes": 4,
+      "tube_material": "SA-179",
+      "fin_material": "Aluminum 1100",
+      "fin_type": "l_footed",
+      "fin_height_in": 0.625,
+      "fin_thickness_in": 0.016,
+      "fins_per_inch": 10,
+      "tube_keepers": true,
+      "keeper_type": "U-bolt",
+      "tube_support_spacing_in": 48,
+      "lateral_movement_provision": true,
+      "expansion_provision": "floating_tubesheet"
+    },
+    "headers": {
+      "type": "plug",
+      "material": "SA-516-70",
+      "thickness_in": 0.75,
+      "width_in": 12,
+      "length_in": 98,
+      "tubesheet_thickness_in": 1.5,
+      "tubesheet_material": "SA-516-70",
+      "plug_material": "SA-105",
+      "plug_size_in": 1.25,
+      "plug_type": "shoulder",
+      "gasket_type": "spiral_wound",
+      "nozzle_size_in": 6,
+      "nozzle_rating": "150#",
+      "vent_connection": "3/4\" NPT",
+      "drain_connection": "1\" NPT",
+      "vent_location": "high_point",
+      "drain_location": "low_point"
+    },
+    "structural": {
+      "tube_support_spacing_in": 48,
+      "tube_supports": 7,
+      "support_material": "SA-36",
+      "side_frame_size": "C6x8.2",
+      "bundle_weight_lb": 8500,
+      "lifting_lugs": 4,
+      "lug_plate_thickness_in": 0.75,
+      "lug_hole_diameter_in": 1.5,
+      "air_seals": true,
+      "seal_type": "P-strips",
+      "seal_material": "Aluminum"
+    },
+    "fabrication": {
+      "weld_procedure": "WPS-001",
+      "weld_filler": "E7018",
+      "pwht_required": true,
+      "pwht_temp_f": 1100,
+      "pwht_time_hr": 1,
+      "pwht_documented": true,
+      "hydro_test_pressure_psig": 225,
+      "nde_requirements": [
+        "RT",
+        "PT",
+        "VT"
+      ],
+      "rt_pressure_welds": true,
+      "rt_coverage": "100%"
+    },
+    "coatings": {
+      "surface_prep": "SSPC-SP10",
+      "primer": "Zinc-rich epoxy",
+      "primer_dft_mils": 3,
+      "intermediate": "Epoxy",
+      "intermediate_dft_mils": 5,
+      "topcoat": "Polyurethane",
+      "topcoat_dft_mils": 2,
+      "total_dft_mils": 10
+    }
+  },
+  "validation_results": {
+    "api661_bundle": {
+      "success": true,
+      "time_ms": 2028.3251999644563,
+      "data": {
+        "validator": "api661_bundle",
+        "total_checks": 9,
+        "passed": 3,
+        "failed": 2,
+        "warnings": 4,
+        "critical_failures": 1,
+        "issues": [
+          {
+            "severity": "warning",
+            "check_type": "tube_support_spacing",
+            "message": "Tube support spacing not specified",
+            "location": null,
+            "suggestion": "Specify tube support spacing (max 72\" / 6 ft)",
+            "standard_reference": "API 661 7.1.1.4"
+          },
+          {
+            "severity": "critical",
+            "check_type": "tube_keepers_missing",
+            "message": "Tube keepers not shown at tube supports",
+            "location": null,
+            "suggestion": "Add tube keepers at each tube support location",
+            "standard_reference": "API 661 7.1.1.5"
+          },
+          {
+            "severity": "error",
+            "check_type": "air_seals_missing",
+            "message": "Air seals / P-strips not specified",
+            "location": null,
+            "suggestion": "Add air seals throughout bundle and bay to minimize air leakage/bypassing",
+            "standard_reference": "API 661 7.1.1.8"
+          },
+          {
+            "severity": "warning",
+            "check_type": "lateral_movement_not_specified",
+            "message": "Bundle lateral movement provision not specified",
+            "location": null,
+            "suggestion": "Specify lateral movement (\u22656mm both directions OR \u226512.7mm one direction)",
+            "standard_reference": "API 661 7.1.1.2"
+          },
+          {
+            "severity": "warning",
+            "check_type": "vent_missing",
+            "message": "Vent connection not shown",
+            "location": null,
+            "suggestion": "Add vent at header high point",
+            "standard_reference": "API 661 7.1.9"
+          },
+          {
+            "severity": "warning",
+            "check_type": "drain_missing",
+            "message": "Drain connection not shown",
+            "location": null,
+            "suggestion": "Add drain at header low point",
+            "standard_reference": "API 661 7.1.9"
+          }
+        ]
+      },
+      "error": null
+    },
+    "api661_full": {
+      "success": true,
+      "time_ms": 2012.5556000275537,
+      "data": {
+        "validator": "api661_full_scope",
+        "standard": "API 661 / ISO 13706, 7th Edition + IOGP S-710",
+        "total_checks": 72,
+        "passed": 65,
+        "failed": 1,
+        "warnings": 5,
+        "critical_failures": 0,
+        "pass_rate": "90.3%",
+        "checks_by_category": {
+          "bundle_assembly": 17,
+          "header_box": 13,
+          "plugs": 8,
+          "nozzles": 12,
+          "tube_joints": 8,
+          "fan_system": 10,
+          "drive_system": 4
+        },
+        "issues": [
+          {
+            "severity": "error",
+            "check_type": "tube_keepers",
+            "message": "Tube keepers required at each tube support",
+            "location": null,
+            "suggestion": "Add tube keepers at each support location",
+            "standard_reference": "API 661 7.1.1.5"
+          },
+          {
+            "severity": "warning",
+            "check_type": "air_seals",
+            "message": "Air seals / P-strips recommended throughout bundle",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "API 661 7.1.1.8"
+          },
+          {
+            "severity": "warning",
+            "check_type": "thermal_expansion",
+            "message": "Thermal expansion provision required",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "API 661 7.1.1.3"
+          },
+          {
+            "severity": "warning",
+            "check_type": "restraint_analysis",
+            "message": "Restraint relief analysis required regardless of \u0394T",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "API 661 7.1.6.1.3"
+          },
+          {
+            "severity": "warning",
+            "check_type": "flange_welds",
+            "message": "Full penetration welds required for flanges",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "API 661 9.4.2"
+          },
+          {
+            "severity": "info",
+            "check_type": "plug_type",
+            "message": "Shoulder type plugs with straight-threaded shank",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "API 661 7.1.7.1"
+          },
+          {
+            "severity": "info",
+            "check_type": "hollow_plugs",
+            "message": "No hollow plugs (compliant)",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "API 661 7.1.7.2"
+          },
+          {
+            "severity": "info",
+            "check_type": "nozzle_sizes",
+            "message": "No prohibited nozzle sizes",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "API 661 7.1.9.5"
+          },
+          {
+            "severity": "info",
+            "check_type": "threaded_nozzles",
+            "message": "No threaded nozzles (compliant)",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "IOGP S-710"
+          },
+          {
+            "severity": "warning",
+            "check_type": "joint_type",
+            "message": "Tube-to-tubesheet joint type not specified",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "API 661 7.1.6"
+          },
+          {
+            "severity": "info",
+            "check_type": "grooves",
+            "message": "2 grooves per IOGP S-710",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "IOGP S-710"
+          }
+        ]
+      },
+      "error": null
+    },
+    "asme_viii": {
+      "success": true,
+      "time_ms": 2020.9851999534294,
+      "data": {
+        "validator": "asme_viii",
+        "total_checks": 8,
+        "passed": 6,
+        "failed": 1,
+        "warnings": 1,
+        "critical_failures": 0,
+        "calculations": {
+          "min_wall_thickness_in": -12.180732213304312,
+          "mawp_psi": 1.767933723196881,
+          "required_hydro_psi": 195.0,
+          "nozzle_reinforcement_ok": null
+        },
+        "issues": [
+          {
+            "severity": "info",
+            "check_type": "wall_thickness",
+            "message": "Wall thickness 0.750\" \u2265 min -12.181\"",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "ASME VIII UG-27"
+          },
+          {
+            "severity": "info",
+            "check_type": "joint_efficiency",
+            "message": "Joint Type 2: E = 0.85 (Spot RT)",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "ASME VIII UW-12"
+          },
+          {
+            "severity": "info",
+            "check_type": "hydro_test_calc",
+            "message": "Required hydro test pressure = 195 psi (1.3 \u00d7 150 psi)",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "ASME VIII UG-99"
+          },
+          {
+            "severity": "error",
+            "check_type": "mawp",
+            "message": "MAWP = 2 psi < Design P = 150 psi",
+            "location": null,
+            "suggestion": "Increase wall thickness or use higher strength material",
+            "standard_reference": "ASME VIII UG-98"
+          },
+          {
+            "severity": "info",
+            "check_type": "corrosion_allowance",
+            "message": "Corrosion allowance = 0.0625\"",
+            "location": null,
+            "suggestion": null,
+            "standard_reference": "ASME VIII UG-25"
+          },
+          {
+            "severity": "warning",
+            "check_type": "material_traceability",
+            "message": "Material Test Report (MTR) not confirmed",
+            "location": null,
+            "suggestion": "Ensure MTR available per UG-93",
+            "standard_reference": "ASME VIII UG-93"
+          }
+        ]
+      },
+      "error": null
+    },
+    "materials": {
+      "success": true,
+      "time_ms": 2024.4809000287205,
+      "data": {
+        "validator": "materials_finishing",
+        "total_checks": 3,
+        "passed": 2,
+        "failed": 0,
+        "warnings": 1,
+        "critical_failures": 0,
+        "material_compatible": true,
+        "weldability_ok": true,
+        "coating_adequate": true,
+        "prep_adequate": true,
+        "issues": [
+          {
+            "severity": "warning",
+            "check_type": "material_spec_unknown",
+            "message": "Material specification 'SA-516-70' not in standard database",
+            "suggestion": "Verify specification is correct and add to material database",
+            "standard_reference": null
+          }
+        ],
+        "coating": {
+          "validator": "materials_finishing",
+          "total_checks": 4,
+          "passed": 3,
+          "failed": 0,
+          "warnings": 1,
+          "critical_failures": 0,
+          "material_compatible": true,
+          "weldability_ok": true,
+          "coating_adequate": false,
+          "prep_adequate": true,
+          "issues": [
+            {
+              "severity": "warning",
+              "check_type": "coating_life_short",
+              "message": "Coating system life (10yr) < required (20yr)",
+              "suggestion": "Consider higher-performance coating system",
+              "standard_reference": null
+            },
+            {
+              "severity": "info",
+              "check_type": "dft_default",
+              "message": "Using system default DFT: 4 mils",
+              "suggestion": null,
+              "standard_reference": null
+            }
+          ]
+        }
+      },
+      "error": null
+    },
+    "sspc_coating": {
+      "success": true,
+      "time_ms": 2010.0991000654176,
+      "data": {
+        "validator": "sspc_coating",
+        "total_checks": 6,
+        "passed": 3,
+        "failed": 1,
+        "warnings": 0,
+        "critical_failures": 0,
+        "statistics": {
+          "surface_prep_validated": false,
+          "dft_validated": false,
+          "system_validated": true
+        },
+        "issues": [
+          {
+            "severity": "error",
+            "check_type": "surface_prep_invalid",
+            "message": "Surface prep 'SSPC-SP10' is not a valid SSPC standard",
+            "location": null,
+            "suggestion": "Use valid SSPC standard: SP-1, SP-2, SP-3, SP-6, SP-7, SP-10...",
+            "standard_reference": "SSPC"
+          }
+        ]
+      },
+      "error": null
+    },
+    "fabrication": {
+      "success": true,
+      "time_ms": 2037.2749000089243,
+      "data": {
+        "validator": "fabrication_feasibility",
+        "total_checks": 6,
+        "passed": 6,
+        "failed": 0,
+        "warnings": 0,
+        "critical_failures": 0,
+        "statistics": {
+          "parts_checked": 1,
+          "non_standard_thicknesses": 0,
+          "tight_tolerances": 0,
+          "difficult_features": 0,
+          "nesting_efficiency": null
+        },
+        "suggested_processes": [
+          "plasma_cut"
+        ],
+        "material_substitutions": [],
+        "issues": []
+      },
+      "error": null
+    },
+    "structural": {
+      "success": true,
+      "time_ms": 2012.6177999190986,
+      "data": {
+        "validator": "structural_capacity",
+        "total_checks": 1,
+        "passed": 1,
+        "failed": 0,
+        "warnings": 0,
+        "critical_failures": 0,
+        "capacities": {
+          "bolt_shear_kips": 15.9,
+          "weld_kips": 0.0,
+          "bearing_kips": 0.0
+        },
+        "issues": []
+      },
+      "error": null
+    },
+    "fasteners": {
+      "success": true,
+      "time_ms": 2016.4243000326678,
+      "data": {
+        "validator": "fastener",
+        "total_checks": 5,
+        "passed": 5,
+        "failed": 0,
+        "warnings": 0,
+        "critical_failures": 0,
+        "required_pretension_kips": 0,
+        "calculated_torque_ft_lb": 0,
+        "slip_resistance_kips": 0,
+        "shear_capacity_kips": 0,
+        "issues": []
+      },
+      "error": null
+    },
+    "rigging": {
+      "success": true,
+      "time_ms": 2015.6503999605775,
+      "data": {
+        "validator": "rigging",
+        "total_checks": 6,
+        "passed": 6,
+        "failed": 0,
+        "warnings": 0,
+        "critical_failures": 0,
+        "required_capacity_lbs": 19629.90915244728,
+        "design_factor": 4.0,
+        "lug_capacity_lbs": 8100.0,
+        "stresses": {
+          "shear_ksi": 8.724404067754346,
+          "bearing_ksi": 17.448808135508692,
+          "tensile_ksi": 6.5433030508157595
+        },
+        "issues": [],
+        "rigging_arrangement": {
+          "validator": "rigging",
+          "total_checks": 4,
+          "passed": 4,
+          "failed": 0,
+          "warnings": 0,
+          "critical_failures": 0,
+          "required_capacity_lbs": 0,
+          "design_factor": 3.0,
+          "lug_capacity_lbs": 0,
+          "stresses": {
+            "shear_ksi": 0,
+            "bearing_ksi": 0,
+            "tensile_ksi": 0
+          },
+          "issues": [
+            {
+              "severity": "info",
+              "check_type": "sling_angle_reminder",
+              "message": "Verify sling angles \u226545\u00b0 from horizontal for safe rigging",
+              "suggestion": "Sling angles <45\u00b0 significantly reduce capacity",
+              "standard_reference": "OSHA 1926.251"
+            }
+          ]
+        }
+      },
+      "error": null
+    },
+    "inspection": {
+      "success": true,
+      "time_ms": 2015.3775999788195,
+      "data": {
+        "validator": "inspection_qc",
+        "total_checks": 10,
+        "passed": 8,
+        "failed": 1,
+        "warnings": 1,
+        "critical_failures": 0,
+        "statistics": {
+          "welds_checked": 3,
+          "nde_requirements_missing": 3,
+          "documentation_gaps": 1,
+          "inspection_points": 0
+        },
+        "inspection_plan": [
+          "Part: ACHE-150-001",
+          "========================================",
+          "PRE-FABRICATION:",
+          "  [ ] Material receiving inspection",
+          "  [ ] MTR review and filing",
+          "  [ ] WPS/PQR verification",
+          "",
+          "DURING FABRICATION:",
+          "  [ ] Fit-up inspection",
+          "  [ ] In-process dimensional checks",
+          "",
+          "NDE INSPECTION:",
+          "",
+          "FINAL INSPECTION:",
+          "  [ ] Visual inspection - all welds",
+          "  [ ] Dimensional verification",
+          "  [ ] Surface preparation (if coating)",
+          "  [ ] Coating inspection (if applicable)",
+          "  [ ] Nameplate/marking verification",
+          "  [ ] Documentation package complete"
+        ],
+        "required_documentation": [
+          "MTR (Mill Test Reports)"
+        ],
+        "issues": [
+          {
+            "severity": "error",
+            "check_type": "nde_missing",
+            "message": "Weld W1: Missing NDE - VT",
+            "location": "Weld W1",
+            "suggestion": "Add VT per ASME IX",
+            "standard_reference": "ASME IX"
+          },
+          {
+            "severity": "error",
+            "check_type": "nde_missing",
+            "message": "Weld W2: Missing NDE - VT",
+            "location": "Weld W2",
+            "suggestion": "Add VT per ASME IX",
+            "standard_reference": "ASME IX"
+          },
+          {
+            "severity": "error",
+            "check_type": "nde_missing",
+            "message": "Weld W3: Missing NDE - VT",
+            "location": "Weld W3",
+            "suggestion": "Add VT per ASME IX",
+            "standard_reference": "ASME IX"
+          },
+          {
+            "severity": "warning",
+            "check_type": "no_documentation",
+            "message": "No applicable codes specified for documentation requirements",
+            "location": null,
+            "suggestion": "Specify applicable codes (ASME VIII, AWS D1.1, API 661, etc.)",
+            "standard_reference": null
+          },
+          {
+            "severity": "info",
+            "check_type": "no_critical_dimensions",
+            "message": "No critical dimensions identified for inspection",
+            "location": null,
+            "suggestion": "Identify key dimensions for dimensional inspection",
+            "standard_reference": null
+          },
+          {
+            "severity": "info",
+            "check_type": "mtr_required",
+            "message": "MTR required for material traceability",
+            "location": null,
+            "suggestion": "Collect MTR for all pressure-retaining and structural materials",
+            "standard_reference": null
+          }
+        ]
+      },
+      "error": null
+    },
+    "documentation": {
+      "success": true,
+      "time_ms": 2023.296800092794,
+      "data": {
+        "validator": "documentation",
+        "total_checks": 14,
+        "passed": 13,
+        "failed": 0,
+        "warnings": 1,
+        "critical_failures": 0,
+        "title_block_complete": false,
+        "required_notes_present": false,
+        "missing_elements": [
+          "date"
+        ],
+        "issues": [
+          {
+            "severity": "warning",
+            "check_type": "title_block_missing",
+            "message": "Title block missing: date",
+            "suggestion": "Add date to title block",
+            "standard_reference": "ASME Y14.100"
+          }
+        ],
+        "notes_validation": {
+          "validator": "documentation",
+          "total_checks": 7,
+          "passed": 6,
+          "failed": 0,
+          "warnings": 1,
+          "critical_failures": 0,
+          "title_block_complete": false,
+          "required_notes_present": false,
+          "missing_elements": [
+            "general_tolerances"
+          ],
+          "issues": [
+            {
+              "severity": "warning",
+              "check_type": "note_missing",
+              "message": "Required note missing: General Tolerances",
+              "suggestion": "Add general tolerances note per standard practice",
+              "standard_reference": null
+            }
+          ]
+        },
+        "bom_validation": {
+          "validator": "documentation",
+          "total_checks": 10,
+          "passed": 10,
+          "failed": 0,
+          "warnings": 0,
+          "critical_failures": 0,
+          "title_block_complete": false,
+          "required_notes_present": false,
+          "missing_elements": [],
+          "issues": []
+        }
+      },
+      "error": null
+    },
+    "report": {
+      "success": true,
+      "time_ms": 2015.966499922797,
+      "data": {
+        "format": "json",
+        "content": "{\n  \"metadata\": {\n    \"report_id\": \"VR-20251226-104706\",\n    \"generated_at\": \"2025-12-26T10:47:06.577775\",\n    \"drawing_number\": \"ACHE-150-001\",\n    \"drawing_revision\": \"B\",\n    \"project_name\": \"Hot Oil Cooler - Unit 150\",\n    \"validator_version\": \"1.0.0\",\n    \"report_level\": \"detailed\"\n  },\n  \"overall_status\": \"CRITICAL\",\n  \"overall_pass_rate\": 84.29,\n  \"statistics\": {\n    \"total_checks\": 140,\n    \"total_passed\": 118,\n    \"total_failed\": 6,\n    \"total_warnings\": 13,\n    \"total_critical\": 1\n  },\n  \"validator_summaries\": [\n    {\n      \"validator_name\": \"api661_bundle\",\n      \"total_checks\": 9,\n      \"passed\": 3,\n      \"failed\": 2,\n      \"warnings\": 4,\n      \"critical_failures\": 1,\n      \"pass_rate\": 33.33333333333333,\n      \"status\": \"CRITICAL\"\n    },\n    {\n      \"validator_name\": \"api661_full\",\n      \"total_checks\": 72,\n      \"passed\": 65,\n      \"failed\": 1,\n      \"warnings\": 5,\n      \"critical_failures\": 0,\n      \"pass_rate\": 90.27777777777779,\n      \"status\": \"FAIL\"\n    },\n    {\n      \"validator_name\": \"asme_viii\",\n      \"total_checks\": 8,\n      \"passed\": 6,\n      \"failed\": 1,\n      \"warnings\": 1,\n      \"critical_failures\": 0,\n      \"pass_rate\": 75.0,\n      \"status\": \"FAIL\"\n    },\n    {\n      \"validator_name\": \"materials\",\n      \"total_checks\": 3,\n      \"passed\": 2,\n      \"failed\": 0,\n      \"warnings\": 1,\n      \"critical_failures\": 0,\n      \"pass_rate\": 66.66666666666666,\n      \"status\": \"PASS_WITH_WARNINGS\"\n    },\n    {\n      \"validator_name\": \"sspc_coating\",\n      \"total_checks\": 6,\n      \"passed\": 3,\n      \"failed\": 1,\n      \"warnings\": 0,\n      \"critical_failures\": 0,\n      \"pass_rate\": 50.0,\n      \"status\": \"FAIL\"\n    },\n    {\n      \"validator_name\": \"fabrication\",\n      \"total_checks\": 6,\n      \"passed\": 6,\n      \"failed\": 0,\n      \"warnings\": 0,\n      \"critical_failures\": 0,\n      \"pass_rate\": 100.0,\n      \"status\": \"PASS\"\n    },\n    {\n      \"validator_name\": \"structural\",\n      \"total_checks\": 1,\n      \"passed\": 1,\n      \"failed\": 0,\n      \"warnings\": 0,\n      \"critical_failures\": 0,\n      \"pass_rate\": 100.0,\n      \"status\": \"PASS\"\n    },\n    {\n      \"validator_name\": \"fasteners\",\n      \"total_checks\": 5,\n      \"passed\": 5,\n      \"failed\": 0,\n      \"warnings\": 0,\n      \"critical_failures\": 0,\n      \"pass_rate\": 100.0,\n      \"status\": \"PASS\"\n    },\n    {\n      \"validator_name\": \"rigging\",\n      \"total_checks\": 6,\n      \"passed\": 6,\n      \"failed\": 0,\n      \"warnings\": 0,\n      \"critical_failures\": 0,\n      \"pass_rate\": 100.0,\n      \"status\": \"PASS\"\n    },\n    {\n      \"validator_name\": \"inspection\",\n      \"total_checks\": 10,\n      \"passed\": 8,\n      \"failed\": 1,\n      \"warnings\": 1,\n      \"critical_failures\": 0,\n      \"pass_rate\": 80.0,\n      \"status\": \"FAIL\"\n    },\n    {\n      \"validator_name\": \"documentation\",\n      \"total_checks\": 14,\n      \"passed\": 13,\n      \"failed\": 0,\n      \"warnings\": 1,\n      \"critical_failures\": 0,\n      \"pass_rate\": 92.85714285714286,\n      \"status\": \"PASS_WITH_WARNINGS\"\n    }\n  ],\n  \"critical_issues\": [\n    {\n      \"severity\": \"critical\",\n      \"check_type\": \"tube_keepers_missing\",\n      \"message\": \"Tube keepers not shown at tube supports\",\n      \"location\": null,\n      \"suggestion\": \"Add tube keepers at each tube support location\",\n      \"standard_reference\": \"API 661 7.1.1.5\",\n      \"validator\": \"api661_bundle\"\n    }\n  ],\n  \"all_issues\": [\n    {\n      \"severity\": \"critical\",\n      \"check_type\": \"tube_keepers_missing\",\n      \"message\": \"Tube keepers not shown at tube supports\",\n      \"location\": null,\n      \"suggestion\": \"Add tube keepers at each tube support location\",\n      \"standard_reference\": \"API 661 7.1.1.5\",\n      \"validator\": \"api661_bundle\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"air_seals_missing\",\n      \"message\": \"Air seals / P-strips not specified\",\n      \"location\": null,\n      \"suggestion\": \"Add air seals throughout bundle and bay to minimize air leakage/bypassing\",\n      \"standard_reference\": \"API 661 7.1.1.8\",\n      \"validator\": \"api661_bundle\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"tube_keepers\",\n      \"message\": \"Tube keepers required at each tube support\",\n      \"location\": null,\n      \"suggestion\": \"Add tube keepers at each support location\",\n      \"standard_reference\": \"API 661 7.1.1.5\",\n      \"validator\": \"api661_full\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"mawp\",\n      \"message\": \"MAWP = 2 psi < Design P = 150 psi\",\n      \"location\": null,\n      \"suggestion\": \"Increase wall thickness or use higher strength material\",\n      \"standard_reference\": \"ASME VIII UG-98\",\n      \"validator\": \"asme_viii\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"surface_prep_invalid\",\n      \"message\": \"Surface prep 'SSPC-SP10' is not a valid SSPC standard\",\n      \"location\": null,\n      \"suggestion\": \"Use valid SSPC standard: SP-1, SP-2, SP-3, SP-6, SP-7, SP-10...\",\n      \"standard_reference\": \"SSPC\",\n      \"validator\": \"sspc_coating\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"nde_missing\",\n      \"message\": \"Weld W1: Missing NDE - VT\",\n      \"location\": \"Weld W1\",\n      \"suggestion\": \"Add VT per ASME IX\",\n      \"standard_reference\": \"ASME IX\",\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"nde_missing\",\n      \"message\": \"Weld W2: Missing NDE - VT\",\n      \"location\": \"Weld W2\",\n      \"suggestion\": \"Add VT per ASME IX\",\n      \"standard_reference\": \"ASME IX\",\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"error\",\n      \"check_type\": \"nde_missing\",\n      \"message\": \"Weld W3: Missing NDE - VT\",\n      \"location\": \"Weld W3\",\n      \"suggestion\": \"Add VT per ASME IX\",\n      \"standard_reference\": \"ASME IX\",\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"tube_support_spacing\",\n      \"message\": \"Tube support spacing not specified\",\n      \"location\": null,\n      \"suggestion\": \"Specify tube support spacing (max 72\\\" / 6 ft)\",\n      \"standard_reference\": \"API 661 7.1.1.4\",\n      \"validator\": \"api661_bundle\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"lateral_movement_not_specified\",\n      \"message\": \"Bundle lateral movement provision not specified\",\n      \"location\": null,\n      \"suggestion\": \"Specify lateral movement (\\u22656mm both directions OR \\u226512.7mm one direction)\",\n      \"standard_reference\": \"API 661 7.1.1.2\",\n      \"validator\": \"api661_bundle\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"vent_missing\",\n      \"message\": \"Vent connection not shown\",\n      \"location\": null,\n      \"suggestion\": \"Add vent at header high point\",\n      \"standard_reference\": \"API 661 7.1.9\",\n      \"validator\": \"api661_bundle\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"drain_missing\",\n      \"message\": \"Drain connection not shown\",\n      \"location\": null,\n      \"suggestion\": \"Add drain at header low point\",\n      \"standard_reference\": \"API 661 7.1.9\",\n      \"validator\": \"api661_bundle\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"air_seals\",\n      \"message\": \"Air seals / P-strips recommended throughout bundle\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"API 661 7.1.1.8\",\n      \"validator\": \"api661_full\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"thermal_expansion\",\n      \"message\": \"Thermal expansion provision required\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"API 661 7.1.1.3\",\n      \"validator\": \"api661_full\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"restraint_analysis\",\n      \"message\": \"Restraint relief analysis required regardless of \\u0394T\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"API 661 7.1.6.1.3\",\n      \"validator\": \"api661_full\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"flange_welds\",\n      \"message\": \"Full penetration welds required for flanges\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"API 661 9.4.2\",\n      \"validator\": \"api661_full\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"joint_type\",\n      \"message\": \"Tube-to-tubesheet joint type not specified\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"API 661 7.1.6\",\n      \"validator\": \"api661_full\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"material_traceability\",\n      \"message\": \"Material Test Report (MTR) not confirmed\",\n      \"location\": null,\n      \"suggestion\": \"Ensure MTR available per UG-93\",\n      \"standard_reference\": \"ASME VIII UG-93\",\n      \"validator\": \"asme_viii\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"material_spec_unknown\",\n      \"message\": \"Material specification 'SA-516-70' not in standard database\",\n      \"suggestion\": \"Verify specification is correct and add to material database\",\n      \"standard_reference\": null,\n      \"validator\": \"materials\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"no_documentation\",\n      \"message\": \"No applicable codes specified for documentation requirements\",\n      \"location\": null,\n      \"suggestion\": \"Specify applicable codes (ASME VIII, AWS D1.1, API 661, etc.)\",\n      \"standard_reference\": null,\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"warning\",\n      \"check_type\": \"title_block_missing\",\n      \"message\": \"Title block missing: date\",\n      \"suggestion\": \"Add date to title block\",\n      \"standard_reference\": \"ASME Y14.100\",\n      \"validator\": \"documentation\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"plug_type\",\n      \"message\": \"Shoulder type plugs with straight-threaded shank\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"API 661 7.1.7.1\",\n      \"validator\": \"api661_full\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"hollow_plugs\",\n      \"message\": \"No hollow plugs (compliant)\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"API 661 7.1.7.2\",\n      \"validator\": \"api661_full\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"nozzle_sizes\",\n      \"message\": \"No prohibited nozzle sizes\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"API 661 7.1.9.5\",\n      \"validator\": \"api661_full\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"threaded_nozzles\",\n      \"message\": \"No threaded nozzles (compliant)\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"IOGP S-710\",\n      \"validator\": \"api661_full\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"grooves\",\n      \"message\": \"2 grooves per IOGP S-710\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"IOGP S-710\",\n      \"validator\": \"api661_full\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"wall_thickness\",\n      \"message\": \"Wall thickness 0.750\\\" \\u2265 min -12.181\\\"\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"ASME VIII UG-27\",\n      \"validator\": \"asme_viii\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"joint_efficiency\",\n      \"message\": \"Joint Type 2: E = 0.85 (Spot RT)\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"ASME VIII UW-12\",\n      \"validator\": \"asme_viii\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"hydro_test_calc\",\n      \"message\": \"Required hydro test pressure = 195 psi (1.3 \\u00d7 150 psi)\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"ASME VIII UG-99\",\n      \"validator\": \"asme_viii\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"corrosion_allowance\",\n      \"message\": \"Corrosion allowance = 0.0625\\\"\",\n      \"location\": null,\n      \"suggestion\": null,\n      \"standard_reference\": \"ASME VIII UG-25\",\n      \"validator\": \"asme_viii\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"no_critical_dimensions\",\n      \"message\": \"No critical dimensions identified for inspection\",\n      \"location\": null,\n      \"suggestion\": \"Identify key dimensions for dimensional inspection\",\n      \"standard_reference\": null,\n      \"validator\": \"inspection\"\n    },\n    {\n      \"severity\": \"info\",\n      \"check_type\": \"mtr_required\",\n      \"message\": \"MTR required for material traceability\",\n      \"location\": null,\n      \"suggestion\": \"Collect MTR for all pressure-retaining and structural materials\",\n      \"standard_reference\": null,\n      \"validator\": \"inspection\"\n    }\n  ],\n  \"recommendations\": [\n    \"PRIORITY: Address 1 critical issue(s) before release\",\n    \"Review welding specifications against AWS D1.1 requirements\",\n    \"Reference standards: API 661 7.1.1.2, API 661 7.1.1.3, API 661 7.1.1.4, API 661 7.1.1.5, API 661 7.1.1.8, API 661 7.1.6, API 661 7.1.6.1.3, API 661 7.1.7.1, API 661 7.1.7.2, API 661 7.1.9, API 661 7.1.9.5, API 661 9.4.2, ASME IX, ASME VIII UG-25, ASME VIII UG-27, ASME VIII UG-93, ASME VIII UG-98, ASME VIII UG-99, ASME VIII UW-12, ASME Y14.100, IOGP S-710, SSPC\"\n  ]\n}"
+      },
+      "error": null
+    }
+  },
+  "all_issues": [
+    {
+      "source": "API661 Bundle",
+      "severity": "warning",
+      "check_type": "tube_support_spacing",
+      "message": "Tube support spacing not specified",
+      "location": null,
+      "suggestion": "Specify tube support spacing (max 72\" / 6 ft)",
+      "standard_reference": "API 661 7.1.1.4"
+    },
+    {
+      "source": "API661 Bundle",
+      "severity": "critical",
+      "check_type": "tube_keepers_missing",
+      "message": "Tube keepers not shown at tube supports",
+      "location": null,
+      "suggestion": "Add tube keepers at each tube support location",
+      "standard_reference": "API 661 7.1.1.5"
+    },
+    {
+      "source": "API661 Bundle",
+      "severity": "error",
+      "check_type": "air_seals_missing",
+      "message": "Air seals / P-strips not specified",
+      "location": null,
+      "suggestion": "Add air seals throughout bundle and bay to minimize air leakage/bypassing",
+      "standard_reference": "API 661 7.1.1.8"
+    },
+    {
+      "source": "API661 Bundle",
+      "severity": "warning",
+      "check_type": "lateral_movement_not_specified",
+      "message": "Bundle lateral movement provision not specified",
+      "location": null,
+      "suggestion": "Specify lateral movement (\u22656mm both directions OR \u226512.7mm one direction)",
+      "standard_reference": "API 661 7.1.1.2"
+    },
+    {
+      "source": "API661 Bundle",
+      "severity": "warning",
+      "check_type": "vent_missing",
+      "message": "Vent connection not shown",
+      "location": null,
+      "suggestion": "Add vent at header high point",
+      "standard_reference": "API 661 7.1.9"
+    },
+    {
+      "source": "API661 Bundle",
+      "severity": "warning",
+      "check_type": "drain_missing",
+      "message": "Drain connection not shown",
+      "location": null,
+      "suggestion": "Add drain at header low point",
+      "standard_reference": "API 661 7.1.9"
+    },
+    {
+      "source": "API661 Full",
+      "severity": "error",
+      "check_type": "tube_keepers",
+      "message": "Tube keepers required at each tube support",
+      "location": null,
+      "suggestion": "Add tube keepers at each support location",
+      "standard_reference": "API 661 7.1.1.5"
+    },
+    {
+      "source": "API661 Full",
+      "severity": "warning",
+      "check_type": "air_seals",
+      "message": "Air seals / P-strips recommended throughout bundle",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "API 661 7.1.1.8"
+    },
+    {
+      "source": "API661 Full",
+      "severity": "warning",
+      "check_type": "thermal_expansion",
+      "message": "Thermal expansion provision required",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "API 661 7.1.1.3"
+    },
+    {
+      "source": "API661 Full",
+      "severity": "warning",
+      "check_type": "restraint_analysis",
+      "message": "Restraint relief analysis required regardless of \u0394T",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "API 661 7.1.6.1.3"
+    },
+    {
+      "source": "API661 Full",
+      "severity": "warning",
+      "check_type": "flange_welds",
+      "message": "Full penetration welds required for flanges",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "API 661 9.4.2"
+    },
+    {
+      "source": "API661 Full",
+      "severity": "info",
+      "check_type": "plug_type",
+      "message": "Shoulder type plugs with straight-threaded shank",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "API 661 7.1.7.1"
+    },
+    {
+      "source": "API661 Full",
+      "severity": "info",
+      "check_type": "hollow_plugs",
+      "message": "No hollow plugs (compliant)",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "API 661 7.1.7.2"
+    },
+    {
+      "source": "API661 Full",
+      "severity": "info",
+      "check_type": "nozzle_sizes",
+      "message": "No prohibited nozzle sizes",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "API 661 7.1.9.5"
+    },
+    {
+      "source": "API661 Full",
+      "severity": "info",
+      "check_type": "threaded_nozzles",
+      "message": "No threaded nozzles (compliant)",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "IOGP S-710"
+    },
+    {
+      "source": "API661 Full",
+      "severity": "warning",
+      "check_type": "joint_type",
+      "message": "Tube-to-tubesheet joint type not specified",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "API 661 7.1.6"
+    },
+    {
+      "source": "API661 Full",
+      "severity": "info",
+      "check_type": "grooves",
+      "message": "2 grooves per IOGP S-710",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "IOGP S-710"
+    },
+    {
+      "source": "ASME VIII",
+      "severity": "info",
+      "check_type": "wall_thickness",
+      "message": "Wall thickness 0.750\" \u2265 min -12.181\"",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "ASME VIII UG-27"
+    },
+    {
+      "source": "ASME VIII",
+      "severity": "info",
+      "check_type": "joint_efficiency",
+      "message": "Joint Type 2: E = 0.85 (Spot RT)",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "ASME VIII UW-12"
+    },
+    {
+      "source": "ASME VIII",
+      "severity": "info",
+      "check_type": "hydro_test_calc",
+      "message": "Required hydro test pressure = 195 psi (1.3 \u00d7 150 psi)",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "ASME VIII UG-99"
+    },
+    {
+      "source": "ASME VIII",
+      "severity": "error",
+      "check_type": "mawp",
+      "message": "MAWP = 2 psi < Design P = 150 psi",
+      "location": null,
+      "suggestion": "Increase wall thickness or use higher strength material",
+      "standard_reference": "ASME VIII UG-98"
+    },
+    {
+      "source": "ASME VIII",
+      "severity": "info",
+      "check_type": "corrosion_allowance",
+      "message": "Corrosion allowance = 0.0625\"",
+      "location": null,
+      "suggestion": null,
+      "standard_reference": "ASME VIII UG-25"
+    },
+    {
+      "source": "ASME VIII",
+      "severity": "warning",
+      "check_type": "material_traceability",
+      "message": "Material Test Report (MTR) not confirmed",
+      "location": null,
+      "suggestion": "Ensure MTR available per UG-93",
+      "standard_reference": "ASME VIII UG-93"
+    },
+    {
+      "source": "Materials",
+      "severity": "warning",
+      "check_type": "material_spec_unknown",
+      "message": "Material specification 'SA-516-70' not in standard database",
+      "suggestion": "Verify specification is correct and add to material database",
+      "standard_reference": null
+    },
+    {
+      "source": "SSPC Coating",
+      "severity": "error",
+      "check_type": "surface_prep_invalid",
+      "message": "Surface prep 'SSPC-SP10' is not a valid SSPC standard",
+      "location": null,
+      "suggestion": "Use valid SSPC standard: SP-1, SP-2, SP-3, SP-6, SP-7, SP-10...",
+      "standard_reference": "SSPC"
+    },
+    {
+      "source": "Inspection",
+      "severity": "error",
+      "check_type": "nde_missing",
+      "message": "Weld W1: Missing NDE - VT",
+      "location": "Weld W1",
+      "suggestion": "Add VT per ASME IX",
+      "standard_reference": "ASME IX"
+    },
+    {
+      "source": "Inspection",
+      "severity": "error",
+      "check_type": "nde_missing",
+      "message": "Weld W2: Missing NDE - VT",
+      "location": "Weld W2",
+      "suggestion": "Add VT per ASME IX",
+      "standard_reference": "ASME IX"
+    },
+    {
+      "source": "Inspection",
+      "severity": "error",
+      "check_type": "nde_missing",
+      "message": "Weld W3: Missing NDE - VT",
+      "location": "Weld W3",
+      "suggestion": "Add VT per ASME IX",
+      "standard_reference": "ASME IX"
+    },
+    {
+      "source": "Inspection",
+      "severity": "warning",
+      "check_type": "no_documentation",
+      "message": "No applicable codes specified for documentation requirements",
+      "location": null,
+      "suggestion": "Specify applicable codes (ASME VIII, AWS D1.1, API 661, etc.)",
+      "standard_reference": null
+    },
+    {
+      "source": "Inspection",
+      "severity": "info",
+      "check_type": "no_critical_dimensions",
+      "message": "No critical dimensions identified for inspection",
+      "location": null,
+      "suggestion": "Identify key dimensions for dimensional inspection",
+      "standard_reference": null
+    },
+    {
+      "source": "Inspection",
+      "severity": "info",
+      "check_type": "mtr_required",
+      "message": "MTR required for material traceability",
+      "location": null,
+      "suggestion": "Collect MTR for all pressure-retaining and structural materials",
+      "standard_reference": null
+    },
+    {
+      "source": "Documentation",
+      "severity": "warning",
+      "check_type": "title_block_missing",
+      "message": "Title block missing: date",
+      "suggestion": "Add date to title block",
+      "standard_reference": "ASME Y14.100"
+    }
+  ],
+  "summary": {
+    "total_validators": 12,
+    "passed": 12,
+    "failed": 0,
+    "critical_issues": 1,
+    "warnings": 13,
+    "total_time_ms": 24233.054299955256
+  }
+}
