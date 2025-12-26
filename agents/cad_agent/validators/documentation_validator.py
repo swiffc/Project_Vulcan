@@ -37,6 +37,7 @@ class DrawingType(Enum):
     MACHINED_PART = "machined_part"
     SHEET_METAL = "sheet_metal"
     CASTING = "casting"
+    PRESSURE_VESSEL = "pressure_vessel"
 
 
 class DocumentationLevel(Enum):
