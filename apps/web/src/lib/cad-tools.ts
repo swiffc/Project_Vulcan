@@ -2167,7 +2167,7 @@ export const CAD_TOOLS: Anthropic.Tool[] = [
     },
   },
 
-  // === Utilities ===
+  // === Screenshot & Vision Tools ===
   {
     name: "sw_screenshot",
     description: "Take a screenshot of the current SolidWorks view.",
@@ -2175,6 +2175,154 @@ export const CAD_TOOLS: Anthropic.Tool[] = [
       type: "object" as const,
       properties: {},
       required: [],
+    },
+  },
+  {
+    name: "sw_screenshot_window",
+    description: "Capture screenshot of only the SolidWorks window (not full screen).",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        window_title: {
+          type: "string",
+          description: "Window title to capture (default: 'SolidWorks')",
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "sw_screenshot_viewport",
+    description: "Capture screenshot of only the 3D viewport (excludes toolbars, feature tree).",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "sw_screenshot_feature_tree",
+    description: "Capture screenshot of the feature tree panel.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "sw_screenshot_property_manager",
+    description: "Capture screenshot of the property manager panel.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "sw_capture_multi_view",
+    description: "Capture multiple standard views (Front, Top, Right, Isometric) in one call.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        views: {
+          type: "array",
+          items: { type: "string" },
+          description: "List of views to capture: front, top, right, isometric, etc.",
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "sw_extract_dimensions_screenshot",
+    description: "Extract dimensions visible in screenshot using OCR and pattern matching.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        image_base64: {
+          type: "string",
+          description: "Base64 encoded screenshot image",
+        },
+      },
+      required: ["image_base64"],
+    },
+  },
+  {
+    name: "sw_detect_gdt_symbols",
+    description: "Detect and identify GD&T symbols in drawing screenshot.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        image_base64: {
+          type: "string",
+          description: "Base64 encoded screenshot image",
+        },
+      },
+      required: ["image_base64"],
+    },
+  },
+  {
+    name: "sw_detect_annotations",
+    description: "Detect and extract all annotations (notes, balloons, dimensions) from drawing screenshot.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        image_base64: {
+          type: "string",
+          description: "Base64 encoded screenshot image",
+        },
+      },
+      required: ["image_base64"],
+    },
+  },
+  {
+    name: "sw_extract_bom_screenshot",
+    description: "Extract BOM table from drawing screenshot.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        image_base64: {
+          type: "string",
+          description: "Base64 encoded screenshot image",
+        },
+      },
+      required: ["image_base64"],
+    },
+  },
+  {
+    name: "sw_analyze_drawing_sheet",
+    description: "Comprehensive analysis of entire drawing sheet (dimensions, GD&T, annotations, BOM).",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        image_base64: {
+          type: "string",
+          description: "Base64 encoded screenshot image",
+        },
+      },
+      required: ["image_base64"],
+    },
+  },
+  {
+    name: "sw_compare_screenshots",
+    description: "Compare two screenshots and highlight differences.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        image1_base64: {
+          type: "string",
+          description: "First screenshot (base64)",
+        },
+        image2_base64: {
+          type: "string",
+          description: "Second screenshot (base64)",
+        },
+        threshold: {
+          type: "number",
+          description: "Similarity threshold (0.0-1.0, default: 0.95)",
+        },
+      },
+      required: ["image1_base64", "image2_base64"],
     },
   },
   {
