@@ -96,7 +96,8 @@
       "Bash(where:*)",
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(/c/Users/DCornealius/AppData/Local/Programs/Python/Python311/python.exe -m py_compile \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan/desktop_server/com/solidworks_advanced.py\")"
     ]
   }
 }
