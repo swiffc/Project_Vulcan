@@ -2467,10 +2467,21 @@ async def check_cross_part(request: dict):
             hole_pattern = None
             if iface.get("hole_patterns"):
                 hp = iface["hole_patterns"][0]
+                num_holes = hp.get("holes", 4)
+                diameter = hp.get("diameter", 0.8125)
+                bolt_circle = hp.get("bolt_circle", 6.0)
+                # Create holes list for bolt circle pattern
+                import math
+                holes_list = []
+                for h in range(num_holes):
+                    angle = 2 * math.pi * h / num_holes
+                    x = bolt_circle / 2 * math.cos(angle)
+                    y = bolt_circle / 2 * math.sin(angle)
+                    holes_list.append({"x": x, "y": y, "diameter": diameter, "type": "bolt"})
                 hole_pattern = HolePattern(
-                    num_holes=hp.get("holes", 4),
-                    hole_diameter=hp.get("diameter", 0.8125),
-                    bolt_circle_diameter=hp.get("bolt_circle", 6.0),
+                    holes=holes_list,
+                    bolt_circle_diameter=bolt_circle,
+                    pattern_type="circular",
                 )
 
             # Create interface for part A
