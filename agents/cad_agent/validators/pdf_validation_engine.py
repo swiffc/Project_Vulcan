@@ -68,6 +68,11 @@ class PDFValidationResult:
     dimension_results: Optional[Dict[str, Any]] = None
     completeness_results: Optional[Dict[str, Any]] = None
 
+    # Phase 26 - HPC Standards results
+    hpc_mechanical_results: Optional[Dict[str, Any]] = None
+    hpc_walkway_results: Optional[Dict[str, Any]] = None
+    hpc_header_results: Optional[Dict[str, Any]] = None
+
     # Summary statistics
     total_checks: int = 0
     passed: int = 0
@@ -110,6 +115,11 @@ class PDFValidationEngine:
         self.dimension = DimensionValidator()
         self.completeness = DrawingCompletenessValidator()
 
+        # Phase 26 - HPC Standards Validators
+        self.hpc_mechanical = HPCMechanicalValidator()
+        self.hpc_walkway = HPCWalkwayValidator()
+        self.hpc_header = HPCHeaderValidator()
+
         if not self.extractor:
             logger.warning("PDFDrawingExtractor not available - extraction will fail")
 
@@ -140,7 +150,8 @@ class PDFValidationEngine:
 
         # Default to all standards
         if standards is None:
-            standards = ["api_661", "asme", "aws_d1_1", "osha", "bom", "dimension", "completeness"]
+            standards = ["api_661", "asme", "aws_d1_1", "osha", "bom", "dimension", "completeness",
+                        "hpc_mechanical", "hpc_walkway", "hpc_header"]
 
         # Step 1: Extract data from PDF
         if not self.extractor:
