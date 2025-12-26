@@ -628,3 +628,441 @@ class ReportGenerator:
             "critical": self.report.total_critical,
             "recommendations": self.report.recommendations,
         }
+
+    def export_pdf(self, filepath: str, include_charts: bool = True) -> bytes:
+        """
+        Export report as professional PDF document.
+
+        Args:
+            filepath: File path to write to
+            include_charts: Whether to include pie/bar charts
+
+        Returns:
+            PDF bytes
+        """
+        if not self.report:
+            raise ValueError("No report generated. Call generate_report() first.")
+
+        if not REPORTLAB_AVAILABLE:
+            raise ImportError("reportlab is required for PDF export. Install with: pip install reportlab")
+
+        # Create PDF buffer
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=letter,
+            rightMargin=0.75*inch,
+            leftMargin=0.75*inch,
+            topMargin=0.75*inch,
+            bottomMargin=0.75*inch
+        )
+
+        # Get styles
+        styles = getSampleStyleSheet()
+
+        # Custom styles
+        styles.add(ParagraphStyle(
+            name='ReportTitle',
+            parent=styles['Heading1'],
+            fontSize=24,
+            spaceAfter=20,
+            textColor=colors.HexColor('#1a1a2e')
+        ))
+        styles.add(ParagraphStyle(
+            name='SectionHeader',
+            parent=styles['Heading2'],
+            fontSize=14,
+            spaceBefore=15,
+            spaceAfter=10,
+            textColor=colors.HexColor('#16213e')
+        ))
+        styles.add(ParagraphStyle(
+            name='StatusPass',
+            parent=styles['Normal'],
+            fontSize=18,
+            textColor=colors.HexColor('#28a745'),
+            fontName='Helvetica-Bold'
+        ))
+        styles.add(ParagraphStyle(
+            name='StatusFail',
+            parent=styles['Normal'],
+            fontSize=18,
+            textColor=colors.HexColor('#dc3545'),
+            fontName='Helvetica-Bold'
+        ))
+        styles.add(ParagraphStyle(
+            name='StatusWarning',
+            parent=styles['Normal'],
+            fontSize=18,
+            textColor=colors.HexColor('#ffc107'),
+            fontName='Helvetica-Bold'
+        ))
+
+        # Build document elements
+        elements = []
+
+        # === TITLE SECTION ===
+        elements.append(Paragraph("VALIDATION REPORT", styles['ReportTitle']))
+        elements.append(HRFlowable(width="100%", thickness=2, color=colors.HexColor('#1a1a2e')))
+        elements.append(Spacer(1, 12))
+
+        # Metadata table
+        meta_data = [
+            ['Drawing Number:', self.report.metadata.drawing_number or 'Not Specified'],
+            ['Revision:', self.report.metadata.drawing_revision or '-'],
+            ['Project:', self.report.metadata.project_name or 'Not Specified'],
+            ['Report ID:', self.report.metadata.report_id],
+            ['Generated:', self.report.metadata.generated_at],
+        ]
+        meta_table = Table(meta_data, colWidths=[1.5*inch, 4*inch])
+        meta_table.setStyle(TableStyle([
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ]))
+        elements.append(meta_table)
+        elements.append(Spacer(1, 20))
+
+        # === OVERALL STATUS ===
+        status_style = styles['StatusPass']
+        if self.report.overall_status in ['FAIL', 'CRITICAL']:
+            status_style = styles['StatusFail']
+        elif self.report.overall_status == 'PASS_WITH_WARNINGS':
+            status_style = styles['StatusWarning']
+
+        elements.append(Paragraph(f"Overall Status: {self.report.overall_status}", status_style))
+        elements.append(Spacer(1, 20))
+
+        # === SUMMARY STATISTICS ===
+        elements.append(Paragraph("Summary Statistics", styles['SectionHeader']))
+
+        # Summary stats table
+        stats_data = [
+            ['Metric', 'Value'],
+            ['Total Checks', str(self.report.total_checks)],
+            ['Passed', str(self.report.total_passed)],
+            ['Failed', str(self.report.total_failed)],
+            ['Warnings', str(self.report.total_warnings)],
+            ['Critical Issues', str(self.report.total_critical)],
+            ['Pass Rate', f"{self.report.overall_pass_rate:.1f}%"],
+        ]
+        stats_table = Table(stats_data, colWidths=[2*inch, 1.5*inch])
+        stats_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1a1a2e')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('ALIGN', (1, 0), (1, -1), 'CENTER'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('TOPPADDING', (0, 0), (-1, -1), 6),
+            # Highlight pass rate row
+            ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#e8f5e9') if self.report.overall_pass_rate >= 80 else colors.HexColor('#ffebee')),
+        ]))
+        elements.append(stats_table)
+        elements.append(Spacer(1, 20))
+
+        # === PIE CHART ===
+        if include_charts and self.report.total_checks > 0:
+            elements.append(Paragraph("Results Distribution", styles['SectionHeader']))
+
+            drawing = Drawing(400, 200)
+            pie = Pie()
+            pie.x = 150
+            pie.y = 25
+            pie.width = 120
+            pie.height = 120
+
+            # Data for pie chart
+            pie_data = [self.report.total_passed, self.report.total_failed, self.report.total_warnings]
+            pie_labels = ['Passed', 'Failed', 'Warnings']
+            pie_colors = [colors.HexColor('#28a745'), colors.HexColor('#dc3545'), colors.HexColor('#ffc107')]
+
+            # Filter out zero values
+            filtered_data = []
+            filtered_labels = []
+            filtered_colors = []
+            for i, val in enumerate(pie_data):
+                if val > 0:
+                    filtered_data.append(val)
+                    filtered_labels.append(f"{pie_labels[i]}: {val}")
+                    filtered_colors.append(pie_colors[i])
+
+            if filtered_data:
+                pie.data = filtered_data
+                pie.labels = filtered_labels
+                pie.slices.strokeWidth = 0.5
+                for i, c in enumerate(filtered_colors):
+                    pie.slices[i].fillColor = c
+
+                drawing.add(pie)
+                elements.append(drawing)
+                elements.append(Spacer(1, 20))
+
+        # === VALIDATOR BREAKDOWN ===
+        elements.append(Paragraph("Validator Results", styles['SectionHeader']))
+
+        validator_data = [['Validator', 'Status', 'Checks', 'Passed', 'Failed', 'Warnings', 'Pass Rate']]
+        for summary in self.report.validator_summaries:
+            validator_data.append([
+                summary.validator_name[:25],
+                summary.status,
+                str(summary.total_checks),
+                str(summary.passed),
+                str(summary.failed),
+                str(summary.warnings),
+                f"{summary.pass_rate:.0f}%"
+            ])
+
+        validator_table = Table(validator_data, colWidths=[1.8*inch, 1*inch, 0.6*inch, 0.6*inch, 0.6*inch, 0.7*inch, 0.7*inch])
+
+        # Table style
+        table_style = [
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1a1a2e')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 8),
+            ('ALIGN', (2, 0), (-1, -1), 'CENTER'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ]
+
+        # Color-code status cells
+        for i, summary in enumerate(self.report.validator_summaries, start=1):
+            if summary.status in ['FAIL', 'CRITICAL']:
+                table_style.append(('BACKGROUND', (1, i), (1, i), colors.HexColor('#ffcdd2')))
+                table_style.append(('TEXTCOLOR', (1, i), (1, i), colors.HexColor('#c62828')))
+            elif summary.status == 'PASS_WITH_WARNINGS':
+                table_style.append(('BACKGROUND', (1, i), (1, i), colors.HexColor('#fff9c4')))
+            else:
+                table_style.append(('BACKGROUND', (1, i), (1, i), colors.HexColor('#c8e6c9')))
+
+        validator_table.setStyle(TableStyle(table_style))
+        elements.append(validator_table)
+        elements.append(Spacer(1, 20))
+
+        # === CRITICAL ISSUES ===
+        if self.report.critical_issues:
+            elements.append(Paragraph("Critical Issues (Requires Immediate Attention)", styles['SectionHeader']))
+
+            critical_data = [['Validator', 'Check Type', 'Issue', 'Suggestion']]
+            for issue in self.report.critical_issues[:10]:  # Limit to 10
+                critical_data.append([
+                    issue.get('validator', '-')[:15],
+                    issue.get('check_type', '-')[:20],
+                    issue.get('message', '-')[:50],
+                    (issue.get('suggestion', '-') or '-')[:40]
+                ])
+
+            critical_table = Table(critical_data, colWidths=[1*inch, 1.3*inch, 2.5*inch, 2*inch])
+            critical_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#c62828')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#ffebee')),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+                ('TOPPADDING', (0, 0), (-1, -1), 4),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ]))
+            elements.append(critical_table)
+            elements.append(Spacer(1, 20))
+
+        # === ALL ISSUES (Page Break) ===
+        if self.report.all_issues:
+            elements.append(PageBreak())
+            elements.append(Paragraph("All Issues", styles['SectionHeader']))
+
+            # Group issues by severity
+            severity_order = ['critical', 'error', 'warning', 'info']
+            severity_colors_map = {
+                'critical': colors.HexColor('#c62828'),
+                'error': colors.HexColor('#d32f2f'),
+                'warning': colors.HexColor('#f57c00'),
+                'info': colors.HexColor('#1976d2')
+            }
+
+            issues_data = [['#', 'Severity', 'Validator', 'Check Type', 'Message']]
+            for idx, issue in enumerate(self.report.all_issues[:50], start=1):  # Limit to 50
+                issues_data.append([
+                    str(idx),
+                    issue.get('severity', 'info').upper(),
+                    issue.get('validator', '-')[:12],
+                    issue.get('check_type', '-')[:18],
+                    issue.get('message', '-')[:60]
+                ])
+
+            issues_table = Table(issues_data, colWidths=[0.3*inch, 0.7*inch, 0.9*inch, 1.3*inch, 3.8*inch])
+
+            issue_style = [
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1a1a2e')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 7),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.lightgrey),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+                ('TOPPADDING', (0, 0), (-1, -1), 3),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ]
+
+            # Color severity column
+            for idx, issue in enumerate(self.report.all_issues[:50], start=1):
+                severity = issue.get('severity', 'info')
+                if severity in severity_colors_map:
+                    issue_style.append(('TEXTCOLOR', (1, idx), (1, idx), severity_colors_map[severity]))
+                    issue_style.append(('FONTNAME', (1, idx), (1, idx), 'Helvetica-Bold'))
+
+            issues_table.setStyle(TableStyle(issue_style))
+            elements.append(issues_table)
+
+            if len(self.report.all_issues) > 50:
+                elements.append(Spacer(1, 10))
+                elements.append(Paragraph(
+                    f"... and {len(self.report.all_issues) - 50} more issues. See full JSON/CSV export for complete list.",
+                    styles['Normal']
+                ))
+
+        # === RECOMMENDATIONS ===
+        if self.report.recommendations:
+            elements.append(Spacer(1, 20))
+            elements.append(Paragraph("Recommendations", styles['SectionHeader']))
+
+            for i, rec in enumerate(self.report.recommendations, start=1):
+                elements.append(Paragraph(f"{i}. {rec}", styles['Normal']))
+                elements.append(Spacer(1, 4))
+
+        # === FOOTER ===
+        elements.append(Spacer(1, 30))
+        elements.append(HRFlowable(width="100%", thickness=1, color=colors.grey))
+        elements.append(Spacer(1, 10))
+        elements.append(Paragraph(
+            f"Generated by Project Vulcan Validation System | {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+            ParagraphStyle('Footer', parent=styles['Normal'], fontSize=8, textColor=colors.grey, alignment=1)
+        ))
+
+        # Build PDF
+        doc.build(elements)
+
+        # Get PDF bytes
+        pdf_bytes = buffer.getvalue()
+        buffer.close()
+
+        # Write to file
+        if filepath:
+            with open(filepath, 'wb') as f:
+                f.write(pdf_bytes)
+            logger.info(f"PDF report saved to: {filepath}")
+
+        return pdf_bytes
+
+    def export_pdf_summary(self, filepath: str) -> bytes:
+        """
+        Export a one-page executive summary PDF.
+
+        Args:
+            filepath: File path to write to
+
+        Returns:
+            PDF bytes
+        """
+        if not self.report:
+            raise ValueError("No report generated. Call generate_report() first.")
+
+        if not REPORTLAB_AVAILABLE:
+            raise ImportError("reportlab is required for PDF export. Install with: pip install reportlab")
+
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=letter,
+            rightMargin=inch,
+            leftMargin=inch,
+            topMargin=inch,
+            bottomMargin=inch
+        )
+
+        styles = getSampleStyleSheet()
+        elements = []
+
+        # Title
+        elements.append(Paragraph(
+            "VALIDATION SUMMARY",
+            ParagraphStyle('Title', parent=styles['Heading1'], fontSize=28, alignment=1)
+        ))
+        elements.append(Spacer(1, 20))
+
+        # Drawing info
+        elements.append(Paragraph(
+            f"Drawing: {self.report.metadata.drawing_number or 'N/A'} Rev {self.report.metadata.drawing_revision or '-'}",
+            ParagraphStyle('DrawingInfo', parent=styles['Normal'], fontSize=12, alignment=1)
+        ))
+        elements.append(Spacer(1, 30))
+
+        # Big status indicator
+        status_color = colors.HexColor('#28a745')
+        if self.report.overall_status in ['FAIL', 'CRITICAL']:
+            status_color = colors.HexColor('#dc3545')
+        elif self.report.overall_status == 'PASS_WITH_WARNINGS':
+            status_color = colors.HexColor('#ffc107')
+
+        elements.append(Paragraph(
+            self.report.overall_status,
+            ParagraphStyle('BigStatus', parent=styles['Heading1'], fontSize=48, textColor=status_color, alignment=1)
+        ))
+        elements.append(Spacer(1, 10))
+        elements.append(Paragraph(
+            f"{self.report.overall_pass_rate:.1f}% Pass Rate",
+            ParagraphStyle('PassRate', parent=styles['Normal'], fontSize=18, alignment=1)
+        ))
+        elements.append(Spacer(1, 30))
+
+        # Quick stats
+        stats = [
+            [str(self.report.total_checks), str(self.report.total_passed), str(self.report.total_failed), str(self.report.total_critical)],
+            ['Total Checks', 'Passed', 'Failed', 'Critical']
+        ]
+        stats_table = Table(stats, colWidths=[1.5*inch]*4)
+        stats_table.setStyle(TableStyle([
+            ('FONTSIZE', (0, 0), (-1, 0), 24),
+            ('FONTSIZE', (0, 1), (-1, 1), 10),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('TEXTCOLOR', (1, 0), (1, 0), colors.HexColor('#28a745')),
+            ('TEXTCOLOR', (2, 0), (2, 0), colors.HexColor('#dc3545')),
+            ('TEXTCOLOR', (3, 0), (3, 0), colors.HexColor('#c62828')),
+        ]))
+        elements.append(stats_table)
+        elements.append(Spacer(1, 40))
+
+        # Critical issues summary
+        if self.report.critical_issues:
+            elements.append(Paragraph(
+                f"CRITICAL ISSUES: {len(self.report.critical_issues)}",
+                ParagraphStyle('CriticalHeader', parent=styles['Heading2'], textColor=colors.HexColor('#c62828'))
+            ))
+            for issue in self.report.critical_issues[:5]:
+                elements.append(Paragraph(
+                    f"• {issue.get('message', 'Unknown issue')[:80]}",
+                    styles['Normal']
+                ))
+        else:
+            elements.append(Paragraph(
+                "No Critical Issues",
+                ParagraphStyle('NoIssues', parent=styles['Heading2'], textColor=colors.HexColor('#28a745'))
+            ))
+
+        # Build
+        doc.build(elements)
+        pdf_bytes = buffer.getvalue()
+        buffer.close()
+
+        if filepath:
+            with open(filepath, 'wb') as f:
+                f.write(pdf_bytes)
+
+        return pdf_bytes
