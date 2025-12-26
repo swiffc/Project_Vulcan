@@ -285,7 +285,8 @@ async def capture_multi_view(req: MultiViewRequest):
     except ImportError:
         raise HTTPException(status_code=500, detail="win32com not available")
     
-    logger.info(f"Capturing multi-view: {req.views}")
+    views_to_capture = req.views or ["front", "top", "right", "isometric"]
+    logger.info(f"Capturing multi-view: {views_to_capture}")
     
     try:
         sw_app = win32com.client.GetActiveObject("SldWorks.Application")
@@ -306,7 +307,7 @@ async def capture_multi_view(req: MultiViewRequest):
             "trimetric": 8
         }
         
-        for view_name in req.views:
+        for view_name in views_to_capture:
             if view_name.lower() not in view_map:
                 continue
             
