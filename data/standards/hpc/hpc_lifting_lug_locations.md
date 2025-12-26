@@ -136,16 +136,39 @@ When recommending lifting lug locations:
 
 ---
 
-## Missing Data
+## Location Data Extracted ✅
 
-**Note**: The specific coordinate locations are **not in the PDF text** - they are in:
-- Excel files (F 7REF6, F 7REF7, etc.) - **Need to extract separately**
-- Hood Program output - **Macintosh-based program**
+**Status**: Complete location tables have been extracted from the PDFs!
 
-**Action Required**: 
-- Extract location coordinates from Excel reference drawings
-- Or integrate with Hood Program output
-- Or manually document standard locations from drawings
+### Extracted Data Files
+
+1. **`hpc_lifting_lug_locations_data.json`** - Complete location tables for:
+   - Induced Draft (1, 2, 3 fan units) - Page 120
+   - Forced Draft (1, 2, 3 fan units) - Pages 125-127
+   - Tube support spacing requirements
+   - Lifting lug locations from centerline/end of tube
+
+### Data Structure
+
+The JSON file contains:
+- **Tube length** (6' to 60')
+- **Lifting lug location** (from centerline or end of tube)
+- **Number of tube supports** (for forced draft)
+- **Maximum tube support spacing** (5'-9")
+
+### Usage
+
+```python
+from agents.cad_agent.adapters.standards_db_v2 import StandardsDB
+
+db = StandardsDB()
+location_data = db._load_hpc_lug_locations()
+
+# Get location for 1 fan forced draft, 20' tubes
+fd_1fan = location_data["lifting_lug_locations"]["forced_draft"]["one_fan_unit"]
+location = next((x for x in fd_1fan["locations"] if x["tube_length_ft"] == 20.0), None)
+# Returns: {"tube_length_ft": 20.0, "lug_location_from_cl_ft": 6.25, ...}
+```
 
 ---
 

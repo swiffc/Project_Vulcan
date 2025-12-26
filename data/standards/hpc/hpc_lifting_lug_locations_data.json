@@ -1,0 +1,465 @@
+{
+  "metadata": {
+    "source": "HPC Standards Book II Vol. II",
+    "extracted": "2025-12-25",
+    "description": "Lifting lug location coordinates and tube support spacing for all configurations"
+  },
+  "lifting_lug_locations": {
+    "induced_draft": {
+      "reference_drawing": "STDBOOK 7REF6",
+      "source_page": 120,
+      "description": "Centerline of lifting lug location from tube end",
+      "one_fan_unit": [
+        {"tube_length_ft": 6.0, "lug_location_from_end_ft": 3.667},
+        {"tube_length_ft": 7.0, "lug_location_from_end_ft": 3.667},
+        {"tube_length_ft": 8.0, "lug_location_from_end_ft": 4.667},
+        {"tube_length_ft": 9.0, "lug_location_from_end_ft": 5.75},
+        {"tube_length_ft": 10.0, "lug_location_from_end_ft": 5.75},
+        {"tube_length_ft": 11.0, "lug_location_from_end_ft": 5.75},
+        {"tube_length_ft": 12.0, "lug_location_from_end_ft": 5.75},
+        {"tube_length_ft": 13.0, "lug_location_from_end_ft": 7.417},
+        {"tube_length_ft": 14.0, "lug_location_from_end_ft": 8.583},
+        {"tube_length_ft": 15.0, "lug_location_from_end_ft": 8.583},
+        {"tube_length_ft": 16.0, "lug_location_from_end_ft": 10.083},
+        {"tube_length_ft": 17.0, "lug_location_from_end_ft": 10.083},
+        {"tube_length_ft": 18.0, "lug_location_from_end_ft": 13.75},
+        {"tube_length_ft": 19.0, "lug_location_from_end_ft": 13.75},
+        {"tube_length_ft": 20.0, "lug_location_from_end_ft": 13.75},
+        {"tube_length_ft": 21.0, "lug_location_from_end_ft": 17.25},
+        {"tube_length_ft": 22.0, "lug_location_from_end_ft": 17.25},
+        {"tube_length_ft": 24.0, "lug_location_from_end_ft": 17.25}
+      ],
+      "two_fan_unit": [
+        {"tube_length_ft": 12.0, "lug_location_from_end_ft": 5.75},
+        {"tube_length_ft": 13.0, "lug_location_from_end_ft": 7.917},
+        {"tube_length_ft": 14.0, "lug_location_from_end_ft": 8.417},
+        {"tube_length_ft": 15.0, "lug_location_from_end_ft": 8.917},
+        {"tube_length_ft": 16.0, "lug_location_from_end_ft": 9.417},
+        {"tube_length_ft": 17.0, "lug_location_from_end_ft": 9.917},
+        {"tube_length_ft": 18.0, "lug_location_from_end_ft": 11.5},
+        {"tube_length_ft": 19.0, "lug_location_from_end_ft": 13.25},
+        {"tube_length_ft": 20.0, "lug_location_from_end_ft": 13.25},
+        {"tube_length_ft": 21.0, "lug_location_from_end_ft": 14.083},
+        {"tube_length_ft": 22.0, "lug_location_from_end_ft": 17.25},
+        {"tube_length_ft": 24.0, "lug_location_from_end_ft": 19.333},
+        {"tube_length_ft": 26.0, "lug_location_from_end_ft": 21.0},
+        {"tube_length_ft": 28.0, "lug_location_from_end_ft": 21.0},
+        {"tube_length_ft": 30.0, "lug_location_from_end_ft": 22.0},
+        {"tube_length_ft": 32.0, "lug_location_from_end_ft": 23.333},
+        {"tube_length_ft": 34.0, "lug_location_from_end_ft": 22.333},
+        {"tube_length_ft": 36.0, "lug_location_from_end_ft": 21.167},
+        {"tube_length_ft": 38.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 40.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 42.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 44.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 46.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 48.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 50.0, "lug_location_from_end_ft": 23.0}
+      ],
+      "three_fan_unit": [
+        {"tube_length_ft": 18.0, "lug_location_from_end_ft": 13.917},
+        {"tube_length_ft": 19.0, "lug_location_from_end_ft": 15.083},
+        {"tube_length_ft": 20.0, "lug_location_from_end_ft": 15.75},
+        {"tube_length_ft": 21.0, "lug_location_from_end_ft": 17.25},
+        {"tube_length_ft": 22.0, "lug_location_from_end_ft": 17.25},
+        {"tube_length_ft": 24.0, "lug_location_from_end_ft": 19.167},
+        {"tube_length_ft": 26.0, "lug_location_from_end_ft": 21.0},
+        {"tube_length_ft": 28.0, "lug_location_from_end_ft": 21.0},
+        {"tube_length_ft": 30.0, "lug_location_from_end_ft": 22.0},
+        {"tube_length_ft": 32.0, "lug_location_from_end_ft": 23.333},
+        {"tube_length_ft": 34.0, "lug_location_from_end_ft": 22.333},
+        {"tube_length_ft": 36.0, "lug_location_from_end_ft": 21.167},
+        {"tube_length_ft": 38.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 40.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 42.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 44.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 46.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 48.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 50.0, "lug_location_from_end_ft": 23.0},
+        {"tube_length_ft": 60.0, "lug_location_from_end_ft": 5.5, "note": "Two lugs at 5'-6\" and 36'-4\""}
+      ]
+    },
+    "forced_draft": {
+      "one_fan_unit": {
+        "reference_drawing": "F 7REF11",
+        "source_page": 125,
+        "description": "ONE FAN FORCED DRAFT - TUBE SUPPORT SPACING & LIFTING LUG LOCATIONS",
+        "max_tube_support_spacing_ft": 5.75,
+        "locations": [
+          {
+            "tube_length_ft": 6.0,
+            "num_supports": 1,
+            "lug_location_from_cl_ft": 1.833,
+            "lug_quantity": 1,
+            "notes": "From centerline"
+          },
+          {
+            "tube_length_ft": 7.0,
+            "num_supports": 1,
+            "lug_location_from_cl_ft": 1.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 8.0,
+            "num_supports": 1,
+            "lug_location_from_cl_ft": 2.333,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 9.0,
+            "num_supports": 1,
+            "lug_location_from_cl_ft": 3.417,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 10.0,
+            "num_supports": 1,
+            "lug_location_from_cl_ft": 2.333,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 11.0,
+            "num_supports": 1,
+            "lug_location_from_cl_ft": 2.333,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 12.0,
+            "num_supports": 2,
+            "lug_location_from_cl_ft": 2.333,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 13.0,
+            "num_supports": 2,
+            "lug_location_from_cl_ft": 3.417,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 14.0,
+            "num_supports": 2,
+            "lug_location_from_cl_ft": 4.0,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 15.0,
+            "num_supports": 2,
+            "lug_location_from_cl_ft": 4.0,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 16.0,
+            "num_supports": 2,
+            "lug_location_from_cl_ft": 4.75,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 17.0,
+            "num_supports": 2,
+            "lug_location_from_cl_ft": 4.75,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 18.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 6.25,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 19.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 6.25,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 20.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 6.25,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 21.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 5.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 22.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 5.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 24.0,
+            "num_supports": 4,
+            "lug_location_from_cl_ft": 5.833,
+            "lug_quantity": 1
+          }
+        ]
+      },
+      "two_fan_unit": {
+        "reference_drawing": "F 7REF12",
+        "source_page": 126,
+        "description": "TWO FAN FORCED DRAFT - TUBE SUPPORT SPACING & LIFTING LUG LOCATIONS",
+        "max_tube_support_spacing_ft": 5.75,
+        "locations": [
+          {
+            "tube_length_ft": 12.0,
+            "num_supports": 2,
+            "lug_location_from_cl_ft": 3.417,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 13.0,
+            "num_supports": 2,
+            "lug_location_from_cl_ft": 3.667,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 14.0,
+            "num_supports": 2,
+            "lug_location_from_cl_ft": 3.917,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 15.0,
+            "num_supports": 2,
+            "lug_location_from_cl_ft": 4.167,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 16.0,
+            "num_supports": 2,
+            "lug_location_from_cl_ft": 4.417,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 17.0,
+            "num_supports": 2,
+            "lug_location_from_cl_ft": 4.667,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 18.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 5.167,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 19.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 6.333,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 20.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 7.333,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 21.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 6.75,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 22.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 8.0,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 24.0,
+            "num_supports": 4,
+            "lug_location_from_cl_ft": 9.25,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 26.0,
+            "num_supports": 4,
+            "lug_location_from_cl_ft": 9.25,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 28.0,
+            "num_supports": 4,
+            "lug_location_from_cl_ft": 11.0,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 30.0,
+            "num_supports": 5,
+            "lug_location_from_cl_ft": 10.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 32.0,
+            "num_supports": 5,
+            "lug_location_from_cl_ft": 10.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 34.0,
+            "num_supports": 5,
+            "lug_location_from_cl_ft": 10.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 36.0,
+            "num_supports": 6,
+            "lug_location_from_cl_ft": 10.167,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 38.0,
+            "num_supports": 6,
+            "lug_location_from_cl_ft": 10.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 40.0,
+            "num_supports": 6,
+            "lug_location_from_cl_ft": 10.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 42.0,
+            "num_supports": 8,
+            "lug_location_from_cl_ft": 11.083,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 44.0,
+            "num_supports": 8,
+            "lug_location_from_cl_ft": 11.083,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 46.0,
+            "num_supports": 8,
+            "lug_location_from_cl_ft": 12.167,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 48.0,
+            "num_supports": 8,
+            "lug_location_from_cl_ft": 10.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 50.0,
+            "num_supports": 8,
+            "lug_location_from_cl_ft": 10.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 60.0,
+            "num_supports": 10,
+            "lug_location_from_cl_ft": 18.583,
+            "lug_quantity": 1,
+            "note": "Two locations: 5'-6\" and 17'-9\""
+          }
+        ]
+      },
+      "three_fan_unit": {
+        "reference_drawing": "F 7REF13",
+        "source_page": 127,
+        "description": "3 FAN FORCED DRAFT - TUBE SUPPORT SPACING & LIFTING LUG LOCATIONS",
+        "max_tube_support_spacing_ft": 5.75,
+        "locations": [
+          {
+            "tube_length_ft": 18.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 6.417,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 19.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 7.0,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 20.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 7.333,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 21.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 8.0,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 22.0,
+            "num_supports": 3,
+            "lug_location_from_cl_ft": 8.0,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 24.0,
+            "num_supports": 4,
+            "lug_location_from_cl_ft": 9.25,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 26.0,
+            "num_supports": 4,
+            "lug_location_from_cl_ft": 10.083,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 28.0,
+            "num_supports": 4,
+            "lug_location_from_cl_ft": 10.083,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 30.0,
+            "num_supports": 5,
+            "lug_location_from_cl_ft": 10.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 32.0,
+            "num_supports": 5,
+            "lug_location_from_cl_ft": 10.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 34.0,
+            "num_supports": 5,
+            "lug_location_from_cl_ft": 10.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 36.0,
+            "num_supports": 6,
+            "lug_location_from_cl_ft": 10.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 38.0,
+            "num_supports": 6,
+            "lug_location_from_cl_ft": 10.833,
+            "lug_quantity": 1
+          },
+          {
+            "tube_length_ft": 40.0,
+            "num_supports": 6,
+            "lug_location_from_cl_ft": 12.167,
+            "lug_quantity": 1
+          }
+        ]
+      }
+    }
+  },
+  "tube_support_requirements": {
+    "max_spacing_ft": 5.75,
+    "description": "Maximum tube support spacing is 5'-9\" (5.75 feet)",
+    "note": "Tube support spacing varies by tube length and configuration"
+  }
+}
+

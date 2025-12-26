@@ -26,6 +26,8 @@ __all__ = [
     "ACHECalculator",
     "ThermalResults",
     "PressureDropResults",
+    "FanResults",
+    "FluidProperties",
     # Structural
     "StructuralDesigner",
     "ColumnDesign",

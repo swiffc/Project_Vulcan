@@ -97,9 +97,10 @@
       ],
       "location_data_status": {
         "location_references_found": true,
-        "specific_coordinates_in_pdf": false,
-        "coordinates_source": "Excel files (F 7REF6, F 7REF7, etc.) and Hood Program",
-        "action_required": "Extract location coordinates from Excel reference drawings or Hood Program output"
+        "specific_coordinates_in_pdf": true,
+        "coordinates_source": "Standards Book II Vol. II, Pages 120, 125-127",
+        "location_data_file": "hpc_lifting_lug_locations_data.json",
+        "note": "Complete location tables extracted for all configurations"
       }
     }
   }
