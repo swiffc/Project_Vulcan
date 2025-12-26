@@ -158,6 +158,25 @@ except ImportError:
     logging.warning("ReportGenerator not available")
     ReportGenerator = None
 
+# Phase 26 - HPC Standards Validators
+try:
+    from .hpc_mechanical_validator import HPCMechanicalValidator
+except ImportError:
+    logging.warning("HPCMechanicalValidator not available")
+    HPCMechanicalValidator = None
+
+try:
+    from .hpc_walkway_validator import HPCWalkwayValidator
+except ImportError:
+    logging.warning("HPCWalkwayValidator not available")
+    HPCWalkwayValidator = None
+
+try:
+    from .hpc_header_validator import HPCHeaderValidator
+except ImportError:
+    logging.warning("HPCHeaderValidator not available")
+    HPCHeaderValidator = None
+
 logger = logging.getLogger(__name__)
 
 
