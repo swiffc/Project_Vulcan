@@ -3829,6 +3829,170 @@ async def design_lifting_lug(design_load_kn: float, sling_angle_deg: float = 60.
         raise HTTPException(status_code=500, detail=str(e))
 
 
+class BatchFanCalcRequest(BaseModel):
+    """Request for batch fan calculations."""
+    calculations: List[FanCalcRequest]
+
+
+@app.post("/ache/calculate/batch/fan")
+async def calculate_batch_fan(request: BatchFanCalcRequest):
+    """
+    Batch calculate fan performance for multiple configurations.
+    Phase 24.4 - Engineering Calculations
+    """
+    Calculator = _get_ache_assistant_modules()[0]
+    if Calculator is None:
+        raise HTTPException(status_code=503, detail="ACHE calculator not available")
+
+    try:
+        calc = Calculator()
+        results = []
+
+        for calc_request in request.calculations:
+            result = calc.calculate_fan_performance(
+                air_flow_m3_s=calc_request.air_flow_m3_s,
+                static_pressure_pa=calc_request.static_pressure_pa,
+                fan_diameter_m=calc_request.fan_diameter_m,
+                fan_rpm=calc_request.fan_rpm,
+                fan_efficiency=calc_request.fan_efficiency,
+            )
+            results.append({
+                "air_flow_m3_s": result.air_flow_m3_s,
+                "static_pressure_pa": result.static_pressure_pa,
+                "shaft_power_kw": result.shaft_power_kw,
+                "motor_power_kw": result.motor_power_kw,
+                "tip_speed_m_s": result.tip_speed_m_s,
+                "tip_speed_acceptable": result.tip_speed_acceptable,
+                "warnings": result.warnings,
+            })
+
+        return {
+            "total_calculations": len(results),
+            "results": results,
+        }
+    except Exception as e:
+        logger.error(f"Batch fan calculation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/ache/export/datasheet")
+async def export_ache_datasheet(ache_properties: Dict[str, Any], format: str = "json"):
+    """
+    Export ACHE design data to various formats.
+    Phase 24.9 - Export Features
+    """
+    try:
+        datasheet = {
+            "document_type": "ACHE Datasheet",
+            "standard": "API 661 / ISO 13706",
+            "generated_at": datetime.now().isoformat(),
+            "equipment_data": ache_properties,
+            "sections": {
+                "general": {
+                    "equipment_tag": ache_properties.get("equipment_tag", "TBD"),
+                    "service": ache_properties.get("service", "TBD"),
+                    "design_code": "API 661",
+                },
+                "thermal": ache_properties.get("thermal", {}),
+                "mechanical": ache_properties.get("mechanical", {}),
+                "fan_system": ache_properties.get("fan_system", {}),
+                "structural": ache_properties.get("structural", {}),
+            },
+        }
+
+        if format == "json":
+            return datasheet
+        else:
+            return {"error": f"Format '{format}' not yet supported", "supported": ["json"]}
+
+    except Exception as e:
+        logger.error(f"Export datasheet error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/ache/export/bom")
+async def export_ache_bom(ache_properties: Dict[str, Any]):
+    """
+    Generate Bill of Materials for ACHE.
+    Phase 24.9 - Export Features
+    """
+    try:
+        # Generate BOM from properties
+        bom_items = []
+
+        # Tube bundle items
+        if "tube_bundle" in ache_properties:
+            bundle = ache_properties["tube_bundle"]
+            bom_items.append({
+                "item": 1,
+                "component": "Finned Tubes",
+                "description": f"{bundle.get('tube_od_mm', 25.4)}mm OD x {bundle.get('tube_length_m', 6)}m",
+                "quantity": bundle.get("num_tubes", 0),
+                "unit": "EA",
+                "material": bundle.get("tube_material", "A179"),
+            })
+
+        # Fan system items
+        if "fan_system" in ache_properties:
+            fan = ache_properties["fan_system"]
+            bom_items.append({
+                "item": len(bom_items) + 1,
+                "component": "Axial Fan",
+                "description": f"{fan.get('fan_diameter_m', 3.0)}m diameter",
+                "quantity": fan.get("num_fans", 1),
+                "unit": "EA",
+                "material": "Aluminum",
+            })
+
+        return {
+            "document_type": "Bill of Materials",
+            "equipment_tag": ache_properties.get("equipment_tag", "TBD"),
+            "generated_at": datetime.now().isoformat(),
+            "total_items": len(bom_items),
+            "items": bom_items,
+        }
+    except Exception as e:
+        logger.error(f"Export BOM error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/ache/standards/api661")
+async def get_api661_reference():
+    """
+    Get API 661 quick reference data.
+    Phase 24.7 - Standards Reference
+    """
+    return {
+        "standard": "API 661 / ISO 13706",
+        "edition": "7th Edition (2013)",
+        "key_requirements": {
+            "tube_bundle": {
+                "max_tube_length_m": 12.0,
+                "min_tube_wall_mm": 2.11,
+                "reference": "5.1.1, 5.1.3",
+            },
+            "fan_system": {
+                "max_tip_speed_m_s": 61.0,
+                "min_blade_clearance_mm": 12.7,
+                "reference": "6.1.1, Table 6",
+            },
+            "header": {
+                "split_required_delta_t_c": 110,
+                "reference": "7.1.6.1.2",
+            },
+            "air_side": {
+                "max_pressure_drop_pa": 250,
+                "reference": "6.2.1",
+            },
+        },
+        "material_codes": {
+            "tubes": ["A179", "A214", "A334-1", "A334-6"],
+            "headers": ["SA516-70", "SA285-C", "SA516-60"],
+            "fins": ["Aluminum 1100", "Aluminum 3003"],
+        },
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
 
