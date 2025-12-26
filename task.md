@@ -39,6 +39,44 @@
 | `handling_validator.py` | - | ✅ Complete |
 | `bom_validator.py` | - | ✅ Complete |
 | `dimension_validator.py` | - | ✅ Complete |
+| `gdt_validator.py` | 14 | ✅ **NEW - Full ASME Y14.5-2018** |
+
+---
+
+## GD&T Validator - Full ASME Y14.5-2018 Coverage (14 symbols) ✅ NEW
+
+### Form Tolerances (No datum required)
+- [x] **Flatness** - Surface deviation from perfect plane
+- [x] **Straightness** - Line element or axis deviation
+- [x] **Circularity** - Roundness at any cross-section
+- [x] **Cylindricity** - Entire cylinder surface control
+
+### Orientation Tolerances (Datum required)
+- [x] **Perpendicularity** - 90° to datum reference
+- [x] **Angularity** - Specified angle to datum
+- [x] **Parallelism** - Parallel to datum surface/axis
+
+### Location Tolerances (Datum required)
+- [x] **Position** - True position with bonus tolerance (MMC/LMC)
+- [x] **Concentricity** - Axis coaxiality (rarely used)
+- [x] **Symmetry** - Center plane symmetry (rarely used)
+
+### Runout Tolerances (Datum axis required)
+- [x] **Circular Runout** - FIM at each circular element
+- [x] **Total Runout** - FIM over entire surface
+
+### Profile Tolerances (Datum optional)
+- [x] **Profile of a Line** - 2D outline control
+- [x] **Profile of a Surface** - 3D shape control
+
+### Advanced Features
+- [x] MMC/LMC/RFS material condition modifiers
+- [x] Bonus tolerance calculations
+- [x] Virtual/Resultant condition calculations
+- [x] Feature Control Frame (FCF) validation
+- [x] Datum reference frame validation
+- [x] Composite position tolerancing (PLTZF/FRTZF)
+- [x] Process capability validation
 
 ---
 
