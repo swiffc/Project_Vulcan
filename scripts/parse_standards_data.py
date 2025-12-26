@@ -12,6 +12,12 @@ from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, asdict
 from datetime import datetime
 
+# Set UTF-8 encoding for Windows console
+if sys.platform == 'win32':
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -117,9 +123,9 @@ class StandardsParser:
             all_rules.extend(rules)
             all_specs.extend(specs)
             
-            print(f"  ✓ Extracted {len(parts)} parts")
-            print(f"  ✓ Extracted {len(rules)} design rules")
-            print(f"  ✓ Extracted {len(specs)} specifications")
+            print(f"  [OK] Extracted {len(parts)} parts")
+            print(f"  [OK] Extracted {len(rules)} design rules")
+            print(f"  [OK] Extracted {len(specs)} specifications")
         
         # Save structured data
         self._save_parts(all_parts)
@@ -329,7 +335,7 @@ class StandardsParser:
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         
-        print(f"\n✓ Saved {len(parts)} parts to: {output_file}")
+        print(f"\n[OK] Saved {len(parts)} parts to: {output_file}")
     
     def _save_rules(self, rules: List[DesignRule]):
         """Save design rules to JSON."""
@@ -347,7 +353,7 @@ class StandardsParser:
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         
-        print(f"✓ Saved {len(rules)} design rules to: {output_file}")
+        print(f"[OK] Saved {len(rules)} design rules to: {output_file}")
     
     def _save_specs(self, specs: List[Specification]):
         """Save specifications to JSON."""
@@ -365,7 +371,7 @@ class StandardsParser:
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         
-        print(f"✓ Saved {len(specs)} specifications to: {output_file}")
+        print(f"[OK] Saved {len(specs)} specifications to: {output_file}")
     
     def _generate_summary(self, parts: List[StandardPart], rules: List[DesignRule], specs: List[Specification]):
         """Generate summary report."""
@@ -389,7 +395,7 @@ class StandardsParser:
             for cat, count in sorted(categories.items(), key=lambda x: x[1], reverse=True):
                 f.write(f"- **{cat}**: {count}\n")
         
-        print(f"✓ Generated summary: {summary_file}")
+        print(f"[OK] Generated summary: {summary_file}")
 
 
 def main():

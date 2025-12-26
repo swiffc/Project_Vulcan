@@ -2453,13 +2453,37 @@ async def check_cross_part(request: dict):
         validator = CrossPartValidator()
 
         interfaces = []
-        for iface in request.get("interfaces", []):
-            interface = PartInterface(
-                part_a_id=iface.get("part_a", ""),
-                part_b_id=iface.get("part_b", ""),
-                interface_type=InterfaceType(iface.get("interface_type", "bolted")),
+        for i, iface in enumerate(request.get("interfaces", [])):
+            iface_type_str = iface.get("interface_type", "bolted").upper()
+            iface_type = InterfaceType.BOLTED if iface_type_str == "BOLTED" else InterfaceType.WELDED
+
+            # Parse hole patterns if present
+            hole_pattern = None
+            if iface.get("hole_patterns"):
+                hp = iface["hole_patterns"][0]
+                hole_pattern = HolePattern(
+                    num_holes=hp.get("holes", 4),
+                    hole_diameter=hp.get("diameter", 0.8125),
+                    bolt_circle_diameter=hp.get("bolt_circle", 6.0),
+                )
+
+            # Create interface for part A
+            interface_a = PartInterface(
+                part_id=iface.get("part_a", f"PART-A-{i}"),
+                interface_id=f"INTF-{i}-A",
+                interface_type=iface_type,
+                holes=hole_pattern,
             )
-            interfaces.append(interface)
+            interfaces.append(interface_a)
+
+            # Create interface for part B
+            interface_b = PartInterface(
+                part_id=iface.get("part_b", f"PART-B-{i}"),
+                interface_id=f"INTF-{i}-B",
+                interface_type=iface_type,
+                holes=hole_pattern,
+            )
+            interfaces.append(interface_b)
 
         result = validator.validate_assembly(interfaces)
         return validator.to_dict(result)
