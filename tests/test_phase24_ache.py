@@ -517,5 +517,226 @@ class TestErectionPlanner:
         assert plan.total_lift_hours > 0
 
 
+class TestACHEExtractor:
+    """Tests for ACHEExtractor module."""
+
+    def test_import_extractor(self):
+        """Test extractor module imports correctly."""
+        from agents.cad_agent.ache_assistant import ACHEExtractor, ACHEProperties
+        assert ACHEExtractor is not None
+        assert ACHEProperties is not None
+
+    def test_extractor_dataclasses(self):
+        """Test extractor dataclasses."""
+        from agents.cad_agent.ache_assistant.extractor import (
+            HeaderBoxData, TubeBundleData, FanSystemData,
+            HeaderType, TubePattern, FinType
+        )
+
+        # Test header box defaults
+        header = HeaderBoxData()
+        assert header.length_mm == 0.0
+        assert header.header_type == HeaderType.PLUG
+        assert header.requires_split is False
+
+        # Test tube bundle defaults
+        bundle = TubeBundleData()
+        assert bundle.tube_od_mm == 25.4
+        assert bundle.tube_wall_mm == 2.11
+        assert bundle.pattern == TubePattern.TRIANGULAR
+
+        # Test fan system defaults
+        fan = FanSystemData()
+        assert fan.num_fans == 1
+        assert fan.num_blades == 4
+        assert fan.blade_material == "aluminum"
+
+    def test_header_types(self):
+        """Test API 661 header type enumeration."""
+        from agents.cad_agent.ache_assistant.extractor import HeaderType
+
+        assert HeaderType.PLUG.value == "plug"
+        assert HeaderType.COVER_PLATE.value == "cover_plate"
+        assert HeaderType.BONNET.value == "bonnet"
+
+    def test_tube_patterns(self):
+        """Test tube pattern enumeration."""
+        from agents.cad_agent.ache_assistant.extractor import TubePattern
+
+        assert TubePattern.TRIANGULAR.value == "triangular"
+        assert TubePattern.SQUARE.value == "square"
+
+    def test_fin_types(self):
+        """Test fin type enumeration per API 661."""
+        from agents.cad_agent.ache_assistant.extractor import FinType
+
+        assert FinType.L_FOOTED.value == "l_footed"
+        assert FinType.EMBEDDED.value == "embedded"
+        assert FinType.EXTRUDED.value == "extruded"
+
+    def test_header_split_requirement(self):
+        """Test API 661 header split requirement calculation."""
+        from agents.cad_agent.ache_assistant.extractor import HeaderBoxData
+
+        # Low delta-T - no split required
+        header_low = HeaderBoxData(
+            inlet_temp_c=80,
+            outlet_temp_c=60,
+            delta_t=20,
+            requires_split=False,
+        )
+        assert header_low.requires_split is False
+
+        # High delta-T (>110°C) - split required per API 661 7.1.6.1.2
+        header_high = HeaderBoxData(
+            inlet_temp_c=200,
+            outlet_temp_c=60,
+            delta_t=140,
+            requires_split=True,
+        )
+        assert header_high.requires_split is True
+
+    def test_ache_properties_dataclass(self):
+        """Test ACHEProperties dataclass."""
+        from agents.cad_agent.ache_assistant.extractor import (
+            ACHEProperties, HeaderBoxData, TubeBundleData, FanSystemData
+        )
+
+        props = ACHEProperties(
+            unit_tag="AC-101",
+            service="Cooling",
+            header_box=HeaderBoxData(length_mm=3000),
+            tube_bundle=TubeBundleData(total_tubes=500),
+            fan_system=FanSystemData(num_fans=2),
+        )
+
+        assert props.unit_tag == "AC-101"
+        assert props.header_box.length_mm == 3000
+        assert props.tube_bundle.total_tubes == 500
+        assert props.fan_system.num_fans == 2
+
+
+class TestPressureDropCalculations:
+    """Tests for pressure drop calculations."""
+
+    def test_tube_side_pressure_drop(self):
+        """Test tube-side pressure drop calculation."""
+        from agents.cad_agent.ache_assistant import ACHECalculator, FluidProperties
+
+        calc = ACHECalculator()
+        fluid = FluidProperties(
+            density_kg_m3=800,
+            specific_heat_j_kg_k=2000,
+            viscosity_pa_s=0.001,
+            thermal_conductivity_w_m_k=0.15,
+            prandtl_number=10,
+        )
+
+        results = calc.calculate_tube_side_pressure_drop(
+            mass_flow_kg_s=50,
+            fluid=fluid,
+            tube_id_mm=22,
+            tube_length_m=6,
+            num_tubes=500,
+            num_passes=4,
+        )
+
+        assert results.tube_side_dp_kpa > 0
+        assert results.tube_friction_dp_kpa > 0
+        assert results.tube_entrance_exit_dp_kpa > 0
+
+    def test_air_side_pressure_drop(self):
+        """Test air-side pressure drop calculation."""
+        from agents.cad_agent.ache_assistant import ACHECalculator
+
+        calc = ACHECalculator()
+
+        results = calc.calculate_air_side_pressure_drop(
+            air_flow_kg_s=100,
+            air_inlet_temp_c=35,
+            bundle_face_area_m2=30,
+            tube_od_mm=25.4,
+            fin_pitch_mm=2.5,
+            fin_height_mm=12.7,
+            num_tube_rows=4,
+        )
+
+        assert results.air_side_dp_pa > 0
+        assert results.bundle_dp_pa > 0
+
+    def test_air_pressure_drop_limit(self):
+        """Test air-side pressure drop limit check."""
+        from agents.cad_agent.ache_assistant import ACHECalculator
+
+        calc = ACHECalculator()
+
+        # Low air flow - should be within limits
+        results = calc.calculate_air_side_pressure_drop(
+            air_flow_kg_s=50,
+            air_inlet_temp_c=35,
+            bundle_face_area_m2=40,
+            tube_od_mm=25.4,
+            fin_pitch_mm=2.5,
+            fin_height_mm=12.7,
+            num_tube_rows=4,
+        )
+
+        assert results.is_within_limits is True
+
+
+class TestHeatTransferCoefficient:
+    """Tests for heat transfer coefficient calculations."""
+
+    def test_htc_turbulent_flow(self):
+        """Test heat transfer coefficient for turbulent flow."""
+        from agents.cad_agent.ache_assistant import ACHECalculator, FluidProperties
+        from agents.cad_agent.ache_assistant.calculator import FluidType
+
+        calc = ACHECalculator()
+        fluid = FluidProperties(
+            density_kg_m3=1000,
+            specific_heat_j_kg_k=4186,
+            viscosity_pa_s=0.001,
+            thermal_conductivity_w_m_k=0.6,
+            prandtl_number=7,
+        )
+
+        h = calc.calculate_heat_transfer_coefficient(
+            fluid=fluid,
+            velocity_m_s=2.0,
+            hydraulic_diameter_m=0.02,
+            fluid_type=FluidType.LIQUID,
+        )
+
+        # Turbulent flow should give reasonable h value
+        assert h > 1000  # W/m2-K typical for turbulent water
+
+    def test_htc_laminar_flow(self):
+        """Test heat transfer coefficient for laminar flow."""
+        from agents.cad_agent.ache_assistant import ACHECalculator, FluidProperties
+        from agents.cad_agent.ache_assistant.calculator import FluidType
+
+        calc = ACHECalculator()
+        # High viscosity fluid for laminar flow
+        fluid = FluidProperties(
+            density_kg_m3=900,
+            specific_heat_j_kg_k=2000,
+            viscosity_pa_s=0.1,  # High viscosity
+            thermal_conductivity_w_m_k=0.15,
+            prandtl_number=1000,
+        )
+
+        h = calc.calculate_heat_transfer_coefficient(
+            fluid=fluid,
+            velocity_m_s=0.1,
+            hydraulic_diameter_m=0.02,
+            fluid_type=FluidType.LIQUID,
+        )
+
+        # Laminar flow gives lower h
+        assert h > 0
+        assert h < 500  # Lower than turbulent
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
