@@ -97,14 +97,12 @@ def scan_pdf(pdf_path):
     print(f"Title: {metadata.get('title', 'N/A')}")
     print(f"Author: {metadata.get('author', 'N/A')}")
     
-    # Extract first few pages for preview
-    print(f"\n--- Preview (First 3 pages) ---")
-    for page_data in content[:3]:
-        print(f"\nPage {page_data['page']}:")
-        print("-" * 60)
-        preview = page_data['text'][:1000]  # First 1000 chars
+    # Extract first page for preview
+    print(f"\n--- Preview (First page) ---")
+    if content:
+        preview = content[0]['text'][:500]  # First 500 chars
         print(preview)
-        if len(page_data['text']) > 1000:
+        if len(content[0]['text']) > 500:
             print("... [truncated]")
     
     # Count tables
@@ -118,6 +116,57 @@ def scan_pdf(pdf_path):
         'content': content,
         'total_tables': total_tables
     }
+
+def save_result(result):
+    """Save a single result to file"""
+    output_dir = Path(__file__).parent.parent / "output" / "standards_scan"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    filename = Path(result['path']).stem
+    output_file = output_dir / f"{filename}_extracted.txt"
+    
+    print(f"Saving to: {output_file}")
+    
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write(f"STANDARDS BOOK EXTRACTION\n")
+        f.write(f"{'='*80}\n")
+        f.write(f"File: {result['path']}\n")
+        f.write(f"Title: {result['metadata'].get('title', 'N/A')}\n")
+        f.write(f"Total Pages: {result['metadata']['total_pages']}\n")
+        f.write(f"Total Tables: {result['total_tables']}\n")
+        f.write(f"{'='*80}\n\n")
+        
+        for page_data in result['content']:
+            f.write(f"\n{'='*60}\n")
+            f.write(f"PAGE {page_data['page']}\n")
+            f.write(f"{'='*60}\n\n")
+            f.write(page_data['text'])
+            f.write("\n\n")
+            
+            # Write tables if available
+            if page_data.get('tables'):
+                f.write(f"\n--- TABLES ON PAGE {page_data['page']} ---\n")
+                for idx, table in enumerate(page_data['tables'], 1):
+                    f.write(f"\nTable {idx}:\n")
+                    for row in table:
+                        f.write(str(row) + "\n")
+    
+    print(f"✓ Saved extraction to: {output_file}")
+    
+    # Also save summary
+    summary_file = output_dir / f"{filename}_summary.txt"
+    with open(summary_file, 'w', encoding='utf-8') as f:
+        f.write(f"SUMMARY: {filename}\n")
+        f.write(f"{'='*80}\n")
+        f.write(f"Total Pages: {result['metadata']['total_pages']}\n")
+        f.write(f"Total Tables: {result['total_tables']}\n")
+        f.write(f"\nFirst 5000 characters:\n")
+        f.write("-" * 80 + "\n")
+        if result['content']:
+            first_text = result['content'][0]['text'][:5000]
+            f.write(first_text)
+            if len(result['content'][0]['text']) > 5000:
+                f.write("\n... [truncated]")
 
 def main():
     """Main function to scan all PDFs"""
@@ -150,42 +199,9 @@ def main():
     print("SCAN SUMMARY")
     print(f"{'='*80}")
     print(f"Total PDFs scanned: {len(results)}")
-    print(f"Total pages: {sum(r['metadata']['total_pages'] for r in results)}")
-    print(f"Total tables: {sum(r['total_tables'] for r in results)}")
-    
-    # Save full content to files for analysis
-    output_dir = Path(__file__).parent.parent / "output" / "standards_scan"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
-    for result in results:
-        filename = Path(result['path']).stem
-        output_file = output_dir / f"{filename}_extracted.txt"
-        
-        with open(output_file, 'w', encoding='utf-8') as f:
-            f.write(f"STANDARDS BOOK EXTRACTION\n")
-            f.write(f"{'='*80}\n")
-            f.write(f"File: {result['path']}\n")
-            f.write(f"Title: {result['metadata'].get('title', 'N/A')}\n")
-            f.write(f"Total Pages: {result['metadata']['total_pages']}\n")
-            f.write(f"Total Tables: {result['total_tables']}\n")
-            f.write(f"{'='*80}\n\n")
-            
-            for page_data in result['content']:
-                f.write(f"\n{'='*60}\n")
-                f.write(f"PAGE {page_data['page']}\n")
-                f.write(f"{'='*60}\n\n")
-                f.write(page_data['text'])
-                f.write("\n\n")
-                
-                # Write tables if available
-                if page_data.get('tables'):
-                    f.write(f"\n--- TABLES ON PAGE {page_data['page']} ---\n")
-                    for idx, table in enumerate(page_data['tables'], 1):
-                        f.write(f"\nTable {idx}:\n")
-                        for row in table:
-                            f.write(str(row) + "\n")
-        
-        print(f"Saved extraction to: {output_file}")
+    if results:
+        print(f"Total pages: {sum(r['metadata']['total_pages'] for r in results)}")
+        print(f"Total tables: {sum(r['total_tables'] for r in results)}")
     
     return results
 
