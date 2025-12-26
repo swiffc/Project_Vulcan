@@ -160,56 +160,93 @@ class EndCapRequest(BaseModel):
 
 # --- SHEET METAL MODELS ---
 class BaseFlangeRequest(BaseModel):
-    """Create sheet metal base flange."""
+    """Create sheet metal base flange. Full gauge and material support."""
     thickness: float = Field(0.002, description="Sheet thickness in meters")
+    gauge: Optional[Literal[
+        "30 ga", "28 ga", "26 ga", "24 ga", "22 ga", "20 ga", "18 ga", "16 ga", "14 ga", "12 ga", "10 ga", "8 ga", "7 ga",
+        "0.5mm", "0.6mm", "0.8mm", "1.0mm", "1.2mm", "1.5mm", "2.0mm", "2.5mm", "3.0mm", "4.0mm", "5.0mm", "6.0mm"
+    ]] = Field(None, description="Sheet gauge (alternative to thickness)")
     bend_radius: float = Field(0.003, description="Default bend radius in meters")
+    k_factor: float = Field(0.44, description="K-factor for bend calculations (0.3-0.5)")
     depth: float = Field(0.100, description="Flange depth in meters")
-    direction: int = Field(0, description="0=one direction, 1=mid-plane, 2=both")
+    direction: Literal["one_direction", "mid_plane", "both_directions"] = Field("one_direction", description="Extrusion direction")
+    relief_type: Literal["rectangular", "obround", "tear", "none"] = Field("rectangular", description="Auto-relief type")
+    relief_ratio: float = Field(0.5, description="Relief size ratio")
+    material: Literal[
+        "carbon_steel", "stainless_steel_304", "stainless_steel_316", "aluminum_3003", "aluminum_5052", "aluminum_6061",
+        "galvanized", "copper", "brass", "titanium"
+    ] = Field("carbon_steel", description="Sheet material for bend table selection")
 
 
 class EdgeFlangeRequest(BaseModel):
-    """Add edge flange to sheet metal edge."""
+    """Add edge flange to sheet metal edge. Full flange options."""
     edge_name: str = Field(..., description="Edge to add flange to")
     length: float = Field(0.025, description="Flange length in meters")
     angle: float = Field(90.0, description="Flange angle in degrees")
     gap: float = Field(0.0, description="Gap from adjacent flange in meters")
-    flange_position: Literal["material_inside", "material_outside", "bend_outside"] = "material_inside"
+    flange_position: Literal[
+        "material_inside", "material_outside", "bend_outside", "bend_center_line", "tangent_to_bend"
+    ] = Field("material_inside", description="Flange position relative to bend")
+    relief_type: Literal["rectangular", "obround", "tear", "rip", "none"] = Field("rectangular", description="Relief type")
+    use_relief_ratio: bool = Field(True, description="Use relief ratio vs absolute value")
+    custom_bend_radius: Optional[float] = Field(None, description="Override default bend radius")
+    trim_side_bends: bool = Field(True, description="Trim side bends")
+    offset_type: Literal["blind", "up_to_vertex", "up_to_surface"] = Field("blind", description="Length offset type")
 
 
 class HemRequest(BaseModel):
-    """Add hem to sheet metal edge."""
+    """Add hem to sheet metal edge. Full hem types."""
     edge_name: str = Field(..., description="Edge to add hem to")
-    hem_type: Literal["closed", "open", "teardrop", "rolled"] = "closed"
+    hem_type: Literal["closed", "open", "teardrop", "rolled", "double"] = Field("closed", description="Hem type")
     gap: float = Field(0.0, description="Gap for open hem in meters")
-    length: Optional[float] = Field(None, description="Custom hem length")
+    length: Optional[float] = Field(None, description="Custom hem length in meters")
+    hem_angle: float = Field(180.0, description="Hem angle in degrees")
+    radius: Optional[float] = Field(None, description="Rolled hem radius in meters")
+    material_inside: bool = Field(True, description="Material inside for double hem")
 
 
 class JogRequest(BaseModel):
-    """Add jog (offset bend) to sheet metal."""
+    """Add jog (offset bend) to sheet metal. Full jog options."""
     edge_name: str = Field(..., description="Edge for jog")
     offset: float = Field(0.010, description="Jog offset distance in meters")
-    fixed_face: Literal["top", "bottom"] = "bottom"
+    fixed_face: Literal["top", "bottom"] = Field("bottom", description="Fixed face reference")
+    jog_angle: float = Field(90.0, description="Jog angle in degrees")
+    custom_bend_radius: Optional[float] = Field(None, description="Custom bend radius")
+    offset_type: Literal["offset", "overall"] = Field("offset", description="Dimension type")
 
 
 class LoftedBendRequest(BaseModel):
-    """Create lofted bend between two open profiles."""
+    """Create lofted bend between two open profiles. Full lofted bend options."""
     profile1: str = Field(..., description="First profile sketch name")
     profile2: str = Field(..., description="Second profile sketch name")
     faceted: bool = Field(False, description="Faceted approximation")
-    num_bends: int = Field(1, description="Number of bends for faceted")
+    num_bends: int = Field(1, description="Number of bends for faceted (1-20)")
+    thickness_from: Literal["sketch_plane", "both_sides"] = Field("sketch_plane", description="Thickness direction")
+    formed: bool = Field(True, description="Formed (vs developed) shape")
 
 
 class FlatPatternRequest(BaseModel):
-    """Generate or export flat pattern."""
+    """Generate or export flat pattern. Full export options."""
     export: bool = Field(False, description="Export to DXF/DWG")
+    export_format: Literal["dxf", "dwg", "pdf", "dxf_r14", "dxf_r2000", "dxf_r2004", "dxf_r2007"] = Field("dxf", description="Export format")
     export_path: Optional[str] = Field(None, description="Export file path")
     include_bend_lines: bool = Field(True, description="Include bend lines in export")
+    include_flat_pattern_sketch: bool = Field(True, description="Include flat pattern sketch")
+    include_annotations: bool = Field(False, description="Include annotations")
+    merge_faces: bool = Field(True, description="Merge coplanar faces")
+    simplify_bends: bool = Field(False, description="Simplify curved bends")
+    corner_treatment: Literal["none", "extend", "trim"] = Field("none", description="Corner treatment")
 
 
 class CornerReliefRequest(BaseModel):
-    """Add corner relief to sheet metal."""
-    relief_type: Literal["rectangular", "circular", "tear"] = "rectangular"
-    relief_ratio: float = Field(0.5, description="Relief size ratio")
+    """Add corner relief to sheet metal. Full relief options."""
+    relief_type: Literal["rectangular", "circular", "tear", "obround", "square"] = Field("rectangular", description="Relief shape type")
+    relief_ratio: float = Field(0.5, description="Relief size ratio (for ratio mode)")
+    use_relief_ratio: bool = Field(True, description="Use ratio vs absolute dimensions")
+    relief_width: Optional[float] = Field(None, description="Absolute relief width in meters")
+    relief_depth: Optional[float] = Field(None, description="Absolute relief depth in meters")
+    break_corners: bool = Field(False, description="Add break corners")
+    break_radius: Optional[float] = Field(None, description="Break corner radius in meters")
 
 
 # --- DRAWING MODELS ---
