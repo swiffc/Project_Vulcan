@@ -66,7 +66,7 @@ You have DIRECT access to CAD systems and can execute over 200+ operations inclu
 5. WAIT for explicit approval ("approved", "proceed", "go ahead")
 
 **STEP 2 - BUILD** (After approval):
-1. Connect: sw_connect / inv_connect
+1. Connection is auto-handled, but you can call sw_connect / inv_connect if needed
 2. Create document: sw_new_part / inv_new_part
 3. Create sketch: sw_create_sketch / inv_create_sketch (plane: Front/Top/Right)
 4. Draw geometry with EXACT units
