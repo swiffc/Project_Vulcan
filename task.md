@@ -11,7 +11,7 @@
 | Category | Complete | Remaining | % Done |
 |----------|----------|-----------|--------|
 | Phase 19-23 (Foundation) | 57/58 | 1 (blocked) | 98% |
-| Phase 24 (ACHE Design Assistant) | 173/213 | 40 | **81%** |
+| Phase 24 (ACHE Design Assistant) | 185/213 | 28 | **87%** |
 | Phase 25 (Drawing Checker) | 150/150 | 0 | **100%** |
 | **Standards Database** | **213/213** | **0** | **100%** |
 
@@ -167,7 +167,7 @@
 
 ---
 
-## Phase 24: ACHE Design Assistant (213 tasks) - IN PROGRESS (80%)
+## Phase 24: ACHE Design Assistant (213 tasks) - IN PROGRESS (87%)
 
 See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 
@@ -239,9 +239,13 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 - [x] 24.8.6 Complete erection plan
 - [x] 24.8.7 Safety notes generation
 
-### Remaining Tasks (40 tasks)
-- [x] API endpoint integration (19 endpoints added)
+### Remaining Tasks (28 tasks)
+- [x] API endpoint integration (21 endpoints added)
 - [x] Unit tests (43 tests, all passing)
+- [x] API documentation (`docs/ACHE_API_REFERENCE.md`)
+- [x] Optimization endpoint
+- [x] Anchor bolt design endpoint
+- [x] Summary endpoint
 - [ ] UI Panel implementation (web frontend)
 - [ ] End-to-end workflow tests with SolidWorks
 - [ ] Documentation and user guides
