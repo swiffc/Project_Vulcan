@@ -485,10 +485,17 @@ def run_complete_bundle_validation():
         "revision": BUNDLE_DESIGN["project"]["revision"],
         "code": "ASME IX",
         "welds": [
-            {"type": "groove", "size": 0.75, "length": BUNDLE_DESIGN["headers"]["length_in"], "category": "critical"},  # Header seam
-            {"type": "fillet", "size": 0.375, "length": 12 * BUNDLE_DESIGN["structural"]["lifting_lugs"], "category": "primary"},  # Lug welds
-            {"type": "groove", "size": BUNDLE_DESIGN["tube_bundle"]["tube_wall_in"], "length": 3.14 * BUNDLE_DESIGN["tube_bundle"]["tube_od_in"] * BUNDLE_DESIGN["tube_bundle"]["tube_count"], "category": "critical"},  # Tube-to-tubesheet
-        ]
+            {"type": "groove", "size": 0.75, "length": BUNDLE_DESIGN["headers"]["length_in"], "category": "critical", "nde": "RT"},  # Header seam
+            {"type": "fillet", "size": 0.375, "length": 12 * BUNDLE_DESIGN["structural"]["lifting_lugs"], "category": "primary", "nde": "PT"},  # Lug welds
+            {"type": "groove", "size": BUNDLE_DESIGN["tube_bundle"]["tube_wall_in"], "length": 3.14 * BUNDLE_DESIGN["tube_bundle"]["tube_od_in"] * BUNDLE_DESIGN["tube_bundle"]["tube_count"], "category": "critical", "nde": "RT"},  # Tube-to-tubesheet
+        ],
+        # FIX: Added PWHT and RT documentation
+        "pwht_required": BUNDLE_DESIGN["fabrication"]["pwht_required"],
+        "pwht_documented": BUNDLE_DESIGN["fabrication"]["pwht_documented"],
+        "pwht_temp_f": BUNDLE_DESIGN["fabrication"]["pwht_temp_f"],
+        "pwht_time_hr": BUNDLE_DESIGN["fabrication"]["pwht_time_hr"],
+        "rt_pressure_welds": BUNDLE_DESIGN["fabrication"]["rt_pressure_welds"],
+        "rt_coverage": BUNDLE_DESIGN["fabrication"]["rt_coverage"],
     }
 
     result = call_endpoint("Inspection", "/phase25/check-inspection", inspection_payload)
