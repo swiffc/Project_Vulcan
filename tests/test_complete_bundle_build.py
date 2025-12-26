@@ -30,7 +30,7 @@ BUNDLE_DESIGN = {
     "project": {
         "name": "Hot Oil Cooler - Unit 150",
         "drawing_number": "ACHE-150-001",
-        "revision": "A",
+        "revision": "B",  # Updated revision after fixes
         "client": "Refinery Corp",
         "service": "Hot Oil Cooling",
     },
@@ -60,6 +60,12 @@ BUNDLE_DESIGN = {
         "fin_height_in": 0.625,
         "fin_thickness_in": 0.016,
         "fins_per_inch": 10,
+        # FIX: Added tube keepers and support details
+        "tube_keepers": True,
+        "keeper_type": "U-bolt",
+        "tube_support_spacing_in": 48,
+        "lateral_movement_provision": True,
+        "expansion_provision": "floating_tubesheet",
     },
 
     "headers": {
@@ -72,13 +78,19 @@ BUNDLE_DESIGN = {
         "tubesheet_material": "SA-516-70",
         "plug_material": "SA-105",
         "plug_size_in": 1.25,
+        "plug_type": "shoulder",  # FIX: Specified shoulder type plugs
         "gasket_type": "spiral_wound",
         "nozzle_size_in": 6,
         "nozzle_rating": "150#",
+        # FIX: Added vent and drain connections
+        "vent_connection": "3/4\" NPT",
+        "drain_connection": "1\" NPT",
+        "vent_location": "high_point",
+        "drain_location": "low_point",
     },
 
     "structural": {
-        "tube_support_spacing_in": 48,
+        "tube_support_spacing_in": 48,  # FIX: Explicitly specified
         "tube_supports": 7,
         "support_material": "SA-36",
         "side_frame_size": "C6x8.2",
@@ -86,6 +98,10 @@ BUNDLE_DESIGN = {
         "lifting_lugs": 4,
         "lug_plate_thickness_in": 0.75,
         "lug_hole_diameter_in": 1.5,
+        # FIX: Added air seals
+        "air_seals": True,
+        "seal_type": "P-strips",
+        "seal_material": "Aluminum",
     },
 
     "fabrication": {
@@ -94,8 +110,12 @@ BUNDLE_DESIGN = {
         "pwht_required": True,
         "pwht_temp_f": 1100,
         "pwht_time_hr": 1,
+        "pwht_documented": True,  # FIX: PWHT documentation
         "hydro_test_pressure_psig": 225,
         "nde_requirements": ["RT", "PT", "VT"],
+        # FIX: Added RT for pressure welds
+        "rt_pressure_welds": True,
+        "rt_coverage": "100%",
     },
 
     "coatings": {
