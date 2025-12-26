@@ -3034,6 +3034,69 @@ async def export_bom_excel(request: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/phase25/generate-markup")
+async def generate_drawing_markup(request: dict):
+    """
+    Generate SVG markup overlay for validation issues.
+
+    Request body:
+        drawing_number: String
+        revision: String
+        width: Float (default: 1100)
+        height: Float (default: 850)
+        issues: List of validation issues with optional location:
+            - severity: str (critical/error/warning/info)
+            - message: str
+            - location: {x: float, y: float} (optional)
+            - check_type: str
+            - suggestion: str
+            - standard_reference: str
+        include_legend: Boolean (default: true)
+
+    Returns:
+        SVG markup as string with issue table
+    """
+    try:
+        import sys
+        import base64
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.drawing_markup import DrawingMarkupGenerator
+
+        generator = DrawingMarkupGenerator()
+
+        # Set drawing info
+        generator.set_drawing_info(
+            drawing_number=request.get("drawing_number", "DRAWING"),
+            revision=request.get("revision", ""),
+            width=request.get("width", 1100),
+            height=request.get("height", 850),
+        )
+
+        # Add issues as markups
+        issues = request.get("issues", [])
+        generator.add_from_validation_issues(issues)
+
+        # Generate SVG
+        include_legend = request.get("include_legend", True)
+        svg_content = generator.generate_svg(include_legend=include_legend)
+
+        # Get issue table
+        issue_table = generator.get_issue_table()
+
+        return {
+            "format": "svg",
+            "filename": f"markup_{request.get('drawing_number', 'drawing')}.svg",
+            "content": svg_content,
+            "size_bytes": len(svg_content.encode('utf-8')),
+            "total_markups": len(issue_table),
+            "issue_table": issue_table,
+        }
+
+    except Exception as e:
+        logger.error(f"Drawing markup generation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/phase25/export-bom-csv")
 async def export_bom_csv(request: dict):
     """

@@ -1,7 +1,7 @@
 # Project Vulcan: Active Task List
 
-**Status**: Phase 25 - Drawing Checker System (COMPLETE) | Phase 24 - NEXT
-**Last Updated**: Dec 26, 2025
+**Status**: Phase 24 - ACHE Design Assistant (92% COMPLETE) | Phase 25 - DONE
+**Last Updated**: Dec 26, 2025 - Session 2
 **Overall Health**: 10/10 (Production Deployment Ready)
 
 ---
@@ -435,14 +435,25 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 
 **Standards Database: 100% COMPLETE (213 checks)**
 
-**Phase 24 Core Modules: COMPLETE** (6 Python modules created)
+**Phase 24 Core Modules: COMPLETE** (7 Python modules created)
 - `extractor.py` - ACHE property extraction
 - `calculator.py` - Thermal/pressure calculations
 - `structural.py` - AISC structural design
 - `accessories.py` - OSHA walkways/handrails/ladders
 - `ai_assistant.py` - AI-powered design assistance
 - `erection.py` - Field erection support
+- `__init__.py` - Module exports
 
-**Next Priority**: UI integration and endpoint testing
+**Phase 24 API: 25 endpoints implemented**
+- Core: 6 endpoints (status, listener, detect, overview, properties, summary)
+- Calculations: 6 endpoints (thermal, fan, pressure-drop×2, size, batch)
+- Design: 5 endpoints (frame, column, beam, anchor-bolts, access)
+- AI: 4 endpoints (compliance, recommendations, troubleshoot, knowledge, optimize)
+- Erection: 2 endpoints (plan, lifting-lug)
+- Export: 3 endpoints (datasheet, BOM, standards)
 
-**Last Updated**: Dec 26, 2025
+**Phase 24 Tests: 70 tests (all passing)**
+
+**Next Priority**: UI Panel implementation (web frontend)
+
+**Last Updated**: Dec 26, 2025 - Session 2
