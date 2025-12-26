@@ -2405,8 +2405,14 @@ async def check_inspection(request: dict):
         # Parse welds from request
         welds = []
         for i, w in enumerate(request.get("welds", [])):
-            cat_str = w.get("category", "primary").upper()
-            category = WeldCategory.CRITICAL if cat_str == "CRITICAL" else WeldCategory.PRIMARY
+            cat_str = w.get("category", "primary").lower()
+            # Map test categories to actual enum values
+            category_map = {
+                "critical": WeldCategory.PRESSURE_RETAINING,
+                "primary": WeldCategory.STRUCTURAL_PRIMARY,
+                "secondary": WeldCategory.STRUCTURAL_SECONDARY,
+            }
+            category = category_map.get(cat_str, WeldCategory.STRUCTURAL_PRIMARY)
             welds.append(WeldInspectionData(
                 weld_id=f"W{i+1}",
                 category=category,
