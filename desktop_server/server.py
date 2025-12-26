@@ -386,6 +386,9 @@ if CAD_AVAILABLE:
         app.include_router(solidworks_assembly_router)
     if solidworks_drawings_router:
         app.include_router(solidworks_drawings_router)
+    if SOLIDWORKS_BATCH_AVAILABLE and solidworks_batch_router:
+        app.include_router(solidworks_batch_router)
+        logger.info("SolidWorks batch operations loaded")
     if inventor_router:
         app.include_router(inventor_router)
     if inventor_imates_router:
