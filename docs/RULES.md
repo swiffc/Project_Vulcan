@@ -18,6 +18,8 @@ Give this document to Claude, Cursor, or any AI assistant when working on this p
 6. **Section 6**: Safety & Security - Don't break production
 7. **Section 7**: Mechanical Engineering Mindset - CRITICAL for CAD
 8. **Section 8**: External Repositories - Reference existing solutions
+9. **Rule 22**: Forward-Looking Documentation - Keep only pending tasks
+10. **Rule 23**: Task Consolidation & File Cleanup - Single source of truth
 
 ### For CAD Tasks (MANDATORY):
 1. Read Section 7 completely

@@ -214,7 +214,6 @@ __all__ = [
     "HPCHeaderValidator",
     "HPCHeaderValidationResult",
     "HeaderData",
-],
     "GeometryValidationResult",
     "CornerData",
     "CopeData",
