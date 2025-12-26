@@ -92,7 +92,8 @@
       "Bash(\"/c/Users/DCornealius/AppData/Local/Programs/Python/Python311/python.exe\":*)",
       "Bash(tail:*)",
       "Bash(\"/c/Users/DCornealius/AppData/Local/Programs/Python/Python311/python.exe\" -m pytest tests/test_validators_unit.py -v --tb=short)",
-      "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -m pytest tests/test_validators_unit.py -v --tb=short)"
+      "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -m pytest tests/test_validators_unit.py -v --tb=short)",
+      "Bash(where:*)"
     ]
   }
 }
