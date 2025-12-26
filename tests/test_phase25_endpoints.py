@@ -59,7 +59,7 @@ def run_all_tests():
         }
     )
     results.append(("Fabrication", success, time_ms, resp))
-    print(f"   {'✓ PASS' if success else '✗ FAIL'} - {time_ms:.1f}ms")
+    print(f"   {'[PASS]' if success else '[FAIL]'} - {time_ms:.1f}ms")
     if success:
         print(f"   Checks: {resp.get('total_checks', 0)}, Passed: {resp.get('passed', 0)}, Warnings: {resp.get('warnings', 0)}")
 
@@ -80,7 +80,7 @@ def run_all_tests():
         }
     )
     results.append(("Materials", success, time_ms, resp))
-    print(f"   {'✓ PASS' if success else '✗ FAIL'} - {time_ms:.1f}ms")
+    print(f"   {'[PASS]' if success else '[FAIL]'} - {time_ms:.1f}ms")
     if success:
         print(f"   Material Compatible: {resp.get('material_compatible', 'N/A')}, Weldability OK: {resp.get('weldability_ok', 'N/A')}")
 
@@ -107,7 +107,7 @@ def run_all_tests():
         }
     )
     results.append(("Fasteners", success, time_ms, resp))
-    print(f"   {'✓ PASS' if success else '✗ FAIL'} - {time_ms:.1f}ms")
+    print(f"   {'[PASS]' if success else '[FAIL]'} - {time_ms:.1f}ms")
     if success:
         print(f"   Torque: {resp.get('calculated_torque_ft_lb', 0):.0f} ft-lb, Slip Resistance: {resp.get('slip_resistance_kips', 0):.1f} kips")
 
@@ -138,7 +138,7 @@ def run_all_tests():
         }
     )
     results.append(("Rigging", success, time_ms, resp))
-    print(f"   {'✓ PASS' if success else '✗ FAIL'} - {time_ms:.1f}ms")
+    print(f"   {'[PASS]' if success else '[FAIL]'} - {time_ms:.1f}ms")
     if success:
         print(f"   Lug Capacity: {resp.get('lug_capacity_lbs', 0):.0f} lbs, Design Factor: {resp.get('design_factor', 0)}")
         stresses = resp.get('stresses', {})
@@ -160,7 +160,7 @@ def run_all_tests():
         }
     )
     results.append(("Inspection", success, time_ms, resp))
-    print(f"   {'✓ PASS' if success else '✗ FAIL'} - {time_ms:.1f}ms")
+    print(f"   {'[PASS]' if success else '[FAIL]'} - {time_ms:.1f}ms")
     if success:
         print(f"   Checks: {resp.get('total_checks', 0)}, Passed: {resp.get('passed', 0)}")
 
@@ -188,7 +188,7 @@ def run_all_tests():
         }
     )
     results.append(("Cross-Part", success, time_ms, resp))
-    print(f"   {'✓ PASS' if success else '✗ FAIL'} - {time_ms:.1f}ms")
+    print(f"   {'[PASS]' if success else '[FAIL]'} - {time_ms:.1f}ms")
     if success:
         print(f"   Interfaces Checked: {resp.get('interfaces_checked', 0)}, Compatible: {resp.get('all_compatible', 'N/A')}")
 
@@ -231,7 +231,7 @@ def run_all_tests():
         }
     )
     results.append(("Documentation", success, time_ms, resp))
-    print(f"   {'✓ PASS' if success else '✗ FAIL'} - {time_ms:.1f}ms")
+    print(f"   {'[PASS]' if success else '[FAIL]'} - {time_ms:.1f}ms")
     if success:
         print(f"   Title Block Complete: {resp.get('title_block_complete', 'N/A')}")
         print(f"   Missing Elements: {resp.get('missing_elements', [])}")
@@ -257,7 +257,7 @@ def run_all_tests():
         }
     )
     results.append(("Report", success, time_ms, resp))
-    print(f"   {'✓ PASS' if success else '✗ FAIL'} - {time_ms:.1f}ms")
+    print(f"   {'[PASS]' if success else '[FAIL]'} - {time_ms:.1f}ms")
     if success and "content" in resp:
         try:
             content = json.loads(resp["content"]) if isinstance(resp["content"], str) else resp["content"]
@@ -289,7 +289,7 @@ def run_all_tests():
         }
     )
     results.append(("Edge-Undersized-Lug", success, time_ms, resp))
-    print(f"   {'✓ PASS' if success else '✗ FAIL'} - {time_ms:.1f}ms")
+    print(f"   {'[PASS]' if success else '[FAIL]'} - {time_ms:.1f}ms")
     if success:
         issues = resp.get("issues", [])
         critical = [i for i in issues if i.get("severity") == "critical"]
@@ -310,7 +310,7 @@ def run_all_tests():
     )
     # Now check compatibility manually
     results.append(("Edge-Galvanic", success, time_ms, resp))
-    print(f"   {'✓ PASS' if success else '✗ FAIL'} - {time_ms:.1f}ms")
+    print(f"   {'[PASS]' if success else '[FAIL]'} - {time_ms:.1f}ms")
 
     # Test 11: Edge Case - Tight Tolerance
     print("\n[11] Testing EDGE CASE: Impossible tolerance...")
@@ -326,7 +326,7 @@ def run_all_tests():
         }
     )
     results.append(("Edge-Tolerance", success, time_ms, resp))
-    print(f"   {'✓ PASS' if success else '✗ FAIL'} - {time_ms:.1f}ms")
+    print(f"   {'[PASS]' if success else '[FAIL]'} - {time_ms:.1f}ms")
 
     # Test 12: Stress Test - Large Payload
     print("\n[12] Testing STRESS: Large fabrication payload...")
@@ -344,7 +344,7 @@ def run_all_tests():
         }
     )
     results.append(("Stress-Large", success, time_ms, resp))
-    print(f"   {'✓ PASS' if success else '✗ FAIL'} - {time_ms:.1f}ms")
+    print(f"   {'[PASS]' if success else '[FAIL]'} - {time_ms:.1f}ms")
     print(f"   Processed 200 holes + 15 slots")
 
     # Summary
