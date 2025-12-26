@@ -92,8 +92,15 @@
         "Hood Program defaults to W708 lifting lug",
         "Need to check lifting lug size for air seal block outs",
         "Non-standard lifting lug locations must be verified",
-        "Lifting lug center line location is critical"
-      ]
+        "Lifting lug center line location is critical",
+        "Specific location coordinates are in Excel files (F 7REF6, F 7REF7, etc.) - not in PDF text"
+      ],
+      "location_data_status": {
+        "location_references_found": true,
+        "specific_coordinates_in_pdf": false,
+        "coordinates_source": "Excel files (F 7REF6, F 7REF7, etc.) and Hood Program",
+        "action_required": "Extract location coordinates from Excel reference drawings or Hood Program output"
+      }
     }
   }
 }
