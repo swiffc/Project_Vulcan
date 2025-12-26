@@ -14,10 +14,28 @@ Outputs:
 
 import json
 import logging
+import io
 from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Any, Optional, Union
 from datetime import datetime
 from enum import Enum
+
+# PDF Generation imports
+try:
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import letter, A4
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import inch
+    from reportlab.platypus import (
+        SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
+        PageBreak, Image, HRFlowable
+    )
+    from reportlab.graphics.shapes import Drawing, Rect, String
+    from reportlab.graphics.charts.piecharts import Pie
+    from reportlab.graphics.charts.barcharts import VerticalBarChart
+    REPORTLAB_AVAILABLE = True
+except ImportError:
+    REPORTLAB_AVAILABLE = False
 
 from .validation_models import ValidationIssue, ValidationSeverity
 
