@@ -14,6 +14,39 @@ import os
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import json
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
+import time
+
+# Progress tracking
+try:
+    from tqdm import tqdm
+    HAS_TQDM = True
+except ImportError:
+    HAS_TQDM = False
+    def tqdm(iterable, *args, **kwargs):
+        return iterable
+
+# Error handling
+try:
+    from tenacity import retry, stop_after_attempt, wait_exponential
+    HAS_TENACITY = True
+except ImportError:
+    HAS_TENACITY = False
+    def retry(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def stop_after_attempt(*args):
+        pass
+    def wait_exponential(*args):
+        pass
+
+# Memory monitoring
+try:
+    import psutil
+    HAS_PSUTIL = True
+except ImportError:
+    HAS_PSUTIL = False
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
