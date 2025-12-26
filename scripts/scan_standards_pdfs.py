@@ -131,10 +131,19 @@ def main():
     
     results = []
     
-    for pdf_path in pdf_files:
-        result = scan_pdf(pdf_path)
-        if result:
-            results.append(result)
+    for idx, pdf_path in enumerate(pdf_files, 1):
+        print(f"\n\nProcessing PDF {idx}/{len(pdf_files)}...")
+        try:
+            result = scan_pdf(pdf_path)
+            if result:
+                results.append(result)
+                # Save immediately to avoid losing progress
+                save_result(result)
+        except Exception as e:
+            print(f"ERROR processing {pdf_path}: {e}")
+            import traceback
+            traceback.print_exc()
+            continue
     
     # Summary
     print(f"\n\n{'='*80}")
