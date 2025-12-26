@@ -226,15 +226,12 @@ def run_complete_bundle_validation():
     print("\n[3/12] ASME VIII HEADER VALIDATION...")
 
     asme_payload = {
-        "vessel_type": "heat_exchanger_header",
-        "design_pressure_psig": BUNDLE_DESIGN["process_conditions"]["design_pressure_psig"],
+        "inside_diameter_in": BUNDLE_DESIGN["headers"]["width_in"],
+        "wall_thickness_in": BUNDLE_DESIGN["headers"]["thickness_in"],
+        "design_pressure_psi": BUNDLE_DESIGN["process_conditions"]["design_pressure_psig"],
         "design_temp_f": BUNDLE_DESIGN["process_conditions"]["design_temp_f"],
-        "shell_material": BUNDLE_DESIGN["headers"]["material"],
-        "shell_thickness_in": BUNDLE_DESIGN["headers"]["thickness_in"],
-        "shell_diameter_in": BUNDLE_DESIGN["headers"]["width_in"],
+        "material": BUNDLE_DESIGN["headers"]["material"],
         "corrosion_allowance_in": BUNDLE_DESIGN["process_conditions"]["corrosion_allowance_in"],
-        "joint_efficiency": 0.85,
-        "head_type": "flat",
     }
 
     result = call_endpoint("ASME VIII", "/phase25/check-asme-viii", asme_payload)
@@ -589,7 +586,7 @@ def run_complete_bundle_validation():
 
     print(f"\nProject: {BUNDLE_DESIGN['project']['name']}")
     print(f"Drawing: {BUNDLE_DESIGN['project']['drawing_number']} Rev {BUNDLE_DESIGN['project']['revision']}")
-    print(f"\n{'─' * 40}")
+    print(f"\n{'-' * 40}")
     print(f"Validators Run:     {total_tests}")
     print(f"Passed:             {passed_tests}")
     print(f"Failed:             {failed_tests}")
@@ -609,7 +606,7 @@ def run_complete_bundle_validation():
 
     # List critical issues
     if critical_issues:
-        print(f"\n{'─' * 40}")
+        print(f"\n{'-' * 40}")
         print("CRITICAL ISSUES (Must Fix):")
         print("─" * 40)
         for i, issue in enumerate(critical_issues[:10], 1):
@@ -620,7 +617,7 @@ def run_complete_bundle_validation():
 
     # List warnings
     if warning_issues:
-        print(f"\n{'─' * 40}")
+        print(f"\n{'-' * 40}")
         print("WARNINGS (Should Review):")
         print("─" * 40)
         for i, issue in enumerate(warning_issues[:5], 1):
@@ -630,7 +627,7 @@ def run_complete_bundle_validation():
             print(f"  ... and {len(warning_issues) - 5} more")
 
     # Validation summary by category
-    print(f"\n{'─' * 40}")
+    print(f"\n{'-' * 40}")
     print("VALIDATION BY CATEGORY:")
     print("─" * 40)
 
