@@ -5,6 +5,12 @@ import sys
 import os
 from pathlib import Path
 
+# Set UTF-8 encoding for Windows console
+if sys.platform == 'win32':
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -151,7 +157,7 @@ def save_result(result):
                     for row in table:
                         f.write(str(row) + "\n")
     
-    print(f"✓ Saved extraction to: {output_file}")
+    print(f"[OK] Saved extraction to: {output_file}")
     
     # Also save summary
     summary_file = output_dir / f"{filename}_summary.txt"
