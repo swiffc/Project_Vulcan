@@ -139,6 +139,8 @@ try:
         SOLIDWORKS_PACK_AND_GO_AVAILABLE,
         solidworks_reference_geometry_router,
         SOLIDWORKS_REFERENCE_GEOMETRY_AVAILABLE,
+        solidworks_drawings_advanced_router,
+        SOLIDWORKS_DRAWINGS_ADVANCED_AVAILABLE,
         inventor_router,
         inventor_imates_router,
         inventor_drawings_router,
@@ -179,6 +181,7 @@ except ImportError:
     solidworks_design_tables_router = None
     solidworks_pack_and_go_router = None
     solidworks_reference_geometry_router = None
+    solidworks_drawings_advanced_router = None
     inventor_router = None
     inventor_imates_router = None
     inventor_drawings_router = None
