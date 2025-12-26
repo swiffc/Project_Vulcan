@@ -345,34 +345,85 @@ class OrdinateDimensionRequest(BaseModel):
 
 # --- SIMULATION/FEA MODELS ---
 class SimulationStudyRequest(BaseModel):
-    """Create simulation study."""
+    """Create simulation study. Full SOLIDWORKS Simulation support."""
     study_name: str = Field("Static Study", description="Study name")
-    study_type: Literal["static", "frequency", "buckling", "thermal", "fatigue", "drop_test"] = "static"
+    study_type: Literal[
+        "static", "frequency", "buckling", "thermal", "thermal_transient",
+        "fatigue", "drop_test", "nonlinear", "linear_dynamic",
+        "random_vibration", "response_spectrum", "pressure_vessel",
+        "submodeling", "topology", "design_study"
+    ] = Field("static", description="Study type")
+    mesh_type: Literal["solid", "shell", "beam", "mixed"] = Field("solid", description="Element type")
+    solver_type: Literal["ffePlus", "direct_sparse", "iterative", "large_problem"] = Field("ffePlus", description="Solver type")
+    use_soft_spring: bool = Field(False, description="Stabilize with soft springs")
+    use_inertia_relief: bool = Field(False, description="Use inertia relief")
+    use_large_displacement: bool = Field(False, description="Large displacement analysis")
 
 
 class FixtureRequest(BaseModel):
-    """Apply fixture/restraint to simulation."""
-    face_names: List[str] = Field(..., description="Faces to fix")
-    fixture_type: Literal["fixed", "roller", "hinge", "fixed_hinge", "symmetry"] = "fixed"
+    """Apply fixture/restraint to simulation. Full restraint options."""
+    face_names: List[str] = Field(..., description="Faces/edges/vertices to constrain")
+    fixture_type: Literal[
+        "fixed", "immovable", "roller", "hinge", "fixed_hinge",
+        "symmetry", "cyclic_symmetry", "use_reference_geometry",
+        "on_flat_faces", "on_cylindrical_faces", "on_spherical_faces",
+        "elastic_support", "foundation_stiffness",
+        "virtual_wall", "shrink_fit"
+    ] = Field("fixed", description="Restraint type")
+    translation_x: Optional[float] = Field(None, description="Prescribed displacement X (meters)")
+    translation_y: Optional[float] = Field(None, description="Prescribed displacement Y (meters)")
+    translation_z: Optional[float] = Field(None, description="Prescribed displacement Z (meters)")
+    rotation_x: Optional[float] = Field(None, description="Prescribed rotation X (radians)")
+    rotation_y: Optional[float] = Field(None, description="Prescribed rotation Y (radians)")
+    rotation_z: Optional[float] = Field(None, description="Prescribed rotation Z (radians)")
+    stiffness: Optional[float] = Field(None, description="Elastic support stiffness (N/m)")
 
 
 class LoadRequest(BaseModel):
-    """Apply load to simulation."""
-    face_names: List[str] = Field(..., description="Faces to apply load")
-    load_type: Literal["force", "pressure", "torque", "gravity", "centrifugal", "bearing"]
-    value: float = Field(..., description="Load value (N, Pa, Nm, etc.)")
-    direction: Optional[List[float]] = Field(None, description="Direction vector [x, y, z]")
+    """Apply load to simulation. Full load type support."""
+    face_names: List[str] = Field(..., description="Faces/edges/vertices to load")
+    load_type: Literal[
+        "force", "torque", "pressure", "gravity", "centrifugal",
+        "bearing", "remote_load", "distributed_mass",
+        "temperature", "convection", "heat_flux", "heat_power", "radiation",
+        "flow_effects", "prescribed_displacement", "connector_force"
+    ] = Field(..., description="Load type")
+    value: float = Field(..., description="Load value (N, Pa, Nm, W, K, etc.)")
+    direction: Optional[List[float]] = Field(None, description="Direction vector [x, y, z] for force/torque")
+    reverse_direction: bool = Field(False, description="Reverse load direction")
+    uniform: bool = Field(True, description="Uniform distribution")
+    per_item: bool = Field(False, description="Value is per entity")
+    nonuniform_distribution: Optional[str] = Field(None, description="Equation for non-uniform distribution")
+    # Thermal specific
+    ambient_temperature: Optional[float] = Field(None, description="Ambient temperature (K)")
+    convection_coefficient: Optional[float] = Field(None, description="Convection coefficient (W/m2K)")
+    emissivity: Optional[float] = Field(None, description="Surface emissivity (0-1)")
 
 
 class MeshRequest(BaseModel):
-    """Configure and create mesh."""
-    mesh_quality: Literal["draft", "standard", "fine"] = "standard"
-    element_size: Optional[float] = Field(None, description="Element size in meters")
+    """Configure and create mesh. Full mesh control options."""
+    mesh_quality: Literal["draft", "standard", "fine", "custom"] = Field("standard", description="Mesh quality preset")
+    element_size: Optional[float] = Field(None, description="Global element size in meters")
+    tolerance: Optional[float] = Field(None, description="Mesh tolerance in meters")
+    mesh_type: Literal["solid", "shell", "beam", "mixed"] = Field("solid", description="Element type")
+    jacobian_points: Literal[4, 16, 29] = Field(4, description="Jacobian check points")
+    automatic_transition: bool = Field(True, description="Automatic mesh transition")
+    smooth_surface: bool = Field(True, description="Smooth surface mesh")
+    curvature_based: bool = Field(True, description="Curvature-based mesh")
+    min_elements_in_circle: int = Field(8, description="Minimum elements in circle")
+    element_size_growth_ratio: float = Field(1.6, description="Element growth ratio (1.1-3.0)")
+    # Local mesh control
+    local_mesh_faces: Optional[List[str]] = Field(None, description="Faces for local mesh refinement")
+    local_element_size: Optional[float] = Field(None, description="Local element size in meters")
 
 
 class RunAnalysisRequest(BaseModel):
-    """Run simulation analysis."""
+    """Run simulation analysis. Full run options."""
     study_name: str = Field(..., description="Study to run")
+    run_all_configurations: bool = Field(False, description="Run for all configurations")
+    save_results_for_all: bool = Field(True, description="Save results for all design points")
+    stop_on_warning: bool = Field(False, description="Stop analysis on solver warnings")
+    number_of_processors: Optional[int] = Field(None, description="Number of CPU cores (None=auto)")
 
 
 # --- DESIGN TABLES & EQUATIONS ---
