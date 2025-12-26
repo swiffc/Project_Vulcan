@@ -380,6 +380,14 @@ See full PRD: `docs/prds/PRD-024-ACHE-DESIGN-ASSISTANT.md`
 
 **Standards Database: 100% COMPLETE (213 checks)**
 
-**Next Priority**: Phase 24.1 (Auto-Launch System) - 8 tasks
+**Phase 24 Core Modules: COMPLETE** (6 Python modules created)
+- `extractor.py` - ACHE property extraction
+- `calculator.py` - Thermal/pressure calculations
+- `structural.py` - AISC structural design
+- `accessories.py` - OSHA walkways/handrails/ladders
+- `ai_assistant.py` - AI-powered design assistance
+- `erection.py` - Field erection support
+
+**Next Priority**: UI integration and endpoint testing
 
 **Last Updated**: Dec 26, 2025

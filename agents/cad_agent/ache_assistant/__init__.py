@@ -12,7 +12,7 @@ This module provides the agent-side ACHE design assistant:
 """
 
 from .extractor import ACHEExtractor, ACHEProperties
-from .calculator import ACHECalculator, ThermalResults, PressureDropResults
+from .calculator import ACHECalculator, ThermalResults, PressureDropResults, FanResults, FluidProperties
 from .structural import StructuralDesigner, ColumnDesign, BeamDesign
 from .accessories import AccessoryDesigner, PlatformDesign, LadderDesign, HandrailDesign
 from .ai_assistant import ACHEAssistant
