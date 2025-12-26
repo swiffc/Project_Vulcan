@@ -56,7 +56,7 @@ BUNDLE_DESIGN = {
         "passes": 4,
         "tube_material": "SA-179",
         "fin_material": "Aluminum 1100",
-        "fin_type": "L-foot",
+        "fin_type": "l_footed",
         "fin_height_in": 0.625,
         "fin_thickness_in": 0.016,
         "fins_per_inch": 10,
