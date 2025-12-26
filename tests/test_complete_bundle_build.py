@@ -662,7 +662,10 @@ def run_complete_bundle_validation():
         print("-" * 40)
         for i, issue in enumerate(critical_issues[:10], 1):
             msg = issue.get("message", issue.get("description", "Unknown"))[:70]
-            print(f"  {i}. [{issue.get('source', 'Unknown')}] {msg}")
+            # Remove non-ASCII characters for Windows console
+            msg = msg.encode('ascii', 'replace').decode('ascii')
+            source = issue.get('source', 'Unknown')
+            print(f"  {i}. [{source}] {msg}")
         if len(critical_issues) > 10:
             print(f"  ... and {len(critical_issues) - 10} more")
 
