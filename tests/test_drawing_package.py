@@ -628,6 +628,10 @@ def run_drawing_package_validation():
 
     completeness_payload = {
         "drawing_number": tb["drawing_number"],
+        "part_number": tb["part_number"],
+        "revision": tb["revision"],
+        "scale": tb["scale"],
+        "title_block": tb,  # Include full title block
         "has_title_block": True,
         "has_revision_block": True,
         "has_bom": True,
