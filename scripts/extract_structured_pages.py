@@ -84,23 +84,34 @@ class StructuredPageExtractor:
             content = f.read()
         
         # Find the specific page
-        # Pattern: Look for "PAGE N" between separator lines
-        page_pattern = rf'={60,}\s*\n\s*PAGE\s+{page_num}\s*\n\s*={60,}'
-        match = re.search(page_pattern, content, re.MULTILINE)
-        
-        if not match:
-            # Try simpler pattern: just "PAGE N" followed by separator
-            page_pattern = rf'PAGE\s+{page_num}\s*\n\s*={60,}'
-            match = re.search(page_pattern, content, re.MULTILINE)
+        # Pattern: Look for "PAGE N" - the format is separator, PAGE N, separator
+        page_pattern = rf'PAGE\s+{page_num}\s*\n'
+        match = re.search(page_pattern, content)
         
         if not match:
             return None
         
-        # Extract page content (start after the separator line after PAGE N)
-        start_pos = match.end()
+        # Find the separator line before PAGE N (to get start of page section)
+        before_match = content[:match.start()]
+        separator_before = re.search(r'={60,}\s*\n', before_match)
+        if separator_before:
+            # Start from the separator before PAGE N
+            page_start = separator_before.start()
+        else:
+            page_start = match.start()
+        
+        # Extract page content (start after PAGE N line and its following separator)
+        # Find separator after PAGE N
+        after_match = content[match.end():]
+        separator_after = re.search(r'={60,}\s*\n', after_match)
+        if separator_after:
+            start_pos = match.end() + separator_after.end()
+        else:
+            start_pos = match.end()
+        
         # Find next page marker
-        next_page_pattern = rf'PAGE\s+{page_num + 1}\s*\n\s*={60,}'
-        next_page_match = re.search(next_page_pattern, content[start_pos:], re.MULTILINE)
+        next_page_pattern = rf'PAGE\s+{page_num + 1}\s*\n'
+        next_page_match = re.search(next_page_pattern, content[start_pos:])
         
         if next_page_match:
             page_text = content[start_pos:start_pos + next_page_match.start()]
