@@ -98,7 +98,8 @@
       "Bash(npm run build:*)",
       "Bash(npx tsc:*)",
       "Bash(/c/Users/DCornealius/AppData/Local/Programs/Python/Python311/python.exe -m py_compile \"/c/Users/D&E Cornealius/Documents/GitHub/Project_Vulcan/desktop_server/com/solidworks_advanced.py\")",
-      "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -m py_compile \"C:\\\\Users\\\\D&E Cornealius\\\\Documents\\\\GitHub\\\\Project_Vulcan\\\\desktop_server\\\\com\\\\solidworks_advanced.py\")"
+      "Bash(\"C:\\\\Users\\\\DCornealius\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -m py_compile \"C:\\\\Users\\\\D&E Cornealius\\\\Documents\\\\GitHub\\\\Project_Vulcan\\\\desktop_server\\\\com\\\\solidworks_advanced.py\")",
+      "Bash(node node_modules/typescript/bin/tsc:*)"
     ]
   }
 }
