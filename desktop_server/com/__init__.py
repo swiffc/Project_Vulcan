@@ -185,6 +185,76 @@ except ImportError:
     solidworks_surfaces_router = None
     SOLIDWORKS_SURFACES_AVAILABLE = False
 
+try:
+    from .solidworks_equations import router as solidworks_equations_router
+    SOLIDWORKS_EQUATIONS_AVAILABLE = True
+except ImportError:
+    solidworks_equations_router = None
+    SOLIDWORKS_EQUATIONS_AVAILABLE = False
+
+try:
+    from .solidworks_display import router as solidworks_display_router
+    SOLIDWORKS_DISPLAY_AVAILABLE = True
+except ImportError:
+    solidworks_display_router = None
+    SOLIDWORKS_DISPLAY_AVAILABLE = False
+
+try:
+    from .solidworks_materials import router as solidworks_materials_router
+    SOLIDWORKS_MATERIALS_AVAILABLE = True
+except ImportError:
+    solidworks_materials_router = None
+    SOLIDWORKS_MATERIALS_AVAILABLE = False
+
+try:
+    from .solidworks_bodies import router as solidworks_bodies_router
+    SOLIDWORKS_BODIES_AVAILABLE = True
+except ImportError:
+    solidworks_bodies_router = None
+    SOLIDWORKS_BODIES_AVAILABLE = False
+
+try:
+    from .solidworks_rendering import router as solidworks_rendering_router
+    SOLIDWORKS_RENDERING_AVAILABLE = True
+except ImportError:
+    solidworks_rendering_router = None
+    SOLIDWORKS_RENDERING_AVAILABLE = False
+
+try:
+    from .solidworks_sensors import router as solidworks_sensors_router
+    SOLIDWORKS_SENSORS_AVAILABLE = True
+except ImportError:
+    solidworks_sensors_router = None
+    SOLIDWORKS_SENSORS_AVAILABLE = False
+
+try:
+    from .solidworks_macros import router as solidworks_macros_router
+    SOLIDWORKS_MACROS_AVAILABLE = True
+except ImportError:
+    solidworks_macros_router = None
+    SOLIDWORKS_MACROS_AVAILABLE = False
+
+try:
+    from .solidworks_design_tables import router as solidworks_design_tables_router
+    SOLIDWORKS_DESIGN_TABLES_AVAILABLE = True
+except ImportError:
+    solidworks_design_tables_router = None
+    SOLIDWORKS_DESIGN_TABLES_AVAILABLE = False
+
+try:
+    from .solidworks_pack_and_go import router as solidworks_pack_and_go_router
+    SOLIDWORKS_PACK_AND_GO_AVAILABLE = True
+except ImportError:
+    solidworks_pack_and_go_router = None
+    SOLIDWORKS_PACK_AND_GO_AVAILABLE = False
+
+try:
+    from .solidworks_reference_geometry import router as solidworks_reference_geometry_router
+    SOLIDWORKS_REFERENCE_GEOMETRY_AVAILABLE = True
+except ImportError:
+    solidworks_reference_geometry_router = None
+    SOLIDWORKS_REFERENCE_GEOMETRY_AVAILABLE = False
+
 __all__ = [
     "solidworks_router",
     "solidworks_advanced_router",
