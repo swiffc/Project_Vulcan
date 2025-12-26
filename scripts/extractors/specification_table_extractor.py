@@ -71,7 +71,7 @@ class SpecificationTableExtractor(BaseExtractor):
         specs = []
         
         # Look for part number patterns (W708, W709, etc.)
-        part_pattern = r'([WOP]\d+)\s*\(?([^)]+)\)?\s*([\d'"/\s-]+)'
+        part_pattern = r'([WOP]\d+)\s*\(?([^)]+)\)?\s*([\d\'"/\s-]+)'
         matches = re.finditer(part_pattern, text, re.IGNORECASE)
         
         for match in matches:
@@ -194,7 +194,7 @@ class SpecificationTableExtractor(BaseExtractor):
     def _extract_block_out_dimensions(self, text: str, part_num: str) -> Optional[Dict]:
         """Extract block out dimensions for a part"""
         # Look for block out table near the part number
-        block_out_pattern = rf'{re.escape(part_num)}[^\n]*\n[^\n]*([\d'"/\s-]+)\s+([\d'"/\s-]+)\s+([\d'"/\s-]+)'
+        block_out_pattern = rf'{re.escape(part_num)}[^\n]*\n[^\n]*([\d\'"/\s-]+)\s+([\d\'"/\s-]+)\s+([\d\'"/\s-]+)'
         match = re.search(block_out_pattern, text, re.IGNORECASE)
         
         if match:

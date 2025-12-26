@@ -603,14 +603,14 @@ class TestACHEExtractor:
         )
 
         props = ACHEProperties(
-            unit_tag="AC-101",
+            equipment_tag="AC-101",
             service="Cooling",
             header_box=HeaderBoxData(length_mm=3000),
             tube_bundle=TubeBundleData(total_tubes=500),
             fan_system=FanSystemData(num_fans=2),
         )
 
-        assert props.unit_tag == "AC-101"
+        assert props.equipment_tag == "AC-101"
         assert props.header_box.length_mm == 3000
         assert props.tube_bundle.total_tubes == 500
         assert props.fan_system.num_fans == 2
