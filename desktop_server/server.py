@@ -2085,20 +2085,11 @@ async def check_asme_viii(request: dict):
 
         vessel = VesselData(
             design_pressure_psi=request.get("design_pressure_psi", 150.0),
-            shell_inside_diameter_in=request.get("shell_inside_diameter_in"),
-            shell_wall_thickness_in=request.get("shell_wall_thickness_in"),
+            inside_diameter_in=request.get("inside_diameter_in") or request.get("shell_inside_diameter_in"),
+            wall_thickness_in=request.get("wall_thickness_in") or request.get("shell_wall_thickness_in"),
             material=request.get("material", "SA-516-70"),
-            joint_efficiency=request.get("joint_efficiency", 1.0),
             corrosion_allowance_in=request.get("corrosion_allowance_in", 0.0625),
-            design_temperature_f=request.get("design_temperature_f", 650.0),
-            hydro_test_pressure_psi=request.get("hydro_test_pressure_psi"),
-            nozzle_diameter_in=request.get("nozzle_diameter_in"),
-            nozzle_reinforcement_area_sqin=request.get("nozzle_reinforcement_area_sqin"),
-            shell_thickness_at_nozzle_in=request.get("shell_thickness_at_nozzle_in"),
-            flange_rating=request.get("flange_rating"),
-            flange_temp_f=request.get("flange_temp_f"),
-            mtr_available=request.get("mtr_available", False),
-            material_certs=request.get("material_certs", []),
+            design_temp_f=request.get("design_temp_f") or request.get("design_temperature_f", 650.0),
         )
 
         result = validator.validate_vessel(vessel)
