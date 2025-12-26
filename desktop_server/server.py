@@ -1678,6 +1678,229 @@ async def check_api661_full(request: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/phase25/check-gdt")
+async def check_gdt(request: dict):
+    """
+    Validate GD&T per ASME Y14.5-2018.
+
+    All 14 geometric tolerance symbols supported:
+    - Form: Flatness, Straightness, Circularity, Cylindricity
+    - Orientation: Perpendicularity, Angularity, Parallelism
+    - Location: Position, Concentricity, Symmetry
+    - Runout: Circular Runout, Total Runout
+    - Profile: Profile of Line, Profile of Surface
+
+    Request body:
+        tolerance_type: str - Type of tolerance to validate
+        tolerance_value: float - Tolerance value in inches
+        material_condition: str - "M" (MMC), "L" (LMC), or "S" (RFS)
+        primary_datum: str - Primary datum reference
+        secondary_datum: str - Secondary datum reference (optional)
+        tertiary_datum: str - Tertiary datum reference (optional)
+
+        For Position tolerance:
+            feature_type: str - "hole", "pin", "slot", "tab"
+            feature_size: float - Nominal feature size
+            feature_size_tolerance: float - Size tolerance
+            actual_x: float - Actual X position (optional)
+            actual_y: float - Actual Y position (optional)
+            nominal_x: float - Nominal X position
+            nominal_y: float - Nominal Y position
+
+        For Form tolerances:
+            surface_length: float - Length of surface
+            surface_width: float - Width of surface
+            process: str - Manufacturing process
+            diameter: float - For circular features
+
+    Returns:
+        GD&T validation results including bonus tolerance calculations
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.gdt_validator import (
+            GDTValidator, FeatureControlFrame, PositionData,
+            ToleranceType, MaterialCondition, FeatureType
+        )
+
+        validator = GDTValidator()
+        tol_type = request.get("tolerance_type", "position").lower()
+
+        # Map string to enum
+        type_map = {
+            "flatness": ToleranceType.FLATNESS,
+            "straightness": ToleranceType.STRAIGHTNESS,
+            "circularity": ToleranceType.CIRCULARITY,
+            "cylindricity": ToleranceType.CYLINDRICITY,
+            "perpendicularity": ToleranceType.PERPENDICULARITY,
+            "angularity": ToleranceType.ANGULARITY,
+            "parallelism": ToleranceType.PARALLELISM,
+            "position": ToleranceType.POSITION,
+            "concentricity": ToleranceType.CONCENTRICITY,
+            "symmetry": ToleranceType.SYMMETRY,
+            "circular_runout": ToleranceType.CIRCULAR_RUNOUT,
+            "total_runout": ToleranceType.TOTAL_RUNOUT,
+            "profile_line": ToleranceType.PROFILE_LINE,
+            "profile_surface": ToleranceType.PROFILE_SURFACE,
+        }
+
+        mc_map = {
+            "M": MaterialCondition.MMC,
+            "L": MaterialCondition.LMC,
+            "S": MaterialCondition.RFS,
+            "MMC": MaterialCondition.MMC,
+            "LMC": MaterialCondition.LMC,
+            "RFS": MaterialCondition.RFS,
+        }
+
+        feature_map = {
+            "hole": FeatureType.HOLE,
+            "pin": FeatureType.PIN,
+            "slot": FeatureType.SLOT,
+            "tab": FeatureType.TAB,
+            "surface": FeatureType.SURFACE,
+        }
+
+        tolerance_type = type_map.get(tol_type, ToleranceType.POSITION)
+        material_condition = mc_map.get(request.get("material_condition", "S"), MaterialCondition.RFS)
+
+        # Handle different tolerance types
+        if tolerance_type == ToleranceType.POSITION:
+            # Build FCF for position
+            fcf = FeatureControlFrame(
+                tolerance_type=ToleranceType.POSITION,
+                tolerance_value=request.get("tolerance_value", 0.010),
+                material_condition=material_condition,
+                primary_datum=request.get("primary_datum"),
+                secondary_datum=request.get("secondary_datum"),
+                tertiary_datum=request.get("tertiary_datum"),
+                feature_type=feature_map.get(request.get("feature_type", "hole"), FeatureType.HOLE),
+                feature_size=request.get("feature_size"),
+                feature_size_tolerance=request.get("feature_size_tolerance"),
+            )
+
+            # Position data if actual measurements provided
+            pos_data = None
+            if request.get("actual_x") is not None and request.get("actual_y") is not None:
+                pos_data = PositionData(
+                    nominal_x=request.get("nominal_x", 0.0),
+                    nominal_y=request.get("nominal_y", 0.0),
+                    actual_x=request.get("actual_x"),
+                    actual_y=request.get("actual_y"),
+                )
+
+            result = validator.validate_position(fcf, pos_data)
+
+        elif tolerance_type == ToleranceType.FLATNESS:
+            result = validator.validate_flatness(
+                tolerance=request.get("tolerance_value", 0.005),
+                surface_length=request.get("surface_length", 6.0),
+                surface_width=request.get("surface_width", 4.0),
+                process=request.get("process", "milling"),
+            )
+
+        elif tolerance_type == ToleranceType.STRAIGHTNESS:
+            result = validator.validate_straightness(
+                tolerance=request.get("tolerance_value", 0.005),
+                feature_length=request.get("feature_length", 6.0),
+                is_axis=request.get("is_axis", False),
+                material_condition=material_condition,
+            )
+
+        elif tolerance_type == ToleranceType.CIRCULARITY:
+            result = validator.validate_circularity(
+                tolerance=request.get("tolerance_value", 0.003),
+                diameter=request.get("diameter", 1.0),
+                process=request.get("process", "turning"),
+            )
+
+        elif tolerance_type == ToleranceType.CYLINDRICITY:
+            result = validator.validate_cylindricity(
+                tolerance=request.get("tolerance_value", 0.005),
+                diameter=request.get("diameter", 1.0),
+                length=request.get("feature_length", 3.0),
+                process=request.get("process", "turning"),
+            )
+
+        elif tolerance_type == ToleranceType.PERPENDICULARITY:
+            result = validator.validate_perpendicularity(
+                tolerance=request.get("tolerance_value", 0.005),
+                feature_length=request.get("feature_length", 4.0),
+                datum=request.get("primary_datum", "A"),
+                material_condition=material_condition,
+            )
+
+        elif tolerance_type == ToleranceType.ANGULARITY:
+            result = validator.validate_angularity(
+                tolerance=request.get("tolerance_value", 0.005),
+                specified_angle=request.get("specified_angle", 45.0),
+                feature_length=request.get("feature_length", 4.0),
+                datum=request.get("primary_datum", "A"),
+            )
+
+        elif tolerance_type == ToleranceType.PARALLELISM:
+            result = validator.validate_parallelism(
+                tolerance=request.get("tolerance_value", 0.005),
+                feature_length=request.get("feature_length", 4.0),
+                datum=request.get("primary_datum", "A"),
+                material_condition=material_condition,
+            )
+
+        elif tolerance_type == ToleranceType.CONCENTRICITY:
+            result = validator.validate_concentricity(
+                tolerance=request.get("tolerance_value", 0.002),
+                datum=request.get("primary_datum", "A"),
+            )
+
+        elif tolerance_type == ToleranceType.SYMMETRY:
+            result = validator.validate_symmetry(
+                tolerance=request.get("tolerance_value", 0.005),
+                datum=request.get("primary_datum", "A"),
+            )
+
+        elif tolerance_type == ToleranceType.CIRCULAR_RUNOUT:
+            result = validator.validate_circular_runout(
+                tolerance=request.get("tolerance_value", 0.003),
+                datum=request.get("primary_datum", "A"),
+            )
+
+        elif tolerance_type == ToleranceType.TOTAL_RUNOUT:
+            result = validator.validate_total_runout(
+                tolerance=request.get("tolerance_value", 0.005),
+                datum=request.get("primary_datum", "A"),
+            )
+
+        elif tolerance_type == ToleranceType.PROFILE_LINE:
+            result = validator.validate_profile_line(
+                tolerance=request.get("tolerance_value", 0.010),
+                is_bilateral=request.get("is_bilateral", True),
+                datum=request.get("primary_datum"),
+            )
+
+        elif tolerance_type == ToleranceType.PROFILE_SURFACE:
+            result = validator.validate_profile_surface(
+                tolerance=request.get("tolerance_value", 0.010),
+                is_bilateral=request.get("is_bilateral", True),
+                datum=request.get("primary_datum"),
+            )
+        else:
+            # Generic FCF validation
+            fcf = FeatureControlFrame(
+                tolerance_type=tolerance_type,
+                tolerance_value=request.get("tolerance_value", 0.005),
+                material_condition=material_condition,
+                primary_datum=request.get("primary_datum"),
+            )
+            result = validator.validate_fcf(fcf)
+
+        return validator.to_dict(result)
+
+    except Exception as e:
+        logger.error(f"GD&T check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/phase25/check-api661-bundle")
 async def check_api661_bundle(request: dict):
     """
