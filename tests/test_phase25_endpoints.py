@@ -370,10 +370,10 @@ def run_all_tests():
     print("DETAILED RESULTS:")
     print("-" * 70)
     for name, success, time_ms, resp in results:
-        status = "✓" if success else "✗"
-        print(f"{status} {name:25} {time_ms:8.1f}ms")
+        status = "[OK]" if success else "[FAIL]"
+        print(f"{status:6} {name:25} {time_ms:8.1f}ms")
         if not success:
-            print(f"  Error: {resp.get('error', 'Unknown')[:60]}")
+            print(f"       Error: {resp.get('error', 'Unknown')[:60]}")
 
     return results
 
