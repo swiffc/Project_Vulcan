@@ -97,7 +97,7 @@
 ### Inventor Tools
 - ✅ Inventor: 50+ tools
 
-**Total**: **295+ tools** covering 100% of backend endpoints!
+**Total**: **251 tools** covering 100% of backend endpoints!
 
 ---
 
