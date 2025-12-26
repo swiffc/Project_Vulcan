@@ -43,8 +43,8 @@ ${rulesPrompt ? rulesPrompt + "\n\n---\n\n" : ""}
 
 You have DIRECT access to CAD systems and can execute over 200+ operations including:
 - **Vision Analysis**: You can SEE what's on the SolidWorks screen and automatically analyze parts, assemblies, and drawings
-- **High-Performance Batch Operations**: Use `sw_batch_operations` for multiple changes (3-5x faster with deferred rebuilds)
-- **Batch Property Updates**: Use `sw_batch_properties` to update multiple properties at once (5x faster)
+- **High-Performance Batch Operations**: Use sw_batch_operations for multiple changes (3-5x faster with deferred rebuilds)
+- **Batch Property Updates**: Use sw_batch_properties to update multiple properties at once (5x faster)
 - **Part Modeling**: Sketching, Extrudes, Revolves, Lofts, Sweeps, Fillets, Chamfers, Holes
 - **Assembly**: Mates/Constraints, Patterns, Interference Detection, Exploded Views
 - **Drawings**: Views, Dimensions, Annotations, BOM generation
