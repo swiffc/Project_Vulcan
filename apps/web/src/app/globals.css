@@ -523,3 +523,98 @@ html, body {
     transparent 100%
   );
 }
+
+/* Light Mode Overrides */
+.light-mode {
+  --foreground-rgb: 17, 24, 39;
+  --background-start-rgb: 249, 250, 251;
+  --background-end-rgb: 243, 244, 246;
+}
+
+.light-mode,
+.light-mode body {
+  color: rgb(17, 24, 39);
+  background: linear-gradient(
+    135deg,
+    rgb(249, 250, 251) 0%,
+    rgb(243, 244, 246) 50%,
+    rgb(229, 231, 235) 100%
+  );
+}
+
+.light-mode .glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.6) 100%
+  );
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.light-mode .glass-dark {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(249, 250, 251, 0.8) 100%
+  );
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.light-mode .trading-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.7) 100%
+  );
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.light-mode ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.light-mode ::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border: 2px solid rgba(0, 0, 0, 0.05);
+}
+
+.light-mode .markdown-content code {
+  @apply bg-gray-100 text-gray-800;
+}
+
+.light-mode .markdown-content pre {
+  @apply bg-gray-100;
+}
+
+.light-mode .markdown-content th {
+  @apply bg-gray-100;
+}
+
+.light-mode .markdown-content th,
+.light-mode .markdown-content td {
+  @apply border-gray-200;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid var(--vulcan-accent);
+  outline-offset: 2px;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 9999;
+  padding: 1rem;
+  background: var(--vulcan-accent);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: 0;
+}
