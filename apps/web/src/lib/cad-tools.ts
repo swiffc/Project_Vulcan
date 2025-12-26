@@ -3113,31 +3113,41 @@ export const CAD_TOOLS: Anthropic.Tool[] = [
     },
   },
 
-  // === Toolbox ===
+  // === Toolbox - Full Hardware Library ===
   {
     name: "sw_insert_toolbox_part",
-    description: "Insert Toolbox standard part (bolt, nut, washer, pin, etc.).",
+    description: "Insert Toolbox standard part with full hardware library support. All bolt/screw/nut/washer/pin/bearing types with material and grade options.",
     input_schema: {
       type: "object" as const,
       properties: {
-        standard: { type: "string", enum: ["ANSI Inch", "ANSI Metric", "ISO", "DIN", "JIS", "BSI", "GB"], description: "Standard" },
-        category: { type: "string", description: "Category: Bolts and Screws, Nuts, Washers, Pins, etc." },
-        part_type: { type: "string", description: "Part type: Hex Bolt, Socket Head Cap Screw, etc." },
+        standard: { type: "string", enum: ["ANSI Inch", "ANSI Metric", "ISO", "DIN", "JIS", "BSI", "GB", "AS", "GOST", "IS", "KS"], description: "Hardware standard" },
+        category: { type: "string", enum: ["Bolts and Screws", "Nuts", "Washers", "Pins", "Keys and Keyways", "Retaining Rings", "O-Rings", "Bearings", "Bushings", "Structural Steel", "Power Transmission", "Jig Bushings", "Cam Followers", "Gears", "Sprockets", "Pulleys"], description: "Hardware category" },
+        part_type: { type: "string", enum: ["Hex Bolt", "Hex Cap Screw", "Socket Head Cap Screw", "Button Head Cap Screw", "Flat Head Cap Screw", "Carriage Bolt", "Eye Bolt", "U-Bolt", "Stud Bolt", "Lag Screw", "Set Screw", "Machine Screw", "Sheet Metal Screw", "Self Tapping Screw", "Wood Screw", "Thumb Screw", "Hex Nut", "Hex Jam Nut", "Nylon Insert Lock Nut", "Flange Nut", "Wing Nut", "Cap Nut", "Castle Nut", "T-Nut", "Coupling Nut", "Flat Washer", "Lock Washer", "Fender Washer", "Belleville Washer", "Wave Washer", "Tab Washer", "Dowel Pin", "Taper Pin", "Clevis Pin", "Cotter Pin", "Spring Pin", "Roll Pin", "Groove Pin", "External Retaining Ring", "Internal Retaining Ring", "E-Clip", "Ball Bearing", "Roller Bearing", "Needle Bearing", "Thrust Bearing", "Pillow Block"], description: "Specific part type" },
         size: { type: "string", description: "Size designation: 1/4-20, M6x1.0, etc." },
         length: { type: "number", description: "Length for fasteners in meters" },
+        thread_class: { type: "string", enum: ["1A", "2A", "3A", "1B", "2B", "3B", "6g", "6H", "4g6g", "4H5H"], description: "Thread class/fit" },
+        material: { type: "string", enum: ["steel", "stainless_steel", "brass", "aluminum", "nylon", "titanium", "alloy_steel", "zinc_plated"], description: "Material" },
+        head_type: { type: "string", enum: ["hex", "socket", "phillips", "slotted", "torx", "square"], description: "Drive/head type" },
+        grade: { type: "string", enum: ["Grade 2", "Grade 5", "Grade 8", "Class 8.8", "Class 10.9", "Class 12.9", "A2-70", "A4-80"], description: "Fastener grade" },
       },
       required: ["category", "part_type", "size"],
     },
   },
   {
     name: "sw_smart_fasteners",
-    description: "Auto-insert smart fasteners for all holes.",
+    description: "Auto-insert smart fasteners for all holes with full configuration options.",
     input_schema: {
       type: "object" as const,
       properties: {
         hole_series: { type: "boolean", description: "Include hole series" },
         add_washers: { type: "boolean", description: "Add washers" },
         add_nuts: { type: "boolean", description: "Add nuts where applicable" },
+        standard: { type: "string", enum: ["ANSI Inch", "ANSI Metric", "ISO", "DIN"], description: "Fastener standard" },
+        fastener_type: { type: "string", enum: ["Hex Bolt", "Socket Head Cap Screw", "Button Head", "Flat Head", "Machine Screw"], description: "Default fastener type" },
+        match_thread_to_hole: { type: "boolean", description: "Match thread to hole type" },
+        lock_washer_type: { type: "string", enum: ["split", "external_tooth", "internal_tooth", "none"], description: "Lock washer type" },
+        bottom_stack_component: { type: "string", description: "Component for bottom stack" },
+        grip_length_option: { type: "string", enum: ["automatic", "manual"], description: "Grip length calculation" },
       },
       required: [],
     },
