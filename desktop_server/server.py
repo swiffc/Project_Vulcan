@@ -3081,6 +3081,553 @@ async def get_ache_properties():
     return reader.to_dict(props)
 
 
+# ============================================================================
+# Phase 24.4-24.8: ACHE Assistant Endpoints
+# ============================================================================
+
+def _get_ache_assistant_modules():
+    """Lazy load ACHE assistant modules."""
+    try:
+        from agents.cad_agent.ache_assistant import (
+            ACHECalculator,
+            StructuralDesigner,
+            AccessoryDesigner,
+            ACHEAssistant,
+            ErectionPlanner,
+        )
+        return ACHECalculator, StructuralDesigner, AccessoryDesigner, ACHEAssistant, ErectionPlanner
+    except ImportError as e:
+        logger.warning(f"ACHE assistant modules not available: {e}")
+        return None, None, None, None, None
+
+
+class ThermalCalcRequest(BaseModel):
+    """Request model for thermal calculations."""
+    duty_kw: float
+    process_inlet_temp_c: float
+    process_outlet_temp_c: float
+    air_inlet_temp_c: float
+    air_flow_kg_s: float
+    surface_area_m2: float
+    u_clean_w_m2_k: float = 45.0
+    fouling_factor: float = 0.0002
+
+
+class PressureDropRequest(BaseModel):
+    """Request model for pressure drop calculations."""
+    mass_flow_kg_s: float
+    tube_id_mm: float
+    tube_length_m: float
+    num_tubes: int
+    num_passes: int
+    fluid_density_kg_m3: float = 1000.0
+    fluid_viscosity_pa_s: float = 0.001
+
+
+class FanCalcRequest(BaseModel):
+    """Request model for fan calculations."""
+    air_flow_m3_s: float
+    static_pressure_pa: float
+    fan_diameter_m: float
+    fan_rpm: float
+    fan_efficiency: float = 0.75
+
+
+class ACHESizingRequest(BaseModel):
+    """Request model for ACHE sizing."""
+    duty_kw: float
+    process_inlet_temp_c: float
+    process_outlet_temp_c: float
+    air_inlet_temp_c: float
+
+
+class StructuralFrameRequest(BaseModel):
+    """Request model for structural frame design."""
+    bundle_weight_kn: float
+    bundle_length_m: float
+    bundle_width_m: float
+    bundle_height_m: float
+    num_bays: int = 1
+    elevation_m: float = 3.0
+    wind_speed_m_s: float = 40.0
+
+
+class AccessSystemRequest(BaseModel):
+    """Request model for access system design."""
+    bundle_length_m: float
+    bundle_width_m: float
+    elevation_m: float
+    num_bays: int = 1
+    fan_deck_required: bool = True
+    header_access_required: bool = True
+
+
+class ComplianceCheckRequest(BaseModel):
+    """Request model for API 661 compliance check."""
+    ache_properties: Dict[str, Any]
+
+
+class ErectionPlanRequest(BaseModel):
+    """Request model for erection plan."""
+    project_name: str
+    equipment_tag: str
+    ache_properties: Dict[str, Any]
+
+
+@app.post("/ache/calculate/thermal")
+async def calculate_thermal_performance(request: ThermalCalcRequest):
+    """
+    Calculate ACHE thermal performance.
+    Phase 24.4 - Analysis & Calculations
+    """
+    Calculator, _, _, _, _ = _get_ache_assistant_modules()
+    if Calculator is None:
+        raise HTTPException(status_code=503, detail="ACHE calculator not available")
+
+    try:
+        from agents.cad_agent.ache_assistant import FluidProperties
+        calc = Calculator()
+
+        # Create default fluid properties
+        fluid = FluidProperties(
+            density_kg_m3=1000.0,
+            specific_heat_j_kg_k=4186.0,
+            viscosity_pa_s=0.001,
+            thermal_conductivity_w_m_k=0.6,
+            prandtl_number=7.0,
+        )
+
+        results = calc.calculate_thermal_performance(
+            duty_kw=request.duty_kw,
+            process_inlet_temp_c=request.process_inlet_temp_c,
+            process_outlet_temp_c=request.process_outlet_temp_c,
+            air_inlet_temp_c=request.air_inlet_temp_c,
+            air_flow_kg_s=request.air_flow_kg_s,
+            surface_area_m2=request.surface_area_m2,
+            process_fluid=fluid,
+            u_clean_w_m2_k=request.u_clean_w_m2_k,
+            fouling_factor=request.fouling_factor,
+        )
+
+        return {
+            "duty_kw": results.duty_kw,
+            "lmtd_k": results.lmtd_k,
+            "lmtd_correction_factor": results.lmtd_correction_factor,
+            "overall_u_w_m2_k": results.overall_u_w_m2_k,
+            "effectiveness": results.effectiveness,
+            "ntu": results.ntu,
+            "air_outlet_temp_c": results.air_outlet_temp_c,
+            "overdesign_percent": results.overdesign_percent,
+            "min_approach_temp_c": results.min_approach_temp_c,
+            "is_acceptable": results.is_acceptable,
+            "warnings": results.warnings,
+        }
+    except Exception as e:
+        logger.error(f"Thermal calculation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/ache/calculate/fan")
+async def calculate_fan_performance(request: FanCalcRequest):
+    """
+    Calculate fan performance and power.
+    Phase 24.4 - Analysis & Calculations
+    """
+    Calculator, _, _, _, _ = _get_ache_assistant_modules()
+    if Calculator is None:
+        raise HTTPException(status_code=503, detail="ACHE calculator not available")
+
+    try:
+        calc = Calculator()
+        results = calc.calculate_fan_performance(
+            air_flow_m3_s=request.air_flow_m3_s,
+            static_pressure_pa=request.static_pressure_pa,
+            fan_diameter_m=request.fan_diameter_m,
+            fan_rpm=request.fan_rpm,
+            fan_efficiency=request.fan_efficiency,
+        )
+
+        return {
+            "air_flow_m3_s": results.air_flow_m3_s,
+            "air_flow_acfm": results.air_flow_acfm,
+            "static_pressure_pa": results.static_pressure_pa,
+            "static_pressure_inwg": results.static_pressure_inwg,
+            "shaft_power_kw": results.shaft_power_kw,
+            "motor_power_kw": results.motor_power_kw,
+            "tip_speed_m_s": results.tip_speed_m_s,
+            "tip_speed_acceptable": results.tip_speed_acceptable,
+            "noise_db_a": results.noise_db_a,
+            "warnings": results.warnings,
+        }
+    except Exception as e:
+        logger.error(f"Fan calculation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/ache/calculate/size")
+async def size_ache(request: ACHESizingRequest):
+    """
+    Preliminary ACHE sizing.
+    Phase 24.4 - Analysis & Calculations
+    """
+    Calculator, _, _, _, _ = _get_ache_assistant_modules()
+    if Calculator is None:
+        raise HTTPException(status_code=503, detail="ACHE calculator not available")
+
+    try:
+        from agents.cad_agent.ache_assistant import FluidProperties
+        calc = Calculator()
+
+        fluid = FluidProperties(
+            density_kg_m3=1000.0,
+            specific_heat_j_kg_k=4186.0,
+            viscosity_pa_s=0.001,
+            thermal_conductivity_w_m_k=0.6,
+            prandtl_number=7.0,
+        )
+
+        results = calc.size_ache(
+            duty_kw=request.duty_kw,
+            process_inlet_temp_c=request.process_inlet_temp_c,
+            process_outlet_temp_c=request.process_outlet_temp_c,
+            air_inlet_temp_c=request.air_inlet_temp_c,
+            process_fluid=fluid,
+        )
+
+        return results
+    except Exception as e:
+        logger.error(f"ACHE sizing error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/ache/design/frame")
+async def design_structural_frame(request: StructuralFrameRequest):
+    """
+    Design ACHE structural support frame.
+    Phase 24.5 - Structural Components
+    """
+    _, Designer, _, _, _ = _get_ache_assistant_modules()
+    if Designer is None:
+        raise HTTPException(status_code=503, detail="Structural designer not available")
+
+    try:
+        designer = Designer()
+        frame = designer.design_ache_frame(
+            bundle_weight_kn=request.bundle_weight_kn,
+            bundle_length_m=request.bundle_length_m,
+            bundle_width_m=request.bundle_width_m,
+            bundle_height_m=request.bundle_height_m,
+            num_bays=request.num_bays,
+            elevation_m=request.elevation_m,
+            wind_speed_m_s=request.wind_speed_m_s,
+        )
+
+        return {
+            "num_columns": frame.num_columns,
+            "num_beams": frame.num_beams,
+            "total_steel_weight_kg": frame.total_steel_weight_kg,
+            "max_utilization": frame.max_utilization,
+            "governing_case": frame.governing_case,
+            "is_adequate": frame.is_adequate,
+            "columns": [
+                {
+                    "profile": c.profile,
+                    "height_m": c.height_m,
+                    "utilization": c.utilization_ratio,
+                    "is_adequate": c.is_adequate,
+                }
+                for c in frame.columns[:4]  # Sample
+            ],
+            "beams": [
+                {
+                    "profile": b.profile,
+                    "span_m": b.span_m,
+                    "utilization": b.utilization_ratio,
+                    "is_adequate": b.is_adequate,
+                }
+                for b in frame.beams[:4]  # Sample
+            ],
+            "warnings": frame.warnings,
+        }
+    except Exception as e:
+        logger.error(f"Frame design error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/ache/design/access")
+async def design_access_system(request: AccessSystemRequest):
+    """
+    Design ACHE access system (platforms, ladders, handrails).
+    Phase 24.6 - Walkways/Handrails/Ladders
+    """
+    _, _, AccessoryDesigner, _, _ = _get_ache_assistant_modules()
+    if AccessoryDesigner is None:
+        raise HTTPException(status_code=503, detail="Accessory designer not available")
+
+    try:
+        designer = AccessoryDesigner()
+        bom = designer.design_ache_access_system(
+            bundle_length_m=request.bundle_length_m,
+            bundle_width_m=request.bundle_width_m,
+            elevation_m=request.elevation_m,
+            num_bays=request.num_bays,
+            fan_deck_required=request.fan_deck_required,
+            header_access_required=request.header_access_required,
+        )
+
+        return {
+            "total_grating_m2": bom.total_grating_m2,
+            "total_steel_kg": bom.total_steel_kg,
+            "platforms": [
+                {
+                    "type": p["type"],
+                    "quantity": p["quantity"],
+                    "length_m": p["length_m"],
+                    "width_m": p["width_m"],
+                }
+                for p in bom.platforms
+            ],
+            "ladders": [
+                {
+                    "type": l["type"],
+                    "quantity": l["quantity"],
+                    "height_m": l["height_m"],
+                }
+                for l in bom.ladders
+            ],
+            "handrails": [
+                {
+                    "type": h["type"],
+                    "quantity": h["quantity"],
+                    "length_m": h["length_m"],
+                }
+                for h in bom.handrails
+            ],
+            "bom_items": bom.items,
+        }
+    except Exception as e:
+        logger.error(f"Access system design error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/ache/compliance/check")
+async def check_api661_compliance(request: ComplianceCheckRequest):
+    """
+    Check ACHE design against API 661 requirements.
+    Phase 24.7 - AI Features
+    """
+    _, _, _, Assistant, _ = _get_ache_assistant_modules()
+    if Assistant is None:
+        raise HTTPException(status_code=503, detail="ACHE assistant not available")
+
+    try:
+        assistant = Assistant()
+        report = assistant.check_api661_compliance(request.ache_properties)
+
+        return {
+            "standard": report.standard,
+            "is_compliant": report.is_compliant,
+            "total_checks": report.total_checks,
+            "passed": report.passed,
+            "failed": report.failed,
+            "warnings": report.warnings,
+            "summary": report.summary,
+            "issues": [
+                {
+                    "code_reference": i.code_reference,
+                    "requirement": i.requirement,
+                    "actual_value": str(i.actual_value),
+                    "required_value": str(i.required_value),
+                    "status": i.status.value,
+                    "severity": i.severity,
+                    "recommendation": i.recommendation,
+                }
+                for i in report.issues
+            ],
+        }
+    except Exception as e:
+        logger.error(f"Compliance check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/ache/ai/recommendations")
+async def get_design_recommendations(request: ComplianceCheckRequest):
+    """
+    Get AI-powered design recommendations.
+    Phase 24.7 - AI Features
+    """
+    _, _, _, Assistant, _ = _get_ache_assistant_modules()
+    if Assistant is None:
+        raise HTTPException(status_code=503, detail="ACHE assistant not available")
+
+    try:
+        assistant = Assistant()
+        recommendations = assistant.get_design_recommendations(request.ache_properties)
+
+        return {
+            "recommendations": [
+                {
+                    "category": r.category,
+                    "recommendation": r.recommendation,
+                    "rationale": r.rationale,
+                    "impact": r.impact,
+                    "references": r.references,
+                    "alternatives": r.alternatives,
+                }
+                for r in recommendations
+            ]
+        }
+    except Exception as e:
+        logger.error(f"Recommendations error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/ache/ai/troubleshoot/{problem}")
+async def troubleshoot_problem(problem: str):
+    """
+    Get troubleshooting guidance for ACHE issues.
+    Phase 24.7 - AI Features
+    """
+    _, _, _, Assistant, _ = _get_ache_assistant_modules()
+    if Assistant is None:
+        raise HTTPException(status_code=503, detail="ACHE assistant not available")
+
+    try:
+        assistant = Assistant()
+        result = assistant.troubleshoot(problem)
+        return result
+    except Exception as e:
+        logger.error(f"Troubleshooting error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/ache/ai/knowledge")
+async def query_knowledge_base(query: str, category: Optional[str] = None):
+    """
+    Query ACHE knowledge base.
+    Phase 24.7 - AI Features
+    """
+    _, _, _, Assistant, _ = _get_ache_assistant_modules()
+    if Assistant is None:
+        raise HTTPException(status_code=503, detail="ACHE assistant not available")
+
+    try:
+        assistant = Assistant()
+        result = assistant.query_knowledge_base(query, category)
+        return result
+    except Exception as e:
+        logger.error(f"Knowledge query error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/ache/erection/plan")
+async def create_erection_plan(request: ErectionPlanRequest):
+    """
+    Create complete erection plan for ACHE.
+    Phase 24.8 - Field Erection Support
+    """
+    _, _, _, _, Planner = _get_ache_assistant_modules()
+    if Planner is None:
+        raise HTTPException(status_code=503, detail="Erection planner not available")
+
+    try:
+        planner = Planner()
+        plan = planner.create_erection_plan(
+            project_name=request.project_name,
+            equipment_tag=request.equipment_tag,
+            ache_properties=request.ache_properties,
+        )
+
+        return {
+            "project_name": plan.project_name,
+            "equipment_tag": plan.equipment_tag,
+            "total_weight_kg": plan.total_weight_kg,
+            "shipment_type": plan.shipment_type.value,
+            "is_feasible": plan.is_feasible,
+            "total_lift_hours": plan.total_lift_hours,
+            "crane_days": plan.crane_days,
+            "lifting_lugs": [
+                {
+                    "location": lug.location,
+                    "design_load_kn": lug.design_load_kn,
+                    "plate_thickness_mm": lug.plate_thickness_mm,
+                    "hole_diameter_mm": lug.hole_diameter_mm,
+                    "utilization": lug.utilization,
+                    "is_adequate": lug.is_adequate,
+                }
+                for lug in plan.lifting_lugs
+            ],
+            "rigging_plan": {
+                "num_slings": plan.rigging_plan.num_slings if plan.rigging_plan else 0,
+                "sling_diameter_mm": plan.rigging_plan.sling_diameter_mm if plan.rigging_plan else 0,
+                "crane_capacity_tonnes": plan.rigging_plan.crane_capacity_tonnes if plan.rigging_plan else 0,
+                "needs_spreader": plan.rigging_plan.needs_spreader if plan.rigging_plan else False,
+            } if plan.rigging_plan else None,
+            "shipping_splits": [
+                {
+                    "split_id": s.split_id,
+                    "location_mm": s.location_mm,
+                    "description": s.description,
+                    "requires_permit": s.requires_permit,
+                }
+                for s in plan.shipping_splits
+            ],
+            "erection_sequence": [
+                {
+                    "step": step.step_number,
+                    "description": step.description,
+                    "weight_kg": step.weight_kg,
+                    "crane": step.crane_required,
+                    "duration_hours": step.duration_hours,
+                    "safety_notes": step.safety_notes,
+                }
+                for step in plan.erection_sequence
+            ],
+            "warnings": plan.warnings,
+        }
+    except Exception as e:
+        logger.error(f"Erection plan error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/ache/erection/lifting-lug")
+async def design_lifting_lug(design_load_kn: float, sling_angle_deg: float = 60.0):
+    """
+    Design individual lifting lug.
+    Phase 24.8 - Field Erection Support
+    """
+    _, _, _, _, Planner = _get_ache_assistant_modules()
+    if Planner is None:
+        raise HTTPException(status_code=503, detail="Erection planner not available")
+
+    try:
+        planner = Planner()
+        lug = planner.design_lifting_lug(
+            design_load_kn=design_load_kn,
+            sling_angle_deg=sling_angle_deg,
+        )
+
+        return {
+            "design_load_kn": lug.design_load_kn,
+            "total_design_load_kn": lug.total_design_load_kn,
+            "hole_diameter_mm": lug.hole_diameter_mm,
+            "plate_thickness_mm": lug.plate_thickness_mm,
+            "plate_width_mm": lug.plate_width_mm,
+            "plate_height_mm": lug.plate_height_mm,
+            "weld_size_mm": lug.weld_size_mm,
+            "bearing_capacity_kn": lug.bearing_capacity_kn,
+            "tearout_capacity_kn": lug.tearout_capacity_kn,
+            "tension_capacity_kn": lug.tension_capacity_kn,
+            "weld_capacity_kn": lug.weld_capacity_kn,
+            "utilization": lug.utilization,
+            "is_adequate": lug.is_adequate,
+            "warnings": lug.warnings,
+        }
+    except Exception as e:
+        logger.error(f"Lifting lug design error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 if __name__ == "__main__":
     import uvicorn
 
