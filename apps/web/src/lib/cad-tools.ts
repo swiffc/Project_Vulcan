@@ -2541,6 +2541,785 @@ export const CAD_TOOLS: Anthropic.Tool[] = [
       required: ["path_segments"],
     },
   },
+
+  // === Routing (Pipe, Tube, Electrical) ===
+  {
+    name: "sw_create_pipe_route",
+    description: "Create a pipe route between two points in SolidWorks. Requires Routing add-in.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        start_point: { type: "array", items: { type: "number" }, description: "Start point [x, y, z] in meters" },
+        end_point: { type: "array", items: { type: "number" }, description: "End point [x, y, z] in meters" },
+        pipe_standard: { type: "string", description: "Pipe standard: ANSI, ISO, DIN" },
+        pipe_size: { type: "string", description: "Nominal pipe size e.g., '2 inch'" },
+        schedule: { type: "string", description: "Pipe schedule e.g., '40'" },
+        bend_radius: { type: "number", description: "Bend radius in meters (optional)" },
+      },
+      required: ["start_point", "end_point"],
+    },
+  },
+  {
+    name: "sw_insert_fitting",
+    description: "Insert a routing fitting (elbow, tee, flange, valve) at a position.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        fitting_type: { type: "string", enum: ["elbow", "tee", "reducer", "flange", "valve", "cap", "coupling"], description: "Type of fitting" },
+        position: { type: "array", items: { type: "number" }, description: "Position [x, y, z] in meters" },
+        size: { type: "string", description: "Fitting size e.g., '2 inch'" },
+        angle: { type: "number", description: "Angle for elbows (degrees)" },
+      },
+      required: ["fitting_type", "position"],
+    },
+  },
+  {
+    name: "sw_create_electrical_route",
+    description: "Create electrical cable/wire route between connectors.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        start_connector: { type: "string", description: "Start connector component name" },
+        end_connector: { type: "string", description: "End connector component name" },
+        cable_type: { type: "string", description: "Cable/wire type e.g., '18 AWG'" },
+        bundle_diameter: { type: "number", description: "Bundle diameter in meters (optional)" },
+      },
+      required: ["start_connector", "end_connector"],
+    },
+  },
+  {
+    name: "sw_flatten_route",
+    description: "Flatten route for manufacturing documentation.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "sw_get_route_properties",
+    description: "Get routing properties (lengths, bend data, fittings).",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+
+  // === Weldments ===
+  {
+    name: "sw_insert_structural_member",
+    description: "Insert weldment structural member along sketch path segments.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        standard: { type: "string", description: "Standard: ansi inch, iso, din, jis" },
+        profile_type: { type: "string", description: "Type: c channel, angle, pipe, square tube, i beam" },
+        size: { type: "string", description: "Profile size designation e.g., 'C3 x 4.1'" },
+        path_segments: { type: "array", items: { type: "string" }, description: "Names of sketch segments to follow" },
+        corner_treatment: { type: "string", description: "Corner: miter, butt, cope, end cap" },
+        apply_corner: { type: "boolean", description: "Apply corner treatment" },
+      },
+      required: ["path_segments"],
+    },
+  },
+  {
+    name: "sw_add_weld_bead",
+    description: "Add weld bead between two faces.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        weld_type: { type: "string", enum: ["fillet", "groove", "plug", "slot", "spot"], description: "Type of weld" },
+        face1: { type: "string", description: "First face to weld" },
+        face2: { type: "string", description: "Second face to weld" },
+        size: { type: "number", description: "Weld size in meters (e.g., leg size for fillet)" },
+        intermittent: { type: "boolean", description: "Intermittent weld pattern" },
+        length: { type: "number", description: "Weld segment length if intermittent" },
+        pitch: { type: "number", description: "Pitch between segments if intermittent" },
+      },
+      required: ["weld_type", "face1", "face2"],
+    },
+  },
+  {
+    name: "sw_trim_extend_member",
+    description: "Trim or extend a structural member to another member or face.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        member_to_trim: { type: "string", description: "Name of member to trim/extend" },
+        trim_to: { type: "string", description: "Name of member or face to trim to" },
+        operation: { type: "string", enum: ["trim", "extend"], description: "Operation type" },
+      },
+      required: ["member_to_trim", "trim_to"],
+    },
+  },
+  {
+    name: "sw_add_gusset",
+    description: "Add gusset plate to structural corner.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        vertex_point: { type: "array", items: { type: "number" }, description: "Corner vertex [x, y, z]" },
+        thickness: { type: "number", description: "Gusset thickness in meters" },
+        d1: { type: "number", description: "Length along member 1 in meters" },
+        d2: { type: "number", description: "Length along member 2 in meters" },
+      },
+      required: ["vertex_point"],
+    },
+  },
+  {
+    name: "sw_add_end_cap",
+    description: "Add end cap to structural member.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        member_name: { type: "string", description: "Structural member name" },
+        end: { type: "string", enum: ["start", "end", "both"], description: "Which end(s) to cap" },
+        thickness: { type: "number", description: "End cap thickness in meters" },
+        offset: { type: "number", description: "Offset from end in meters" },
+      },
+      required: ["member_name"],
+    },
+  },
+  {
+    name: "sw_get_weldment_cut_list",
+    description: "Get weldment cut list with lengths and quantities.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+
+  // === Sheet Metal (Full) ===
+  {
+    name: "sw_base_flange",
+    description: "Create sheet metal base flange from sketch.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        thickness: { type: "number", description: "Sheet thickness in meters" },
+        bend_radius: { type: "number", description: "Default bend radius in meters" },
+        depth: { type: "number", description: "Flange depth in meters" },
+        direction: { type: "number", description: "0=one direction, 1=mid-plane, 2=both" },
+      },
+      required: ["thickness"],
+    },
+  },
+  {
+    name: "sw_edge_flange",
+    description: "Add edge flange to sheet metal edge.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        edge_name: { type: "string", description: "Edge to add flange to" },
+        length: { type: "number", description: "Flange length in meters" },
+        angle: { type: "number", description: "Flange angle in degrees" },
+        gap: { type: "number", description: "Gap from adjacent flange in meters" },
+        flange_position: { type: "string", enum: ["material_inside", "material_outside", "bend_outside"], description: "Flange position" },
+      },
+      required: ["edge_name"],
+    },
+  },
+  {
+    name: "sw_hem",
+    description: "Add hem to sheet metal edge.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        edge_name: { type: "string", description: "Edge to add hem to" },
+        hem_type: { type: "string", enum: ["closed", "open", "teardrop", "rolled"], description: "Hem type" },
+        gap: { type: "number", description: "Gap for open hem in meters" },
+        length: { type: "number", description: "Custom hem length" },
+      },
+      required: ["edge_name"],
+    },
+  },
+  {
+    name: "sw_jog",
+    description: "Add jog (offset bend) to sheet metal.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        edge_name: { type: "string", description: "Edge for jog" },
+        offset: { type: "number", description: "Jog offset distance in meters" },
+        fixed_face: { type: "string", enum: ["top", "bottom"], description: "Fixed face" },
+      },
+      required: ["edge_name"],
+    },
+  },
+  {
+    name: "sw_lofted_bend",
+    description: "Create lofted bend between two open profiles.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        profile1: { type: "string", description: "First profile sketch name" },
+        profile2: { type: "string", description: "Second profile sketch name" },
+        faceted: { type: "boolean", description: "Faceted approximation" },
+        num_bends: { type: "number", description: "Number of bends for faceted" },
+      },
+      required: ["profile1", "profile2"],
+    },
+  },
+  {
+    name: "sw_flat_pattern",
+    description: "Generate or export flat pattern.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        export: { type: "boolean", description: "Export to DXF/DWG" },
+        export_path: { type: "string", description: "Export file path" },
+        include_bend_lines: { type: "boolean", description: "Include bend lines in export" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "sw_corner_relief",
+    description: "Add corner relief to sheet metal.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        relief_type: { type: "string", enum: ["rectangular", "circular", "tear"], description: "Relief type" },
+        relief_ratio: { type: "number", description: "Relief size ratio" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "sw_get_bend_table",
+    description: "Get sheet metal bend table (K-factor, bend allowance).",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+
+  // === Drawing Tools (Full) ===
+  {
+    name: "sw_section_view",
+    description: "Create section view in drawing.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        parent_view: { type: "string", description: "Parent view name" },
+        section_line_start: { type: "array", items: { type: "number" }, description: "Section line start [x, y]" },
+        section_line_end: { type: "array", items: { type: "number" }, description: "Section line end [x, y]" },
+        label: { type: "string", description: "Section label (A-A, B-B, etc.)" },
+        scale: { type: "number", description: "View scale" },
+        position: { type: "array", items: { type: "number" }, description: "View position on sheet [x, y]" },
+      },
+      required: ["parent_view", "section_line_start", "section_line_end", "position"],
+    },
+  },
+  {
+    name: "sw_detail_view",
+    description: "Create detail view in drawing.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        parent_view: { type: "string", description: "Parent view name" },
+        center: { type: "array", items: { type: "number" }, description: "Detail center [x, y]" },
+        radius: { type: "number", description: "Detail circle radius in meters" },
+        scale: { type: "number", description: "Detail view scale" },
+        label: { type: "string", description: "Detail label" },
+        position: { type: "array", items: { type: "number" }, description: "View position on sheet [x, y]" },
+      },
+      required: ["parent_view", "center", "position"],
+    },
+  },
+  {
+    name: "sw_auxiliary_view",
+    description: "Create auxiliary (projected) view.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        parent_view: { type: "string", description: "Parent view name" },
+        edge_name: { type: "string", description: "Hinge edge for projection" },
+        position: { type: "array", items: { type: "number" }, description: "View position on sheet [x, y]" },
+      },
+      required: ["parent_view", "edge_name", "position"],
+    },
+  },
+  {
+    name: "sw_add_gdt",
+    description: "Add GD&T (Geometric Dimensioning & Tolerancing) symbol.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        feature_name: { type: "string", description: "Feature to attach GD&T" },
+        symbol_type: { type: "string", enum: ["position", "flatness", "perpendicularity", "parallelism", "concentricity", "circularity", "cylindricity", "profile_surface", "profile_line", "runout", "total_runout", "angularity", "symmetry"], description: "GD&T symbol type" },
+        tolerance: { type: "number", description: "Tolerance value in meters" },
+        datum_refs: { type: "array", items: { type: "string" }, description: "Datum references [A, B, C]" },
+        material_condition: { type: "string", enum: ["MMC", "LMC", "RFS"], description: "Material condition modifier" },
+      },
+      required: ["feature_name", "symbol_type", "tolerance"],
+    },
+  },
+  {
+    name: "sw_add_datum",
+    description: "Add datum feature symbol.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        edge_or_face: { type: "string", description: "Edge or face name" },
+        label: { type: "string", description: "Datum label (A, B, C...)" },
+      },
+      required: ["edge_or_face", "label"],
+    },
+  },
+  {
+    name: "sw_add_surface_finish",
+    description: "Add surface finish symbol.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        face_name: { type: "string", description: "Face to apply symbol" },
+        roughness_ra: { type: "number", description: "Surface roughness Ra in micrometers" },
+        machining_required: { type: "boolean", description: "Machining required" },
+        process: { type: "string", description: "Manufacturing process" },
+      },
+      required: ["face_name", "roughness_ra"],
+    },
+  },
+  {
+    name: "sw_add_weld_symbol",
+    description: "Add welding symbol to drawing.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        joint_edge: { type: "string", description: "Joint edge name" },
+        weld_type: { type: "string", enum: ["fillet", "groove_v", "groove_u", "groove_j", "plug", "spot", "seam"], description: "Weld type" },
+        size: { type: "number", description: "Weld size in meters" },
+        arrow_side: { type: "boolean", description: "Weld on arrow side" },
+        other_side: { type: "boolean", description: "Weld on other side" },
+        all_around: { type: "boolean", description: "Weld all around" },
+        field_weld: { type: "boolean", description: "Field weld" },
+        tail_note: { type: "string", description: "Tail specification (e.g., A2.4)" },
+      },
+      required: ["joint_edge", "weld_type"],
+    },
+  },
+  {
+    name: "sw_auto_balloon",
+    description: "Auto-balloon all components in view.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        view_name: { type: "string", description: "View to balloon" },
+        balloon_style: { type: "string", enum: ["circular", "triangle", "hexagon", "diamond"], description: "Balloon style" },
+        leader_style: { type: "string", enum: ["straight", "bent"], description: "Leader style" },
+        attach_to: { type: "string", enum: ["face", "edge"], description: "Attachment point" },
+      },
+      required: ["view_name"],
+    },
+  },
+  {
+    name: "sw_hole_table",
+    description: "Insert hole table for a view.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        view_name: { type: "string", description: "View containing holes" },
+        origin: { type: "array", items: { type: "number" }, description: "Table origin [x, y]" },
+        datum_origin: { type: "array", items: { type: "number" }, description: "Hole position datum [x, y]" },
+      },
+      required: ["view_name", "origin"],
+    },
+  },
+  {
+    name: "sw_bend_table",
+    description: "Insert bend table for sheet metal drawing.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        view_name: { type: "string", description: "Flat pattern view name" },
+        table_position: { type: "array", items: { type: "number" }, description: "Table position [x, y]" },
+      },
+      required: ["view_name", "table_position"],
+    },
+  },
+  {
+    name: "sw_ordinate_dimensions",
+    description: "Add ordinate dimension set.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        view_name: { type: "string", description: "View name" },
+        edges: { type: "array", items: { type: "string" }, description: "List of edge names to dimension" },
+        origin_edge: { type: "string", description: "Origin edge (zero reference)" },
+        direction: { type: "string", enum: ["horizontal", "vertical"], description: "Dimension direction" },
+      },
+      required: ["view_name", "edges", "origin_edge"],
+    },
+  },
+
+  // === Simulation/FEA ===
+  {
+    name: "sw_create_simulation_study",
+    description: "Create a simulation study.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        study_name: { type: "string", description: "Study name" },
+        study_type: { type: "string", enum: ["static", "frequency", "buckling", "thermal", "fatigue", "drop_test"], description: "Study type" },
+      },
+      required: ["study_name"],
+    },
+  },
+  {
+    name: "sw_add_fixture",
+    description: "Apply fixture/restraint to simulation.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        face_names: { type: "array", items: { type: "string" }, description: "Faces to fix" },
+        fixture_type: { type: "string", enum: ["fixed", "roller", "hinge", "fixed_hinge", "symmetry"], description: "Fixture type" },
+      },
+      required: ["face_names"],
+    },
+  },
+  {
+    name: "sw_add_load",
+    description: "Apply load to simulation.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        face_names: { type: "array", items: { type: "string" }, description: "Faces to apply load" },
+        load_type: { type: "string", enum: ["force", "pressure", "torque", "gravity", "centrifugal", "bearing"], description: "Load type" },
+        value: { type: "number", description: "Load value (N, Pa, Nm, etc.)" },
+        direction: { type: "array", items: { type: "number" }, description: "Direction vector [x, y, z]" },
+      },
+      required: ["face_names", "load_type", "value"],
+    },
+  },
+  {
+    name: "sw_create_mesh",
+    description: "Configure and create mesh.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        mesh_quality: { type: "string", enum: ["draft", "standard", "fine"], description: "Mesh quality" },
+        element_size: { type: "number", description: "Element size in meters" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "sw_run_simulation",
+    description: "Run simulation analysis.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        study_name: { type: "string", description: "Study to run" },
+      },
+      required: ["study_name"],
+    },
+  },
+  {
+    name: "sw_get_simulation_results",
+    description: "Get simulation results (stress, displacement, FOS).",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        study_name: { type: "string", description: "Study name" },
+      },
+      required: ["study_name"],
+    },
+  },
+
+  // === Design Tables & Equations ===
+  {
+    name: "sw_add_equation",
+    description: "Add or modify equation in SolidWorks.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        equation: { type: "string", description: "Equation string, e.g., 'D1@Sketch1 = D2@Sketch2 * 2'" },
+      },
+      required: ["equation"],
+    },
+  },
+  {
+    name: "sw_add_global_variable",
+    description: "Add global variable.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        name: { type: "string", description: "Variable name" },
+        value: { type: "number", description: "Variable value" },
+        unit: { type: "string", description: "Unit (mm, in, deg, etc.)" },
+      },
+      required: ["name", "value"],
+    },
+  },
+  {
+    name: "sw_list_equations",
+    description: "List all equations and global variables.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "sw_insert_design_table",
+    description: "Insert or update design table.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        excel_path: { type: "string", description: "Path to Excel file (optional, auto-create if empty)" },
+        edit_mode: { type: "string", enum: ["auto", "manual"], description: "Edit mode" },
+      },
+      required: [],
+    },
+  },
+
+  // === Toolbox ===
+  {
+    name: "sw_insert_toolbox_part",
+    description: "Insert Toolbox standard part (bolt, nut, washer, pin, etc.).",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        standard: { type: "string", enum: ["ANSI Inch", "ANSI Metric", "ISO", "DIN", "JIS", "BSI", "GB"], description: "Standard" },
+        category: { type: "string", description: "Category: Bolts and Screws, Nuts, Washers, Pins, etc." },
+        part_type: { type: "string", description: "Part type: Hex Bolt, Socket Head Cap Screw, etc." },
+        size: { type: "string", description: "Size designation: 1/4-20, M6x1.0, etc." },
+        length: { type: "number", description: "Length for fasteners in meters" },
+      },
+      required: ["category", "part_type", "size"],
+    },
+  },
+  {
+    name: "sw_smart_fasteners",
+    description: "Auto-insert smart fasteners for all holes.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        hole_series: { type: "boolean", description: "Include hole series" },
+        add_washers: { type: "boolean", description: "Add washers" },
+        add_nuts: { type: "boolean", description: "Add nuts where applicable" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "sw_list_toolbox_standards",
+    description: "List available Toolbox standards and categories.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+
+  // === Surface Modeling ===
+  {
+    name: "sw_extruded_surface",
+    description: "Create extruded surface.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        profile: { type: "string", description: "Profile sketch name" },
+        depth: { type: "number", description: "Extrusion depth in meters" },
+        direction: { type: "number", description: "0=one direction, 1=both" },
+      },
+      required: ["profile"],
+    },
+  },
+  {
+    name: "sw_lofted_surface",
+    description: "Create lofted surface.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        profiles: { type: "array", items: { type: "string" }, description: "List of profile sketch names" },
+        guide_curves: { type: "array", items: { type: "string" }, description: "Guide curve sketches (optional)" },
+      },
+      required: ["profiles"],
+    },
+  },
+  {
+    name: "sw_filled_surface",
+    description: "Create filled (patch) surface.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        boundary_edges: { type: "array", items: { type: "string" }, description: "Boundary edge names" },
+        constraint_type: { type: "string", enum: ["contact", "tangent", "curvature"], description: "Constraint type" },
+      },
+      required: ["boundary_edges"],
+    },
+  },
+  {
+    name: "sw_offset_surface",
+    description: "Create offset surface.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        surface_face: { type: "string", description: "Face to offset" },
+        distance: { type: "number", description: "Offset distance in meters" },
+      },
+      required: ["surface_face", "distance"],
+    },
+  },
+  {
+    name: "sw_trim_surface",
+    description: "Trim surface with another surface or sketch.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        surface_to_trim: { type: "string", description: "Surface face to trim" },
+        trim_tool: { type: "string", description: "Trimming surface or sketch" },
+        keep_inside: { type: "boolean", description: "Keep inside of trim boundary" },
+      },
+      required: ["surface_to_trim", "trim_tool"],
+    },
+  },
+  {
+    name: "sw_knit_surfaces",
+    description: "Knit surfaces together.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        surfaces: { type: "array", items: { type: "string" }, description: "Surface face names to knit" },
+        create_solid: { type: "boolean", description: "Create solid if closed volume" },
+        merge_entities: { type: "boolean", description: "Merge faces" },
+      },
+      required: ["surfaces"],
+    },
+  },
+
+  // === Mold Tools ===
+  {
+    name: "sw_parting_line",
+    description: "Create parting line for mold.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        pull_direction: { type: "array", items: { type: "number" }, description: "Pull direction [x, y, z]" },
+        draft_angle: { type: "number", description: "Minimum draft angle in degrees" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "sw_parting_surface",
+    description: "Create parting surface.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        parting_line_feature: { type: "string", description: "Parting line feature name" },
+        surface_type: { type: "string", enum: ["perpendicular", "parallel", "ruled"], description: "Surface type" },
+        distance: { type: "number", description: "Surface extension distance in meters" },
+      },
+      required: ["parting_line_feature"],
+    },
+  },
+  {
+    name: "sw_core_cavity",
+    description: "Split core and cavity.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        parting_surface: { type: "string", description: "Parting surface feature name" },
+        core_block: { type: "string", description: "Core block body name" },
+        cavity_block: { type: "string", description: "Cavity block body name" },
+      },
+      required: ["parting_surface", "core_block", "cavity_block"],
+    },
+  },
+  {
+    name: "sw_draft_analysis",
+    description: "Analyze draft for moldability.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        pull_direction: { type: "string", description: "Pull direction as comma-separated values '0,0,1'" },
+        draft_angle: { type: "number", description: "Minimum draft angle in degrees" },
+      },
+      required: [],
+    },
+  },
+
+  // === Costing ===
+  {
+    name: "sw_run_costing",
+    description: "Run costing analysis.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        template: { type: "string", enum: ["machining", "sheet_metal", "casting", "3d_printing", "weldment"], description: "Costing template" },
+        material_cost_per_kg: { type: "number", description: "Material cost per kg" },
+        labor_rate: { type: "number", description: "Labor rate per hour" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "sw_get_costing_operations",
+    description: "Get manufacturing operations for costing.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+
+  // === Motion Studies ===
+  {
+    name: "sw_create_motion_study",
+    description: "Create motion study.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        study_name: { type: "string", description: "Motion study name" },
+        study_type: { type: "string", enum: ["animation", "basic_motion", "motion_analysis"], description: "Study type" },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "sw_add_motor",
+    description: "Add motor to motion study.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        component: { type: "string", description: "Component to apply motor to" },
+        motor_type: { type: "string", enum: ["rotary", "linear"], description: "Motor type" },
+        rpm: { type: "number", description: "RPM for rotary or mm/s for linear" },
+      },
+      required: ["component"],
+    },
+  },
+  {
+    name: "sw_run_motion_study",
+    description: "Run motion study.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        study_name: { type: "string", description: "Study name" },
+        duration: { type: "number", description: "Duration in seconds" },
+      },
+      required: ["study_name"],
+    },
+  },
+  {
+    name: "sw_export_motion_video",
+    description: "Export motion study as video.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        study_name: { type: "string", description: "Study name" },
+        output_path: { type: "string", description: "Output video path" },
+        fps: { type: "number", description: "Frames per second" },
+      },
+      required: ["study_name", "output_path"],
+    },
+  },
 ];
 
 /**
