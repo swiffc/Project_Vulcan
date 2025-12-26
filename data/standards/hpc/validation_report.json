@@ -1,0 +1,755 @@
+{
+  "metadata": {
+    "total_files": 1733,
+    "valid_files": 1733,
+    "invalid_files": 0,
+    "total_warnings": 1044,
+    "duplicate_count": 0
+  },
+  "validation_results": [
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_100_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_100_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_100_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_100_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_100_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_101_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_101_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_101_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_101_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_101_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_102_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_102_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_102_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_102_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_102_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_103_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_103_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_103_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_103_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_103_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_104_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_104_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_104_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_104_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_104_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_105_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_105_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_105_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_105_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_105_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_106_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_106_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_106_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_106_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_106_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_107_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_107_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_107_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_107_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_107_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_108_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_108_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_108_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_108_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_108_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_109_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_109_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_109_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_109_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_109_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_10_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_10_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_10_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_10_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_10_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_110_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_110_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_110_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_110_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_110_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_111_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_111_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_111_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_111_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_111_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_112_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_112_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_112_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_112_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_112_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_113_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_113_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_113_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_113_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_113_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_114_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_114_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_114_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_114_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_114_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_115_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_115_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_115_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_115_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_115_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_116_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_116_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_116_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_116_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_116_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_117_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_117_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_117_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_117_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_117_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_118_STANDARDS_BOOK_III_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_118_STANDARDS_BOOK_II_vol._II_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_118_STANDARDS_BOOK_II_vol._I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_118_STANDARDS_BOOK_IV_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "No rules found in design rule data"
+      ]
+    },
+    {
+      "file": "C:\\Users\\D&E Cornealius\\Documents\\GitHub\\Project_Vulcan\\data\\standards\\hpc\\structured\\design-rule\\page_118_STANDARDS_BOOK_I_REV0_design_rule.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "duplicates": [],
+  "summary": {
+    "success_rate": "100.0%"
+  }
+}

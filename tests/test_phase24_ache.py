@@ -1079,23 +1079,22 @@ class TestBatchCalculations:
 class TestEdgeCases:
     """Tests for edge cases and boundary conditions."""
 
-    def test_zero_duty(self):
-        """Test handling of zero duty."""
+    def test_zero_flow(self):
+        """Test handling of zero air flow."""
         from agents.cad_agent.ache_assistant import ACHECalculator
 
         calc = ACHECalculator()
-        # Zero duty should handle gracefully
+        # Zero flow should handle gracefully
         try:
-            result = calc.calculate_thermal(
-                duty_kw=0,
-                process_inlet_temp_c=100,
-                process_outlet_temp_c=100,  # Same temp = no duty
-                air_inlet_temp_c=35,
-                air_flow_kg_s=50,
-                surface_area_m2=200,
+            result = calc.calculate_fan_performance(
+                air_flow_m3_s=0,
+                static_pressure_pa=200,
+                fan_diameter_m=3.0,
+                fan_rpm=300,
+                fan_efficiency=0.75,
             )
-            # Should either return zero or handle gracefully
-            assert result is not None
+            # Zero flow = zero power
+            assert result.shaft_power_kw == 0
         except (ValueError, ZeroDivisionError):
             # Acceptable to raise error for invalid input
             pass
@@ -1120,38 +1119,38 @@ class TestEdgeCases:
             # Acceptable to reject invalid input
             pass
 
-    def test_very_high_temperature(self):
-        """Test handling of very high temperatures."""
+    def test_very_high_rpm(self):
+        """Test handling of very high RPM."""
         from agents.cad_agent.ache_assistant import ACHECalculator
 
         calc = ACHECalculator()
-        result = calc.calculate_thermal(
-            duty_kw=1000,
-            process_inlet_temp_c=400,  # Very high
-            process_outlet_temp_c=200,
-            air_inlet_temp_c=50,
-            air_flow_kg_s=100,
-            surface_area_m2=500,
+        result = calc.calculate_fan_performance(
+            air_flow_m3_s=50,
+            static_pressure_pa=200,
+            fan_diameter_m=3.0,
+            fan_rpm=600,  # High RPM
+            fan_efficiency=0.75,
         )
-        # Should handle high temps
-        assert result.lmtd_k > 0
+        # Should calculate tip speed correctly
+        # Tip speed = pi * diameter * RPM / 60
+        expected_tip = 3.14159 * 3.0 * 600 / 60
+        assert abs(result.tip_speed_m_s - expected_tip) < 1.0
 
-    def test_small_tube_count(self):
-        """Test pressure drop with small tube count."""
+    def test_small_fan_diameter(self):
+        """Test with small fan diameter."""
         from agents.cad_agent.ache_assistant import ACHECalculator
 
         calc = ACHECalculator()
-        result = calc.calculate_tube_side_pressure_drop(
-            mass_flow_kg_s=10,
-            tube_id_mm=25,
-            tube_length_m=6,
-            num_tubes=10,  # Small count
-            num_passes=2,
-            fluid_density_kg_m3=800,
-            fluid_viscosity_pa_s=0.001,
+        result = calc.calculate_fan_performance(
+            air_flow_m3_s=10,
+            static_pressure_pa=200,
+            fan_diameter_m=1.0,  # Small diameter
+            fan_rpm=600,
+            fan_efficiency=0.75,
         )
-        # Higher velocity in fewer tubes = higher pressure drop
-        assert result.tube_side_dp_kpa > 0
+        # Should still calculate
+        assert result.tip_speed_m_s > 0
+        assert result.shaft_power_kw > 0
 
 
 if __name__ == "__main__":
