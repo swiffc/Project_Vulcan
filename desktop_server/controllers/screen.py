@@ -134,3 +134,86 @@ async def find_image(req: FindImageRequest):
         import os
         if os.path.exists(template_path):
             os.remove(template_path)
+
+
+@router.post("/window/{window_title}")
+async def screenshot_window(window_title: str):
+    """Capture screenshot of specific window by title."""
+    try:
+        import win32gui
+    except ImportError:
+        raise HTTPException(status_code=500, detail="win32gui not available")
+    
+    logger.info(f"Capturing window screenshot: {window_title}")
+    
+    # Find window
+    hwnd = None
+    def callback(hwnd_param, _):
+        nonlocal hwnd
+        if win32gui.IsWindowVisible(hwnd_param):
+            title = win32gui.GetWindowText(hwnd_param)
+            if window_title.lower() in title.lower():
+                hwnd = hwnd_param
+                return False
+        return True
+    
+    win32gui.EnumWindows(callback, None)
+    
+    if not hwnd:
+        raise HTTPException(status_code=404, detail=f"Window not found: {window_title}")
+    
+    # Get window rect
+    rect = win32gui.GetWindowRect(hwnd)
+    x, y = rect[0], rect[1]
+    width = rect[2] - rect[0]
+    height = rect[3] - rect[1]
+    
+    # Capture region
+    return await screenshot_region(RegionRequest(x=x, y=y, width=width, height=height))
+
+
+class CompareScreenshotsRequest(BaseModel):
+    image1_base64: str
+    image2_base64: str
+    threshold: float = 0.95
+
+
+@router.post("/compare")
+async def compare_screenshots(req: CompareScreenshotsRequest):
+    """Compare two screenshots and highlight differences."""
+    try:
+        import cv2
+        import numpy as np
+    except ImportError:
+        raise HTTPException(status_code=500, detail="OpenCV not available")
+    
+    logger.info("Comparing screenshots")
+    
+    # Load images
+    img1 = base64_to_image(req.image1_base64)
+    img2 = base64_to_image(req.image2_base64)
+    
+    # Convert to numpy arrays
+    arr1 = np.array(img1)
+    arr2 = np.array(img2)
+    
+    # Resize if needed
+    if arr1.shape != arr2.shape:
+        arr2 = cv2.resize(arr2, (arr1.shape[1], arr1.shape[0]))
+    
+    # Calculate difference
+    diff = cv2.absdiff(arr1, arr2)
+    diff_gray = cv2.cvtColor(diff, cv2.COLOR_RGB2GRAY)
+    
+    # Calculate similarity
+    similarity = 1.0 - (np.sum(diff_gray) / (diff_gray.shape[0] * diff_gray.shape[1] * 255.0))
+    
+    # Create diff image
+    diff_img = Image.fromarray(diff)
+    
+    return {
+        "status": "ok",
+        "similarity": float(similarity),
+        "match": similarity >= req.threshold,
+        "diff_image": image_to_base64(diff_img)
+    }
