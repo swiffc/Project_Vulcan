@@ -2876,6 +2876,83 @@ async def generate_report(request: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/phase25/generate-pdf-report")
+async def generate_pdf_report(request: dict):
+    """
+    Generate PDF validation report.
+
+    Request body:
+        drawing_number: String
+        drawing_revision: String
+        project_name: String (optional)
+        validator_results: dict - Results from individual validators
+        level: String - "summary", "standard", "detailed" (default: standard)
+        include_charts: Boolean (default: true)
+        summary_only: Boolean (default: false) - Generate 1-page executive summary
+
+    Returns:
+        PDF file as base64-encoded bytes with metadata
+    """
+    try:
+        import sys
+        import base64
+        sys.path.insert(0, str(Path(__file__).parent.parent / "agents" / "cad_agent"))
+        from validators.report_generator import (
+            ReportGenerator, ReportLevel
+        )
+
+        generator = ReportGenerator()
+
+        # Add all validator results
+        for name, result in request.get("validator_results", {}).items():
+            generator.add_result(name, result)
+
+        # Parse level
+        level_str = request.get("level", "standard").lower()
+        level_map = {
+            "summary": ReportLevel.SUMMARY,
+            "standard": ReportLevel.STANDARD,
+            "detailed": ReportLevel.DETAILED,
+            "debug": ReportLevel.DEBUG,
+        }
+
+        # Generate report
+        report = generator.generate_report(
+            drawing_number=request.get("drawing_number"),
+            drawing_revision=request.get("drawing_revision"),
+            project_name=request.get("project_name"),
+            level=level_map.get(level_str, ReportLevel.STANDARD)
+        )
+
+        # Generate PDF
+        summary_only = request.get("summary_only", False)
+        include_charts = request.get("include_charts", True)
+
+        if summary_only:
+            pdf_bytes = generator.export_pdf_summary(filepath=None)
+        else:
+            pdf_bytes = generator.export_pdf(filepath=None, include_charts=include_charts)
+
+        # Return as base64
+        pdf_base64 = base64.b64encode(pdf_bytes).decode('utf-8')
+
+        return {
+            "format": "pdf",
+            "filename": f"validation_report_{request.get('drawing_number', 'unknown')}.pdf",
+            "content_base64": pdf_base64,
+            "size_bytes": len(pdf_bytes),
+            "overall_status": report.overall_status,
+            "pass_rate": round(report.overall_pass_rate, 1),
+        }
+
+    except ImportError as e:
+        logger.error(f"PDF generation requires reportlab: {e}")
+        raise HTTPException(status_code=500, detail="reportlab not installed. Run: pip install reportlab")
+    except Exception as e:
+        logger.error(f"PDF report generation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/kill")
 async def kill():
     """Emergency stop - activate kill switch."""
